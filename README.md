@@ -21,5 +21,6 @@ ARC ABMVIZ HTML 5
 5. Paste the result in Excel and save as a CSV file into the relevant scenario folder
 
 #Run demo
-1. You need to run a http server. To test, you can use the Python server available under the Lib folder in the Python installation. It is called SimpleHTTPServer
-2. You need to run the http server from the root directory of the demo. Containing this README file. Simply run SimpleHTTPServer and go to http://localhost:8000/scenario in your browser 
+1. Requires a http server such as Python's SimpleHTTPServer
+2. Run the http server from this project directory: python -m SimpleHTTPServer
+3. Go to http://localhost:8000/scenario in your browser 
