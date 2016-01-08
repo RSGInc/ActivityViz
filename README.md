@@ -19,3 +19,7 @@ ARC ABMVIZ HTML 5
 3. Execute the script
 4. Right click in the upper left corner of the results table and select Copy with Headers
 5. Paste the result in Excel and save as a CSV file into the relevant scenario folder
+
+#Run demo
+1. You need to run a http server. To test, you can use the Python server available under the Lib folder in the Python installation. It is called SimpleHTTPServer
+2. You need to run the http server from the root directory of the demo. Containing this README file. Simply run SimpleHTTPServer and go to http://localhost:8000/scenario in your browser 

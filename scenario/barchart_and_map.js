@@ -22,8 +22,11 @@ var palette = [
 var handlers = [25, 50, 75];
 
 //data
+var zonename;
+var dataname;
 var zonedata = {};
-var BIKE = [], DRIVEALONEFREE = [], DRIVEALONEPAY = [], KNR_ALLTRN = [], PNR_PRMTRN = [], SCHOOL_BUS = [], SHARED2FREE = [], SHARED2PAY = [], SHARED3FREE = [], SHARED3PAY = [], WALK = [], TOTAL = [];
+var zonegroups = [];
+var dataitems = [];
 var currentCounty = "";
 var modes = [];
 
@@ -35,41 +38,36 @@ function redraw_map(){
 }
 
 var chartdata = {}
-d3.csv("/ABMVIZ/root/BS10/BarChartAndMapData.csv", function(data) {
+d3.csv("/root/BS10/BarChartAndMapData.csv", function(data) {
+  var i=0;
+  $.each(data[0], function(key, value) {
+      if(i===1) zonename = key;
+      if(i==2) dataname = key;
+      i++;
+  });
   data.forEach(function(d) {
-    if(d.TRIP_MODE_NAME != "TOTAL"){
-      if($.inArray(d.TRIP_MODE_NAME, modes) =="-1"){
-        modes.push(d.TRIP_MODE_NAME)
+    if(d[dataname] != "TOTAL"){
+      if($.inArray(d[dataname], modes) =="-1"){
+        modes.push(d[dataname]);
+        $("#attribute").append("<option>"+d[dataname]+"</option>")
       }
-      if(chartdata[d.COUNTY] == null) chartdata[d.COUNTY] = []; 
+      if(chartdata[d[zonename]] == null) chartdata[d[zonename]] = []; 
       var updated = 0;
-      for (var i=0; i<chartdata[d.COUNTY].length; i++) {
-        if (chartdata[d.COUNTY][i].name == d.TRIP_MODE_NAME) {
-          chartdata[d.COUNTY][i].val += parseInt(d.QUANTITY);
+      for (var i=0; i<chartdata[d[zonename]].length; i++) {
+        if (chartdata[d[zonename]][i].name == d[dataname]) {
+          chartdata[d[zonename]][i].val += parseInt(d.QUANTITY);
           updated = 1;
           break;
         }
       }
-      if(updated ===0) chartdata[d.COUNTY].push({'name':d.TRIP_MODE_NAME, 'val':parseInt(d.QUANTITY)});
+      if(updated ===0) chartdata[d[zonename]].push({'name':d[dataname], 'val':parseInt(d.QUANTITY)});
     }
     if(zonedata[d.ZONE] == null){
       zonedata[d.ZONE] = {};
     }
-    zonedata[d.ZONE][d.TRIP_MODE_NAME] = {"COUNTY":d.COUNTY, "QUANTITY":d.QUANTITY};//"TRIP_MODE_NAME":d.TRIP_MODE_NAME, 
-
-    if(d.TRIP_MODE_NAME ==="BIKE") BIKE.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="DRIVEALONEFREE") DRIVEALONEFREE.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="DRIVEALONEPAY") DRIVEALONEPAY.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="KNR_ALLTRN") KNR_ALLTRN.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="PNR_PRMTRN") PNR_PRMTRN.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="SCHOOL_BUS") SCHOOL_BUS.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="SHARED2FREE") SHARED2FREE.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="SHARED2PAY") SHARED2PAY.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="SHARED3FREE") SHARED3FREE.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="SHARED3PAY") SHARED3PAY.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="WALK") WALK.push(parseInt(d.QUANTITY));
-    if(d.TRIP_MODE_NAME ==="TOTAL") TOTAL.push(parseInt(d.QUANTITY));
-
+    zonedata[d.ZONE][d[dataname]] = {"COUNTY":d[zonename], "QUANTITY":d.QUANTITY};
+    if(dataitems[d[dataname]] == null) dataitems[d[dataname]] = [];
+    dataitems[d[dataname]].push(parseInt(d.QUANTITY));
   });
   display_charts();
 });
@@ -124,7 +122,7 @@ $(document).ready(function(){
 
   map.on('click', function(e) {
     var layer = leafletPip.pointInLayer(e.latlng,baselayer, true);
-    currentCounty = zonedata[layer[0].feature.properties.id]["BIKE"].COUNTY;
+    currentCounty = zonedata[layer[0].feature.properties.id][modes[0]].COUNTY;
     redraw_map();
     chart.selectAll("text.label").style('font-size',"15px");
     chart.selectAll("text").filter(function(){
@@ -274,20 +272,8 @@ function hexToRgb(hex) {
 function colorizeFeatures(data) {
   var attribute = $('#attribute').val();
 
-  var serie;
-  if(attribute==="BIKE") serie = new geostats(BIKE);
-  if(attribute==="DRIVEALONEFREE") serie = new geostats(DRIVEALONEFREE);
-  if(attribute==="DRIVEALONEPAY") serie = new geostats(DRIVEALONEPAY);
-  if(attribute==="KNR_ALLTRN") serie = new geostats(KNR_ALLTRN);
-  if(attribute==="PNR_PRMTRN") serie = new geostats(PNR_PRMTRN);
-  if(attribute==="SCHOOL_BUS") serie = new geostats(SCHOOL_BUS);
-  if(attribute==="SHARED2FREE") serie = new geostats(SHARED2FREE);
-  if(attribute==="SHARED2PAY") serie = new geostats(SHARED2PAY);
-  if(attribute==="SHARED3FREE") serie = new geostats(SHARED3FREE);
-  if(attribute==="SHARED3PAY") serie = new geostats(SHARED3PAY);
-  if(attribute==="WALK") serie = new geostats(WALK);
-  if(attribute==="TOTAL") serie = new geostats(TOTAL);
-
+  var serie = new geostats(dataitems[attribute]);
+  
   //handle the different classifications
   var classification = $("#classification").val();
   var break_up;
@@ -451,7 +437,7 @@ function display_charts(){
 
   var chartWidth       = 400,
       barHeight        = 2,
-      groupHeight      = barHeight * data.series.length,
+      groupHeight      = (barHeight) * data.series.length,
       gapBetweenGroups = 3,
       spaceForLabels   = 100,
       spaceForLegend   = 150;
@@ -481,7 +467,7 @@ function display_charts(){
 
   chart = d3.select(".chart")
       .attr("width", spaceForLabels + chartWidth + spaceForLegend)
-      .attr("height", chartHeight+20);
+      .attr("height", chartHeight+gapBetweenGroups*data.labels.length+20);
 
   var bar = chart.selectAll("g")
       .data(zippedData)
@@ -516,7 +502,7 @@ function display_charts(){
 
    chart.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate("+spaceForLabels+"," + 662 + ")") //659
+      .attr("transform", "translate("+spaceForLabels+"," + (chartHeight) + ")") 
       .call(xAxis);
 
   chart.append("g")
