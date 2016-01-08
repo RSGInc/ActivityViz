@@ -1,0 +1,37 @@
+body {
+  		padding-top: 50px;
+	}
+
+.chart .legend {
+  fill: black;
+  font: 14px sans-serif;
+  text-anchor: start;
+  font-size: 12px;
+}
+.chart text {
+  fill: black;/*was white*/
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+.chart .label {
+  fill: black;
+  font: 14px sans-serif;
+  text-anchor: end;
+}
+.bar:hover {
+  fill: brown;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.tick line{
+	opacity:0.2;
+}
+.slider-tip {
+    opacity:1;
+    bottom:120%;
+    margin-left: -.5em;
+}

@@ -1,0 +1,86 @@
+<html>  
+<head>
+  <title>ARC ABMVIZ</title>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+  <link rel="stylesheet" href="dependencies/spectrum/spectrum.css"/>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css" />
+  
+
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+  <script src="dependencies/spectrum/spectrum.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
+  <script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
+  <script src="https://rawgit.com/simogeo/geostats/master/lib/geostats.min.js"></script>
+  <script src='https://rawgit.com/mapbox/leaflet-pip/gh-pages/leaflet-pip.js'></script>
+
+  <link rel="stylesheet" href="https://rawgit.com/simogeo/geostats/master/lib/geostats.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <script src="barchart_and_map.js"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="navbar-header">
+          <a class="navbar-brand" href="#">ABMVIZ</a>
+     </div>
+</nav>
+<div style="margin:5em;">
+
+<div class="row" style="margin-top:1em;">
+  <div class="col-md-6">
+  	<svg class="chart"></svg>
+  </div>
+  <div class="col-md-6">
+  <div class="col-md-6">
+      <select class="form-control" id="attribute">
+      <option value="BIKE">BIKE</option>
+      <option value="DRIVEALONEFREE">DRIVEALONEFREE</option>
+      <option value="DRIVEALONEPAY">DRIVEALONEPAY</option>
+      <option value="KNR_ALLTRN">KNR_ALLTRN</option>
+      <option value="PNR_PRMTRN">PNR_PRMTRN</option>
+      <option value="SCHOOL_BUS">SCHOOL_BUS</option>
+      <option value="SHARED2FREE">SHARED2FREE</option>
+      <option value="SHARED2PAY">SHARED2PAY</option>
+      <option value="SHARED3FREE">SHARED3FREE</option>
+      <option value="SHARED3PAY">SHARED3PAY</option>
+      <option value="WALK">WALK</option>
+      <option value="TOTAL">TOTAL</option>
+      </select>
+      </div>
+      <div class="col-md-6" style="margin-bottom:2em;">
+      <select class="form-control" id="classification" >
+         <option value="quantiles">Quantiles</option>
+         <option value="even_interval">Even interval</option>
+         <option value="custom">Custom</option>
+      </select>
+      </div>
+      <div id="map" style="width: 100%;height:700px;"></div>      
+  </div>
+  <div class="col-md-6 col-md-offset-6" style="margin-top:1em;">
+    
+  	<input type='text' id="color1"/> <input type='text' id="color2"/> <input type='text' id="color3"/> <input type='text' id="color4"/> <input type='text' id="nacolor"/><br /><br />
+<div style="margin-bottom:1em;" id="slider"></div>
+<button id="update_map" class="btn">Update Map</button>
+
+  	<input type=hidden size=4 id="val1"  />
+  	<input type=hidden size=4  id="val2" /><br />
+  	 <input type=hidden size=4  id="val3" /><br />
+  	 <input type=hidden size=4  id="val4" /><br />
+  	 <input type=hidden size=4  id="val5" /><br />
+  	<br />
+  	
+  </div>
+</div>
+</div>
+
+ <script>
+ 
+  </script>
+</body>
+</html>
