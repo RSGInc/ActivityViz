@@ -90,9 +90,18 @@ function updateColors(values, themax) {
   }
   // end with the last color to the right
   colorstops += colors[colors.length-1];
-
-  /* Safari 5.1, Chrome 10+ */
-  var css = '-webkit-linear-gradient(left,' + colorstops + ')';
+  var css = "";
+  if( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
+      //mozilla
+      css = '-moz-linear-gradient(left,' + colorstops + ')';
+  }else if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent.toLowerCase().indexOf('safari') > -1){
+    // Safari 5.1, Chrome 10+ 
+    css = '-webkit-linear-gradient(left,' + colorstops + ')';
+  }else{
+    //ie
+    css = '-ms-linear-gradient(left,' + colorstops + ')';
+  }
+  
   $('#slider').css('background-image', css);
 }
       
