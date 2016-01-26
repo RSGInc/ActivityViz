@@ -45,6 +45,7 @@ d3.csv("/root/BS10/BarChartAndMapData.csv", function(data) {
       if(i==2) dataname = key;
       i++;
   });
+  $("#attribute_label").html(dataname);
   data.forEach(function(d) {
     if(d[dataname] != "TOTAL"){
       if($.inArray(d[dataname], modes) =="-1"){
