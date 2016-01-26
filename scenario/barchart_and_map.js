@@ -406,6 +406,7 @@ function drawingOnCanvas(canvasOverlay, params) {
     ctx.clearRect(0, 0, params.canvas.width, params.canvas.height);
     var features = tile.features;
     ctx.strokeStyle = 'grey';
+    ctx.lineWidth = 0;
 
     for (var i = 0; i < features.length; i++) {
         var feature = features[i],
@@ -430,7 +431,8 @@ function drawingOnCanvas(canvasOverlay, params) {
             }
         }
         if (type === 3 || type === 1) ctx.fill('evenodd');
-        ctx.stroke();
+        if($("#stroke").is(":checked"))
+          ctx.stroke();
     }
 }
       
