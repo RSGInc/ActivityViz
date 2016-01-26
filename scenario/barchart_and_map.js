@@ -447,7 +447,7 @@ function display_charts(){
   var chartWidth       = 400,
       barHeight        = 2,
       groupHeight      = (barHeight) * data.series.length,
-      gapBetweenGroups = 3,
+      gapBetweenGroups = 2,
       spaceForLabels   = 100,
       spaceForLegend   = 150;
 
@@ -489,7 +489,7 @@ function display_charts(){
       .attr("fill", function(d,i) { return color(i % data.series.length); })
       .attr("class", "bar")
       .attr("width", x)
-      .attr("height", barHeight - 1);
+      .attr("height", barHeight);
 
   bar.append("text")
       .attr("class", "label")
@@ -508,7 +508,7 @@ function display_charts(){
       .innerTickSize(-662)
       .outerTickSize(0)
       .ticks(5);
-
+  
    chart.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate("+spaceForLabels+"," + (chartHeight) + ")") 
@@ -533,7 +533,7 @@ function display_charts(){
           var vert = i * height - offset;
           return 'translate(' + horz + ',' + vert + ')';
       });
-
+  //legend colors
   legend.append('rect')
       .attr('width', legendRectSize)
       .attr('height', legendRectSize)
