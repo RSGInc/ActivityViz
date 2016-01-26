@@ -105,8 +105,29 @@ function updateColors(values, themax) {
   
   $('#slider').css('background-image', css);
 }
-      
+var interval;
+var currentval = 0;
 $(document).ready(function(){
+
+
+  //Logic for cycling through the maps
+  $("#start_cycle_map").click(function(){
+    $("#stop_cycle_map").css("display", "inline");
+    $("#start_cycle_map").css("display", "none");
+    interval = setInterval(function(){
+      $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
+      redraw_map();
+      currentval ++;
+      if(currentval >= $("#attribute option").size())
+        currentval = 0;
+    }, 5000);
+  });
+  $("#stop_cycle_map").click(function(){
+    clearInterval(interval);
+    $("#stop_cycle_map").css("display", "none");
+    $("#start_cycle_map").css("display", "inline");
+  });
+
 
   map = L.map('map').setView(center,9);
 
