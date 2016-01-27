@@ -45,6 +45,7 @@ d3.csv("/root/BS10/BarChartAndMapData.csv", function(data) {
       if(i==2) dataname = key;
       i++;
   });
+  $("#attribute_label").html(dataname);
   data.forEach(function(d) {
     if(d[dataname] != "TOTAL"){
       if($.inArray(d[dataname], modes) =="-1"){
@@ -90,13 +91,43 @@ function updateColors(values, themax) {
   }
   // end with the last color to the right
   colorstops += colors[colors.length-1];
-
-  /* Safari 5.1, Chrome 10+ */
-  var css = '-webkit-linear-gradient(left,' + colorstops + ')';
+  var css = "";
+  if( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
+      //mozilla
+      css = '-moz-linear-gradient(left,' + colorstops + ')';
+  }else if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent.toLowerCase().indexOf('safari') > -1){
+    // Safari 5.1, Chrome 10+ 
+    css = '-webkit-linear-gradient(left,' + colorstops + ')';
+  }else{
+    //ie
+    css = '-ms-linear-gradient(left,' + colorstops + ')';
+  }
+  
   $('#slider').css('background-image', css);
 }
-      
+var interval;
+var currentval = 0;
 $(document).ready(function(){
+
+
+  //Logic for cycling through the maps
+  $("#start_cycle_map").click(function(){
+    $("#stop_cycle_map").css("display", "inline");
+    $("#start_cycle_map").css("display", "none");
+    interval = setInterval(function(){
+      $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
+      redraw_map();
+      currentval ++;
+      if(currentval >= $("#attribute option").size())
+        currentval = 0;
+    }, 5000);
+  });
+  $("#stop_cycle_map").click(function(){
+    clearInterval(interval);
+    $("#stop_cycle_map").css("display", "none");
+    $("#start_cycle_map").css("display", "inline");
+  });
+
 
   map = L.map('map').setView(center,9);
 
@@ -375,6 +406,7 @@ function drawingOnCanvas(canvasOverlay, params) {
     ctx.clearRect(0, 0, params.canvas.width, params.canvas.height);
     var features = tile.features;
     ctx.strokeStyle = 'grey';
+    ctx.lineWidth = 0;
 
     for (var i = 0; i < features.length; i++) {
         var feature = features[i],
@@ -399,7 +431,8 @@ function drawingOnCanvas(canvasOverlay, params) {
             }
         }
         if (type === 3 || type === 1) ctx.fill('evenodd');
-        ctx.stroke();
+        if($("#stroke").is(":checked"))
+          ctx.stroke();
     }
 }
       
@@ -438,7 +471,7 @@ function display_charts(){
   var chartWidth       = 400,
       barHeight        = 2,
       groupHeight      = (barHeight) * data.series.length,
-      gapBetweenGroups = 3,
+      gapBetweenGroups = 2,
       spaceForLabels   = 100,
       spaceForLegend   = 150;
 
@@ -480,7 +513,7 @@ function display_charts(){
       .attr("fill", function(d,i) { return color(i % data.series.length); })
       .attr("class", "bar")
       .attr("width", x)
-      .attr("height", barHeight - 1);
+      .attr("height", barHeight);
 
   bar.append("text")
       .attr("class", "label")
@@ -499,7 +532,7 @@ function display_charts(){
       .innerTickSize(-662)
       .outerTickSize(0)
       .ticks(5);
-
+  
    chart.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate("+spaceForLabels+"," + (chartHeight) + ")") 
@@ -524,7 +557,7 @@ function display_charts(){
           var vert = i * height - offset;
           return 'translate(' + horz + ',' + vert + ')';
       });
-
+  //legend colors
   legend.append('rect')
       .attr('width', legendRectSize)
       .attr('height', legendRectSize)
