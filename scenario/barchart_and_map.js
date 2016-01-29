@@ -468,7 +468,7 @@ function display_charts(){
     series:series
   };
 
-  var chartWidth       = 400,
+  var chartWidth       = 420,
       barHeight        = 2,
       groupHeight      = (barHeight) * data.series.length,
       gapBetweenGroups = 2,
@@ -499,8 +499,9 @@ function display_charts(){
       .orient("left");
 
   chart = d3.select(".chart")
-      .attr("width", spaceForLabels + chartWidth + spaceForLegend)
-      .attr("height", chartHeight+gapBetweenGroups*data.labels.length+20);
+   .attr("preserveAspectRatio", "xMinYMin meet")
+   .attr("viewBox", "0 0 550 "+(chartHeight+gapBetweenGroups*data.labels.length+20+200))
+   .classed("svg-content-responsive", true); 
 
   var bar = chart.selectAll("g")
       .data(zippedData)
@@ -553,9 +554,9 @@ function display_charts(){
       .attr('transform', function (d, i) {
           var height = legendRectSize + legendSpacing;
           var offset = -gapBetweenGroups/2;
-          var horz = spaceForLabels + chartWidth + 40 - legendRectSize;
-          var vert = i * height - offset;
-          return 'translate(' + horz + ',' + vert + ')';
+          var vert = (parseInt(i/3))*height-offset+(chartHeight+gapBetweenGroups*data.labels.length-20);
+          var w = 140*(i%3) +spaceForLabels;
+          return 'translate(' + w + ',' + vert + ')';
       });
   //legend colors
   legend.append('rect')
@@ -569,4 +570,5 @@ function display_charts(){
       .attr('x', legendRectSize + legendSpacing)
       .attr('y', legendRectSize - legendSpacing)
       .text(function (d) { return d.label; });
+
 }
