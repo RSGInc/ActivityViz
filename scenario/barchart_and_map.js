@@ -540,7 +540,16 @@ function display_charts(){
         if (i % data.series.length === 0)
           return data.labels[Math.floor(i/data.series.length)];
         else
-          return ""});
+          return ""})
+      .on("click", function(d, i) { 
+        if (i % data.series.length === 0)
+          currentCounty = data.labels[Math.floor(i/data.series.length)];
+          redraw_map();
+          chart.selectAll("text.label").style('font-size',"15px");
+          chart.selectAll("text").filter(function(){
+            return this.innerHTML==currentCounty; 
+          }).style('font-size',"20px");
+      });
 
   var xAxis = d3.svg.axis()
       .scale(x)
