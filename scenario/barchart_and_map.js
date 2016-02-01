@@ -30,6 +30,20 @@ var dataitems = [];
 var currentCounty = "";
 var modes = [];
 
+
+function GetURLParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}
 function redraw_map(){
   var vertCount = colorizeFeatures(zonetiles);          
   tileIndex = geojsonvt(zonetiles, tileOptions);
@@ -38,7 +52,8 @@ function redraw_map(){
 }
 
 var chartdata = {}
-d3.csv("/root/BS10/BarChartAndMapData.csv", function(data) {
+
+d3.csv("/root/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(data) {
   var i=0;
   $.each(data[0], function(key, value) {
       if(i===1) zonename = key;
