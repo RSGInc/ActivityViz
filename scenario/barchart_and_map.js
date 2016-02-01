@@ -454,6 +454,7 @@ function drawingOnCanvas(canvasOverlay, params) {
 var display_chart_dic = {};
 
 //main chart function
+var invisible = [];
 function display_charts(){
   var labels = [];
   var series = [];
@@ -519,15 +520,17 @@ function display_charts(){
    .classed("svg-content-responsive", true); 
 
   var bar = chart.selectAll("g")
+
       .data(zippedData)
       .enter().append("g")
+      .attr("class", function(c, i){ return "g"+(i%data.series.length)})
       .attr("transform", function(d, i) {
         return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i/data.series.length))) + ")";
       });
 
   bar.append("rect")
       .attr("fill", function(d,i) { return color(i % data.series.length); })
-      .attr("class", "bar")
+      .attr("class", function(c, i){ return "bar"+(i%data.series.length)})
       .attr("width", x)
       .attr("height", barHeight);
 
@@ -587,7 +590,24 @@ function display_charts(){
       .attr('width', legendRectSize)
       .attr('height', legendRectSize)
       .style('fill', function (d, i) { return color(i); })
-      .style('stroke', function (d, i) { return color(i); });
+      .style('stroke', function (d, i) { return color(i); })
+      .on("click", function(d, i){
+
+        if(invisible.indexOf(i)<0){
+          var bars = d3.select(".chart").selectAll(".bar"+i).data(data);
+          bars.exit().remove();
+          invisible.push(i); 
+        }else{
+
+          var bar = chart.selectAll(".g"+i)
+            .append("rect")
+              .attr("fill", function() { return color(i % data.series.length); })
+              .attr("class", function(){ return "bar"+(i%data.series.length)})
+              .attr("width", x)
+              .attr("height", barHeight);
+          invisible =  $.grep(invisible, function(value){return value != i});          
+        }
+      });
 
   legend.append('text')
       .attr('class', 'legend')
