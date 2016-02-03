@@ -85,6 +85,10 @@ d3.csv("/root/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(
     if(dataitems[d[dataname]] == null) dataitems[d[dataname]] = [];
     dataitems[d[dataname]].push(parseInt(d.QUANTITY));
   });
+  for (var key in chartdata) {
+    $("#chart_selection").append("<option>"+key+"</option>")
+  }
+  $("#chart_selection").chosen();
   display_charts();
 });
 
@@ -124,7 +128,16 @@ var interval;
 var currentval = 0;
 $(document).ready(function(){
 
+  $("#chart_selection").change(function(){
+    $('#chart_selection :selected').each(function(i, selected){ 
+        var bars = d3.select(".chart").selectAll("g");
+        bars.remove();
+        display_charts();
+    });
 
+
+
+  });
   //Logic for cycling through the maps
   $("#start_cycle_map").click(function(){
     $("#stop_cycle_map").css("display", "inline");
@@ -455,31 +468,53 @@ var display_chart_dic = {};
 
 //main chart function
 var invisible = [];
+var data;
+
 function display_charts(){
+  //prepare data
   var labels = [];
   var series = [];
+
   for (var key in chartdata) {
-    labels.push(key);
+    var use = false;
+    $('#chart_selection :selected').each(function(i, selected){ 
+          if(key == $(selected).text() || $(selected).text() == "All"){
+            use = true;
+          }
+      });      
+    if(use){
+      labels.push(key);
+    }
   }
   //for each type
   //add all the values in the order of the labels
   for(var mode in modes){
     var vals = [];
     for(var key in chartdata){
-      for(var i=0;i<chartdata[key].length;i++){
-        if(chartdata[key][i].name == modes[mode]){
-          if(chartdata[key][i].val != null){
-            vals.push(chartdata[key][i].val);
+      var use = false;
+      $('#chart_selection :selected').each(function(i, selected){ 
+          if(key == $(selected).text()  || $(selected).text() == "All"){
+            use = true;
+          }
+      });      
+      if(use){
+        for(var i=0;i<chartdata[key].length;i++){
+          if(chartdata[key][i].name == modes[mode]){
+            if(chartdata[key][i].val != null){
+              vals.push(chartdata[key][i].val);
+            }
           }
         }
-      }
     }
+    }
+
     series.push({
       label:modes[mode],
       values:vals
     });
   }
-  var data = {
+  
+  data = {
     labels: labels,
     series:series
   };
@@ -520,7 +555,6 @@ function display_charts(){
    .classed("svg-content-responsive", true); 
 
   var bar = chart.selectAll("g")
-
       .data(zippedData)
       .enter().append("g")
       .attr("class", function(c, i){ return "g"+(i%data.series.length)})
@@ -581,7 +615,7 @@ function display_charts(){
       .attr('transform', function (d, i) {
           var height = legendRectSize + legendSpacing;
           var offset = -gapBetweenGroups/2;
-          var vert = (parseInt(i/3))*height-offset+(chartHeight+gapBetweenGroups*data.labels.length-20);
+          var vert = (parseInt(i/3))*height-offset+(chartHeight+gapBetweenGroups*data.labels.length-20+30);
           var w = 140*(i%3) +spaceForLabels;
           return 'translate(' + w + ',' + vert + ')';
       });
@@ -598,7 +632,6 @@ function display_charts(){
           bars.exit().remove();
           invisible.push(i); 
         }else{
-
           var bar = chart.selectAll(".g"+i)
             .append("rect")
               .attr("fill", function() { return color(i % data.series.length); })
@@ -614,5 +647,4 @@ function display_charts(){
       .attr('x', legendRectSize + legendSpacing)
       .attr('y', legendRectSize - legendSpacing)
       .text(function (d) { return d.label; });
-
 }

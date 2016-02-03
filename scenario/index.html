@@ -6,10 +6,12 @@
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
   <link rel="stylesheet" href="dependencies/spectrum/spectrum.css"/>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css" />
+  <link rel="stylesheet" href="dependencies/chosen/chosen.min.css" />
   
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
   <script src="dependencies/spectrum/spectrum.js"></script>
+  <script src="dependencies/chosen/chosen.jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
@@ -39,8 +41,13 @@
 </div>
 <div class="row" style="margin-top:1em;">
   <div class="col-md-6" >
+  	<div class="col-md-12">
+  	<select id='chart_selection' multiple style="width:100%;"><option selected value="-1">All</option></select>
+  	</div>
+  	<div class="col-md-12">
   	<div style="max-width:600px;">
   	<svg class="chart"></svg>
+  	</div>
   	</div>
   </div>
   <div class="col-md-6">
