@@ -3,7 +3,9 @@
   <title>ARC ABMVIZ</title>
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+
   <link rel="stylesheet" href="dependencies/spectrum/spectrum.css"/>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css" />
   <link rel="stylesheet" href="dependencies/chosen/chosen.min.css" />
@@ -13,7 +15,10 @@
   <script src="dependencies/spectrum/spectrum.js"></script>
   <script src="dependencies/chosen/chosen.jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="dependencies/leaflet/leaflet-src.js"></script>
+  <!--
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
   <script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
@@ -35,14 +40,14 @@
 <div style="margin:5em;">
 <h2>Bar Chart and Map</h2>
 <div class="row">
-<div class="col-md-3">
+<div class="col-md-6">
 	This is just some placeholder text for the description of the chart and map.
 </div>
 </div>
 <div class="row" style="margin-top:1em;">
   <div class="col-md-6" >
   	<div class="col-md-12">
-  	<select id='chart_selection' multiple style="width:100%;"><option selected value="-1">All</option></select>
+  	<select id='chart_selection' style="min-width:400px" multiple ><option selected value="-1">All</option></select>
   	</div>
   	<div class="col-md-12">
   	<div style="max-width:600px;">
@@ -72,13 +77,19 @@
 
       <div id="map" style="width: 100%;height:900px;"></div>      
   </div>
-  <div class="col-md-4 col-md-offset-6" style="margin-top:1em;">
+  <div class="col-md-3 col-md-offset-6" style="margin-top:1em;">
   	<input type='text' id="color1"/> 
   	<input type='text' id="color2"/> 
   	<input type='text' id="color3"/>
     <input type='text' id="color4"/> 
    </div>
-   <div class="col-md-2" style="margin-top:1em;text-align:right">
+   <div class="col-md-3" style="margin-top:1em;text-align:right">
+   <input type="checkbox" id="bubbles" onclick="redraw_map()" /> Bubbles <input type='text' id="bubble_color"/>  
+   Size: <select onchange="redraw_map()" id="bubble_size">
+     <option>1</option>
+     <option>2</option>
+     <option>3</option>
+   </select>
    <input type="checkbox" checked id="stroke" onclick="redraw_map()" /> Outline
    <nobr><input type='text' id="nacolor"  /> N/A</nobr>
    

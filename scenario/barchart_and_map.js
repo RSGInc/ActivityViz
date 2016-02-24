@@ -1,7 +1,7 @@
 //map
 var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
 var center = [33.754525, -84.384774];
-var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="Black";
+var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="Black";bubblecolor="#ff7800"
 var palette = [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
         "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
@@ -134,9 +134,6 @@ $(document).ready(function(){
         bars.remove();
         display_charts();
     });
-
-
-
   });
   //Logic for cycling through the maps
   $("#start_cycle_map").click(function(){
@@ -155,7 +152,6 @@ $(document).ready(function(){
     $("#stop_cycle_map").css("display", "none");
     $("#start_cycle_map").css("display", "inline");
   });
-
 
   map = L.map('map').setView(center,9);
 
@@ -310,6 +306,21 @@ $(document).ready(function(){
       updateColors($("#slider").slider("values")); 
     }
   });
+  $("#bubble_color").spectrum({
+    color: bubblecolor,
+    showInput: true,
+    className: "full-spectrum",
+    showInitial: true,
+    showPalette: true,
+    showSelectionPalette: true,
+    maxSelectionSize: 10,
+    preferredFormat: "hex",
+    localStorageKey: "spectrum.demo",
+    palette: palette,
+    change:function(color){ 
+      bubblecolor = color;redraw_map();
+    }
+  });
 });
 
 //hex to rgb for handling transparancy     
@@ -326,12 +337,14 @@ function hexToRgb(hex) {
     b: parseInt(result[3], 16)
   } : null;
 }
-
+var circles = [];
 //main map display function
 function colorizeFeatures(data) {
   var attribute = $('#attribute').val();
 
   var serie = new geostats(dataitems[attribute]);
+  var max_diameter = .1;
+  var max_feature = serie.max();
   
   //handle the different classifications
   var classification = $("#classification").val();
@@ -379,10 +392,30 @@ function colorizeFeatures(data) {
   if(classification ==="custom") break_up = [$("#val1").val(), $("#val2").val(),$("#val3").val(),$("#val4").val(),$("#val5").val()];
 
   var counter = 0;
+  
+  $.each(circles, function(index, value){
+    map.removeLayer(value);
+  })
+
+  circles = [];
   for (var i = 0; i < data.features.length; i++) {
     var color = nacolor;
     if(zonedata[data.features[i].properties.id] != null){
       if(zonedata[data.features[i].properties.id][attribute] != null){
+
+          //add circle
+        if($("#bubbles").is(":checked")){
+          var bounds = L.latLngBounds(data.features[i].geometry.coordinates[0]);
+          var center = bounds.getCenter();
+          
+          var circle = L.circle( L.latLng(center.lng, center.lat), parseInt($("#bubble_size").val())*((max_diameter/max_feature)*parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"])), {
+              "color": "#ff7800",
+              "weight": 3,
+              "opacity": 1,
+              "fillOpacity":1
+          }).addTo(map);
+          circles.push(circle);
+        }
         if(parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"]) >= break_up[0]){ 
           color=color1;
         }
@@ -414,8 +447,6 @@ function colorizeFeatures(data) {
 var tileLayer = L.canvasTiles()
 .params({ debug: false, padding: 5 })
 .drawing(drawingOnCanvas);
-
-
 
 var pad = 0;
 /* map helper function */
@@ -469,12 +500,13 @@ var display_chart_dic = {};
 //main chart function
 var invisible = [];
 var data;
-
+var zippedData;
+var display_series;
 function display_charts(){
   //prepare data
   var labels = [];
   var series = [];
-
+  
   for (var key in chartdata) {
     var use = false;
     $('#chart_selection :selected').each(function(i, selected){ 
@@ -507,7 +539,6 @@ function display_charts(){
         }
     }
     }
-
     series.push({
       label:modes[mode],
       values:vals
@@ -532,6 +563,8 @@ function display_charts(){
       zippedData.push(data.series[j].values[i]);
     }
   }
+
+  display_series = series;
 
   var color = d3.scale.category20();
   var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
@@ -631,6 +664,26 @@ function display_charts(){
           var bars = d3.select(".chart").selectAll(".bar"+i).data(data);
           bars.exit().remove();
           invisible.push(i); 
+          var max = 0;
+          var new_data = $.grep(series, function(value){ 
+          var max_in_array = Math.max.apply(Math, value.values);
+          if( invisible.indexOf(value.label)<0 && max_in_array > max) max = max_in_array;
+          return invisible.indexOf(value.label)<0 });
+
+          //redo the x domain
+          var x = d3.scale.linear()
+            .domain([0, max])
+            .range([0, chartWidth]);
+          var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .innerTickSize(-662)
+            .outerTickSize(0)
+            .ticks(5);
+          var bars = d3.select(".chart").call(xAxis);
+          //redraw bars
+
+          
         }else{
           var bar = chart.selectAll(".g"+i)
             .append("rect")
