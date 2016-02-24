@@ -1,9 +1,9 @@
 # ABMVIZ
 ARC ABMVIZ HTML 5
 
-#Root folder
+#Data folder
 1. scenarios.csv - Defines each scenario (i.e. model run) available to the user
-2. BS10 - Example scenario folder with its name equal to its scenarios.csv entry
+2. BS10 - Example scenario data folder with its name equal to its scenarios.csv entry
 
 #BS10 folder
 1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone and mode

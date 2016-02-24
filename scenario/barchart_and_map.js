@@ -53,7 +53,7 @@ function redraw_map(){
 
 var chartdata = {}
 
-d3.csv("/root/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(data) {
+d3.csv("/data/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(data) {
   var i=0;
   $.each(data[0], function(key, value) {
       if(i===1) zonename = key;

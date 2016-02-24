@@ -7,7 +7,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script>
-  d3.csv("/root/scenarios.csv", function(data) {
+  d3.csv("/data/scenarios.csv", function(data) {
     $.each(data, function(key, value) {
       $("#scenarios").append("<li><a href='/scenario/index.html?scenario="+value["Scenario"]+"'>"+value["Scenario"]+"</a></li>");
     });
