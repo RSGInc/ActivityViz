@@ -101,18 +101,37 @@
    </div>
    <div class="col-md-6 col-md-offset-6" style="margin-top:1em;">
 <div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
-
+<div class="row">
+<div class="col-md-5">
 <button id="update_map" class="btn">Update Map</button>
-<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
+<button id="start_cycle_map" class="btn">Cycle Through Maps</button> 
 <button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
+</div>
+<div class="col-md-6">
+Cycle Frequence 
+
+
+<select id="cycle_frequency" class="form-control form-control-inline">
+  <option value="3">every 3 seconds</option>
+  <option value="4">every 4 seconds</option>
+  <option value="5">every 5 seconds</option>
+  <option value="6">every 6 seconds</option>
+  <option value="7">every 7 seconds</option>
+  <option value="8">every 8 seconds</option>
+  <option value="9">every 9 seconds</option>
+  <option value="10">every 10 seconds</option>
+</select>
+</div>
+</div>
+
+
 
   	<input type=hidden size=4 id="val1"  />
   	<input type=hidden size=4  id="val2" /><br />
   	<input type=hidden size=4  id="val3" /><br />
   	<input type=hidden size=4  id="val4" /><br />
   	<input type=hidden size=4  id="val5" /><br />
-  	<br />
-  </div>
+
 </div>
 </div>
 </body>

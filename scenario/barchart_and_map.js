@@ -126,6 +126,7 @@ function updateColors(values, themax) {
 }
 var interval;
 var currentval = 0;
+var cycle_going = 0;
 $(document).ready(function(){
 
   $("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
@@ -142,17 +143,32 @@ $(document).ready(function(){
     $("#stop_cycle_map").css("display", "inline");
     $("#start_cycle_map").css("display", "none");
     interval = setInterval(function(){
+      cycle_going = 1;
       $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
       redraw_map();
       currentval ++;
       if(currentval >= $("#attribute option").size())
         currentval = 0;
-    }, 5000);
+    }, parseInt($("#cycle_frequency").val())*1000);
   });
   $("#stop_cycle_map").click(function(){
     clearInterval(interval);
+    cycle_going = 0;
     $("#stop_cycle_map").css("display", "none");
     $("#start_cycle_map").css("display", "inline");
+  });
+
+  $("#cycle_frequency").change(function(){
+    if(cycle_going ===1){
+      clearInterval(interval);
+      interval = setInterval(function(){
+        $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
+        redraw_map();
+        currentval ++;
+        if(currentval >= $("#attribute option").size())
+          currentval = 0;
+      }, parseInt($("#cycle_frequency").val())*1000); 
+    }
   });
 
   map = L.map('map').setView(center,9);

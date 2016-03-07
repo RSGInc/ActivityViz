@@ -50,3 +50,8 @@ body {
     top: 10px;
     left: 0;
 }
+.form-control-inline {
+    min-width: 0;
+    width: auto;
+    display: inline;
+}
