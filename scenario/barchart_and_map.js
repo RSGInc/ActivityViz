@@ -128,6 +128,8 @@ var interval;
 var currentval = 0;
 $(document).ready(function(){
 
+  $("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
+
   $("#chart_selection").change(function(){
     $('#chart_selection :selected').each(function(i, selected){ 
         var bars = d3.select(".chart").selectAll("g");
