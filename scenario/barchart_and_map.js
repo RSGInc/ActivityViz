@@ -568,7 +568,7 @@ function display_charts(){
     series:series
   };
 
-  var chartWidth       = 420,
+  var chartWidth       = 600,//420,
       barHeight        = 2,
       groupHeight      = (barHeight) * data.series.length,
       gapBetweenGroups = 2,
