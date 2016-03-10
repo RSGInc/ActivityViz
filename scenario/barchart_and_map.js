@@ -1,7 +1,7 @@
 //map
 var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
 var center = [33.754525, -84.384774];
-var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="Black";bubblecolor="#ff7800"
+var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="White";bubblecolor="#ff7800"
 var palette = [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
         "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
@@ -312,7 +312,7 @@ $(document).ready(function(){
     color: nacolor,
     showInput: true,
     className: "full-spectrum",
-    showInitial: true,
+    showInitial: false,
     showPalette: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,

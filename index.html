@@ -24,10 +24,27 @@
      </div>
 </nav>
 <div style="margin:5em;">
-<h4>Please select a scenario</h4>
-<ul id="scenarios" style="list-style-type:none">
+<h4>Please select a scenario for visualization:</h4>
+<ul id="scenarios">
   
 </ul>
 </div>
+<div style="margin:5em;">
+<h4>To add a new scenario for visualization:</h4>
+<ul>
+  <li>Add the scenario name to the scenarios.csv definition file in the data folder</li>
+  <li>Create a new folder in the data folder with the scenario name</li>
+  <li>Copy in the required visualization data tables, each with the following required fields:
+    <ul>
+      <li>BarChartAndMapData.csv: ZONE, SPATIALAGG, BAR, QUANTITY</li>
+      <li>TimeUseData.csv (not yet supported)</li>
+      <li>TourTracingData.csv (not yet supported)</li>
+      <li>TreeMapData.csv (not yet supported)</li>
+      <li>RadarChartsData.csv (not yet supported)</li>
+      <li>BarChartsData.csv (not yet supported)</li>
+      <li>RailStationsData.csv (future work)</li>
+    </ul> 
+  </li>
+</ul>
 </body>
 </html>
