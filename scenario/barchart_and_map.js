@@ -520,6 +520,7 @@ var invisible = [];
 var data;
 var zippedData;
 var display_series;
+var x;
 function display_charts(){
   //prepare data
   var labels = [];
@@ -587,7 +588,7 @@ function display_charts(){
   var color = d3.scale.category20();
   var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
 
-  var x = d3.scale.linear()
+  x = d3.scale.linear()
       .domain([0, d3.max(zippedData)])
       .range([0, chartWidth]);
 
@@ -687,21 +688,6 @@ function display_charts(){
           var max_in_array = Math.max.apply(Math, value.values);
           if( invisible.indexOf(value.label)<0 && max_in_array > max) max = max_in_array;
           return invisible.indexOf(value.label)<0 });
-
-          //redo the x domain
-          var x = d3.scale.linear()
-            .domain([0, max])
-            .range([0, chartWidth]);
-          var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom")
-            .innerTickSize(-662)
-            .outerTickSize(0)
-            .ticks(5);
-          var bars = d3.select(".chart").call(xAxis);
-          //redraw bars
-
-          
         }else{
           var bar = chart.selectAll(".g"+i)
             .append("rect")
