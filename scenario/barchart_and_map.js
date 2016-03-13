@@ -93,8 +93,15 @@ d3.csv("/data/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(
 });
 
 //load tiles
+var centroids = {};
 $.getJSON( "../scripts/ZoneShape.GeoJSON", function( json ) {
   zonetiles = json;
+  
+  //calculate the zone centeriods
+  for (var i = 0; i < zonetiles.features.length; i++) {
+    centroids[zonetiles.features[i].properties.id] = L.latLngBounds(zonetiles.features[i].geometry.coordinates[0]).getCenter();
+  }
+  
   baselayer = L.geoJson(zonetiles);
   setTimeout(function(){
     redraw_map();
@@ -423,9 +430,7 @@ function colorizeFeatures(data) {
 
           //add circle
         if($("#bubbles").is(":checked")){
-          var bounds = L.latLngBounds(data.features[i].geometry.coordinates[0]);
-          var center = bounds.getCenter();
-          
+          var center = centroids[data.features[i].properties.id];
           var circle = L.circle( L.latLng(center.lng, center.lat), parseInt($("#bubble_size").val())*((max_diameter/max_feature)*parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"])), {
               "color": "#ff7800",
               "weight": 3,
