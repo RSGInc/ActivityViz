@@ -136,6 +136,10 @@ var currentval = 0;
 var cycle_going = 0;
 $(document).ready(function(){
 
+  if($("#classification").val() === "custom"){
+    $("#update_map").css("display", "inline");
+  }
+
   $("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
 
   $("#chart_selection").change(function(){
@@ -221,6 +225,7 @@ $(document).ready(function(){
   //value slider
   $("#slider").slider({
     range:false,
+    disabled:($("#classification").val() != "custom"),
     min: 0,
     max: 100,
     values: handlers,
@@ -244,6 +249,16 @@ $(document).ready(function(){
   });
 
   $("#classification").change(function(){
+    if($("#classification").val() === "custom"){
+      $("#update_map").css("display", "inline");
+    }else{
+      $("#update_map").css("display", "none");
+    }
+
+    $("#slider").slider({
+      range:false,
+      disabled:($("#classification").val() != "custom")
+    });
     redraw_map();
   });
 
