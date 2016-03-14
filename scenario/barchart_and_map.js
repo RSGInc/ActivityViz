@@ -269,6 +269,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: true,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -287,6 +288,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: true,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -303,6 +305,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: true,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -320,6 +323,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: true,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -336,6 +340,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: false,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -352,6 +357,7 @@ $(document).ready(function(){
     className: "full-spectrum",
     showInitial: true,
     showPalette: true,
+    showAlpha: true,
     showSelectionPalette: true,
     maxSelectionSize: 10,
     preferredFormat: "hex",
@@ -447,7 +453,7 @@ function colorizeFeatures(data) {
         if($("#bubbles").is(":checked")){
           var center = centroids[data.features[i].properties.id];
           var circle = L.circle( L.latLng(center.lng, center.lat), parseInt($("#bubble_size").val())*((max_diameter/max_feature)*parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"])), {
-              "color": "#ff7800",
+              "color": bubblecolor,
               "weight": 3,
               "opacity": 1,
               "fillOpacity":1
