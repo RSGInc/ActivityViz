@@ -541,6 +541,9 @@ var data;
 var zippedData;
 var display_series;
 var x;
+var chartWidth = 450;
+var series_length;
+var xAxis
 function display_charts(){
   //prepare data
   var labels = [];
@@ -588,9 +591,8 @@ function display_charts(){
     labels: labels,
     series:series
   };
-
-  var chartWidth       = 600,//420,
-      barHeight        = 2,
+  series_length = data.series.length;
+  var barHeight        = 2,
       groupHeight      = (barHeight) * data.series.length,
       gapBetweenGroups = 2,
       spaceForLabels   = 100,
@@ -610,7 +612,7 @@ function display_charts(){
 
   x = d3.scale.linear()
       .domain([0, d3.max(zippedData)])
-      .range([0, chartWidth]);
+      .range([0, chartWidth-100]);
 
   var y = d3.scale.linear()
       .range([chartHeight + gapBetweenGroups, 0]);
@@ -621,10 +623,10 @@ function display_charts(){
       .tickSize(0)
       .orient("left");
 
-  chart = d3.select(".chart")
-   .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 550 "+(chartHeight+gapBetweenGroups*data.labels.length+20+200))
-   .classed("svg-content-responsive", true); 
+  chart = d3.select(".chart");
+   //.attr("preserveAspectRatio", "xMinYMin meet")
+   //.attr("viewBox", "0 0 550 "+(chartHeight+gapBetweenGroups*data.labels.length+20+200));
+   //.classed("svg-content-responsive", true); 
 
   var bar = chart.selectAll("g")
       .data(zippedData)
@@ -660,7 +662,7 @@ function display_charts(){
           }).style('font-size',"20px");
       });
 
-  var xAxis = d3.svg.axis()
+  xAxis = d3.svg.axis()
       .scale(x)
       .orient("bottom")
       .innerTickSize(-662)
@@ -700,23 +702,43 @@ function display_charts(){
       .on("click", function(d, i){
 
         if(invisible.indexOf(i)<0){
-          var bars = d3.select(".chart").selectAll(".bar"+i).data(data);
-          bars.exit().remove();
-          invisible.push(i); 
+          invisible.push(i);
           var max = 0;
           var new_data = $.grep(series, function(value){ 
           var max_in_array = Math.max.apply(Math, value.values);
           if( invisible.indexOf(value.label)<0 && max_in_array > max) max = max_in_array;
           return invisible.indexOf(value.label)<0 });
         }else{
-          var bar = chart.selectAll(".g"+i)
-            .append("rect")
-              .attr("fill", function() { return color(i % data.series.length); })
-              .attr("class", function(){ return "bar"+(i%data.series.length)})
-              .attr("width", x)
-              .attr("height", barHeight);
-          invisible =  $.grep(invisible, function(value){return value != i});          
+          invisible =  $.grep(invisible, function(value){return value != i}); 
         }
+        for(var barIndex=0;barIndex<series_length;barIndex++){
+          var bars = d3.select(".chart").selectAll(".bar"+barIndex).data(data);
+          bars.exit().remove();            
+        }
+        var tempData = $.grep(zippedData, function(value, index){
+          return invisible.indexOf(index%series_length ) === -1;
+        });
+        x = d3.scale.linear()
+          .domain([0, d3.max(tempData)])
+          .range([0, chartWidth]);
+        for(var barIndex=0;barIndex<series_length;barIndex++){
+          if(invisible.indexOf(barIndex) ===-1){
+            var bar = chart.selectAll(".g"+barIndex)
+              .append("rect")
+                .attr("fill", function() { return color(barIndex % data.series.length); })
+                .attr("class", function(){ return "bar"+(barIndex%data.series.length)})
+                .attr("width", x)
+                .attr("height", barHeight);
+          }
+        }
+        xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom")
+          .innerTickSize(-662)
+          .outerTickSize(0)
+          .ticks(5);
+        d3.select(".chart").selectAll("g.x.axis").transition()
+         .call(xAxis);
       });
 
   legend.append('text')
