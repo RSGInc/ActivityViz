@@ -24,3 +24,7 @@ ARC ABMVIZ HTML 5
 1. Requires a http server such as Python's SimpleHTTPServer
 2. Run the http server from this project directory: python -m SimpleHTTPServer
 3. Go to http://localhost:8000 in your browser 
+
+#Publish site as github pages
+1. Push the master branch to a new branch called gh-pages
+2. Site address is http://rsginc.github.io/ABMVIZ
