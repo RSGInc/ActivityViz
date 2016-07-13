@@ -1,5 +1,5 @@
 
-/* Trip by zone, county, mode for ABMVIZ HTML5 */
+/* Bar Chart and Map Example Query for ABMVIZ HTML5 */
 /* Ben Stabler, ben.stabler@rsginc.com, 12/8/15 */
 
 /* Set Scenario  */

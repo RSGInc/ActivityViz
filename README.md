@@ -7,18 +7,27 @@ ARC ABMVIZ HTML 5
 
 #BS10 folder
 1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone and mode
+2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
+3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
+4. TreeMapData.csv - demo data source for the tree map visual - trips by mode group and mode
+5. RadarChartsData.csv - demo data source for the radar charts visual - trips by origin zone and mode
 
 #Scripts folder
-1. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
-2. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
-3. TripsByZoneMode.sql - SQL script to query the ABMVIZ database to produce the demo data set
+1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
+2. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
+3. BarChartAndMapExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart and map visual demo data set
+4. TimeUseExample.sql - SQL script to query the ABMVIZ DB to produce the time use visual demo data set
+6. 3DAnimatedMapExample.sql - SQL script to query the ABMVIZ DB to produce the 3D animated map demo data set
+5. TreeMapExample.sql - SQL script to query the ABMVIZ DB to produce the tree map visual demo data set
+7. RadarChartsExample.sql - SQL script to query the ABMVIZ DB to produce the radar charts visual demo data set
 
 #Exporting demo data set from SQL Server
 1. Open SQL server management studio
-2. Open TripsByZoneMode.sql and set the user - [ATLANTAREGION\TAMConsult] - and schema (i.e. scenario) to query - BS10
-3. Execute the script
-4. Right click in the upper left corner of the results table and select Copy with Headers
-5. Paste the result in Excel and save as a CSV file into the relevant scenario folder
+2. Open one of the example SQL query scripts such as BarChartAndMapExample.sql
+3. Set the user - [ATLANTAREGION\TAMConsult] - and schema (i.e. scenario) - BS10 - to query
+4. Execute the script
+5. Right click in the upper left corner of the results table and select Copy with Headers
+6. Paste the result in Excel and save as a CSV file into the relevant scenario folder
 
 #Run demo
 1. Requires a http server such as Python's SimpleHTTPServer
@@ -28,3 +37,7 @@ ARC ABMVIZ HTML 5
 #Publish site as github pages
 1. Push the master branch to a new branch called gh-pages
 2. Site address is http://rsginc.github.io/ABMVIZ
+
+#Notify ARC's IT group so they can clone the repo and publish it on the web
+1. ARC's GitHub account - https://github.com/atlregional
+2. ARC's GitHub pages ABMVIZ site - http://atlregional.github.io/ABMVIZ
