@@ -22,7 +22,7 @@ ARC ABMVIZ HTML 5
 
 #Run demo
 1. Requires a http server such as Python's SimpleHTTPServer
-2. Run the http server from this project directory: python -m SimpleHTTPServer
+2. Run the http server from this project directory: Python 2: python -m SimpleHTTPServer or Python 3: python -m http.server
 3. Go to http://localhost:8000 in your browser 
 
 #Publish site as github pages
