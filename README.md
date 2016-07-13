@@ -10,7 +10,7 @@ ARC ABMVIZ HTML 5
 2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
 4. TreeMapData.csv - demo data source for the tree map visual - trips by mode group and mode
-5. RadarChartsData.csv - demo data source for the radar charts visual - trips by origin zone and mode
+5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
 
 #Scripts folder
 1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
@@ -31,13 +31,17 @@ ARC ABMVIZ HTML 5
 
 #Run demo
 1. Requires a http server such as Python's SimpleHTTPServer
-2. Run the http server from this project directory: Python 2: python -m SimpleHTTPServer or Python 3: python -m http.server
+2. Run the http server from this project directory: 
+  Python 2: python -m SimpleHTTPServer
+  Python 3: python -m http.server
 3. Go to http://localhost:8000 in your browser 
 
-#Publish site as github pages
-1. Push the master branch to a new branch called gh-pages
+#Publish site as github pages under RSG account
+1. Push the master branch to a branch called gh-pages
 2. Site address is http://rsginc.github.io/ABMVIZ
 
-#Notify ARC's IT group so they can clone the repo and publish it on the web
-1. ARC's GitHub account - https://github.com/atlregional
-2. ARC's GitHub pages ABMVIZ site - http://atlregional.github.io/ABMVIZ
+#Publish site as github pages under ARC account
+1. Notify ARC's IT group 
+2. ARC clone the repo to their GitHub account - https://github.com/atlregional
+3. ARC push the master branch to a branch called gh-pages
+2. Site address is http://atlregional.github.io/ABMVIZ
