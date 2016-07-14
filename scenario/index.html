@@ -2,6 +2,7 @@
 <head>
   <title>ARC ABMVIZ</title>
   
+  <link rel="shortcut icon" href="../img/arc_logo.ico">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
 
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
@@ -19,11 +20,11 @@
   <!--
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
   <script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
   <script src="https://rawgit.com/simogeo/geostats/master/lib/geostats.min.js"></script>
-  <script src='https://rawgit.com/mapbox/leaflet-pip/gh-pages/leaflet-pip.js'></script>
+  <script src="https://rawgit.com/mapbox/leaflet-pip/gh-pages/leaflet-pip.js"></script>
 
   <link rel="stylesheet" href="https://rawgit.com/simogeo/geostats/master/lib/geostats.css" />
   <link rel="stylesheet" href="style.css"/>
@@ -42,7 +43,7 @@
      </ul>
 </nav>
 <div style="margin:5em;">
-<h1 id='scenario_header'></h1>
+<h1 id="scenario_header"></h1>
 <h2>Bar Chart and Map</h2>
 <div class="row">
 <div class="col-md-12">
@@ -57,16 +58,16 @@
 <div class="row" style="margin-top:1em;">
   <div class="col-md-6" >
   	<div class="col-md-12">
-  	<select id='chart_selection' style="min-width:400px" multiple ><option selected value="-1">All</option></select>
+  	<select id="chart_selection" style="min-width:400px" multiple ><option selected value="-1">All</option></select>
   	</div>
     <div class="row">
   	<div class="col-md-12">
         <div style="position:relative;height:0;width:100%;padding:0;padding-bottom:100%">     
-  	     <svg class="chart" style="position:absolute;height:100%;width:100%;left:0;top:5" class="img-responsive" ></svg>
+  	     <svg class="chart" style="position:absolute;height:100%;width:100%;left:0;top:5" ></svg>
        </div>
   	</div>
   </div>
-    <div class='row'>
+    <div class="row">
     <div class="col-md-12">
       
       The Bar Chart interactive features include:
@@ -102,20 +103,20 @@
       <div id="map" style="width: 100%;height:900px;"></div>      
   </div>
   <div class="col-md-3 col-md-offset-6" style="margin-top:1em;">
-  	<input type='text' id="color1"/> Color 1 
-  	<input type='text' id="color2"/> Color 2
-  	<input type='text' id="color3"/> Color 3 
-    <input type='text' id="color4"/> Color 4 
+  	<input type="text" id="color1"/> Color 1 
+  	<input type="text" id="color2"/> Color 2
+  	<input type="text" id="color3"/> Color 3 
+    <input type="text" id="color4"/> Color 4 
    </div>
    <div class="col-md-3" style="margin-top:1em;text-align:right">
-   <input type="checkbox" id="bubbles" onclick="redraw_map()" /> Bubbles <input type='text' id="bubble_color"/>  
+   <input type="checkbox" id="bubbles" onclick="redraw_map()" /> Bubbles <input type="text" id="bubble_color"/>  
    Size: <select onchange="redraw_map()" id="bubble_size">
      <option>1</option>
      <option>2</option>
      <option>3</option>
    </select>
    <input type="checkbox" id="stroke" onclick="redraw_map()" /> Outline
-   <nobr><input type='text' id="nacolor"  /> N/A</nobr>
+   <nobr><input type="text" id="nacolor"  /> N/A</nobr>
    
    </div>
    <div class="col-md-6 col-md-offset-6" style="margin-top:1em;">
@@ -162,13 +163,14 @@ Redraw
 </div>
 
 
-  	<input type=hidden size=4 id="val1"  />
-  	<input type=hidden size=4  id="val2" /><br />
-  	<input type=hidden size=4  id="val3" /><br />
-  	<input type=hidden size=4  id="val4" /><br />
-  	<input type=hidden size=4  id="val5" /><br />
+  	<input type="hidden" size="4" id="val1"  />
+  	<input type="hidden" size="4"  id="val2" /><br />
+  	<input type="hidden" size="4"  id="val3" /><br />
+  	<input type="hidden" size="4"  id="val4" /><br />
+  	<input type="hidden" size="4"  id="val5" /><br />
 
 </div>
 </div>
+	</div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 //map
 var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
 var center = [33.754525, -84.384774];
-var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="White";bubblecolor="#ff7800"
+var color1 = "#f1eef6", color2 = "#bdc9e1", color3="#74a9cf", color4="#2b8cbe", nacolor="White", bubblecolor="#ff7800";
 var palette = [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
         "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
@@ -51,7 +51,7 @@ function redraw_map(){
   tileLayer.redraw();  
 }
 
-var chartdata = {}
+var chartdata = {};
 
 d3.csv("../data/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", function(data) {
   var i=0;
@@ -67,7 +67,7 @@ d3.csv("../data/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", functio
         modes.push(d[dataname]);
         $("#attribute").append("<option>"+d[dataname]+"</option>")
       }
-      if(chartdata[d[zonename]] == null) chartdata[d[zonename]] = []; 
+      if(chartdata[d[zonename]] === undefined) {chartdata[d[zonename]] = []; }
       var updated = 0;
       for (var i=0; i<chartdata[d[zonename]].length; i++) {
         if (chartdata[d[zonename]][i].name == d[dataname]) {
@@ -76,13 +76,13 @@ d3.csv("../data/"+GetURLParameter("scenario")+"/BarChartAndMapData.csv", functio
           break;
         }
       }
-      if(updated ===0) chartdata[d[zonename]].push({'name':d[dataname], 'val':parseInt(d.QUANTITY)});
+      if(updated ===0) {chartdata[d[zonename]].push({'name':d[dataname], 'val':parseInt(d.QUANTITY)});}
     }
-    if(zonedata[d.ZONE] == null){
+    if(zonedata[d.ZONE] === undefined){
       zonedata[d.ZONE] = {};
     }
     zonedata[d.ZONE][d[dataname]] = {"COUNTY":d[zonename], "QUANTITY":d.QUANTITY};
-    if(dataitems[d[dataname]] == null) dataitems[d[dataname]] = [];
+    if(dataitems[d[dataname]] === undefined) dataitems[d[dataname]] = [];
     dataitems[d[dataname]].push(parseInt(d.QUANTITY));
   });
   for (var key in chartdata) {
@@ -158,8 +158,9 @@ $(document).ready(function(){
       $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
       redraw_map();
       currentval ++;
-      if(currentval >= $("#attribute option").size())
+      if(currentval >= $("#attribute option").size()) {
         currentval = 0;
+			}
     }, parseInt($("#cycle_frequency").val())*1000);
   });
   $("#stop_cycle_map").click(function(){
@@ -176,8 +177,9 @@ $(document).ready(function(){
         $('#attribute option:eq(' +currentval+ ')').prop('selected', true); 
         redraw_map();
         currentval ++;
-        if(currentval >= $("#attribute option").size())
+        if(currentval >= $("#attribute option").size()) {
           currentval = 0;
+				}
       }, parseInt($("#cycle_frequency").val())*1000); 
     }
   });
@@ -206,12 +208,14 @@ $(document).ready(function(){
 
   map.on('click', function(e) {
     var layer = leafletPip.pointInLayer(e.latlng,baselayer, true);
-    currentCounty = zonedata[layer[0].feature.properties.id][modes[0]].COUNTY;
-    redraw_map();
-    chart.selectAll("text.label").style('font-size',"15px");
-    chart.selectAll("text").filter(function(){
-      return this.innerHTML==currentCounty; 
-    }).style('font-size',"20px");
+    if (layer.length > 0) {
+      currentCounty = zonedata[layer[0].feature.properties.id][modes[0]].COUNTY;
+      redraw_map();
+      chart.selectAll("text.label").style('font-size',"15px");
+      chart.selectAll("text").filter(function(){
+        return this.innerHTML==currentCounty; 
+      }).style('font-size',"20px");
+    }
   });
 
   $("#update_map").click(function(){
@@ -312,7 +316,7 @@ $(document).ready(function(){
     localStorageKey: "spectrum.demo",
     palette: palette,
     change:function(color){ 
-      color3 = color;redraw_map() 
+      color3 = color;redraw_map(); 
       updateColors($("#slider").slider("values"));
     }
   });
@@ -381,7 +385,7 @@ function hexToRgb(hex) {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
-  } : null;
+  } : undefined;
 }
 var circles = [];
 //main map display function
@@ -389,20 +393,25 @@ function colorizeFeatures(data) {
   var attribute = $('#attribute').val();
 
   var serie = new geostats(dataitems[attribute]);
-  var max_diameter = .1;
+  var max_diameter = 0.1;
   var max_feature = serie.max();
   
   //handle the different classifications
   var classification = $("#classification").val();
   var break_up;
-  if(classification ==="even_interval"){
-    break_up = serie.getClassEqInterval(4);
+	
+	if(classification ==="even_interval" ||classification ==="quantiles") {
+		if(classification ==="even_interval"){
+			break_up = serie.getClassEqInterval(4);
+			} else if(classification ==="quantiles"){
+			break_up = serie.getClassQuantile(4);
+		}
     $("#val1").val(break_up[0]);  
     $("#val2").val(break_up[1]);
     $("#val3").val(break_up[2]);
     $("#val4").val(break_up[3]);
     $("#val5").val(break_up[4]);
-    var new_values = [parseInt(break_up[1]),parseInt(break_up[2]),parseInt(break_up[3])]
+    var new_values = [parseInt(break_up[1]),parseInt(break_up[2]),parseInt(break_up[3])];
     //update the slider
     $("#slider" ).slider({
       min:break_up[0],
@@ -413,41 +422,20 @@ function colorizeFeatures(data) {
     $('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[1] + '</div></div>');
     $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
     updateColors(new_values, break_up[4]);
-  } 
-
-  if(classification ==="quantiles"){
-    break_up = serie.getClassQuantile(4);
-    $("#val1").val(break_up[0]);  
-    $("#val2").val(break_up[1]);
-    $("#val3").val(break_up[2]);
-    $("#val4").val(break_up[3]);
-    $("#val5").val(break_up[4]);
-    //update the slider
-    var new_values = [parseInt(break_up[1]),parseInt(break_up[2]),parseInt(break_up[3])]
-    $("#slider" ).slider({
-      min:break_up[0],
-      max:break_up[4],
-      values: new_values
-    });
-    $('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[0] + '</div></div>');
-    $('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[1] + '</div></div>');
-    $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
-    updateColors(new_values, break_up[4]);
-  } 
-
-  if(classification ==="custom") break_up = [$("#val1").val(), $("#val2").val(),$("#val3").val(),$("#val4").val(),$("#val5").val()];
-
+  } else if(classification ==="custom") {
+		break_up = [$("#val1").val(), $("#val2").val(),$("#val3").val(),$("#val4").val(),$("#val5").val()];
+	}
   var counter = 0;
   
   $.each(circles, function(index, value){
     map.removeLayer(value);
-  })
+  });
 
   circles = [];
   for (var i = 0; i < data.features.length; i++) {
     var color = nacolor;
-    if(zonedata[data.features[i].properties.id] != null){
-      if(zonedata[data.features[i].properties.id][attribute] != null){
+    if(zonedata[data.features[i].properties.id] !== undefined){
+      if(zonedata[data.features[i].properties.id][attribute] !== undefined){
 
           //add circle
         if($("#bubbles").is(":checked")){
@@ -476,7 +464,7 @@ function colorizeFeatures(data) {
     }
     if(color != nacolor){
       if(zonedata[data.features[i].properties.id][attribute].COUNTY == currentCounty){
-        if(color.toHex != null){
+        if(color.toHex !== undefined){
           color = color.toHex();
         }
         var rgb = hexToRgb(color);
@@ -529,13 +517,14 @@ function drawingOnCanvas(canvasOverlay, params) {
                 var extent = 4096;
                 var x = p[0] / extent * 256;
                 var y = p[1] / extent * 256;
-                if (k) ctx.lineTo(x  + pad, y   + pad);
-                else ctx.moveTo(x  + pad, y  + pad);
+                if (k) { ctx.lineTo(x  + pad, y   + pad); }
+                else { ctx.moveTo(x  + pad, y  + pad); }
             }
         }
-        if (type === 3 || type === 1) ctx.fill('evenodd');
-        if($("#stroke").is(":checked"))
+        if (type === 3 || type === 1) { ctx.fill('evenodd');}
+        if($("#stroke").is(":checked")) {
           ctx.stroke();
+				}
     }
 }
       
@@ -549,7 +538,7 @@ var display_series;
 var x;
 var chartWidth = 450;
 var series_length;
-var xAxis
+var xAxis;
 function display_charts(){
   //prepare data
   var labels = [];
@@ -580,7 +569,7 @@ function display_charts(){
       if(use){
         for(var i=0;i<chartdata[key].length;i++){
           if(chartdata[key][i].name == modes[mode]){
-            if(chartdata[key][i].val != null){
+            if(chartdata[key][i].val !== undefined){
               vals.push(chartdata[key][i].val);
             }
           }
@@ -637,14 +626,14 @@ function display_charts(){
   var bar = chart.selectAll("g")
       .data(zippedData)
       .enter().append("g")
-      .attr("class", function(c, i){ return "g"+(i%data.series.length)})
+      .attr("class", function(c, i){ return "g"+(i%data.series.length);})
       .attr("transform", function(d, i) {
         return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i/data.series.length))) + ")";
       });
 
   bar.append("rect")
       .attr("fill", function(d,i) { return color(i % data.series.length); })
-      .attr("class", function(c, i){ return "bar"+(i%data.series.length)})
+      .attr("class", function(c, i){ return "bar"+(i%data.series.length);})
       .attr("width", x)
       .attr("height", barHeight);
 
@@ -654,18 +643,22 @@ function display_charts(){
       .attr("y", groupHeight / 2)
       .attr("dy", ".35em")
       .text(function(d,i) {
-        if (i % data.series.length === 0)
+        if (i % data.series.length === 0) {
           return data.labels[Math.floor(i/data.series.length)];
-        else
-          return ""})
+				} else {
+          return "";
+					}
+				})
       .on("click", function(d, i) { 
-        if (i % data.series.length === 0)
+        if (i % data.series.length === 0) {
           currentCounty = data.labels[Math.floor(i/data.series.length)];
+				
           redraw_map();
           chart.selectAll("text.label").style('font-size',"15px");
           chart.selectAll("text").filter(function(){
             return this.innerHTML==currentCounty; 
           }).style('font-size',"20px");
+				}
       });
 
   xAxis = d3.svg.axis()
@@ -712,10 +705,10 @@ function display_charts(){
           var max = 0;
           var new_data = $.grep(series, function(value){ 
           var max_in_array = Math.max.apply(Math, value.values);
-          if( invisible.indexOf(value.label)<0 && max_in_array > max) max = max_in_array;
-          return invisible.indexOf(value.label)<0 });
+          if( invisible.indexOf(value.label)<0 && max_in_array > max){max = max_in_array;}
+          return invisible.indexOf(value.label) < 0; });
         }else{
-          invisible =  $.grep(invisible, function(value){return value != i}); 
+          invisible =  $.grep(invisible, function(value){return value != i;}); 
         }
         for(var barIndex=0;barIndex<series_length;barIndex++){
           var bars = d3.select(".chart").selectAll(".bar"+barIndex).data(data);
@@ -727,12 +720,13 @@ function display_charts(){
         x = d3.scale.linear()
           .domain([0, d3.max(tempData)])
           .range([0, chartWidth]);
+				
         for(var barIndex=0;barIndex<series_length;barIndex++){
           if(invisible.indexOf(barIndex) ===-1){
             var bar = chart.selectAll(".g"+barIndex)
               .append("rect")
                 .attr("fill", function() { return color(barIndex % data.series.length); })
-                .attr("class", function(){ return "bar"+(barIndex%data.series.length)})
+                .attr("class", function(){ return "bar"+(barIndex%data.series.length);})
                 .attr("width", x)
                 .attr("height", barHeight);
           }
