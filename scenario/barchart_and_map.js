@@ -186,26 +186,28 @@ $(document).ready(function(){
 
   map = L.map('map').setView(center,9);
 
+	var maxZoom = 20;
+	
   //B&W stylized background map
-  var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-  });
-  Stamen_TonerLite.addTo(map);
-
+	var stamenTileLayer = new L.StamenTileLayer("toner-lite");
+	map.addLayer(stamenTileLayer);
+	
   tileOptions = {
     maxZoom: 20,  
     tolerance: 5, 
     extent: 4096, 
     buffer: 64,   
     debug: 0,     
-    indexMaxZoom: 0,
+    indexMaxZoom: maxZoom,
     indexMaxPoints: 100000,
   };
 
+	map.on('zoomend', function(type, target) {
+		var zoomLevel = map.getZoom();
+		var zoomScale = map.getZoomScale();
+		console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
+});
+	
   map.on('click', function(e) {
     var layer = leafletPip.pointInLayer(e.latlng,baselayer, true);
     if (layer.length > 0) {
@@ -432,6 +434,32 @@ function colorizeFeatures(data) {
   });
 
   circles = [];
+	circleStyle = {
+              "fillColor": bubblecolor,
+							"stroke": false,
+              "weight": 3,
+              "opacity": 1,
+              "fillOpacity":0.5
+          };
+	//get current map width to determine maximum bubble size
+	var mapCenter = map.getCenter();
+	var eastBound = map.getBounds().getEast();
+	var centerEast = L.latLng(mapCenter.lat, eastBound);
+	var bubbleMultiplier = parseInt($("#bubble_size").val());
+	var useMeters = false;
+	
+	var maxBubbleSize;
+	if (useMeters) {
+		var mapRadiusInMeters = mapCenter.distanceTo(centerEast);
+		var maxBubbleRadiusInMeters = mapRadiusInMeters / 100; 
+		maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInMeters;
+	} else {
+		var mapRadiusInPixels = chartWidth / 2;
+		var maxBubbleRadiusInPixels = mapRadiusInPixels / 10; 
+		maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
+	}
+	var scale_sqrt = d3.scale.sqrt().domain([0, max_feature]).range([0, maxBubbleSize]);	
+	
   for (var i = 0; i < data.features.length; i++) {
     var color = nacolor;
     if(zonedata[data.features[i].properties.id] !== undefined){
@@ -439,15 +467,20 @@ function colorizeFeatures(data) {
 
           //add circle
         if($("#bubbles").is(":checked")){
-          var center = centroids[data.features[i].properties.id];
-          var circle = L.circle( L.latLng(center.lng, center.lat), parseInt($("#bubble_size").val())*((max_diameter/max_feature)*parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"])), {
-              "color": bubblecolor,
-              "weight": 3,
-              "opacity": 1,
-              "fillOpacity":1
-          }).addTo(map);
-          circles.push(circle);
-        }
+          var bubbleCenter = centroids[data.features[i].properties.id];
+					var quantity = parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"]);
+					var percentage = quantity / max_feature;
+					// old radius = maxBubbleSize * percentage;
+					sqrt_radius = scale_sqrt(quantity);
+					//console.log('for quantity ' + quantity + ' out of max ' + max_feature + ' the radius is ' + radius + '. sqrt_scale_radius: ' + sqrt_scale_radius + ' maxSqrtRadius: ' + scale_sqrt(max_feature))
+          //var circle = L.circle( L.latLng(bubbleCenter.lng, bubbleCenter.lat), radius, {
+					
+          if (useMeters) {
+						L.circle( L.latLng(bubbleCenter.lng, bubbleCenter.lat), sqrt_radius, circleStyle).addTo(map);
+					} else {
+						L.circleMarker( L.latLng(bubbleCenter.lng, bubbleCenter.lat), sqrt_radius, circleStyle).addTo(map);
+					}
+				}
         if(parseInt(zonedata[data.features[i].properties.id][attribute]["QUANTITY"]) >= break_up[0]){ 
           color=color1;
         }
@@ -605,15 +638,16 @@ function display_charts(){
   var color = d3.scale.category20();
   var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
 
-  x = d3.scale.linear()
-      .domain([0, d3.max(zippedData)])
+  maxX = d3.max(zippedData);
+  scaleX = d3.scale.linear()
+      .domain([0, maxX])
       .range([0, chartWidth-100]);
 
-  var y = d3.scale.linear()
+  var scaleY = d3.scale.linear()
       .range([chartHeight + gapBetweenGroups, 0]);
 
   var yAxis = d3.svg.axis()
-      .scale(y)
+      .scale(scaleY)
       .tickFormat('')
       .tickSize(0)
       .orient("left");
@@ -634,7 +668,8 @@ function display_charts(){
   bar.append("rect")
       .attr("fill", function(d,i) { return color(i % data.series.length); })
       .attr("class", function(c, i){ return "bar"+(i%data.series.length);})
-      .attr("width", x)
+      //.attr("width", scaleX)
+      .attr("width", function(x, i) { return (x === undefined) ? 0 : scaleX(x);})
       .attr("height", barHeight);
 
   bar.append("text")
@@ -662,7 +697,7 @@ function display_charts(){
       });
 
   xAxis = d3.svg.axis()
-      .scale(x)
+      .scale(scaleX)
       .orient("bottom")
       .innerTickSize(-662)
       .outerTickSize(0)
@@ -717,7 +752,7 @@ function display_charts(){
         var tempData = $.grep(zippedData, function(value, index){
           return invisible.indexOf(index%series_length ) === -1;
         });
-        x = d3.scale.linear()
+        scaleX = d3.scale.linear()
           .domain([0, d3.max(tempData)])
           .range([0, chartWidth]);
 				
@@ -727,12 +762,12 @@ function display_charts(){
               .append("rect")
                 .attr("fill", function() { return color(barIndex % data.series.length); })
                 .attr("class", function(){ return "bar"+(barIndex%data.series.length);})
-                .attr("width", x)
+                .attr("width", function(x, i) { return (x === undefined) ? 0 : scaleX(x);})
                 .attr("height", barHeight);
           }
         }
         xAxis = d3.svg.axis()
-          .scale(x)
+          .scale(scaleX)
           .orient("bottom")
           .innerTickSize(-662)
           .outerTickSize(0)
