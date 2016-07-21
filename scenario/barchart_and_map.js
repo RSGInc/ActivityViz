@@ -26,8 +26,8 @@ var palette = [
 //slider
 var handlers = [25, 50, 75];
 //data
-var zonename;
-var dataname;
+var countyName;
+var tripMode;
 var zonedata = {};
 var zonegroups = [];
 var dataitems = [];
@@ -55,39 +55,55 @@ function redraw_map() {
 	tileLayer.redraw();
 }
 var chartdata = {};
-d3.csv("../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv", function (data) {
+var peterdata = {}
+var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv"
+d3.csv(url, function (error, data) {
 	"use strict";
+	if (error) throw error;
+	//expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
+	var headerNames = d3.keys(data[0]);
+	//handle files with different column labels for zone and tripMode
 	var i = 0;
 	$.each(data[0], function (key, value) {
 		if (i == 1) {
-			zonename = key;
+			countyName = key;
 		}
 		if (i == 2) {
-			dataname = key;
+			tripMode = key;
 		}
 		i++;
 	});
-	$("#attribute_label").html(dataname);
+	$("#attribute_label").html(tripMode);
 	data.forEach(function (d) {
-		if (d[dataname] != "TOTAL") {
-			if ($.inArray(d[dataname], modes) == "-1") {
-				modes.push(d[dataname]);
-				$("#attribute").append("<option>" + d[dataname] + "</option>");
+		if (d[tripMode] != "TOTAL") {
+			//keep track of all modes and store then in encounter order
+			if ($.inArray(d[tripMode], modes) == "-1") {
+				modes.push(d[tripMode]);
+				$("#attribute").append("<option>" + d[tripMode] + "</option>");
 			}
-			if (chartdata[d[zonename]] == undefined) {
-				chartdata[d[zonename]] = [];
+			if (peterdata[d[countyName]] === undefined) {
+				peterdata[d[countyName]] = {};
+			}
+			if (peterdata[d[countyName]][d[tripMode]] === undefined) {
+				peterdata[d[countyName]][d[tripMode]] = parseInt(d.QUANTITY);
+			}
+			else {
+				peterdata[d[countyName]][d[tripMode]] += d.QUANTITY;
+			}
+			if (chartdata[d[countyName]] == undefined) {
+				chartdata[d[countyName]] = [];
 			}
 			var updated = 0;
-			for (var i = 0; i < chartdata[d[zonename]].length; i++) {
-				if (chartdata[d[zonename]][i].name == d[dataname]) {
-					chartdata[d[zonename]][i].val += parseInt(d.QUANTITY);
+			for (var i = 0; i < chartdata[d[countyName]].length; i++) {
+				if (chartdata[d[countyName]][i].name == d[tripMode]) {
+					chartdata[d[countyName]][i].val += parseInt(d.QUANTITY);
 					updated = 1;
 					break;
 				}
 			}
 			if (updated == 0) {
-				chartdata[d[zonename]].push({
-					'name': d[dataname]
+				chartdata[d[countyName]].push({
+					'name': d[tripMode]
 					, 'val': parseInt(d.QUANTITY)
 				});
 			}
@@ -95,14 +111,14 @@ d3.csv("../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv", fun
 		if (zonedata[d.ZONE] == undefined) {
 			zonedata[d.ZONE] = {};
 		}
-		zonedata[d.ZONE][d[dataname]] = {
-			"COUNTY": d[zonename]
+		zonedata[d.ZONE][d[tripMode]] = {
+			"COUNTY": d[countyName]
 			, "QUANTITY": d.QUANTITY
 		};
-		if (dataitems[d[dataname]] == undefined) {
-			dataitems[d[dataname]] = [];
+		if (dataitems[d[tripMode]] == undefined) {
+			dataitems[d[tripMode]] = [];
 		}
-		dataitems[d[dataname]].push(parseInt(d.QUANTITY));
+		dataitems[d[tripMode]].push(parseInt(d.QUANTITY));
 	});
 	for (var key in chartdata) {
 		if (chartdata.hasOwnProperty(key)) {
@@ -581,7 +597,8 @@ function display_charts() {
 	}
 	//for each type
 	//add all the values in the order of the labels
-	for (var mode in modes) {
+	for (var modeIndex = 0; modeIndex < modes.length; modeIndex++) {
+		var modeName = modes[modeIndex]
 		var vals = [];
 		for (var key in chartdata) {
 			var use = false;
@@ -591,20 +608,26 @@ function display_charts() {
 				}
 			});
 			if (use) {
+				var countyModeTotal = 0; //initialize in case mode not found in county.
 				for (var i = 0; i < chartdata[key].length; i++) {
-					if (chartdata[key][i].name == modes[mode]) {
-						if (chartdata[key][i].val != undefined) {
-							vals.push(chartdata[key][i].val);
+					if (chartdata[key][i].name == modeName) {
+						if (chartdata[key][i].val === undefined) {
+							var message = 'ERROR county ' + labels[i] + ' has no data for mode ' + modeName;
+							console.error(message);
+							throw message;
 						}
-					}
-				}
-			}
-		}
+						countyModeTotal = chartdata[key][i].val;
+						break;
+					}	//end if found this modes data
+				} //end loop over counties' modes
+				vals.push(countyModeTotal);
+			} //end if use
+		} //end loop key/county
 		series.push({
-			label: modes[mode]
+			label: modeName
 			, values: vals
 		});
-	}
+	} //end loop over modes
 	data = {
 		labels: labels
 		, series: series
@@ -614,18 +637,43 @@ function display_charts() {
 		, groupHeight = (barHeight) * data.series.length
 		, gapBetweenGroups = 2
 		, spaceForLabels = 100
-		, spaceForLegend = 150;
+		, spaceForLegend = 150
+		, spaceForXAxis = chartWidth - spaceForLabels;
 	var zippedData = [];
 	for (var i = 0; i < data.labels.length; i++) {
 		for (var j = 0; j < data.series.length; j++) {
-			zippedData.push(data.series[j].values[i]);
+			var modeTotalForCounty = data.series[j].values[i];
+			zippedData.push(modeTotalForCounty);
+			var howManyCountiesHaveThisMode = data.series[j].values.length;
+			console.log('howManyCountiesHaveThisMode=' + howManyCountiesHaveThisMode);
+			if (i >= howManyCountiesHaveThisMode) {
+				console.log('ERROR -- reading county mode data which does not exist. i=' + i + ' howManyCountiesHaveThisMode=' + countiesWithThisMode + ' modeTotalForCounty=' + modeTotalForCounty);
+			}
 		}
 	}
-	display_series = series;
-	var color = d3.scale.category20();
 	var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
+	//chartdata is two dimensions -- first is an object with one property named for each County
+	//Each county object is an array of objects with 'name' and 'val' properties
+	var color = d3.scale.category20();
+	var x = d3.scale.linear().range([chartWidth, 0]);
+	var y0 = d3.scale.ordinal().rangeRoundBands([0, chartHeight], .1);
+	y0.domain(d3.keys(chartdata));
+	var y1 = d3.scale.ordinal();
+	y1.domain(d3.keys(modes));
+	var maxModesPerCounty = d3.max(d3.keys(chartdata), function (countyName) {
+		return chartdata[countyName].length;
+	});
+	var minHeightPer
+	var maxValue = d3.max(d3.keys(chartdata), function (countyName) {
+		return d3.max(chartdata[countyName], function (modeRecord) {
+			return modeRecord.val;
+		})
+	});
+	x.domain([0, maxValue]);
+	display_series = series;
 	var maxX = d3.max(zippedData);
-	var scaleX = d3.scale.linear().domain([0, maxX]).range([0, chartWidth - 100]);
+	var chartHeightNew = groupHeight * data.labels.length;
+	var scaleX = d3.scale.linear().domain([0, maxX]).range([0, spaceForXAxis]);
 	var scaleY = d3.scale.linear().range([chartHeight + gapBetweenGroups, 0]);
 	var yAxis = d3.svg.axis().scale(scaleY).tickFormat('').tickSize(0).orient("left");
 	chart = d3.select(".chart");
@@ -637,6 +685,8 @@ function display_charts() {
 	}).attr("transform", function (d, i) {
 		return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i / data.series.length))) + ")";
 	});
+	//apend a rectangle covering the entire county
+	var countyRect = bar.append("rect").attr("class", "peter").attr("fill", "yellow").attr("stroke", "blue").attr("stroke-width", "5").attr("width", spaceForXAxis).attr("height", groupHeight - 5);
 	bar.append("rect").attr("fill", function (d, i) {
 			return color(i % data.series.length);
 		}).attr("class", function (c, i) {

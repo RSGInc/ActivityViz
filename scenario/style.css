@@ -1,62 +1,76 @@
 body {
-  		padding-top: 50px;
-	}
+	padding-top: 50px;
+}
 
 .chart .legend {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: start;
-  font-size: 12px;
+	fill: black;
+	font: 14px sans-serif;
+	text-anchor: start;
+	font-size: 12px;
 }
+
 .chart text {
-  fill: black;/*was white*/
-  font: 10px sans-serif;
-  text-anchor: end;
+	fill: black;
+	/*was white*/
+	font: 10px sans-serif;
+	text-anchor: end;
 }
+
 .chart .label {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: end;
+	fill: black;
+	font: 14px sans-serif;
+	text-anchor: end;
 }
+
 .bar:hover {
-  fill: brown;
+	fill: brown;
 }
+
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
 }
-.tick line{
-	opacity:0.2;
+
+.x.axis path {
+	display: none;
 }
+
+.tick line {
+	opacity: 0.2;
+}
+
 .slider-tip {
-    opacity:1;
-    bottom:120%;
-    margin-left: -.5em;
+	opacity: 1;
+	bottom: 120%;
+	margin-left: -.5em;
 }
 
 .svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 100%;
+	vertical-align: top;
+	overflow: hidden;
 }
+
 .svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
+	display: inline-block;
+	position: absolute;
+	top: 10px;
+	left: 0;
 }
+
 .form-control-inline {
-    min-width: 0;
-    width: auto;
-    display: inline;
+	min-width: 0;
+	width: auto;
+	display: inline;
 }
 
-
-.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
-    opacity: 1;
+.ui-state-disabled,
+.ui-widget-content .ui-state-disabled,
+.ui-widget-header .ui-state-disabled {
+	opacity: 1;
 }

@@ -1,50 +1,46 @@
-<html>  
+<html>
+
 <head>
-  <title>ARC ABMVIZ</title>
-  
+	<title>ARC ABMVIZ</title>
 	<link rel="shortcut icon" href="img/arc_logo.ico">
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/d3/d3.min.js"></script>
-  <script>
-  d3.csv("data/scenarios.csv", function(data) {
-    $.each(data, function(key, value) {
-      $("#scenarios").append("<li><a href='scenario/index.html?scenario="+value["Scenario"]+"'>"+value["Scenario"]+"</a></li>");
-    });
-  });
-  </script>
-  
+	<script>
+		d3.csv("data/scenarios.csv", function (data) {
+			$.each(data, function (key, value) {
+				$("#scenarios").append("<li><a href='scenario/index.html?scenario=" + value["Scenario"] + "'>" + value["Scenario"] + "</a></li>");
+			});
+		});
+	</script>
 </head>
 
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-     <div class="navbar-header">
-        <a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img width="40" height="17"  src="img/arc_logo.png"></a>
-         <a class="navbar-brand" href="#">ABMVIZ</a>
-     </div>
-</nav>
-<div style="margin:5em;">
-<h4>Please select a scenario for visualization:</h4>
-<ul id="scenarios">
-  
-</ul>
-</div>
-<div style="margin:5em;">
-<h4>To add a new scenario for visualization:</h4>
-<ul>
-  <li>Add the scenario name to the scenarios.csv definition file in the data folder</li>
-  <li>Create a new folder in the data folder with the scenario name</li>
-  <li>Copy in the required visualization data tables, each with the following required fields:
-    <ul>
-      <li>BarChartAndMapData.csv: ZONE, SPATIALAGG, BAR, QUANTITY</li>
-      <li>TimeUseData.csv: PERSON_TYPE, PER, ORIG_PURPOSE, QUANTITY</li>
-      <li>3DAnimatedMapData.csv: ZONE, PER, QUANTITY</li>
-      <li>TreeMapData.csv: MAINGROUP, SUBGROUP, QUANTITY</li>
-      <li>RadarChartsData.csv: AXIS, CHART, QUANTITY </li>
-    </ul> 
-  </li>
-</ul>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-header">
+			<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img width="40" height="17" src="img/arc_logo.png"></a> <a class="navbar-brand" href="#">ABMVIZ</a> </div>
+	</nav>
+	<div style="margin:5em;">
+		<h4>Please select a scenario for visualization:</h4>
+		<ul id="scenarios"> </ul>
+	</div>
+	<div style="margin:5em;">
+		<h4>To add a new scenario for visualization:</h4>
+		<ul>
+			<li>Add the scenario name to the scenarios.csv definition file in the data folder</li>
+			<li>Create a new folder in the data folder with the scenario name</li>
+			<li>Copy in the required visualization data tables, each with the following required fields:
+				<ul>
+					<li>BarChartAndMapData.csv: ZONE, SPATIALAGG, BAR, QUANTITY</li>
+					<li>TimeUseData.csv: PERSON_TYPE, PER, ORIG_PURPOSE, QUANTITY</li>
+					<li>3DAnimatedMapData.csv: ZONE, PER, QUANTITY</li>
+					<li>TreeMapData.csv: MAINGROUP, SUBGROUP, QUANTITY</li>
+					<li>RadarChartsData.csv: AXIS, CHART, QUANTITY </li>
+				</ul>
+			</li>
+		</ul>
 	</div>
 </body>
+
 </html>
