@@ -570,11 +570,10 @@ function drawingOnCanvas(canvasOverlay, params) {
 }
 var display_chart_dic = {};
 //main chart function
-var invisible = [];
+var hiddenModes = [];
 var data;
 var countyModeTotalsArray;
 var display_series;
-var x;
 var chartWidth = 450;
 var series_length;
 var xAxis;
@@ -623,7 +622,7 @@ function display_charts() {
 					} //end if found this modes data
 				} //end loop over counties' modes
 				if (countyModeTotal == 0) {
-					console.log('Filling in slot for county ' + countyName + ' has no data for mode ' + modeName);
+					//console.log('Filling in slot for county ' + countyName + ' has no data for mode ' + modeName);
 				}
 				vals.push(countyModeTotal);
 			} //end if use
@@ -714,23 +713,30 @@ function display_charts() {
 	});
 	//legend colors
 	legend.append('rect').attr('width', legendRectSize).attr('height', legendRectSize).style('fill', function (d, i) {
-		return color(i);
+		var fillColor;
+		if (hiddenModes.indexOf(i) == -1) {
+			fillColor = color(i);
+		}
+		else {
+			fillColor = 'white';
+		}
+		return fillColor;
 	}).style('stroke', function (d, i) {
 		return color(i);
 	}).on("click", function (d, i) {
-		if (invisible.indexOf(i) < 0) {
-			invisible.push(i);
+		if (hiddenModes.indexOf(i) < 0) {
+			hiddenModes.push(i);
 			var max = 0;
 			var new_data = $.grep(series, function (value) {
 				var max_in_array = Math.max.apply(Math, value.values);
-				if (invisible.indexOf(value.label) < 0 && max_in_array > max) {
+				if (hiddenModes.indexOf(value.label) < 0 && max_in_array > max) {
 					max = max_in_array;
 				}
-				return invisible.indexOf(value.label) < 0;
+				return hiddenModes.indexOf(value.label) < 0;
 			});
 		}
 		else {
-			invisible = $.grep(invisible, function (value) {
+			hiddenModes = $.grep(hiddenModes, function (value) {
 				return value != i;
 			});
 		}
@@ -739,11 +745,11 @@ function display_charts() {
 			bars.exit().remove();
 		}
 		var tempData = $.grep(countyModeTotalsArray, function (value, index) {
-			return invisible.indexOf(index % series_length) === -1;
+			return hiddenModes.indexOf(index % series_length) === -1;
 		});
 		scaleX = d3.scale.linear().domain([0, d3.max(tempData)]).range([0, chartWidth]);
 		for (var barIndex = 0; barIndex < series_length; barIndex++) {
-			if (invisible.indexOf(barIndex) === -1) {
+			if (hiddenModes.indexOf(barIndex) === -1) {
 				var bar = chart.selectAll(".g" + barIndex).append("rect").attr("fill", function () {
 					return color(barIndex % data.series.length);
 				}).attr("class", function () {

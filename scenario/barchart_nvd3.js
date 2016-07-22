@@ -18,16 +18,21 @@ d3.csv(url, function (error, csv_data) {
 	var modeColumn = headers[2];
 	var quantityColumn = headers[3];
 	var uniqueModes = new Set();
-	var modesInEncounterOrder = []
+	var modesInEncounterOrder = [];
+	var excludedLabel = "TOTAL";
+
+	//first need to get the total for each mode for each county
 	var countiesNestFunctions = d3.nest().key(function (d) {
 		return d[countyColumn];
 	}).key(function (d) {
 		var mode = d[modeColumn];
 		//keep set for quick checking of whether we saw before
 		if (!uniqueModes.has(mode)) {
-		uniqueModes.add(mode);
-		//but also wish to retain order for display
-				modesInEncounterOrder.push(mode);	
+			uniqueModes.add(mode);
+			//but also wish to retain order for display
+			if (mode != excludedLabel) {
+				modesInEncounterOrder.push(mode);
+			}
 		}
 		return mode;
 	}).rollup(function (leaves) {
@@ -38,38 +43,61 @@ d3.csv(url, function (error, csv_data) {
 			})
 		}
 	})
-
 	var countiesNest = countiesNestFunctions.entries(csv_data);
 	//need to remove all 'TOTAL' modes since not needed and actually inccorrect and not a mode
-	countiesNest.forEach(function (countiesObject) {
-		for (var i = countiesObject.values.length - 1; i--;) {
-			if (countiesObject.values[i].key === "TOTAL") {
+	countiesNest.forEach(function (countyObject) {
+		var modeArray = countyObject.values;
+		for (var modeArrayIndex = modeArray.length - 1; modeArrayIndex--;) {
+			if (modeArray[modeArrayIndex].key === "TOTAL") {
 				//delete from array
-				countiesObject.values.splice(i, 1);
+				modeArray.splice(modeArrayIndex, 1);
 			}
 		}
 	});
-	countiesNest.forEach(function (d) {
-		d.values = d.values.map(function (countyObject) {
-			var returnObject = {
+	var newData = [];
+	for (var modeIndex = 0; modeIndex < modesInEncounterOrder.length; modeIndex++) {
+		var modeName = modesInEncounterOrder[modeIndex]
+		modeObject = {
+			key: modeName
+			, values: []
+		};
+		newData.push(modeObject);
+		//get mode data from each of the counties
+		countiesNest.forEach(function (countyObject) {
+			var modeCountyTotal = 0; //initialize in case mode not in county
+			//wish to break once mode found so cannot use forEach but instead use some
+			//http://stackoverflow.com/a/2641374/283973
+			countyObject.values.some(function (countyModeObject) {
+				if (countyModeObject.key == modeName) {
+					modeCountyTotal = countyModeObject.values.county_mode_total;
+					return true; //break some
+				}
+				else {
+					return false;
+				}
+			}); //end some
+			modeObject.values.push({
 				label: countyObject.key
-				, value: countyObject.values.county_mode_total
-			};
-			return returnObject;
+				, value: modeCountyTotal
+			});
 		});
-	});
-	var selector = "#chart_peter svg";
-	var hierarchicalData = countiesNest;
+	}
+	var selector = ".chart";
+	var hierarchicalData = newData;
 	//hierarchicalData = long_short_data;
 	var chart;
+	var colorScale = d3.scale.category20();
 	nv.addGraph(function chartGenerator() {
 		chart = nv.models.multiBarHorizontalChart().x(function (d) {
 			return d.label
 		}).y(function (d) {
 			return d.value
-		}).yErr(function (d) {
-			return [-Math.abs(d.value * Math.random() * 0.3), Math.abs(d.value * Math.random() * 0.3)]
-		}).barColor(d3.scale.category20().range()).duration(250).margin({
+		}).color(function(d,i) {
+			var modeColorIndex = parseInt(Math.floor(i  / hierarchicalData.length));
+			var color = colorScale(i);
+			console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
+			return color;
+			}).duration(250).margin({
 			left: 100
 		}).stacked(true);
 		chart.yAxis.tickFormat(d3.format(',.2f'));
@@ -90,127 +118,72 @@ d3.csv(url, function (error, csv_data) {
 	});
 });
 
-    var long_short_data = [
-        {
-            key: 'Series1',
-            values: [
-                {
-                    "label" : "Group A" ,
-                    "value" : -1.8746444827653
-                } ,
-                {
-                    "label" : "Group B" ,
-                    "value" : -8.0961543492239
-                } ,
-                {
-                    "label" : "Group C" ,
-                    "value" : -0.57072943117674
-                } ,
-                {
-                    "label" : "Group D" ,
-                    "value" : -2.4174010336624
-                } ,
-                {
-                    "label" : "Group E" ,
-                    "value" : -0.72009071426284
-                } ,
-                {
-                    "label" : "Group F" ,
-                    "value" : -2.77154485523777
-                } ,
-                {
-                    "label" : "Group G" ,
-                    "value" : -9.90152097798131
-                } ,
-                {
-                    "label" : "Group H" ,
-                    "value" : 14.91445417330854
-                } ,
-                {
-                    "label" : "Group I" ,
-                    "value" : -3.055746319141851
+//example to shaow the format we are munging the data
+var sampleMultiChartData = [
+	{
+		key: 'Walk'
+		, values: [
+			{
+				"label": "Atlanta"
+				, "value": 345
+                }
+			, {
+				"label": "Miami"
+				, "value": 5045
                 }
             ]
-        },
-        {
-            key: 'Series2',
-            values: [
-                {
-                    "label" : "Group A" ,
-                    "value" : 25.307646510375
-                } ,
-                {
-                    "label" : "Group B" ,
-                    "value" : 16.756779544553
-                } ,
-                {
-                    "label" : "Group C" ,
-                    "value" : 18.451534877007
-                } ,
-                {
-                    "label" : "Group D" ,
-                    "value" : 8.6142352811805
-                } ,
-                {
-                    "label" : "Group E" ,
-                    "value" : 7.8082472075876
-                } ,
-                {
-                    "label" : "Group F" ,
-                    "value" : 5.259101026956
-                } ,
-                {
-                    "label" : "Group G" ,
-                    "value" : 7.0947953487127
-                } ,
-                {
-                    "label" : "Group H" ,
-                    "value" : 8
-                } ,
-                {
-                    "label" : "Group I" ,
-                    "value" : 21
+        }
+	, {
+		key: 'Drive'
+		, values: [
+			{
+				"label": "Atlanta"
+				, "value": 8922
+                }
+			, {
+				"label": Miami"
+				, "value": 10598
                 }
             ]
-        },
-        {
-            key: 'Series3',
-            values: [
-                {
-                    "label" : "Group A" ,
-                    "value" : -14.307646510375
-                } ,
-                {
-                    "label" : "Group B" ,
-                    "value" : 16.756779544553
-                } ,
-                {
-                    "label" : "Group C" ,
-                    "value" : -18.451534877007
-                } ,
-                {
-                    "label" : "Group D" ,
-                    "value" : 8.6142352811805
-                } ,
-                {
-                    "label" : "Group E" ,
-                    "value" : -7.8082472075876
-                } ,
-                {
-                    "label" : "Group F" ,
-                    "value" : 15.259101026956
-                } ,
-                {
-                    "label" : "Group G" ,
-                    "value" : -0.30947953487127
-                } ,
-                {
-                    "label" : "Group H" ,
-                    "value" : 0
-                } ,
-                {
-                    "label" : "Group I" ,
-                    "value" : 0
+        }
+	, {
+		key: 'Series3'
+		, values: [
+			{
+				"label": "Group A"
+				, "value": -14.307646510375
+                }
+			, {
+				"label": "Group B"
+				, "value": 16.756779544553
+                }
+			, {
+				"label": "Group C"
+				, "value": -18.451534877007
+                }
+			, {
+				"label": "Group D"
+				, "value": 8.6142352811805
+                }
+			, {
+				"label": "Group E"
+				, "value": -7.8082472075876
+                }
+			, {
+				"label": "Group F"
+				, "value": 15.259101026956
+                }
+			, {
+				"label": "Group G"
+				, "value": -0.30947953487127
+                }
+			, {
+				"label": "Group H"
+				, "value": 0
+                }
+			, {
+				"label": "Group I"
+				, "value": 0
                 }
             ]
         }
