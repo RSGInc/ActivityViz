@@ -572,7 +572,7 @@ var display_chart_dic = {};
 //main chart function
 var invisible = [];
 var data;
-var zippedData;
+var countyModeTotalsArray;
 var display_series;
 var x;
 var chartWidth = 450;
@@ -600,26 +600,31 @@ function display_charts() {
 	for (var modeIndex = 0; modeIndex < modes.length; modeIndex++) {
 		var modeName = modes[modeIndex]
 		var vals = [];
-		for (var key in chartdata) {
+		for (var countyName in chartdata) {
+			var countyModeArray = chartdata[countyName];
 			var use = false;
 			$('#chart_selection :selected').each(function (i, selected) {
-				if (key == $(selected).text() || $(selected).text() == "All") {
+				if (countyName == $(selected).text() || $(selected).text() == "All") {
 					use = true;
 				}
 			});
 			if (use) {
 				var countyModeTotal = 0; //initialize in case mode not found in county.
-				for (var i = 0; i < chartdata[key].length; i++) {
-					if (chartdata[key][i].name == modeName) {
-						if (chartdata[key][i].val === undefined) {
-							var message = 'ERROR county ' + labels[i] + ' has no data for mode ' + modeName;
+				for (var modesInCountyIndex = 0; modesInCountyIndex < countyModeArray.length; modesInCountyIndex++) {
+					var countyModeObject = countyModeArray[modesInCountyIndex];
+					if (countyModeObject.name == modeName) {
+						if (countyModeObject.val === undefined) {
+							var message = 'ERROR county ' + countyName + ' has no data for mode ' + modeName;
 							console.error(message);
 							throw message;
 						}
-						countyModeTotal = chartdata[key][i].val;
+						countyModeTotal = countyModeObject.val;
 						break;
-					}	//end if found this modes data
+					} //end if found this modes data
 				} //end loop over counties' modes
+				if (countyModeTotal == 0) {
+					console.log('Filling in slot for county ' + countyName + ' has no data for mode ' + modeName);
+				}
 				vals.push(countyModeTotal);
 			} //end if use
 		} //end loop key/county
@@ -636,14 +641,14 @@ function display_charts() {
 	var barHeight = 2
 		, groupHeight = (barHeight) * data.series.length
 		, gapBetweenGroups = 2
-		, spaceForLabels = 100
+		, widthForLabels = 100
 		, spaceForLegend = 150
-		, spaceForXAxis = chartWidth - spaceForLabels;
-	var zippedData = [];
+		, spaceForXAxis = chartWidth - widthForLabels;
+	var countyModeTotalsArray = [];
 	for (var i = 0; i < data.labels.length; i++) {
 		for (var j = 0; j < data.series.length; j++) {
 			var modeTotalForCounty = data.series[j].values[i];
-			zippedData.push(modeTotalForCounty);
+			countyModeTotalsArray.push(modeTotalForCounty);
 			var howManyCountiesHaveThisMode = data.series[j].values.length;
 			console.log('howManyCountiesHaveThisMode=' + howManyCountiesHaveThisMode);
 			if (i >= howManyCountiesHaveThisMode) {
@@ -651,28 +656,10 @@ function display_charts() {
 			}
 		}
 	}
-	var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
-	//chartdata is two dimensions -- first is an object with one property named for each County
-	//Each county object is an array of objects with 'name' and 'val' properties
-	var color = d3.scale.category20();
-	var x = d3.scale.linear().range([chartWidth, 0]);
-	var y0 = d3.scale.ordinal().rangeRoundBands([0, chartHeight], .1);
-	y0.domain(d3.keys(chartdata));
-	var y1 = d3.scale.ordinal();
-	y1.domain(d3.keys(modes));
-	var maxModesPerCounty = d3.max(d3.keys(chartdata), function (countyName) {
-		return chartdata[countyName].length;
-	});
-	var minHeightPer
-	var maxValue = d3.max(d3.keys(chartdata), function (countyName) {
-		return d3.max(chartdata[countyName], function (modeRecord) {
-			return modeRecord.val;
-		})
-	});
-	x.domain([0, maxValue]);
 	display_series = series;
-	var maxX = d3.max(zippedData);
-	var chartHeightNew = groupHeight * data.labels.length;
+	var color = d3.scale.category20();
+	var chartHeight = barHeight * countyModeTotalsArray.length + gapBetweenGroups * data.labels.length;
+	var maxX = d3.max(countyModeTotalsArray);
 	var scaleX = d3.scale.linear().domain([0, maxX]).range([0, spaceForXAxis]);
 	var scaleY = d3.scale.linear().range([chartHeight + gapBetweenGroups, 0]);
 	var yAxis = d3.svg.axis().scale(scaleY).tickFormat('').tickSize(0).orient("left");
@@ -680,13 +667,11 @@ function display_charts() {
 	//.attr("preserveAspectRatio", "xMinYMin meet")
 	//.attr("viewBox", "0 0 550 "+(chartHeight+gapBetweenGroups*data.labels.length+20+200));
 	//.classed("svg-content-responsive", true); 
-	var bar = chart.selectAll("g").data(zippedData).enter().append("g").attr("class", function (c, i) {
+	var bar = chart.selectAll("g").data(countyModeTotalsArray).enter().append("g").attr("class", function (c, i) {
 		return "g" + (i % data.series.length);
 	}).attr("transform", function (d, i) {
-		return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i / data.series.length))) + ")";
+		return "translate(" + widthForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i / data.series.length))) + ")";
 	});
-	//apend a rectangle covering the entire county
-	var countyRect = bar.append("rect").attr("class", "peter").attr("fill", "yellow").attr("stroke", "blue").attr("stroke-width", "5").attr("width", spaceForXAxis).attr("height", groupHeight - 5);
 	bar.append("rect").attr("fill", function (d, i) {
 			return color(i % data.series.length);
 		}).attr("class", function (c, i) {
@@ -694,19 +679,19 @@ function display_charts() {
 		})
 		//.attr("width", scaleX)
 		.attr("width", function (x, i) {
-			return (x == undefined) ? 0 : scaleX(x);
+			return (x === undefined) ? 0 : scaleX(x);
 		}).attr("height", barHeight);
 	bar.append("text").attr("class", "label").attr("x", function (d) {
 		return -10;
 	}).attr("y", groupHeight / 2).attr("dy", ".35em").text(function (d, i) {
-		if (i % data.series.length == 0) {
+		if (i % data.series.length === 0) {
 			return data.labels[Math.floor(i / data.series.length)];
 		}
 		else {
 			return "";
 		}
 	}).on("click", function (d, i) {
-		if (i % data.series.length == 0) {
+		if (i % data.series.length === 0) {
 			currentCounty = data.labels[Math.floor(i / data.series.length)];
 			redraw_map();
 			chart.selectAll("text.label").style('font-size', "15px");
@@ -716,15 +701,15 @@ function display_charts() {
 		}
 	});
 	xAxis = d3.svg.axis().scale(scaleX).orient("bottom").innerTickSize(-662).outerTickSize(0).ticks(5);
-	chart.append("g").attr("class", "x axis").attr("transform", "translate(" + spaceForLabels + "," + (chartHeight) + ")").call(xAxis);
-	chart.append("g").attr("class", "axis").attr("transform", "translate(" + spaceForLabels + ", " + -gapBetweenGroups / 2 + ")").call(yAxis);
+	chart.append("g").attr("class", "x axis").attr("transform", "translate(" + widthForLabels + "," + (chartHeight) + ")").call(xAxis);
+	chart.append("g").attr("class", "axis").attr("transform", "translate(" + widthForLabels + ", " + -gapBetweenGroups / 2 + ")").call(yAxis);
 	var legendRectSize = 18
 		, legendSpacing = 4;
 	var legend = chart.selectAll('.legend').data(data.series).enter().append('g').attr('transform', function (d, i) {
 		var height = legendRectSize + legendSpacing;
 		var offset = -gapBetweenGroups / 2;
 		var vert = (parseInt(i / 3)) * height - offset + (chartHeight + gapBetweenGroups * data.labels.length - 20 + 30);
-		var w = 140 * (i % 3) + spaceForLabels;
+		var w = 140 * (i % 3) + widthForLabels;
 		return 'translate(' + w + ',' + vert + ')';
 	});
 	//legend colors
@@ -753,18 +738,18 @@ function display_charts() {
 			var bars = d3.select(".chart").selectAll(".bar" + barIndex).data(data);
 			bars.exit().remove();
 		}
-		var tempData = $.grep(zippedData, function (value, index) {
-			return invisible.indexOf(index % series_length) == -1;
+		var tempData = $.grep(countyModeTotalsArray, function (value, index) {
+			return invisible.indexOf(index % series_length) === -1;
 		});
 		scaleX = d3.scale.linear().domain([0, d3.max(tempData)]).range([0, chartWidth]);
 		for (var barIndex = 0; barIndex < series_length; barIndex++) {
-			if (invisible.indexOf(barIndex) == -1) {
+			if (invisible.indexOf(barIndex) === -1) {
 				var bar = chart.selectAll(".g" + barIndex).append("rect").attr("fill", function () {
 					return color(barIndex % data.series.length);
 				}).attr("class", function () {
 					return "bar" + (barIndex % data.series.length);
 				}).attr("width", function (x, i) {
-					return (x == undefined) ? 0 : scaleX(x);
+					return (x === undefined) ? 0 : scaleX(x);
 				}).attr("height", barHeight);
 			}
 		}
