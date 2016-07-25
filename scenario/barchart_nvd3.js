@@ -9,7 +9,7 @@ function GetURLParameter(sParam) {
 		}
 	}
 }
-var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv"
+var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv";
 d3.csv(url, function (error, csv_data) {
 	if (error) throw error;
 	var headers = d3.keys(csv_data[0]);
@@ -20,7 +20,6 @@ d3.csv(url, function (error, csv_data) {
 	var uniqueModes = new Set();
 	var modesInEncounterOrder = [];
 	var excludedLabel = "TOTAL";
-
 	//first need to get the total for each mode for each county
 	var countiesNestFunctions = d3.nest().key(function (d) {
 		return d[countyColumn];
@@ -82,7 +81,8 @@ d3.csv(url, function (error, csv_data) {
 			});
 		});
 	}
-	var selector = ".chart";
+	var selector = "#multiBarChart";
+	var svg = d3.select(selector);
 	var hierarchicalData = newData;
 	//hierarchicalData = long_short_data;
 	var chart;
@@ -92,18 +92,17 @@ d3.csv(url, function (error, csv_data) {
 			return d.label
 		}).y(function (d) {
 			return d.value
-		}).color(function(d,i) {
-			var modeColorIndex = parseInt(Math.floor(i  / hierarchicalData.length));
+		}).color(function (d, i) {
+			var modeColorIndex = parseInt(Math.floor(i / hierarchicalData.length));
 			var color = colorScale(i);
-			console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
+			//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 			return color;
-			}).duration(250).margin({
+		}).duration(250).margin({
 			left: 100
 		}).stacked(true);
 		chart.yAxis.tickFormat(d3.format(',.2f'));
-		chart.yAxis.axisLabel('Y Axis');
-		chart.xAxis.axisLabel('X Axis').axisLabelDistance(20);
-		var svg = d3.select(selector);
+		chart.yAxis.axisLabel(countyColumn);
+		chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(20);
 		svg.datum(hierarchicalData).call(chart);
 		nv.utils.windowResize(chart.update);
 		chart.dispatch.on('stateChange', function (e) {
@@ -114,77 +113,7 @@ d3.csv(url, function (error, csv_data) {
 		});
 		return chart;
 	}, function () {
+
 		console.log('chart generator must be finished')
 	});
 });
-
-//example to shaow the format we are munging the data
-var sampleMultiChartData = [
-	{
-		key: 'Walk'
-		, values: [
-			{
-				"label": "Atlanta"
-				, "value": 345
-                }
-			, {
-				"label": "Miami"
-				, "value": 5045
-                }
-            ]
-        }
-	, {
-		key: 'Drive'
-		, values: [
-			{
-				"label": "Atlanta"
-				, "value": 8922
-                }
-			, {
-				"label": Miami"
-				, "value": 10598
-                }
-            ]
-        }
-	, {
-		key: 'Series3'
-		, values: [
-			{
-				"label": "Group A"
-				, "value": -14.307646510375
-                }
-			, {
-				"label": "Group B"
-				, "value": 16.756779544553
-                }
-			, {
-				"label": "Group C"
-				, "value": -18.451534877007
-                }
-			, {
-				"label": "Group D"
-				, "value": 8.6142352811805
-                }
-			, {
-				"label": "Group E"
-				, "value": -7.8082472075876
-                }
-			, {
-				"label": "Group F"
-				, "value": 15.259101026956
-                }
-			, {
-				"label": "Group G"
-				, "value": -0.30947953487127
-                }
-			, {
-				"label": "Group H"
-				, "value": 0
-                }
-			, {
-				"label": "Group I"
-				, "value": 0
-                }
-            ]
-        }
-    ];

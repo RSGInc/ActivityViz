@@ -2,6 +2,17 @@ body {
 	padding-top: 50px;
 }
 
+/* nvd3 customizations */
+
+/* make the axis labels normal font sive instead of small */
+.nvd3 .tick.zero text {
+	font-size: 1em;
+}
+
+/* make grid lines disappear */
+.nvd3 .tick line {
+  display: none;
+}
 .chart .legend {
 	fill: black;
 	font: 14px sans-serif;

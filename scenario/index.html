@@ -1,7 +1,7 @@
 <html>
-
-<head>
+ <head>
 	<title>ARC ABMVIZ</title>
+	 <meta charset="UTF-8"> 
 	<link rel="shortcut icon" href="../img/arc_logo.ico">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
+	<link rel="stylesheet" href="../node_modules/d3fc/dist/d3fc.min.css" />
 	<link rel="stylesheet" href="style.css" />
 	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
@@ -26,6 +27,7 @@
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
 	<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
+	
 	<script src="barchart_nvd3.js"></script>
 </head>
 
@@ -57,8 +59,8 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<div style="position:relative;height:100%;width:100%;padding:0;margin-bottom:20px">
-							<svg class="chart" style="position:absolute;height:100%;width:100%;left:0;top:5"></svg>
+						<div>
+							<svg id="multiBarChart"></svg>
 						</div>
 					</div>
 				</div>
