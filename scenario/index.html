@@ -1,7 +1,8 @@
 <html>
- <head>
+
+<head>
 	<title>ARC ABMVIZ</title>
-	 <meta charset="UTF-8"> 
+	<meta charset="UTF-8">
 	<link rel="shortcut icon" href="../img/arc_logo.ico">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -10,7 +11,7 @@
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
-	<link rel="stylesheet" href="../node_modules/d3fc/dist/d3fc.min.css" />
+	<link rel="stylesheet" href="../node_modules/d3fc/dist/d3fc.css" />
 	<link rel="stylesheet" href="style.css" />
 	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
@@ -19,24 +20,23 @@
 	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="../bower_components/leaflet/dist/leaflet.js"></script>
 	<script src="../bower_components/leaflet-pip/leaflet-pip.min.js"></script>
-	<script src="../bower_components/d3/d3.min.js"></script>
-	<script src="../bower_components/nvd3/build/nv.d3.min.js"></script>
+	<!--<script src="../bower_components/d3/d3.min.js"></script>-->
+	<script src="../node_modules/d3fc/dist/d3fc.bundle.js"></script>
+	<script src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script src="../bower_components/underscore/underscore-min.js"></script>
 	<script src="../bower_components/geostats/lib/geostats.min.js"></script>
 	<!-- http://maps.stamen.com/ -->
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 	<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
 	<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
-	
+	<script src="barchart_d3.js"></script>
+	<script src="barchart_d3fc.js"></script>
+	<!--	<script src="barchart_d3.js"></script>-->
 	<script src="barchart_nvd3.js"></script>
+	<script src="barchart_and_map.js"></script>
 </head>
 
 <body>
-<!--
-	<div id="chart_peter" style="height:100%;width:100%;" class="with-3d-shadow with-transitions">
-		<svg></svg>
-	</div>
-	-->
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
 			<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img width="40" height="17" src="../img/arc_logo.png"></a> <a class="navbar-brand" href="../index.html">ABMVIZ</a> </div>
@@ -51,115 +51,128 @@
 			<div class="col-md-12"> The Bar Chart and Map visual is a linked interactive visual related to spatial information. The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode. The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
 		</div>
 		<div class="row" style="margin-top:1em;">
-			<div class="col-md-6">
-				<div class="col-md-12">
-					<select id="chart_selection" style="min-width:400px" multiple>
-						<option selected value="-1">All</option>
-					</select>
-				</div>
-				<div class="row">
+			<div class="row">
+				<div class="col-md-6">
 					<div class="col-md-12">
-						<div>
-							<svg id="multiBarChart"></svg>
+						<div class="row">
+							<select id="chart_selection" style="min-width:400px" multiple>
+								<option selected value="-1">All</option>
+							</select>
+						</div>
+						<div class="row">
+							<div style="border:1px solid black;background-color:white;height:100%;width:100%;">
+								<svg id="barchart_d3"></svg>
+							</div>
+						</div>
+						<div class="row">
+							<div style="border:6px solid black;background-color:orange;height:100%;width:100%;">
+								<svg id="barchart_d3fc"></svg>
+							</div>
+						</div>
+						<div class="row">
+							<div style="border:6px solid black;background-color:yellow;height:100%;width:100%;">
+								<svg id="barchart_nvd3"></svg>
+							</div>
+						</div>
+						<div class="row">
+							<div style="border:6px solid black;background-color:dodgerblue;height:100%;width:100%;">
+								<svg id="barchart_and_map"></svg>
+							</div>
+						</div>
+						<div class="row">
+							<ul>
+								<li>Click on a bar group label to highlight the area on the map</li>
+								<li>The bar group drop down filter above the chart will show and hide bar groups</li>
+								<li>Click on the bar label in the legend to show or hide the bar across bar groups</li>
+							</ul>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12"> The Bar Chart interactive features include:
-						<ul>
-							<li>Click on a bar group label to highlight the area on the map</li>
-							<li>The bar group drop down filter above the chart will show and hide bar groups</li>
-							<li>Click on the bar label in the legend to show or hide the bar across bar groups</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="col-md-6">
-					<div id="attribute_label" style="font-weight:bold"></div>
-				</div>
-				<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
-					<div id="classification_label">Classification</div>
-				</div>
-				<div class="col-md-6">
-					<select class="form-control" id="attribute"></select>
-				</div>
-				<div class="col-md-6" style="margin-bottom:2em;">
-					<select class="form-control" id="classification">
-						<option value="even_interval" selected="selected">Even interval</option>
-						<option value="quantiles">Quantiles</option>
-						<option value="custom">Custom</option>
-					</select>
-				</div>
-				<div id="map" style="width: 100%;height:900px;"></div>
-			</div>
-			<div class="col-md-3 col-md-offset-6" style="margin-top:1em;">
-				<input type="text" id="color1" /> Color 1
-				<input type="text" id="color2" /> Color 2
-				<input type="text" id="color3" /> Color 3
-				<input type="text" id="color4" /> Color 4 </div>
-			<div class="col-md-3" style="margin-top:1em;text-align:right">
-				<input type="checkbox" id="bubbles" onclick="redraw_map()" /> Bubbles
-				<input type="text" id="bubble_color" /> Size:
-				<select onchange="redraw_map()" id="bubble_size">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-				</select>
-				<input type="checkbox" id="stroke" onclick="redraw_map()" /> Outline
-				<nobr>
-					<input type="text" id="nacolor" /> N/A</nobr>
-			</div>
-			<div class="col-md-6 col-md-offset-6" style="margin-top:1em;">
-				<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
-				<div class="row">
 					<div class="col-md-6">
-						<button id="update_map" style="display:none" class="btn">Update Map</button>
-						<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
-						<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
+						<div class="col-md-6">
+							<div id="attribute_label" style="font-weight:bold"></div>
+						</div>
+						<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
+							<div id="classification_label">Classification</div>
+						</div>
+						<div class="col-md-6">
+							<select class="form-control" id="attribute"></select>
+						</div>
+						<div class="col-md-6" style="margin-bottom:2em;">
+							<select class="form-control" id="classification">
+								<option value="even_interval" selected="selected">Even interval</option>
+								<option value="quantiles">Quantiles</option>
+								<option value="custom">Custom</option>
+							</select>
+						</div>
+						<div id="map" style="width: 100%;height:900px;"></div>
 					</div>
-					<div class="col-md-6"> Redraw
-						<select id="cycle_frequency" class="form-control form-control-inline">
-							<option value="1">every 1 sec</option>
-							<option value="2">every 2 sec</option>
-							<option value="3">every 3 sec</option>
-							<option value="4">every 4 sec</option>
-							<option value="5">every 5 sec</option>
-							<option value="6">every 6 sec</option>
-							<option value="7">every 7 sec</option>
-							<option value="8">every 8 sec</option>
-							<option value="9">every 9 sec</option>
-							<option value="10">every 10 sec</option>
+					<div class="col-md-3 col-md-offset-6" style="margin-top:1em;">
+						<input type="text" id="color1" /> Color 1
+						<input type="text" id="color2" /> Color 2
+						<input type="text" id="color3" /> Color 3
+						<input type="text" id="color4" /> Color 4 </div>
+					<div class="col-md-3" style="margin-top:1em;text-align:right">
+						<input type="checkbox" id="bubbles" onclick="redraw_map()" /> Bubbles
+						<input type="text" id="bubble_color" /> Size:
+						<select onchange="redraw_map()" id="bubble_size">
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
 						</select>
+						<input type="checkbox" id="stroke" onclick="redraw_map()" /> Outline
+						<nobr>
+							<input type="text" id="nacolor" /> N/A</nobr>
 					</div>
+					<div class="col-md-6 col-md-offset-6" style="margin-top:1em;">
+						<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
+						<div class="row">
+							<div class="col-md-6">
+								<button id="update_map" style="display:none" class="btn">Update Map</button>
+								<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
+								<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
+							</div>
+							<div class="col-md-6"> Redraw
+								<select id="cycle_frequency" class="form-control form-control-inline">
+									<option value="1">every 1 sec</option>
+									<option value="2">every 2 sec</option>
+									<option value="3">every 3 sec</option>
+									<option value="4">every 4 sec</option>
+									<option value="5">every 5 sec</option>
+									<option value="6">every 6 sec</option>
+									<option value="7">every 7 sec</option>
+									<option value="8">every 8 sec</option>
+									<option value="9">every 9 sec</option>
+									<option value="10">every 10 sec</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12" style="margin-top:1em;">
+								<br>
+								<br> The Map interactive features include:
+								<ul>
+									<li>Click and drag to pan the map area</li>
+									<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
+									<li>Click on an area to highlight the SPATIALAGG both on the map and the bar chart</li>
+									<li>Turn the zone centroid bubbles on and off and set the scaling</li>
+									<li>Draw zones with an outline and draw zones with an NA value according to the color picker</li>
+									<li>Change the classification scheme from quantiles to equal intervals to custom</li>
+									<li>Redraw the map using a custom classification using the classification range sliders</li>
+									<li>Color zones with a semi-transparent fill to retain background network display</li>
+									<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
+								</ul>
+							</div>
+						</div>
+						<input type="hidden" size="4" id="val1" />
+						<input type="hidden" size="4" id="val2" />
+						<br />
+						<input type="hidden" size="4" id="val3" />
+						<br />
+						<input type="hidden" size="4" id="val4" />
+						<br />
+						<input type="hidden" size="4" id="val5" />
+						<br /> </div>
 				</div>
-				<div class="row">
-					<div class="col-md-12" style="margin-top:1em;">
-						<br>
-						<br> The Map interactive features include:
-						<ul>
-							<li>Click and drag to pan the map area</li>
-							<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
-							<li>Click on an area to highlight the SPATIALAGG both on the map and the bar chart</li>
-							<li>Turn the zone centroid bubbles on and off and set the scaling</li>
-							<li>Draw zones with an outline and draw zones with an NA value according to the color picker</li>
-							<li>Change the classification scheme from quantiles to equal intervals to custom</li>
-							<li>Redraw the map using a custom classification using the classification range sliders</li>
-							<li>Color zones with a semi-transparent fill to retain background network display</li>
-							<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
-						</ul>
-					</div>
-				</div>
-				<input type="hidden" size="4" id="val1" />
-				<input type="hidden" size="4" id="val2" />
-				<br />
-				<input type="hidden" size="4" id="val3" />
-				<br />
-				<input type="hidden" size="4" id="val4" />
-				<br />
-				<input type="hidden" size="4" id="val5" />
-				<br /> </div>
-		</div>
-	</div> Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </body>
+			</div> Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </body>
 
 </html>

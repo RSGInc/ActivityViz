@@ -55,7 +55,6 @@ function redraw_map() {
 	tileLayer.redraw();
 }
 var chartdata = {};
-var peterdata = {}
 var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv"
 d3.csv(url, function (error, data) {
 	"use strict";
@@ -80,15 +79,6 @@ d3.csv(url, function (error, data) {
 			if ($.inArray(d[tripMode], modes) == "-1") {
 				modes.push(d[tripMode]);
 				$("#attribute").append("<option>" + d[tripMode] + "</option>");
-			}
-			if (peterdata[d[countyName]] === undefined) {
-				peterdata[d[countyName]] = {};
-			}
-			if (peterdata[d[countyName]][d[tripMode]] === undefined) {
-				peterdata[d[countyName]][d[tripMode]] = parseInt(d.QUANTITY);
-			}
-			else {
-				peterdata[d[countyName]][d[tripMode]] += d.QUANTITY;
 			}
 			if (chartdata[d[countyName]] == undefined) {
 				chartdata[d[countyName]] = [];
@@ -217,7 +207,7 @@ $(document).ready(function () {
 			}, parseInt($("#cycle_frequency").val()) * 1000);
 		}
 	});
-	map = L.map('map').setView(center, 9);
+	map = L.map("map").setView(center, 9);
 	var maxZoom = 20;
 	//B&W stylized background map
 	var stamenTileLayer = new L.StamenTileLayer("toner-lite");
@@ -471,7 +461,8 @@ function colorizeFeatures(data) {
 	var centerEast = L.latLng(mapCenter.lat, eastBound);
 	var bubbleMultiplier = parseInt($("#bubble_size").val());
 	var maxBubbleSize;
-	var mapRadiusInPixels = chartWidth / 2;
+	var mapBounds = d3.select("#map").node().getBoundingClientRect();
+	var mapRadiusInPixels = mapBounds.width / 2;
 	var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
 	var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
 	var scale_sqrt = d3.scale.sqrt().domain([0, max_feature]).range([0, maxBubbleSize]);
@@ -574,7 +565,6 @@ var hiddenModes = [];
 var data;
 var countyModeTotalsArray;
 var display_series;
-var chartWidth = 450;
 var series_length;
 var xAxis;
 
@@ -637,11 +627,16 @@ function display_charts() {
 		, series: series
 	};
 	series_length = data.series.length;
+	var svgSelector = "#barchart_and_map";
+	var svgElement = d3.select(svgSelector);
+	chart = svgElement;
+	var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
+	var chartWidth = parentBoundingBox.width;
+	console.log("barchart_and_map based on parent element of svg, setting chartWidth=" + chartWidth);
 	var barHeight = 2
 		, groupHeight = (barHeight) * data.series.length
 		, gapBetweenGroups = 2
 		, widthForLabels = 100
-		, spaceForLegend = 150
 		, spaceForXAxis = chartWidth - widthForLabels;
 	var countyModeTotalsArray = [];
 	for (var i = 0; i < data.labels.length; i++) {
@@ -649,7 +644,7 @@ function display_charts() {
 			var modeTotalForCounty = data.series[j].values[i];
 			countyModeTotalsArray.push(modeTotalForCounty);
 			var howManyCountiesHaveThisMode = data.series[j].values.length;
-			console.log('howManyCountiesHaveThisMode=' + howManyCountiesHaveThisMode);
+			//console.log('howManyCountiesHaveThisMode=' + howManyCountiesHaveThisMode);
 			if (i >= howManyCountiesHaveThisMode) {
 				console.log('ERROR -- reading county mode data which does not exist. i=' + i + ' howManyCountiesHaveThisMode=' + countiesWithThisMode + ' modeTotalForCounty=' + modeTotalForCounty);
 			}
@@ -662,7 +657,6 @@ function display_charts() {
 	var scaleX = d3.scale.linear().domain([0, maxX]).range([0, spaceForXAxis]);
 	var scaleY = d3.scale.linear().range([chartHeight + gapBetweenGroups, 0]);
 	var yAxis = d3.svg.axis().scale(scaleY).tickFormat('').tickSize(0).orient("left");
-	chart = d3.select(".chart");
 	//.attr("preserveAspectRatio", "xMinYMin meet")
 	//.attr("viewBox", "0 0 550 "+(chartHeight+gapBetweenGroups*data.labels.length+20+200));
 	//.classed("svg-content-responsive", true); 
@@ -761,8 +755,10 @@ function display_charts() {
 		}
 		xAxis = d3.svg.axis().scale(scaleX).orient("bottom").innerTickSize(-662).outerTickSize(0).ticks(5);
 		d3.select(".chart").selectAll("g.x.axis").transition().call(xAxis);
-	});
+	}); //end on click
 	legend.append('text').attr('class', 'legend').attr('x', legendRectSize + legendSpacing).attr('y', legendRectSize - legendSpacing).text(function (d) {
 		return d.label;
 	});
-}
+	var bounds = svgElement.node().getBBox();
+	console.log("barchart_and_map setting svg width=" + bounds.width + ", svg height=" + bounds.height);
+	svgElement.attr("width", bounds.width).attr("height", bounds.height);} //end displayCharts

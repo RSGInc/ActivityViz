@@ -1,0 +1,11 @@
+{
+  "name": "d3fc.bundle.min",
+  "_cacheHeaders": {
+    "Content-Type": "application/javascript; charset=utf-8"
+  },
+  "main": "index.js",
+  "_source": "https://npmcdn.com/d3fc@11.0.0/dist/d3fc.bundle.min.js",
+  "_target": "*",
+  "_originalSource": "https://npmcdn.com/d3fc@11.0.0/dist/d3fc.bundle.min.js",
+  "_direct": true
+}
