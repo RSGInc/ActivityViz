@@ -105,18 +105,30 @@ function horizontalGroupedBarGraph(data, svgSelector) {
 	})]);
 	chartG.append("g").attr("class", "x axis").attr("transform", "translate(0," + chartHeight + ")").call(xAxis).append("text").attr("x", chartWidth).attr("dy", "-.71em").style("text-anchor", "end").text("Population");
 	chartG.append("g").attr("class", "y axis").call(yAxis);
-	var group = chartG.selectAll(".group").data(data).enter().append("g").attr("class", "g").attr("transform", function (d) {
+	var group = chartG.selectAll(".group").data(data).enter().append("g").attr("class", "group").attr("transform", function (d) {
 		return "translate(0," + y0(d.groupLabel) + ")";
 	});
-	group.selectAll("rect").data(function (d) {
+
+	//the group is the county. The subgroups are the travel modes
+	group.selectAll("rect.subgroup").data(function (d) {
 		return d.subgroups;
-	}).enter().append("rect").attr("height", y1.rangeBand()).attr("x", 0).attr("y", function (d) {
+	}).enter().append("rect").attr("class", "subgroup").attr("height", y1.rangeBand()).attr("x", 0).attr("y", function (d) {
 		return y1(d.subgroupLabel);
 	}).attr("width", function (d) {
 		return x(d.value);
 	}).style("fill", function (d) {
 		return color(d.subgroupLabel);
 	});
+
+	var heightPerGroup = chartHeight / numGroups;
+	group.append("rect").attr("class", "group-overlay")
+	.attr("height", heightPerGroup)
+	.attr("width",chartWidth)
+	.style("fill-opacity", "0.0")	//transparent
+	.style("stroke-opacity", "1.0")
+	.attr("x", 0)
+	.attr("y", 0);
+
 	var legend = chartG.selectAll(".legend").data(subgroupLabels).enter().append("g").attr("class", "legend").attr("transform", function (d, i) {
 		return "translate(0," + i * 20 + ")";
 	});
