@@ -132,4 +132,4 @@ var barchart_d3 = (function () {
 			return d;
 		});
 	}
-}); //end encapsulating IIFE
+}()); //end encapsulating IIFE

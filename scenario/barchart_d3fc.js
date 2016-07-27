@@ -42,5 +42,5 @@ var barchart_d3fc = (function () {
 			selection.select('g.legend-container').call(legend);
 		});
 		d3.select('#barchart_d3fc').datum(data).call(chart);
-	});
+	}());
 }); //end encapsulating IIFE

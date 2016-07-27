@@ -163,4 +163,4 @@ var barchart_nvd3 = (function () {
 			})
 		});
 	});
-}); //end encapsulating IIFE
+}()); //end encapsulating IIFE
