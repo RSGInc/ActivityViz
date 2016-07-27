@@ -1,4 +1,5 @@
-//map
+//encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
+var barchart_and_map = (function () {
 var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
 var center = [33.754525, -84.384774];
 var color1 = "#f1eef6"
@@ -762,3 +763,5 @@ function display_charts() {
 	var bounds = svgElement.node().getBBox();
 	console.log("barchart_and_map setting svg width=" + bounds.width + ", svg height=" + bounds.height);
 	svgElement.attr("width", bounds.width).attr("height", bounds.height);} //end displayCharts
+
+}); //end encapsulating IIFE
