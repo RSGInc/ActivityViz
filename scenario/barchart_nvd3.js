@@ -40,11 +40,11 @@ var barchart_nvd3 = (function () {
 		}).rollup(function (leaves) {
 			return {
 				"length": leaves.length
-				, "county_mode_total": d3.sum(leaves, function (d) {
+				, "countyModeTotal": d3.sum(leaves, function (d) {
 					return +d[quantityColumn]
 				})
 			}
-		})
+		});
 		var countiesNest = countiesNestFunctions.entries(csv_data);
 		//need to remove all 'TOTAL' modes since not needed and actually inccorrect and not a mode
 		countiesNest.forEach(function (countyObject) {
@@ -71,7 +71,7 @@ var barchart_nvd3 = (function () {
 				//http://stackoverflow.com/a/2641374/283973
 				countyObject.values.some(function (countyModeObject) {
 					if (countyModeObject.key == modeName) {
-						modeCountyTotal = countyModeObject.values.county_mode_total;
+						modeCountyTotal = countyModeObject.values.countyModeTotal;
 						return true; //break some
 					}
 					else {
@@ -121,6 +121,19 @@ var barchart_nvd3 = (function () {
 			});
 			return nvd3Chart;
 		}, function () {
+			var chartWithControlsAndLegend = d3.select(".nv-multiBarHorizontalChart");
+			var chartWithControlsAndLegendTranslation = d3.transform(chartWithControlsAndLegend.attr("transform")).translate;
+			var chartOnly = d3.select(".nv-y");
+			var yAxisTranslation = d3.transform(chartOnly.attr("transform")).translate;
+			var legendWrap = d3.select(".nv-legendwrap");
+			var legendTranslation = d3.transform(legendWrap.attr("transform")).translate;
+			var newLegendAndControlsYPos = yAxisTranslation[1] - legendTranslation[1];
+			legendWrap.attr("transform", "translate(" + legendTranslation[0] + "," + newLegendAndControlsYPos + ")");
+			var controlsWrap = d3.select(".nv-controlswrap");
+			var controlsWrapTranslation = d3.transform(controlsWrap.attr("transform")).translate;
+			controlsWrap.attr("transform", "translate(" + controlsWrapTranslation[0] + "," + newLegendAndControlsYPos + ")");
+			//move overall chart up to cover area where legend and controls used to be
+			chartWithControlsAndLegend.attr("transform", "translate(" + chartWithControlsAndLegendTranslation[0] + "," + (chartWithControlsAndLegendTranslation[1] + legendTranslation[1]) + ")");
 			var xScaleFunction = nvd3Chart.xAxis.scale();
 			var xDomain = xScaleFunction.domain();
 			console.log("barchart_nvd3 xScaleFunction xDomain " + xDomain);

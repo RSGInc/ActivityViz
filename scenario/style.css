@@ -1,8 +1,8 @@
 /* nvd3 customizations */
 
 .nvd3 .nv-axis {
-    pointer-events:all;
-    opacity: 1;
+	pointer-events: all;
+	opacity: 1;
 }
 
 
@@ -21,6 +21,18 @@
 
 .nvd3 .nv-bar rect {
 	style: "min-height: 8px";
+}
+
+#barchart_d3 rect.subgroup {
+	stroke-width: 0;
+}
+
+#barchart_d3 rect.subgroup.disabled {
+	fill-opacity: 0;
+}
+
+#barchart_d3 .legend.disabled rect {
+	fill-opacity: 0;
 }
 
 
