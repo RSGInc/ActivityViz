@@ -141,7 +141,7 @@ var barchart_d3 = (function () {
 			return x(d.value);
 		}).style("fill", function (d, i) {
 			var color = colorScale(i);
-			console.log("fill color for d.subgroupLabel=" + d.subgroupLabel + ", index=" + i + ", color=" + color);
+			//console.log("fill color for d.subgroupLabel=" + d.subgroupLabel + ", index=" + i + ", color=" + color);
 			return colorScale(i);
 		});
 		var legend = chartG.selectAll(".legend").data(subgroupLabels).enter().append("g").attr("class", "legend").attr("transform", function (d, i) {
