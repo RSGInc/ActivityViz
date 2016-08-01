@@ -150,18 +150,22 @@ var barchart_nvd3 = (function () {
 						else {
 							inMoveLegend = true;
 							var chartWithControlsAndLegend = d3.select(mainChartGSelector);
-							var chartOnly = d3.select(".nvd3 .nv-y");
+							var chartWithAxesLabels = d3.select(".nvd3 .nv-y.nv-axis");
 							var controlsWrap = d3.select(".nvd3 .nv-controlswrap");
 							var legendWrap = d3.select(".nvd3 .nv-legendwrap");
-							var chartWithControlsAndLegendTranslation = d3.transform(chartWithControlsAndLegend.attr("transform")).translate;
-							var chartOnlyTranslation = d3.transform(chartOnly.attr("transform")).translate;
 							var legendTranslation = d3.transform(legendWrap.attr("transform")).translate;
-							var newLegendAndControlsYPos = chartOnlyTranslation[1];
+							var legendY = legendTranslation[1];
+							var chartWithControlsAndLegendTranslation = d3.transform(chartWithControlsAndLegend.attr("transform")).translate;
+							var chartWithAxesLabelsTranslation = d3.transform(chartWithAxesLabels.attr("transform")).translate;
+							var chartWithAxesLabelsY = chartWithAxesLabelsTranslation[1];
+							//NOTE X AND Y AXES ARE REVERSED -- because this is a horizontal bar chart
+							//looks like nvd3 treated it like a rotated vertical bar chart. I use the actual axis names -- x horizontal, y vertical
+							var xAxis = d3.select(".nvd3 .nv-y .nv-wrap.nv-axis");
+							var xAxisHeight = xAxis.node().getBBox().height;
+							var newLegendAndControlsYPos = chartWithAxesLabelsY + xAxisHeight;
 							var newChartWithControlsAndLegendY = chartWithControlsAndLegendTranslation[1] + legendTranslation[1];
 							var controlsWrapTranslation = d3.transform(controlsWrap.attr("transform")).translate;
-							var legendY = controlsWrapTranslation[1];
-							var chartOnlyY = chartOnlyTranslation[1];
-							var needsToBeMoved = legendY < chartOnlyY;
+							var needsToBeMoved = legendY < chartWithAxesLabelsY;
 							var alreadyMoved = chartWithControlsAndLegend.classed('legend-moved');
 							console.log('moveLegend called by ' + caller + '. alreadyMoved=' + alreadyMoved + ', needsToBeMoved=' + needsToBeMoved);
 							printPositions('before');
@@ -169,14 +173,14 @@ var barchart_nvd3 = (function () {
 							function printPositions(prefix) {
 								console.log(prefix + ': chartWithControlsAndLegendY=' + d3.transform(chartWithControlsAndLegend.attr("transform")).translate[1]);
 								console.log(prefix + ': legendY=' + d3.transform(controlsWrap.attr("transform")).translate[1]);
-								console.log(prefix + ': chartOnlyY=' + d3.transform(chartOnly.attr("transform")).translate[1]);
+								console.log(prefix + ': chartWithAxesLabelsY=' + d3.transform(chartWithAxesLabels.attr("transform")).translate[1]);
 							}
 							if (!alreadyMoved || needsToBeMoved) {
 								chartWithControlsAndLegend.classed('legend-moved', true);
 								legendWrap.attr("transform", "translate(" + legendTranslation[0] + "," + newLegendAndControlsYPos + ")");
 								controlsWrap.attr("transform", "translate(" + controlsWrapTranslation[0] + "," + newLegendAndControlsYPos + ")");
 								//move overall chart up to cover area where legend and controls used to be
-								chartWithControlsAndLegend.attr("transform", "translate(" + chartWithControlsAndLegendTranslation[0] + "," + newChartWithControlsAndLegendY + ")");
+								chartWithControlsAndLegend.attr("transform", "translate(" + chartWithControlsAndLegendTranslation[0] + "," + 0 + ")");
 								console.log('Finishing moving legend called by ' + caller);
 								printPositions('after move');
 							} //end if needs to be moved
@@ -184,36 +188,36 @@ var barchart_nvd3 = (function () {
 						} //end if not already in function
 					} //end function moveLegend
 				moveLegend('Initial chart callback');
-// 				nvd3Chart.dispatch.on('changeState.rsg', function () {
-// 					moveLegend("chart changeState.rsg");
-// 				});
-// 				nvd3Chart.dispatch.on('stateChange.rsg', function () {
-// 					moveLegend("chart stateChange.rsg");
-// 				});
-// 				nvd3Chart.dispatch.on('renderEnd.rsg', function () {
-// 					moveLegend("chart renderEnd.rsg");
-// 				});
-// 				nvd3Chart.controls.dispatch.on('stateChange.rsg', function () {
-// 					moveLegend("controls stateChange.rsg");
-// 				});
-// 				nvd3Chart.controls.dispatch.on('legendClick.rsg', function () {
-// 					moveLegend("controls legendClick.rsg");
-// 				});
-// 				nvd3Chart.legend.dispatch.on('legendClick.rsg', function () {
-// 					moveLegend("legend legendClick.rsg");
-// 				});
-// 				nvd3Chart.legend.dispatch.on('stateChange.rsg', function () {
-// 					moveLegend("legend dispatch.on stateChange.rsg");
-// 				});
-// 				nvd3Chart.multibar.dispatch.on('renderEnd.rsg', function () {
-// 					moveLegend("multibar renderEnd.rsg");
-// 				});
-// 				nvd3Chart.multibar.dispatch.on('chartClick.rsg', function () {
-// 					moveLegend("multibar chartClick.rsg");
-// 				});
-// 				nvd3Chart.multibar.dispatch.on('elementClick.rsg', function () {
-// 					moveLegend("multibar elementClick.rsg");
-// 				});
+				// 				nvd3Chart.dispatch.on('changeState.rsg', function () {
+				// 					moveLegend("chart changeState.rsg");
+				// 				});
+				// 				nvd3Chart.dispatch.on('stateChange.rsg', function () {
+				// 					moveLegend("chart stateChange.rsg");
+				// 				});
+				// 				nvd3Chart.dispatch.on('renderEnd.rsg', function () {
+				// 					moveLegend("chart renderEnd.rsg");
+				// 				});
+				// 				nvd3Chart.controls.dispatch.on('stateChange.rsg', function () {
+				// 					moveLegend("controls stateChange.rsg");
+				// 				});
+				// 				nvd3Chart.controls.dispatch.on('legendClick.rsg', function () {
+				// 					moveLegend("controls legendClick.rsg");
+				// 				});
+				// 				nvd3Chart.legend.dispatch.on('legendClick.rsg', function () {
+				// 					moveLegend("legend legendClick.rsg");
+				// 				});
+				// 				nvd3Chart.legend.dispatch.on('stateChange.rsg', function () {
+				// 					moveLegend("legend dispatch.on stateChange.rsg");
+				// 				});
+				// 				nvd3Chart.multibar.dispatch.on('renderEnd.rsg', function () {
+				// 					moveLegend("multibar renderEnd.rsg");
+				// 				});
+				// 				nvd3Chart.multibar.dispatch.on('chartClick.rsg', function () {
+				// 					moveLegend("multibar chartClick.rsg");
+				// 				});
+				// 				nvd3Chart.multibar.dispatch.on('elementClick.rsg', function () {
+				// 					moveLegend("multibar elementClick.rsg");
+				// 				});
 				nv.utils.windowResize(function () {
 					moveLegend("window resize");
 				});
