@@ -86,11 +86,11 @@ var barchart_nvd3 = (function () {
 		}
 		var svgSelector = "#barchart_nvd3";
 		var svgElement = d3.select(svgSelector);
-		//	var svgElement = d3.select(svgSelector);
-		//	var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
-		//	var chartWidth = parentBoundingBox.width;
+		var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
+		var chartWidth = parentBoundingBox.width;
 		//console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
 		var hierarchicalData = newData;
+		var marginLeft = 100;
 		//hierarchicalData = long_short_data;
 		var colorScale = d3.scale.category20();
 		nv.addGraph({
@@ -107,7 +107,7 @@ var barchart_nvd3 = (function () {
 					//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 					return color;
 				}).duration(250).margin({
-					left: 100
+					left: marginLeft
 				}).stacked(true);
 				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 				nvd3Chart.yAxis.axisLabel(countyColumn);
@@ -122,6 +122,23 @@ var barchart_nvd3 = (function () {
 				});
 				nvd3Chart.controls.updateState(true);
 				nvd3Chart.legend.vers('furious');
+				//add rectangles extending over each county to the right side of chart
+				//NOTE X AND Y AXES ARE REVERSED -- because this is a horizontal bar chart
+				//looks like nvd3 treated it like a rotated vertical bar chart. I use the actual axis names -- x horizontal, y vertical
+				var yAxisSvgObject = d3.select(".nvd3 .nv-x .nv-wrap.nv-axis");
+				var yAxisHeight = yAxisSvgObject.node().getBBox().height;
+				var firstModeCountyObjects = hierarchicalData[0].values;
+				var numCounties = hierarchicalData[0].values.length;
+				var heightPerGroup = yAxisHeight / numCounties;
+				var countyOverlayBoxes = yAxisSvgObject.selectAll(".group-overlay").data(firstModeCountyObjects, function (d) {
+					return "clickRects+" + d.label;
+				}).enter().append("rect").attr("class", "group-overlay");
+				countyOverlayBoxes.attr("height", heightPerGroup).attr("width", chartWidth).style("fill-opacity", "0.0") //transparent
+					.style("stroke-opacity", "1.0").attr("x", -marginLeft).attr("y", function (countyDatum, i) {
+						return i * heightPerGroup
+					}).on('click', function (e) {
+						console.log('got click on target: ' + e.label);
+					});
 				return nvd3Chart;
 			}
 			, callback: function () {
