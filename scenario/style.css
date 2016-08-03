@@ -1,101 +1,98 @@
-/* nvd3 customizations */
-
-.nvd3 .nv-axis {
-	pointer-events: all;
-	opacity: 1;
-}
-
-
-/* make the axis labels normal font sive instead of small */
-
-.nvd3 .tick.zero text {
-	font-size: 1em;
-}
-
-
-/* make grid lines disappear */
-
-.nvd3 .tick line {
-	display: none;
-}
-
-.nvd3 .nv-bar rect {
-	style: "min-height: 8px";
-}
-
-#barchart_d3 rect.subgroup {
-	stroke-width: 0;
-}
-
-#barchart_d3 rect.subgroup.disabled {
-	fill-opacity: 0;
-}
-
-#barchart_d3 .legend.disabled rect {
-	fill-opacity: 0;
-}
-
-
-/**
 body {
-  		padding-top: 50px;
-	}
+	padding-top: 50px;
+}
 
 .chart .legend {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: start;
-  font-size: 12px;
+	fill: black;
+	font: 14px sans-serif;
+	text-anchor: start;
+	font-size: 12px;
 }
+
 .chart text {
-  fill: black;
-  font: 10px sans-serif;
-  text-anchor: end;
+	fill: black;
+	font: 10px sans-serif;
+	text-anchor: end;
 }
+
 .chart .label {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: end;
+	fill: black;
+	font: 14px sans-serif;
+	text-anchor: end;
 }
+
 .bar:hover {
-  fill: brown;
+	fill: brown;
 }
+
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
 }
-.tick line{
-	opacity:0.2;
+
+.tick line {
+	opacity: 0.2;
 }
+
+.chart rect.subgroup {
+	fill-opacity: .8;
+	height:2;
+	stroke-width: 0;
+	stroke-opacity: 1;
+	font-size: 15;
+}
+
+.chart .group.current-county rect.subgroup {
+	fill-opacity: 1.0;
+	height:3;
+	font-size: 20;
+}
+
+.chart .y-axis text{
+	font-size: 15;
+}
+
+.chart .y-axis .current-county text{
+	font-size: 15;
+	font-weight: bold;
+}
+
+.chart rect.group-overlay {
+	fill-opacity: 0;
+	stroke-width: 1;
+	stroke-opacity: 1;
+}
+
 .slider-tip {
-    opacity:1;
-    bottom:120%;
-    margin-left: -.5em;
+	opacity: 1;
+	bottom: 120%;
+	margin-left: -.5em;
 }
 
 .svg-container {
-    display: inline-block;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
+	display: block;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	padding-bottom: 100%;
+	vertical-align: top;
+	overflow: visible;
 }
+
 .svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
+	display: inline-block;
+	position: absolute;
+	top: 10px;
+	left: 0;
 }
+
 .form-control-inline {
-    min-width: 0;
-    width: auto;
-    display: inline;
+	min-width: 0;
+	width: auto;
+	display: inline;
 }
-**/
 
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled,

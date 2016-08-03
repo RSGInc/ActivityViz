@@ -108,7 +108,7 @@ var barchart_nvd3 = (function () {
 					return color;
 				}).duration(250).margin({
 					left: marginLeft
-				}).stacked(true);
+				}).stacked(false).showControls(false);
 				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 				nvd3Chart.yAxis.axisLabel(countyColumn);
 				nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(20);
@@ -120,7 +120,7 @@ var barchart_nvd3 = (function () {
 				nvd3Chart.state.dispatch.on('change.rsg', function (state) {
 					nv.log('state', JSON.stringify(state));
 				});
-				nvd3Chart.controls.updateState(true);
+				//nvd3Chart.controls.updateState(true);
 				nvd3Chart.legend.vers('furious');
 				//add rectangles extending over each county to the right side of chart
 				//NOTE X AND Y AXES ARE REVERSED -- because this is a horizontal bar chart
@@ -159,7 +159,7 @@ var barchart_nvd3 = (function () {
 				};
 				var mainChartGSelector = ".nvd3.nv-multiBarHorizontalChart";
 				// pass in the target node, as well as the observer options
-				observer.observe(d3.select(mainChartGSelector).node(), mutationObserverConfig);
+				//observer.observe(d3.select(mainChartGSelector).node(), mutationObserverConfig);
 				moveLegend = function (caller) {
 						if (inMoveLegend) {
 							console.log('Skipping moveLegend called by "' + caller + '" because already running...')
@@ -204,7 +204,7 @@ var barchart_nvd3 = (function () {
 							inMoveLegend = false;
 						} //end if not already in function
 					} //end function moveLegend
-				moveLegend('Initial chart callback');
+				//moveLegend('Initial chart callback');
 				// 				nvd3Chart.dispatch.on('changeState.rsg', function () {
 				// 					moveLegend("chart changeState.rsg");
 				// 				});
@@ -235,19 +235,19 @@ var barchart_nvd3 = (function () {
 				// 				nvd3Chart.multibar.dispatch.on('elementClick.rsg', function () {
 				// 					moveLegend("multibar elementClick.rsg");
 				// 				});
-				nv.utils.windowResize(function () {
-					moveLegend("window resize");
-				});
-				nvd3Chart.state.dispatch.on('change.rsg', function () {
-					moveLegend("state change.rsg");
-				});
-				var nvd3UpdateFunction = nvd3Chart.update;
-				nvd3Chart.update = function () {
-					console.log('before nvd3 update');
-					nvd3UpdateFunction();
-					console.log('after nvd3 update');
-					moveLegend("after update()");
-				}
+// 				nv.utils.windowResize(function () {
+// 					moveLegend("window resize");
+// 				});
+// 				nvd3Chart.state.dispatch.on('change.rsg', function () {
+// 					moveLegend("state change.rsg");
+// 				});
+// 				var nvd3UpdateFunction = nvd3Chart.update;
+// 				nvd3Chart.update = function () {
+// 					console.log('before nvd3 update');
+// 					nvd3UpdateFunction();
+// 					console.log('after nvd3 update');
+// 					moveLegend("after update()");
+// 				}
 				var nvd3ChartFunction = nvd3Chart.chart;
 				nvd3Chart.chart = function () {
 					console.log('before nvd3 chart');

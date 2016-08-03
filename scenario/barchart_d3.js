@@ -45,7 +45,7 @@ var barchart_d3 = (function () {
 			}
 		});
 		var countiesNest = countiesNestFunctions.entries(csv_data);
-		//need to make every couty contain all modes in the same order
+		//need to make every county contain all modes in the same order
 		//also remove unneeded 'TOTAL' psuedo-mode
 		var groupSubgroupData = []
 		countiesNest.forEach(function (countyObject) {
@@ -77,7 +77,9 @@ var barchart_d3 = (function () {
 			} //end loop over modes in encounterOrder
 		}); //end loop over countiesNest
 		countiesNest = null;
-		horizontalGroupedBarGraph(groupSubgroupData, "#barchart_d3");
+		allData = groupSubgroupData;
+		svgSelector = "#barchart_d3";
+		drawChart();
 	});
 	//from https://gist.github.com/tianhuil/7936887
 	// data is a list of objects d
@@ -85,12 +87,38 @@ var barchart_d3 = (function () {
 	// d.subgroups is a list of subgroup objects
 	// subgroup.subgroupLabel -> label
 	// subgroup.value -> value
-	function horizontalGroupedBarGraph(data, svgSelector) {
-		var subgroupLabels = _.union.apply(this, _.map(data, function (d) {
+	var disabledCounties = new Set([]);
+	var disabledModes = new Set([]);
+	var svgSelector;
+	var allData;
+	function drawChart() {
+		var subgroupLabels = _.union.apply(this, _.map(allData, function (d) {
 			return _.map(d.subgroups, function (g) {
 				return g.subgroupLabel;
 			});
 		}));
+
+		
+		enabledData = [];
+		allData.forEach(function(countyObject) {
+			if (disabledCounties.has(countyObject.groupLabel)) {
+				//skip it
+			} else {
+				var subgroups = [];
+				enabledData.push({ groupLabel: countyObject.groupLabel,
+									subgroups: subgroups
+									});
+				countyObject.subgroups.forEach(function(countyModeObject) {
+					if (disabledModes.has(countyModeObject.subgroupLabel)) {
+						//skip it
+					} else {
+						subgroups.push({subgroupLabel: countyModeObject.subgroupLabel,
+						value: countyModeObject.value});
+					}
+				});	//end forEach over countyModes objects
+			}	//end else enabled
+		});	//end forEach over county objects
+
 		var marginLeft = 70;
 		var marginRight = 10;
 		var marginTop = 30;
@@ -100,8 +128,8 @@ var barchart_d3 = (function () {
 		var svgWidth = parentBoundingBox.width;
 		var chartWidth = svgWidth - (marginLeft + marginRight);
 		console.log("barchart_and_map based on parent element of svg, setting svgWidth=" + svgWidth + ", chartWidth=" + chartWidth);
-		var numGroups = data.length;
-		var numSubgroups = subgroupLabels.length;
+		var numGroups = allData.length - disabledCounties.size;
+		var numSubgroups = subgroupLabels.length - disabledModes.size;
 		var pixelsPerBar = 2;
 		var gapBetweenGroups = 5;
 		var chartHeight = numGroups * ((numSubgroups * pixelsPerBar) + gapBetweenGroups);
@@ -115,24 +143,24 @@ var barchart_d3 = (function () {
 		//set the svg to the size of entire chart + margins
 		svgElement.attr("width", svgWidth).attr("height", svgHeight)
 		var chartG = svgElement.append("g").attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
-		y0.domain(data.map(function (d) {
+		y0.domain(allData.map(function (d) {
 			return d.groupLabel;
 		}));
 		y1.domain(subgroupLabels).rangeRoundBands([0, y0.rangeBand()]);
-		x.domain([0, d3.max(data, function (d) {
+		x.domain([0, d3.max(allData, function (d) {
 			return d3.max(d.subgroups, function (d) {
 				return d.value;
 			});
 		})]);
 		chartG.append("g").attr("class", "x axis").attr("transform", "translate(0," + chartHeight + ")").call(xAxis).append("text").attr("x", chartWidth).attr("dy", "-.71em").style("text-anchor", "end").text("Population");
 		chartG.append("g").attr("class", "y axis").call(yAxis);
-		var group = chartG.selectAll(".group").data(data).enter().append("g").attr("class", "group").attr("transform", function (d) {
+		var group = chartG.selectAll(".group").data(allData, function(d) { return d.groupLabel;}).enter().append("g").attr("class", "group").attr("transform", function (d) {
 			return "translate(0," + y0(d.groupLabel) + ")";
 		});
 		//the group is the county. The subgroups are the travel modes
 		group.selectAll("rect.subgroup").data(function (d) {
 			return d.subgroups;
-		}).enter().append("rect").attr("class", function (d, i) {
+		}, function(d) {return d.subgroupLabel}).enter().append("rect").attr("class", function (d, i) {
 			//two classes subgroup and particular subgroup
 			return "subgroup " + d.subgroupLabel;
 		}).attr("height", y1.rangeBand()).attr("x", 0).attr("y", function (d) {
@@ -144,26 +172,33 @@ var barchart_d3 = (function () {
 			//console.log("fill color for d.subgroupLabel=" + d.subgroupLabel + ", index=" + i + ", color=" + color);
 			return colorScale(i);
 		});
-		var legend = chartG.selectAll(".legend").data(subgroupLabels).enter().append("g").attr("class", "legend").attr("transform", function (d, i) {
+		var legendUpdateSelection = chartG.selectAll(".legend").data(subgroupLabels, function(d) {return d;})
+
+		var legendObjects = legendUpdateSelection.enter().append("g").attr("class", "legend").attr("transform", function (d, i) {
 			return "translate(0," + i * 20 + ")";
 		});
-		legend.on('click', function (d, i) {
+
+		legendUpdateSelection.classed("disabled", function(d) {
+			return disabledModes.has(d);
+		})
+
+		legendObjects.on('click', function (d, i) {
 			//is this subgroup currently showing?
-			var isEnabled = this.classList.contains("disabled");
-			//toggle it
-			var addDisabledClass = !isEnabled;
-			//either add or remove 'disabled' class to both legend and subgroup bars
-			d3.select(this).classed("disabled", addDisabledClass);
 			var subgroupLabel = d;	//since list of subgroups used as data
-			var affectedBars = d3.selectAll(".subgroup" + "." + subgroupLabel);
-			affectedBars.classed("disabled", addDisabledClass);
+			//must toggle current enabled/disabled state
+			if (disabledModes.has(subgroupLabel)) {
+				disabledModes.delete(subgroupLabel);
+			} else {
+				disabledModes.add(subgroupLabel);
+			}
+			drawChart();
 		});
 		var legendRectSize = 18;
 		var legendRectCenter = chartWidth - (legendRectSize + 1);
-		legend.append("rect").attr("x", legendRectCenter).attr("width", legendRectSize).attr("height", legendRectSize).style("fill", function (d, i) {
+		legendObjects.append("rect").attr("x", legendRectCenter).attr("width", legendRectSize).attr("height", legendRectSize).style("fill", function (d, i) {
 			return colorScale(i);
 		});
-		legend.append("text").attr("x", legendRectCenter - (legendRectSize / 2) + 1).attr("y", legendRectSize / 2).attr("dy", ".35em").style("text-anchor", "end").text(function (d) {
+		legendObjects.append("text").attr("x", legendRectCenter - (legendRectSize / 2) + 1).attr("y", legendRectSize / 2).attr("dy", ".35em").style("text-anchor", "end").text(function (d) {
 			return d;
 		});
 		var heightPerGroup = chartHeight / numGroups;
