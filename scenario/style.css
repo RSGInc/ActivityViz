@@ -2,57 +2,11 @@ body {
 	padding-top: 50px;
 }
 
-.chart .legend {
-	fill: black;
-	font: 14px sans-serif;
-	text-anchor: start;
-	font-size: 12px;
-}
-
-.chart text {
-	fill: black;
-	font: 10px sans-serif;
-	text-anchor: end;
-}
-
-.chart .label {
-	fill: black;
-	font: 14px sans-serif;
-	text-anchor: end;
-}
-
-.bar:hover {
-	fill: brown;
-}
-
-.axis path,
-.axis line {
-	fill: none;
-	stroke: #000;
-	shape-rendering: crispEdges;
-}
-
-.tick line {
-	opacity: 0.2;
-}
-
-.chart rect.subgroup {
-	fill-opacity: .8;
-	height:2;
-	stroke-width: 0;
-	stroke-opacity: 1;
-	font-size: 15;
-}
-
-.chart .group.current-county rect.subgroup {
-	fill-opacity: 1.0;
-	height:3;
-	font-size: 20;
-}
 
 /* strangely the nvd3 multiBarHorizontalChart has the axis names reversed so that the yaxis is actually along bottom.
 Presumably this is because it used the smae code as the vertical chart
 */
+
 .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text {
 	font-size: 15;
 }

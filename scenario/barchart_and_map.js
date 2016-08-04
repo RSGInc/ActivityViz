@@ -195,8 +195,11 @@ var barchart_and_map = (function () {
 		var svgElement = d3.select(svgSelector);
 		var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
 		var chartWidth = parentBoundingBox.width;
+		var minBarWidth = 2;
+		var minBarSpacing = 1;
 		//console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
 		var marginTop = 0;
+		var marginBottom = 0;
 		var marginLeft = 100;
 		//hierarchicalData = long_short_data;
 		var colorScale = d3.scale.category20();
@@ -217,6 +220,7 @@ var barchart_and_map = (function () {
 				}).duration(250).margin({
 					left: marginLeft
 					, top: marginTop
+					, bottom: marginBottom
 				}).stacked(false).showControls(false);
 				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 				nvd3Chart.yAxis.axisLabel(countyColumn);
@@ -230,24 +234,45 @@ var barchart_and_map = (function () {
 					nvd3Chart.update();
 				});
 				nvd3Chart.legend.vers('furious');
+				var legendHeight = nvd3Chart.legend.height();
+				var numTotalBars = enabledCounties.length * modes.length;
+				var heightPerBar = minBarWidth + minBarSpacing;
+				var chartAreaHeight = numTotalBars * heightPerBar;
+				var totalSvgHeight = legendHeight + chartAreaHeight + marginTop + marginBottom;
+				console.log('setting totalSvgHeight to: ' + totalSvgHeight + " with chart area portion: " + chartAreaHeight);
+				nvd3Chart.height(totalSvgHeight);
+				nvd3Chart.update();
+				svgElement.attr("width", chartWidth).attr("height", totalSvgHeight);
 				return nvd3Chart;
 			}
 			, callback: function () {
 					console.log("***********************barchart_nvd3 callback called");
-					var mainChartGSelector = ".nvd3.nv-multiBarHorizontalChart";
-					var bounds = svgElement.node().getBBox();
-					var width = bounds.width;
-					var height = bounds.height;
-					console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
-					svgElement.attr("width", width).attr("height", height);
+					var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
+					var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
+
+					function sizeSVG() {
+						entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart")
+						var node = entireChartWithLegend.node();
+						if (node) {
+							var bounds = node.getBBox();
+							var width = bounds.width;
+							var height = bounds.height;
+							console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
+							svgElement.attr("width", width).attr("height", height);
+							//svgElement.style.webkitTransform = 'scale(1)';
+						}
+					}
+					//sizeSVG();
+					//setTimeout(sizeSVG, 2500);
 					svgElement.on('click', function (event) {
 						var mouseY = d3.mouse(this)[1];
-						var chartYOffset = d3.transform(d3.select(mainChartGSelector).attr("transform")).translate[1];
-						var chartHeight = d3.transform(d3.select(".nvd3 .nv-y.nv-axis").attr("transform")).translate[1];
+						//the main area is shifted -(legendHeight)
+						var chartYOffset = d3.transform(entireChartWithLegend.attr("transform")).translate[1];
+						var mainChartHeight = d3.transform(mainChart.attr("transform")).translate[1];
 						var mouseChartY = mouseY - chartYOffset;
-						if (mouseChartY > 0 && mouseChartY < chartHeight) {
+						if (mouseChartY > 0 && mouseChartY < mainChartHeight) {
 							var numCounties = enabledCounties.length;
-							var heightPerGroup = chartHeight / numCounties;
+							var heightPerGroup = mainChartHeight / numCounties;
 							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
 							var countyObject = enabledCounties[countyIndex];
 							console.log('click in county: ' + countyObject.groupLabel);
@@ -267,125 +292,6 @@ var barchart_and_map = (function () {
 				} //end callback function
 		}); //end nv.addGraph
 	} //end updateChartNVD3
-	function updateChartBareD3() {
-		"use strict";
-		var filteredData = chartData;
-		var subgroupLabels = _.union.apply(this, _.map(filteredData, function (d) {
-			return _.map(d.subgroups, function (g) {
-				return g.subgroupLabel;
-			});
-		}));
-		var maxCountyLength = d3.max(filteredData, function (d) {
-			return d.groupLabel.length;
-		});
-		var marginLeft = maxCountyLength * 11;
-		var marginRight = 0;
-		var marginTop = 0;
-		var marginBottom = 0;
-		var spaceForLabels = 100;
-		var spaceForLegend = 150;
-		var svgElement = d3.select("#chart");
-		svgElement.data(filteredData);
-		var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
-		var svgWidth = parentBoundingBox.width;
-		var chartWidth = svgWidth - (marginLeft + marginRight);
-		console.log("barchart_and_map based on parent element of svg, setting svgWidth=" + svgWidth + ", chartWidth=" + chartWidth);
-		var numGroups = filteredData.length;
-		var numSubgroups = subgroupLabels.length;
-		var pixelsPerBar = 2;
-		var gapBetweenGroups = 5;
-		var chartHeight = numGroups * ((numSubgroups * pixelsPerBar) + gapBetweenGroups);
-		var svgHeight = chartHeight + marginTop + marginBottom;
-		var x = d3.scale.linear().range([0, chartWidth]);
-		var y0 = d3.scale.ordinal().rangeRoundBands([0, chartHeight], .1);
-		var y1 = d3.scale.ordinal();
-		var colorScale = d3.scale.category20();
-		var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.format(".2s")).outerTickSize(0);
-		var yAxis = d3.svg.axis().scale(y0).orient("left").outerTickSize(0);
-		//set the svg to the size of entire chart + margins
-		var chartG = svgElement.append("g").attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
-		y0.domain(filteredData.map(function (d, i) {
-			//console.log("y) map called on index " + i + " " + d.groupLabel);
-			return d.groupLabel;
-		}));
-		y1.domain(subgroupLabels).rangeRoundBands([0, y0.rangeBand()]);
-		var maxX = d3.max(filteredData, function (d) {
-			return d3.max(d.subgroups, function (d) {
-				return d.value;
-			});
-		});
-		x.domain([0, maxX]);
-		var xAxisGroup = chartG.append("g").attr("class", "x-axis").attr("transform", "translate(0," + chartHeight + ")").call(xAxis);
-		xAxisGroup.append("text").attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
-			.attr("transform", "translate(" + (chartWidth / 2) + "," + 35 + ")") // centre below axis
-			.text(quantityColumn);
-		var yAxisGroup = chartG.append("g").attr("class", "y-axis").call(yAxis);
-		var group = chartG.selectAll(".group").data(filteredData, function (d) {
-			return d.groupLabel;
-		}).enter().append("g").attr("class", "group").attr("transform", function (d) {
-			return "translate(0," + y0(d.groupLabel) + ")";
-		});
-		//the group is the county. The subgroups are the travel modes
-		group.selectAll("rect.subgroup").data(function (d) {
-			return d.subgroups;
-		}, function (d) {
-			return d.subgroupLabel
-		}).enter().append("rect").attr("class", function (d, i) {
-			//two classes subgroup and particular subgroup
-			return "subgroup " + "subgroup-" + d.subgroupLabel;
-		}).attr("height", y1.rangeBand()).attr("x", 0).attr("y", function (d) {
-			return y1(d.subgroupLabel);
-		}).attr("width", function (d) {
-			return x(d.value);
-		}).style("fill", function (d, i) {
-			var color = colorScale(i);
-			//console.log("fill color for d.subgroupLabel=" + d.subgroupLabel + ", index=" + i + ", color=" + color);
-			return colorScale(i);
-		});
-		var heightPerGroup = chartHeight / numGroups;
-		group.append("rect").attr("class", "group-overlay").attr("height", heightPerGroup).attr("width", chartWidth + marginLeft).attr("x", -marginLeft).attr("y", 0).on('click', function (d) {
-			console.log('got click on target groupLabel: ' + d.groupLabel);
-			currentCounty = d.groupLabel;
-			group.classed("current-county", function (d) {
-				return d.groupLabel == currentCounty;
-			}); //end classed of group rect
-			var ticks = yAxisGroup.selectAll(".tick");
-			ticks.classed("current-county", function (d, i) {
-				return d == currentCounty;
-			}); //end classed of group rect
-			redraw_map();
-		}); //end onClick
-		var legendRectSize = 18
-			, legendSpacing = 4;
-		var legend = chartG.selectAll('.legend').data(filteredData[0].subgroups);
-		//operate on 'enter'' selection
-		var legendG = legend.enter().append('g').attr("class", "legend");
-		//legend colors
-		legendG.append('rect').attr('width', legendRectSize).attr('height', legendRectSize).style('fill', function (d, i) {
-			return colorScale(i);
-		}).style('stroke', function (d, i) {
-			return colorScale(i);
-		}).on("click", function (d, i) {
-			//toggle
-			var modeDatum = modeData[d.subgroupLabel];
-			modeDatum.enabled = !modeDatum.enabled;
-			updateChart();
-		});
-		legendG.append('text').attr('x', legendRectSize + legendSpacing).attr('y', legendRectSize - legendSpacing).text(function (d) {
-			return d.subgroupLabel;
-		});
-		//operate on 'update' selection (note: enter selection automatically added)
-		legend.attr('transform', function (d, i) {
-			var height = legendRectSize + legendSpacing;
-			var offset = -gapBetweenGroups / 2;
-			var vert = (parseInt(i / 3)) * height - offset + (chartHeight + gapBetweenGroups * filteredData.length - 20 + 30);
-			var w = 140 * (i % 3) + spaceForLabels;
-			return 'translate(' + w + ',' + vert + ')';
-		});
-		var chartGBounds = chartG.node().getBBox();
-		console.log("setting svg to chartGBounds.width: " + chartGBounds.width + ", chartGBounds.height: " + chartGBounds.height);
-		svgElement.attr("width", chartGBounds.width).attr("height", chartGBounds.height);
-	} //end updateChart()
 	//load tiles
 	function loadTiles(callback) {
 		$.getJSON("../scripts/ZoneShape.GeoJSON", function (json) {
