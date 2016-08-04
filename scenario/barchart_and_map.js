@@ -33,11 +33,11 @@ var barchart_and_map = (function () {
 	var currentCounty = "";
 	var modes;
 	var counties;
+	var enabledCounties;
 	var circlesLayerGroup;
 	var chartData = null;
 	//use Map instead of vanilla object because wish to preserve insertion order
 	var modeData = new Map([]);
-	var countyStatuses = new Map([]);
 	var quantityColumn;
 	var countyColumn;
 	var zoneColumn;
@@ -78,6 +78,7 @@ var barchart_and_map = (function () {
 			var rawChartData = new Map([]);
 			//run through data. Filter out 'total' psuedo-mode, convert quantity to int, create zoneData
 			zoneData = {};
+			counties = [];
 			data.forEach(function (d) {
 				var modeName = d[modeColumn];
 				var keepThisObject = modeName != "TOTAL";
@@ -94,9 +95,7 @@ var barchart_and_map = (function () {
 					};
 					if (rawChartData[countyName] == undefined) {
 						rawChartData[countyName] = {};
-						countyStatuses[countyName] = {
-							enabled: true
-						};
+						counties.push(countyName);
 					}
 					if (rawChartData[countyName][modeName] == undefined) {
 						rawChartData[countyName][modeName] = 0;
@@ -116,7 +115,6 @@ var barchart_and_map = (function () {
 				return keepThisObject;
 			}); //end filtering and other data prep
 			modes = Object.keys(modeData);
-			counties = Object.keys(countyStatuses);
 			data = null; //allow GC to reclaim memory
 			//need to run through rawChartData and put modes in order and insert ones that are missing
 			chartData = [];
@@ -125,6 +123,7 @@ var barchart_and_map = (function () {
 				var newCountyObject = {
 					groupLabel: countyName
 					, subgroups: []
+					, enabled: true
 				};
 				chartData.push(newCountyObject);
 				modes.forEach(function (modeName) {
@@ -151,16 +150,124 @@ var barchart_and_map = (function () {
 
 	function setDataSpecificDOM() {
 		$("#attribute_label").html(modeColumn);
-		modes.forEach(function(modeName) {
+		modes.forEach(function (modeName) {
 			$("#attribute").append("<option>" + modeName + "</option>");
 		});
-		chartData.forEach(function(chartObject) {
+		chartData.forEach(function (chartObject) {
 			$("#chart_selection").append("<option>" + chartObject.groupLabel + "</option>");
 		});
-		
 		$("#chart_selection").chosen();
 	} //end setDataSpecificDOM
 	function updateChart() {
+		"use strict";
+		updateChartNVD3();
+	}
+
+	function updateChartNVD3() {
+		"use strict";
+		//nvd3 expects data in the opposite hierarchy than rest of code so need to create 
+		//but can also filter out counties at same time
+		enabledCounties = chartData.filter(function (countyObject) {
+			return countyObject.enabled;
+		})
+		var hierarchicalData = [];
+		modes.forEach(function (modeName, modeIndex) {
+			var subgroups = [];
+			var modeObject = {
+				key: modeName
+				, values: subgroups
+			};
+			hierarchicalData.push(modeObject);
+			enabledCounties.forEach(function (countyWithModesObject) {
+				var simpleModeObject = countyWithModesObject.subgroups[modeIndex];
+				var retrievedModeName = simpleModeObject.subgroupLabel;
+				if (retrievedModeName != modeName) {
+					throw ("SOMETHING IS WRONG. Mode is not as expected. Expected mode: " + modeName + ", found modeName: " + retrievedModeName);
+				}
+				var simpleCountyObject = {
+					label: countyWithModesObject.groupLabel
+					, value: simpleModeObject.value
+				}
+				subgroups.push(simpleCountyObject);
+			}); //end loop over chartData countyObjects
+		}); //end loop over modes
+		var svgSelector = "#chart";
+		var svgElement = d3.select(svgSelector);
+		var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
+		var chartWidth = parentBoundingBox.width;
+		//console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
+		var marginTop = 0;
+		var marginLeft = 100;
+		//hierarchicalData = long_short_data;
+		var colorScale = d3.scale.category20();
+		var nvd3Chart;
+		nv.addGraph({
+			generate: function chartGenerator() {
+				//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
+				nvd3Chart = nv.models.multiBarHorizontalChart();
+				//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+				nvd3Chart.x(function (d, i) {
+					return d.label
+				}).y(function (d) {
+					return d.value
+				}).color(function (d, i) {
+					var color = colorScale(i);
+					//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
+					return color;
+				}).duration(250).margin({
+					left: marginLeft
+					, top: marginTop
+				}).stacked(false).showControls(false);
+				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
+				nvd3Chart.yAxis.axisLabel(countyColumn);
+				nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(20);
+				svgElement.datum(hierarchicalData).call(nvd3Chart);
+				nv.utils.windowResize(function () {
+					//reset marginTop in case legend has gotten less tall
+					nvd3Chart.margin({
+						top: marginTop
+					});
+					nvd3Chart.update();
+				});
+				nvd3Chart.legend.vers('furious');
+				return nvd3Chart;
+			}
+			, callback: function () {
+					console.log("***********************barchart_nvd3 callback called");
+					var mainChartGSelector = ".nvd3.nv-multiBarHorizontalChart";
+					var bounds = svgElement.node().getBBox();
+					var width = bounds.width;
+					var height = bounds.height;
+					console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
+					svgElement.attr("width", width).attr("height", height);
+					svgElement.on('click', function (event) {
+						var mouseY = d3.mouse(this)[1];
+						var chartYOffset = d3.transform(d3.select(mainChartGSelector).attr("transform")).translate[1];
+						var chartHeight = d3.transform(d3.select(".nvd3 .nv-y.nv-axis").attr("transform")).translate[1];
+						var mouseChartY = mouseY - chartYOffset;
+						if (mouseChartY > 0 && mouseChartY < chartHeight) {
+							var numCounties = enabledCounties.length;
+							var heightPerGroup = chartHeight / numCounties;
+							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
+							var countyObject = enabledCounties[countyIndex];
+							console.log('click in county: ' + countyObject.groupLabel);
+							changeCurrentCounty(countyObject.groupLabel);
+
+							function changeCurrentCounty(newCurrentCounty) {
+								currentCounty = newCurrentCounty;
+								var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+								countyLabels.classed("current-county", function (d, i) {
+									var setClass = d == currentCounty;
+									return setClass;
+								}); //end classed of group rect
+								redraw_map();
+							} //end chage currentCounty
+						} //end if click in chart area
+					}); //end on svgElement click
+				} //end callback function
+		}); //end nv.addGraph
+	} //end updateChartNVD3
+	function updateChartBareD3() {
 		"use strict";
 		var filteredData = chartData;
 		var subgroupLabels = _.union.apply(this, _.map(filteredData, function (d) {
@@ -339,17 +446,22 @@ var barchart_and_map = (function () {
 			}
 			$("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
 			$("#chart_selection").change(function () {
-				var list = $("#chart_selection");
-				for(var x=0; x< list.length; ++x) {
-					var isSelected = list[x].selected;
-					chartData[x].enabled = isSelected;
-				}
-				updateChart();
-				$('#chart_selection :selected').each(function (i, selected) {
-					var bars = d3.select(".chart").selectAll("g");
-					bars.remove();
-					updateChart();
+				//check ALL
+				var allIsSet;
+				var options = $("#chart_selection option");
+				options.each(function () {
+					var option = this;
+					var optionName = option.text;
+					if (optionName == "All") {
+						allIsSet = option.selected;
+					}
+					else {
+						var countyIndex = option.index - 1; //subtract 'All'
+						var isSelected = allIsSet || option.selected;
+						chartData[countyIndex].enabled = isSelected;
+					}
 				});
+				updateChart();
 			});
 			//Logic for cycling through the maps
 			$("#start_cycle_map").click(function () {

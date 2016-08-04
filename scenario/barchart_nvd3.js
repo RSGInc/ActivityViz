@@ -108,46 +108,46 @@ var barchart_nvd3 = (function () {
 					//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 					return color;
 				}).duration(250).margin({
-					left: marginLeft,
-					top: marginTop
+					left: marginLeft
+					, top: marginTop
 				}).stacked(false).showControls(false);
 				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 				nvd3Chart.yAxis.axisLabel(countyColumn);
 				nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(20);
 				svgElement.datum(hierarchicalData).call(nvd3Chart);
-				nv.utils.windowResize(function() {
+				nv.utils.windowResize(function () {
 					//reset marginTop in case legend has gotten less tall
 					nvd3Chart.margin({
 						top: marginTop
-						});
-					nvd3Chart.update();
 					});
+					nvd3Chart.update();
+				});
 				nvd3Chart.legend.vers('furious');
 				return nvd3Chart;
 			}
 			, callback: function () {
-				console.log("***********************barchart_nvd3 callback called");
-				var mainChartGSelector = ".nvd3.nv-multiBarHorizontalChart";
-				var bounds = svgElement.node().getBBox();
-				var width = bounds.width;
-				var height = bounds.height;
-				console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
-				svgElement.attr("width", width).attr("height", height);
-				svgElement.on('click', function (event) {
-					var mouseY = d3.mouse(this)[1];
-					var chartYOffset = d3.transform(d3.select(mainChartGSelector).attr("transform")).translate[1];
-					var chartHeight = d3.transform(d3.select(".nvd3 .nv-y.nv-axis").attr("transform")).translate[1];
-					var mouseChartY = mouseY - chartYOffset;
-					if (mouseChartY > 0 && mouseChartY < chartHeight) {
-						var firstModeCountyObjects = hierarchicalData[0].values;
-						var numCounties = hierarchicalData[0].values.length;
-						var heightPerGroup = chartHeight / numCounties;
-						var countyIndex = Math.floor(mouseChartY / heightPerGroup);
-						var countyObject = firstModeCountyObjects[countyIndex];
-						console.log('click may be in county: ' + countyObject.label);
-					}
-				}); //end on svgElement click
-			} //end callback function
+					console.log("***********************barchart_nvd3 callback called");
+					var mainChartGSelector = ".nvd3.nv-multiBarHorizontalChart";
+					var bounds = svgElement.node().getBBox();
+					var width = bounds.width;
+					var height = bounds.height;
+					console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
+					svgElement.attr("width", width).attr("height", height);
+					svgElement.on('click', function (event) {
+						var mouseY = d3.mouse(this)[1];
+						var chartYOffset = d3.transform(d3.select(mainChartGSelector).attr("transform")).translate[1];
+						var chartHeight = d3.transform(d3.select(".nvd3 .nv-y.nv-axis").attr("transform")).translate[1];
+						var mouseChartY = mouseY - chartYOffset;
+						if (mouseChartY > 0 && mouseChartY < chartHeight) {
+							var firstModeCountyObjects = hierarchicalData[0].values;
+							var numCounties = hierarchicalData[0].values.length;
+							var heightPerGroup = chartHeight / numCounties;
+							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
+							var countyObject = firstModeCountyObjects[countyIndex];
+							console.log('click may be in county: ' + countyObject.label);
+						}
+					}); //end on svgElement click
+				} //end callback function
 		}); //end nv.addGraph
 	}); //end d3.csv
 }()); //end encapsulating IIFE
