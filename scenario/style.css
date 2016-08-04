@@ -44,6 +44,9 @@ body {
 	font-size: 15;
 }
 
+.nvd3 .nv-axis {
+    pointer-events: visiblepainted;
+}
 .chart .group.current-county rect.subgroup {
 	fill-opacity: 1.0;
 	height:3;
