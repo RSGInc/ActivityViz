@@ -44,6 +44,15 @@ var barchart_and_map = (function () {
 	var modeColumn;
 	var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv"
 	var centroids = {};
+	var svgSelector = "#chart";
+	var svgElement;
+	var extNvd3Chart;
+	var minBarWidth = 2;
+	var minBarSpacing = 1;
+	var marginTop = 0;
+	var marginBottom = 50;
+	var marginLeft = 110;
+	var marginRight = 50;
 
 	function GetURLParameter(sParam) {
 		"use strict";
@@ -191,80 +200,111 @@ var barchart_and_map = (function () {
 				subgroups.push(simpleCountyObject);
 			}); //end loop over chartData countyObjects
 		}); //end loop over modes
-		var svgSelector = "#chart";
-		var svgElement = d3.select(svgSelector);
-		var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
-		var chartWidth = parentBoundingBox.width;
-		var minBarWidth = 2;
-		var minBarSpacing = 1;
-		//console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
-		var marginTop = 0;
-		var marginBottom = 0;
-		var marginLeft = 100;
-		//hierarchicalData = long_short_data;
-		var colorScale = d3.scale.category20();
-		var nvd3Chart;
+		//poll every 150ms for up to two seconds waiting for chart
+		poll(function () {
+			return extNvd3Chart != undefined;
+		}, function () {
+			var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
+			var chartWidth = parentBoundingBox.width;
+			extNvd3Chart.width(chartWidth);
+			console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
+			//update chart with current data
+			svgElement.datum(hierarchicalData).call(extNvd3Chart);
+			var legendHeight = extNvd3Chart.legend.height();
+			var numTotalBars = enabledCounties.length * modes.length;
+			var heightPerBar = minBarWidth + minBarSpacing;
+			var chartAreaHeight = numTotalBars * heightPerBar;
+			var totalHeight = legendHeight + chartAreaHeight + marginTop + marginBottom;
+			console.log('setting totalHeight to: ' + totalHeight + " with chart area portion: " + chartAreaHeight);
+			//extNvd3Chart.height(totalHeight);
+			//extNvd3Chart.update();
+			//svgElement.attr("height", totalSvgHeight); //svgElement.attr("width", chartWidth).attr("height", totalSvgHeight);
+			//svgElement.style.webkitTransform = 'scale(1)';
+			var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
+			var node = entireChartWithLegend.node();
+			if (false && node) {
+				var bounds = node.getBBox();
+				var width = bounds.width;
+				var height = bounds.height;
+				console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
+				//svgElement.attr("width", width);
+				svgElement.attr("height", height);
+				svgElement.style.webkitTransform = 'scale(1)';
+			} //end if node
+		}, function () {
+			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
+		}); //end call to poll
+	}; //end updateChartNVD3
+	//from https://davidwalsh.name/javascript-polling
+	function poll(fn, callback, errback, timeout, interval) {
+		var endTime = Number(new Date()) + (timeout || 2000);
+		interval = interval || 100;
+		(function p() {
+			// If the condition is met, we're done! 
+			if (fn()) {
+				callback();
+			}
+			// If the condition isn't met but the timeout hasn't elapsed, go again
+			else if (Number(new Date()) < endTime) {
+				setTimeout(p, interval);
+			}
+			// Didn't match and too much time, reject!
+			else {
+				errback(new Error('timed out for ' + fn + ': ' + arguments));
+			}
+		})();
+	}
+
+	function createEmptyChart() {
 		nv.addGraph({
 			generate: function chartGenerator() {
-				//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
-				nvd3Chart = nv.models.multiBarHorizontalChart();
-				//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
-				nvd3Chart.x(function (d, i) {
-					return d.label
-				}).y(function (d) {
-					return d.value
-				}).color(function (d, i) {
-					var color = colorScale(i);
-					//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
-					return color;
-				}).duration(250).margin({
-					left: marginLeft
-					, top: marginTop
-					, bottom: marginBottom
-				}).stacked(false).showControls(false);
-				nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
-				nvd3Chart.yAxis.axisLabel(countyColumn);
-				nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(20);
-				svgElement.datum(hierarchicalData).call(nvd3Chart);
-				nv.utils.windowResize(function () {
-					//reset marginTop in case legend has gotten less tall
-					nvd3Chart.margin({
-						top: marginTop
+					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
+					var colorScale = d3.scale.category20();
+					var nvd3Chart = nv.models.multiBarHorizontalChart();
+					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+					nvd3Chart.x(function (d, i) {
+						return d.label
+					}).y(function (d) {
+						return d.value
+					}).color(function (d, i) {
+						var color = colorScale(i);
+						//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
+						return color;
+					}).duration(250).margin({
+						left: marginLeft
+						, right: marginRight
+						, top: marginTop
+						, bottom: marginBottom
+					}).stacked(false).showControls(false);
+					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
+					nvd3Chart.yAxis.axisLabel(countyColumn);
+					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
+					nv.utils.windowResize(function () {
+						//reset marginTop in case legend has gotten less tall
+						nvd3Chart.margin({
+							top: marginTop
+						});
+						updateChart();
 					});
-					nvd3Chart.update();
-				});
-				nvd3Chart.legend.vers('furious');
-				var legendHeight = nvd3Chart.legend.height();
-				var numTotalBars = enabledCounties.length * modes.length;
-				var heightPerBar = minBarWidth + minBarSpacing;
-				var chartAreaHeight = numTotalBars * heightPerBar;
-				var totalSvgHeight = legendHeight + chartAreaHeight + marginTop + marginBottom;
-				console.log('setting totalSvgHeight to: ' + totalSvgHeight + " with chart area portion: " + chartAreaHeight);
-				nvd3Chart.height(totalSvgHeight);
-				nvd3Chart.update();
-				svgElement.attr("width", chartWidth).attr("height", totalSvgHeight);
-				return nvd3Chart;
-			}
-			, callback: function () {
-					console.log("***********************barchart_nvd3 callback called");
-					var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
-					var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
 
-					function sizeSVG() {
-						entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart")
-						var node = entireChartWithLegend.node();
-						if (node) {
-							var bounds = node.getBBox();
-							var width = bounds.width;
-							var height = bounds.height;
-							console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
-							svgElement.attr("width", width).attr("height", height);
-							//svgElement.style.webkitTransform = 'scale(1)';
-						}
-					}
-					//sizeSVG();
-					//setTimeout(sizeSVG, 2500);
+					function changeCurrentCounty(newCurrentCounty) {
+						currentCounty = newCurrentCounty;
+						var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+						countyLabels.classed("current-county", function (d, i) {
+							var setClass = d == currentCounty;
+							return setClass;
+						}); //end classed of group rect
+						redraw_map();
+					}; //end change currentCounty
+					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
+						console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
+						changeCurrentCounty(e.data.label);
+					});
+					//furious has colored boxes with checkmarks
+					//nvd3Chart.legend.vers('furious');
 					svgElement.on('click', function (event) {
+						var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
+						var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
 						var mouseY = d3.mouse(this)[1];
 						//the main area is shifted -(legendHeight)
 						var chartYOffset = d3.transform(entireChartWithLegend.attr("transform")).translate[1];
@@ -277,21 +317,19 @@ var barchart_and_map = (function () {
 							var countyObject = enabledCounties[countyIndex];
 							console.log('click in county: ' + countyObject.groupLabel);
 							changeCurrentCounty(countyObject.groupLabel);
-
-							function changeCurrentCounty(newCurrentCounty) {
-								currentCounty = newCurrentCounty;
-								var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-								countyLabels.classed("current-county", function (d, i) {
-									var setClass = d == currentCounty;
-									return setClass;
-								}); //end classed of group rect
-								redraw_map();
-							} //end chage currentCounty
 						} //end if click in chart area
 					}); //end on svgElement click
+					return nvd3Chart;
+				} //end generate
+				
+			, callback: function (newGraph) {
+					extNvd3Chart = newGraph;
+					console.log("***********************barchart_nvd3 callback called");
+					//sizeSVG();
+					//setTimeout(sizeSVG, 2500);
 				} //end callback function
 		}); //end nv.addGraph
-	} //end updateChartNVD3
+	}; //end createEmptyChart
 	//load tiles
 	function loadTiles(callback) {
 		$.getJSON("../scripts/ZoneShape.GeoJSON", function (json) {
@@ -346,7 +384,12 @@ var barchart_and_map = (function () {
 		$(document).ready(function () {
 			"use strict";
 			console.log("enter ready callback");
+			//NOTE: data should have been fully read in opn entry because 
+			//readInData() set holdReady until finished
 			setDataSpecificDOM();
+			svgElement = d3.select(svgSelector);
+			createEmptyChart();
+			updateChart();
 			if ($("#classification").val() == "custom") {
 				$("#update_map").css("display", "inline");
 			}
@@ -584,9 +627,8 @@ var barchart_and_map = (function () {
 					redraw_map();
 				}
 			});
-			updateChart();
 			callback();
-		});
+		}); //end on document ready
 	}; //end handleDocumentReady
 	console.log("Before handling document ready");
 	handleDocumentReady(function () {
@@ -706,7 +748,7 @@ var barchart_and_map = (function () {
 			data.features[i].properties.color = color;
 		}
 		return counter;
-	}
+	}; //end colorizefeatures
 	var tileLayer = L.canvasTiles().params({
 		debug: false
 		, padding: 5
@@ -758,7 +800,7 @@ var barchart_and_map = (function () {
 				ctx.stroke();
 			}
 		}
-	}
+	} //end drawingOnCanvas
 	var display_chart_dic = {};
 	//main chart function
 	var hiddenModes = [];
