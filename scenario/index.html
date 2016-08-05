@@ -45,22 +45,26 @@
 			<h2>Bar Chart and Map</h2>
 			<div class="row"> The Bar Chart and Map visual is a linked interactive visual related to spatial information.</div>
 		</div>
-		<div class="col-md-6 right-border">
-			<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode. </div>
-			<div class="row">
-				<label>
-					<input type="checkbox" checked id="stacked" />Stacked</label>
-				<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
+		<div class="col-md-6 right-border" style="margin-top:4px">
+			<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
+				<div class="row" style="margin-top:4px">
+					<div class="col-md-10">
+						<ul>
+							<li>Click on the 'Stacked' checkbox to change chart style</li>
+							<li>Click on a bar group label to highlight the area on the map</li>
+							<li>Click on the bar label in the legend to show or hide the bar across bar groups</li>
+							<li>Double click on the bar label to isolotate a single Quantity type such as BIKE trips</li>
+						</ul>
+					</div>
+					<div class="col-md-2">
+						<label>
+							<input type="checkbox" checked id="stacked" />Stacked</label>
+						<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
+					</div>
+				</div>
 			</div>
 			<div class="row" style="width:100%;height:80%;">
 				<svg id="chart"></svg>
-			</div>
-			<div class="row">
-				<ul>
-					<li>Click on a bar group label to highlight the area on the map</li>
-					<li>The bar group drop down filter above the chart will show and hide bar groups</li>
-					<li>Click on the bar label in the legend to show or hide the bar across bar groups</li>
-				</ul>
 			</div>
 		</div>
 		<div class="col-md-6">
