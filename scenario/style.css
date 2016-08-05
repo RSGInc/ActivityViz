@@ -15,6 +15,10 @@ Presumably this is because it used the smae code as the vertical chart
 	font-weight: bold;
 }
 
+.right-border {
+  border-right: 1px dashed #333;
+}
+
 .slider-tip {
 	opacity: 1;
 	bottom: 120%;

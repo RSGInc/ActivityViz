@@ -162,10 +162,10 @@ var barchart_and_map = (function () {
 		modes.forEach(function (modeName) {
 			$("#attribute").append("<option>" + modeName + "</option>");
 		});
-		chartData.forEach(function (chartObject) {
-			$("#chart_selection").append("<option>" + chartObject.groupLabel + "</option>");
-		});
-		$("#chart_selection").chosen();
+		// 		chartData.forEach(function (chartObject) {
+		// 			$("#chart_selection").append("<option>" + chartObject.groupLabel + "</option>");
+		// 		});
+		// 		$("#chart_selection").chosen();
 	} //end setDataSpecificDOM
 	function updateChart() {
 		"use strict";
@@ -249,7 +249,7 @@ var barchart_and_map = (function () {
 						, right: marginRight
 						, top: marginTop
 						, bottom: marginBottom
-					}).stacked(false).showControls(false);
+					}).stacked(true).showControls(false);
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(countyColumn);
 					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
@@ -369,28 +369,32 @@ var barchart_and_map = (function () {
 				extNvd3Chart.stacked(this.checked);
 				extNvd3Chart.update();
 			});
+			$("#legend_type").click(function () {
+				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
+				extNvd3Chart.update();
+			});
 			if ($("#classification").val() == "custom") {
 				$("#update_map").css("display", "inline");
 			};
 			$("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
-			$("#chart_selection").change(function () {
-				//check ALL
-				var allIsSet;
-				var options = $("#chart_selection option");
-				options.each(function () {
-					var option = this;
-					var optionName = option.text;
-					if (optionName == "All") {
-						allIsSet = option.selected;
-					}
-					else {
-						var countyIndex = option.index - 1; //subtract 'All'
-						var isSelected = allIsSet || option.selected;
-						chartData[countyIndex].enabled = isSelected;
-					}
-				});
-				updateChart();
-			});
+			// 			$("#chart_selection").change(function () {
+			// 				//check ALL
+			// 				var allIsSet;
+			// 				var options = $("#chart_selection option");
+			// 				options.each(function () {
+			// 					var option = this;
+			// 					var optionName = option.text;
+			// 					if (optionName == "All") {
+			// 						allIsSet = option.selected;
+			// 					}
+			// 					else {
+			// 						var countyIndex = option.index - 1; //subtract 'All'
+			// 						var isSelected = allIsSet || option.selected;
+			// 						chartData[countyIndex].enabled = isSelected;
+			// 					}
+			// 				});
+			// 				updateChart();
+			// 			});
 			//Logic for cycling through the maps
 			$("#start_cycle_map").click(function () {
 				$("#stop_cycle_map").css("display", "inline");
