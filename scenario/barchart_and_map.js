@@ -204,33 +204,7 @@ var barchart_and_map = (function () {
 		poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
-			var parentBoundingBox = svgElement.node().parentNode.getBoundingClientRect();
-			var chartWidth = parentBoundingBox.width;
-			extNvd3Chart.width(chartWidth);
-			console.log("based on parent element of svg, setting chartWidth=" + chartWidth);
-			//update chart with current data
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
-			var legendHeight = extNvd3Chart.legend.height();
-			var numTotalBars = enabledCounties.length * modes.length;
-			var heightPerBar = minBarWidth + minBarSpacing;
-			var chartAreaHeight = numTotalBars * heightPerBar;
-			var totalHeight = legendHeight + chartAreaHeight + marginTop + marginBottom;
-			console.log('setting totalHeight to: ' + totalHeight + " with chart area portion: " + chartAreaHeight);
-			//extNvd3Chart.height(totalHeight);
-			//extNvd3Chart.update();
-			//svgElement.attr("height", totalSvgHeight); //svgElement.attr("width", chartWidth).attr("height", totalSvgHeight);
-			//svgElement.style.webkitTransform = 'scale(1)';
-			var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
-			var node = entireChartWithLegend.node();
-			if (false && node) {
-				var bounds = node.getBBox();
-				var width = bounds.width;
-				var height = bounds.height;
-				console.log("barchart_nvd3 setting svg width=" + width + ", svg height=" + height);
-				//svgElement.attr("width", width);
-				svgElement.attr("height", height);
-				svgElement.style.webkitTransform = 'scale(1)';
-			} //end if node
 		}, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		}); //end call to poll
@@ -298,7 +272,7 @@ var barchart_and_map = (function () {
 						setTimeout(redrawMap, 100);
 					}; //end change currentCounty
 					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
-						console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
+						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
 						changeCurrentCounty(e.data.label);
 					});
 					//furious has colored boxes with checkmarks
@@ -316,7 +290,7 @@ var barchart_and_map = (function () {
 							var heightPerGroup = mainChartHeight / numCounties;
 							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
 							var countyObject = enabledCounties[countyIndex];
-							console.log('click in county: ' + countyObject.groupLabel);
+							//console.log('click in county: ' + countyObject.groupLabel);
 							changeCurrentCounty(countyObject.groupLabel);
 						} //end if click in chart area
 					}); //end on svgElement click
@@ -391,9 +365,13 @@ var barchart_and_map = (function () {
 			svgElement = d3.select(svgSelector);
 			createEmptyChart();
 			updateChart();
+			$("#stacked").click(function () {
+				extNvd3Chart.stacked(this.checked);
+				extNvd3Chart.update();
+			});
 			if ($("#classification").val() == "custom") {
 				$("#update_map").css("display", "inline");
-			}
+			};
 			$("#scenario_header").html("Scenario " + GetURLParameter("scenario"));
 			$("#chart_selection").change(function () {
 				//check ALL
@@ -813,7 +791,5 @@ var barchart_and_map = (function () {
 	//return only the parts that need to be global
 	return {
 		redrawMap: redrawMap
-		, marginLeft: marginLeft
 	};
 }()); //end encapsulating IIFE
-console.log('barchart_and_map.marginLeft: ' + barchart_and_map.marginLeft);
