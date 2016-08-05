@@ -40,7 +40,7 @@
 				<li><a href="../index.html">Back to scenario selection</a></li>
 			</ul>
 		</nav>
-		<div style="margin:5em;">
+		<div style="margin:0em;">
 			<h1 id="scenario_header"></h1>
 			<h2>Bar Chart and Map</h2>
 			<div class="row">
@@ -52,11 +52,9 @@
 						<select id="chart_selection" style="min-width:400px" multiple>
 							<option selected value="-1">All</option>
 						</select>
-					</div>
-					<div class="row">
-						<div class="sssvg-container on_top" style="border:6px solid black;background-color:white;">
-							<svg id="chart" class="ccfchart"></svg>
-						</div>
+						<input type="checkbox" id="stacked"/>Stacked </div>
+					<div class="row" style="width:100%;height:80%;">
+						<svg id="chart"></svg>
 					</div>
 					<div class="row">
 						<ul>
@@ -83,7 +81,7 @@
 							<option value="custom">Custom</option>
 						</select>
 					</div>
-					<div class="col-md-12" id="map" style="width: 100%;height:900px;"></div>
+					<div class="col-md-12" id="map" style="width: 100%;height:70%;"></div>
 					<div class="col-md-6" style="margin-top:1em;">
 						<input type="text" id="color1" /> Color 1
 						<input type="text" id="color2" /> Color 2
