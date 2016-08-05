@@ -66,7 +66,7 @@ var barchart_and_map = (function () {
 		}
 	}
 
-	function redraw_map() {
+	function redrawMap() {
 		"use strict";
 		colorizeFeatures(zonetiles);
 		tileIndex = geojsonvt(zonetiles, tileOptions);
@@ -239,14 +239,14 @@ var barchart_and_map = (function () {
 	function poll(fn, callback, errback, timeout, interval) {
 		var endTime = Number(new Date()) + (timeout || 2000);
 		interval = interval || 100;
-		(function p() {
+		(function pollInternal() {
 			// If the condition is met, we're done! 
 			if (fn()) {
 				callback();
 			}
 			// If the condition isn't met but the timeout hasn't elapsed, go again
 			else if (Number(new Date()) < endTime) {
-				setTimeout(p, interval);
+				setTimeout(pollInternal, interval);
 			}
 			// Didn't match and too much time, reject!
 			else {
@@ -294,7 +294,7 @@ var barchart_and_map = (function () {
 							var setClass = d == currentCounty;
 							return setClass;
 						}); //end classed of group rect
-						redraw_map();
+						redrawMap();
 					}; //end change currentCounty
 					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
 						console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
@@ -341,7 +341,7 @@ var barchart_and_map = (function () {
 			}
 			baselayer = L.geoJson(zonetiles);
 			setTimeout(function () {
-				redraw_map();
+				redrawMap();
 			}, 2000);
 			callback();
 		});
@@ -419,7 +419,7 @@ var barchart_and_map = (function () {
 				interval = setInterval(function () {
 					cycleGoing = 1;
 					$('#attribute option:eq(' + currentVal + ')').prop('selected', true);
-					redraw_map();
+					redrawMap();
 					currentVal++;
 					if (currentVal >= $("#attribute option").size()) {
 						currentVal = 0;
@@ -437,7 +437,7 @@ var barchart_and_map = (function () {
 					clearInterval(interval);
 					interval = setInterval(function () {
 						$('#attribute option:eq(' + currentVal + ')').prop('selected', true);
-						redraw_map();
+						redrawMap();
 						currentVal++;
 						if (currentVal >= $("#attribute option").size()) {
 							currentVal = 0;
@@ -468,7 +468,7 @@ var barchart_and_map = (function () {
 				var layer = leafletPip.pointInLayer(e.latlng, baselayer, true);
 				if (layer.length > 0) {
 					currentCounty = zoneData[layer[0].feature.properties.id][modes[0]].COUNTY;
-					redraw_map();
+					redrawMap();
 					chart.selectAll("text.label").style('font-size', "15px");
 					chart.selectAll("text").filter(function () {
 						return this.innerHTML == currentCounty;
@@ -480,7 +480,7 @@ var barchart_and_map = (function () {
 				$("#val2").val(slider_values[0]);
 				$("#val3").val(slider_values[1]);
 				$("#val4").val(slider_values[2]);
-				redraw_map();
+				redrawMap();
 			});
 			//value slider
 			$("#slider").slider({
@@ -504,7 +504,7 @@ var barchart_and_map = (function () {
 			});
 			updateColors(handlers, $("#slider").slider("option", "max"));
 			$("#attribute").change(function () {
-				redraw_map();
+				redrawMap();
 			});
 			$("#classification").change(function () {
 				if ($("#classification").val() == "custom") {
@@ -517,7 +517,7 @@ var barchart_and_map = (function () {
 					range: false
 					, disabled: ($("#classification").val() != "custom")
 				});
-				redraw_map();
+				redrawMap();
 			});
 			//color selectors
 			$("#color1").spectrum({
@@ -534,7 +534,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					color1 = color;
-					redraw_map();
+					redrawMap();
 					updateColors($("#slider").slider("values"));
 				}
 			});
@@ -552,7 +552,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					color2 = color;
-					redraw_map();
+					redrawMap();
 					updateColors($("#slider").slider("values"));
 				}
 			});
@@ -570,7 +570,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					color3 = color;
-					redraw_map();
+					redrawMap();
 					updateColors($("#slider").slider("values"));
 				}
 			});
@@ -588,7 +588,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					color4 = color;
-					redraw_map();
+					redrawMap();
 					updateColors($("#slider").slider("values"));
 				}
 			});
@@ -606,7 +606,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					naColor = color;
-					redraw_map();
+					redrawMap();
 					updateColors($("#slider").slider("values"));
 				}
 			});
@@ -624,7 +624,7 @@ var barchart_and_map = (function () {
 				, palette: palette
 				, change: function (color) {
 					bubbleColor = color;
-					redraw_map();
+					redrawMap();
 				}
 			});
 			callback();
@@ -809,4 +809,10 @@ var barchart_and_map = (function () {
 	var displaySeries;
 	var seriesLength;
 	var xAxis;
+
+	//return only the parts that need to be global
+	return { redrawMap: redrawMap,
+			marginLeft: marginLeft};
 }()); //end encapsulating IIFE
+
+console.log('barchart_and_map.marginLeft: ' + barchart_and_map.marginLeft);
