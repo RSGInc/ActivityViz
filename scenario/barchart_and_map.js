@@ -294,7 +294,8 @@ var barchart_and_map = (function () {
 							var setClass = d == currentCounty;
 							return setClass;
 						}); //end classed of group rect
-						redrawMap();
+						//add delay to redrawMap so that text has chance to bold
+						setTimeout(redrawMap, 100);
 					}; //end change currentCounty
 					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
 						console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
@@ -809,10 +810,10 @@ var barchart_and_map = (function () {
 	var displaySeries;
 	var seriesLength;
 	var xAxis;
-
 	//return only the parts that need to be global
-	return { redrawMap: redrawMap,
-			marginLeft: marginLeft};
+	return {
+		redrawMap: redrawMap
+		, marginLeft: marginLeft
+	};
 }()); //end encapsulating IIFE
-
 console.log('barchart_and_map.marginLeft: ' + barchart_and_map.marginLeft);
