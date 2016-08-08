@@ -16,7 +16,17 @@ Presumably this is because it used the smae code as the vertical chart
 }
 
 .right-border {
-  border-right: 1px dashed #333;
+	border-right: 1px dashed #333;
+}
+
+.ramp {
+	float: left;
+	padding: 5px 5px 0 5px;
+	cursor: pointer;
+}
+
+.ramp selected {
+	border: 1px;
 }
 
 .slider-tip {
