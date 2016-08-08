@@ -19,14 +19,16 @@ Presumably this is because it used the smae code as the vertical chart
 	border-right: 1px dashed #333;
 }
 
+.vert-centered {display: table-cell;vertical-align: middle;text-align: center;}
+
 .ramp {
 	float: left;
-	padding: 5px 5px 0 5px;
+	margin: 5px 5px 0 5px;
 	cursor: pointer;
 }
 
-.ramp selected {
-	border: 1px;
+.ramp.selected {
+	border: 1px solid black;
 }
 
 .slider-tip {
