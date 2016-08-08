@@ -3,12 +3,10 @@ var barchart_and_map = (function () {
 	"use strict";
 	var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
 	var center = [33.754525, -84.384774];
-	var color1 = "#f1eef6"
-		, color2 = "#bdc9e1"
-		, color3 = "#74a9cf"
-		, color4 = "#2b8cbe"
-		, naColor = "White"
+	var naColor = "White"
 		, bubbleColor = "#ff7800";
+	var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
+	var selectedColorRampIndex = 0;
 	var palette = [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)"
         , "rgb(204, 204, 204)", "rgb(217, 217, 217)", "rgb(255, 255, 255)"]
@@ -53,6 +51,10 @@ var barchart_and_map = (function () {
 	var marginBottom = 50;
 	var marginLeft = 110;
 	var marginRight = 50;
+	var CSS_UPDATE_PAUSE = 150; //milliseconds to pause before redrawing map
+	var interval;
+	var currentVal = 0;
+	var cycleGoing = 0;
 
 	function GetURLParameter(sParam) {
 		"use strict";
@@ -159,6 +161,9 @@ var barchart_and_map = (function () {
 
 	function setDataSpecificDOM() {
 		$("#attribute_label").html(modeColumn);
+		d3.selectAll(".area-type").html(countyColumn);
+		d3.selectAll(".trip-mode").html(modeColumn);
+		d3.selectAll(".trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
 			$("#attribute").append("<option>" + modeName + "</option>");
 		});
@@ -269,7 +274,7 @@ var barchart_and_map = (function () {
 							return setClass;
 						}); //end classed of group rect
 						//add delay to redrawMap so that text has chance to bold
-						setTimeout(redrawMap, 100);
+						setTimeout(redrawMap, CSS_UPDATE_PAUSE);
 					}; //end change currentCounty
 					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
 						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
@@ -327,7 +332,6 @@ var barchart_and_map = (function () {
 
 	function updateColors(values, themax) {
 		"use strict";
-		var colors = [color1, color2, color3, color4];
 		var colorStops = colors[0] + ", "; // start left with the first color
 		for (var i = 0; i < values.length; i++) {
 			colorStops += colors[i] + " " + (values[i] / (themax / 100.0)) + "%,";
@@ -350,10 +354,21 @@ var barchart_and_map = (function () {
 		}
 		$('#slider').css('background-image', css);
 	}
-	var interval;
-	var currentVal = 0;
-	var cycleGoing = 0;
 
+	function setColorPalette(clickedIndex) {
+		selectedColorRampIndex = clickedIndex;
+		var paletteRamps = d3.selectAll(".ramp");
+		var currentPalette = paletteRamps[0][selectedColorRampIndex];
+		var rects = d3.select(currentPalette).selectAll("rect");
+		rects.each(function (d, i) {
+			var paletteColor = d3.rgb(d3.select(this).attr("fill"));
+			paletteRamps
+			colors[i] = paletteColor;
+		});
+		d3.selectAll(".ramp").classed("selected", function (d, tempColorRampIndex) {
+			return tempColorRampIndex == selectedColorRampIndex;
+		});
+	}; //end setColorPalette
 	function handleDocumentReady(callback) {
 		"use strict";
 		$(document).ready(function () {
@@ -373,6 +388,12 @@ var barchart_and_map = (function () {
 				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 				extNvd3Chart.update();
 			});
+			var colorRamps = d3.selectAll(".ramp").on('click', function (d, i) {
+				setColorPalette(i);
+				updateColors($("#slider").slider("values"));
+				//add delay to redrawMap so css has change to updates
+				setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+			}); //end on click for ramp/palette
 			if ($("#classification").val() == "custom") {
 				$("#update_map").css("display", "inline");
 			};
@@ -502,79 +523,6 @@ var barchart_and_map = (function () {
 				});
 				redrawMap();
 			});
-			//color selectors
-			$("#color1").spectrum({
-				color: color1
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					color1 = color;
-					redrawMap();
-					updateColors($("#slider").slider("values"));
-				}
-			});
-			$("#color2").spectrum({
-				color: color2
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					color2 = color;
-					redrawMap();
-					updateColors($("#slider").slider("values"));
-				}
-			});
-			$("#color3").spectrum({
-				color: color3
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					color3 = color;
-					redrawMap();
-					updateColors($("#slider").slider("values"));
-				}
-			});
-			$("#color4").spectrum({
-				color: color4
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					color4 = color;
-					redrawMap();
-					updateColors($("#slider").slider("values"));
-				}
-			});
 			$("#naColor").spectrum({
 				color: naColor
 				, showInput: true
@@ -610,6 +558,8 @@ var barchart_and_map = (function () {
 					redrawMap();
 				}
 			});
+			//initialize the map palette
+			setColorPalette(selectedColorRampIndex);
 			callback();
 		}); //end on document ready
 	}; //end handleDocumentReady
@@ -640,12 +590,21 @@ var barchart_and_map = (function () {
 		//handle the different classifications
 		var classification = $("#classification").val();
 		var breakUp;
-		if (classification == "even_interval" || classification == "quantiles") {
+		if (classification == "custom") {
+			breakUp = [$("#val1").val(), $("#val2").val(), $("#val3").val(), $("#val4").val(), $("#val5").val()];
+		}
+		else {
 			if (classification == "even_interval") {
 				breakUp = serie.getClassEqInterval(4);
 			}
-			else if (classification == "quantiles") {
+			else if (classification == "quartiles") {
 				breakUp = serie.getClassQuantile(4);
+			}
+			else if (classification == "jenks") {
+				breakUp = serie.getClassJenks(4);
+			}
+			else {
+				throw ("Unhandled classification: " + classification);
 			}
 			$("#val1").val(breakUp[0]);
 			$("#val2").val(breakUp[1]);
@@ -663,10 +622,7 @@ var barchart_and_map = (function () {
 			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[1] + '</div></div>');
 			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
 			updateColors(new_values, breakUp[4]);
-		}
-		else if (classification == "custom") {
-			breakUp = [$("#val1").val(), $("#val2").val(), $("#val3").val(), $("#val4").val(), $("#val5").val()];
-		}
+		} //end if !custom
 		if (circlesLayerGroup == undefined) {
 			//first time must initalize by creating and adding to map
 			circlesLayerGroup = L.layerGroup([]);
@@ -706,16 +662,16 @@ var barchart_and_map = (function () {
 						circlesLayerGroup.addLayer(circle);
 					}
 					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[0]) {
-						color = color1;
+						color = colors[0];
 					}
 					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[1]) {
-						color = color2;
+						color = colors[1];
 					}
 					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[2]) {
-						color = color3;
+						color = colors[2];
 					}
 					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[3]) {
-						color = color4;
+						color = colors[3];
 					}
 				}
 			}
