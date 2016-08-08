@@ -159,6 +159,9 @@ var barchart_and_map = (function () {
 
 	function setDataSpecificDOM() {
 		$("#attribute_label").html(modeColumn);
+		d3.selectAll(".area-type").html(countyColumn);
+		d3.selectAll(".trip-mode").html(modeColumn);
+		d3.selectAll(".trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
 			$("#attribute").append("<option>" + modeName + "</option>");
 		});

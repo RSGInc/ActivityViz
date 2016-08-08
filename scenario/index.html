@@ -51,9 +51,9 @@
 					<div class="col-md-10">
 						<ul>
 							<li>Click on the 'Stacked' checkbox to change chart style</li>
-							<li>Click on a bar group label to highlight the area on the map</li>
-							<li>Click on the bar label in the legend to show or hide the bar across bar groups</li>
-							<li>Double click on the bar label to isolotate a single Quantity type such as BIKE trips</li>
+							<li>Click anywhere on a row to highlight the  <span class="area-type">PLACEHOLDER</span> area on the map</li>
+							<li>Click on legend symbols/labels to show or hide the <span class="trip-mode">PLACEHOLDER</span></li>
+							<li>Double click on the bar label to show a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
 						</ul>
 					</div>
 					<div class="col-md-2">
@@ -70,7 +70,7 @@
 		<div class="col-md-6">
 			<div class="col-md-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
 			<div class="col-md-6">
-				<div id="attribute_label" style="font-weight:bold"></div>
+				<div class="trip-mode" style="font-weight:bold"></div>
 			</div>
 			<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
 				<div id="classification_label">Classification</div>
@@ -80,8 +80,8 @@
 			</div>
 			<div class="col-md-6" style="margin-bottom:2em;">
 				<select class="form-control" id="classification">
-					<option value="even_interval" selected="selected">Even interval</option>
-					<option value="quantiles">Quantiles</option>
+					<option value="quantiles" selected="selected">Quantiles</option>
+					<option value="even_interval">Even interval</option>
 					<option value="custom">Custom</option>
 				</select>
 			</div>
