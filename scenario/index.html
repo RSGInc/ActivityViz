@@ -75,12 +75,12 @@
 				<div id="classification_label">Classification</div>
 			</div>
 			<div class="col-md-6">
-				<select class="form-control" id="attribute"></select>
+				<select class="form-control" id="current_trip_mode"></select>
 			</div>
 			<div class="col-md-6" style="margin-bottom:2em;">
 				<select class="form-control" id="classification">
-					<option value="jenks" selected="selected">Natural breaks (Jenks)</option>
-					<option value="quartiles">Quartiles</option>
+					<option value="quartiles"" selected="selected">Quartiles</option>
+					<option value="jenks">Natural breaks (Jenks)</option>
 					<option value="even_interval">Even interval</option>
 					<option value="custom">Custom</option>
 				</select>
@@ -156,7 +156,7 @@
 				</table>
 			</div>
 			<div class="col-md-6" style="margin-top:1em;text-align:right">
-				<input type="checkbox" id="bubbles" onclick="barchart_and_map.redrawMap()" /> Bubbles
+				<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
 				<input type="text" id="bubble_color" /> Size:
 				<select onchange="barchart_and_map.redrawMap()" id="bubble_size">
 					<option>1</option>

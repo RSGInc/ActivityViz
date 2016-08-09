@@ -1,15 +1,15 @@
 {
-    "name": "ABMVIZ-git",
-    "dependencies": {
-        "leaflet": "~0.7.7",
-        "bootstrap": "~3.3.6",
-        "chosen": "~1.6.1",
-        "spectrum": "~1.8.0",
-        "jqueryui": "~1.12.0",
-        "leaflet-pip": "~0.1.1",
-        "d3": "~3.5.17",
-        "nvd3": "~1.8.4",
-        "underscore": "~1.8.3",
-        "geostats": "~1.5.0"
-    }
+  "name": "ABMVIZ-git",
+  "dependencies": {
+    "leaflet": "~0.7.7",
+    "bootstrap": "~3.3.6",
+    "chosen": "~1.6.1",
+    "spectrum": "~1.8.0",
+    "jqueryui": "~1.12.0",
+    "leaflet-pip": "~0.1.1",
+    "d3": "~3.5.17",
+    "nvd3": "~1.8.4",
+    "underscore": "~1.8.3",
+    "geostats": "~1.5.0"
+  }
 }
