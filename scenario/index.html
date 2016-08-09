@@ -158,12 +158,12 @@
 			<div class="col-md-6" style="margin-top:1em;text-align:right">
 				<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
 				<input type="text" id="bubble_color" /> Size:
-				<select onchange="barchart_and_map.redrawMap()" id="bubble_size">
+				<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
 					<option>1</option>
 					<option>2</option>
 					<option>3</option>
 				</select>
-				<input type="checkbox" id="stroke" onclick="barchart_and_map.redrawMap()" /> Outline
+				<input type="checkbox" id="stroke" onclick="barchart_and_map.updateOutline()" /> Outline
 				<nobr>
 					<input type="text" id="naColor" /> N/A</nobr>
 			</div>

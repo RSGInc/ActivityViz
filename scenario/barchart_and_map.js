@@ -57,10 +57,12 @@ var barchart_and_map = (function () {
 	var breakUp;
 	var currentTripMode;
 	var bubblesShowing = false;
+	var showOutline = false;
+	var maxFeature;
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
-		, "fillOpacity": 0.75
+		, "fillOpacity": 0.5
 	};
 
 	function GetURLParameter(sParam) {
@@ -85,6 +87,10 @@ var barchart_and_map = (function () {
 		//resetting style causes the layer to call the function for each feauture which allows redraw
 		//console.log(Date.now() + " resetting layer style");
 		zoneDataLayer.setStyle(styleGeoJsonLayer);
+// 		zoneDataLayer.eachLayer(function (layer) {
+// 			var newStyle = styleGeoJsonLayer(layer.feature);
+// 			layer.setStyle(newStyle)
+// 		});
 		//console.log(Date.now() + " finished resetting layer style");
 	}
 
@@ -348,14 +354,17 @@ var barchart_and_map = (function () {
 				}
 			} //end if we have data for this trip mode
 		} //end if we have data for this zone
-		var returnStyle =  {
-        //all SVG styles allowed
-        fillColor:color,
-        fillOpacity:0.8,
-        stroke: false
-		};
 		
-		return(returnStyle);
+		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
+		var returnStyle = {
+			//all SVG styles allowed
+			fillColor: color
+			, fillOpacity: 0.8
+			, weight: 1
+			,color: "lightGrey"
+			, stroke: showOutline
+		};
+		return (returnStyle);
 	} //end end style function
 	//load tiles
 	function createMap(callback) {
@@ -512,6 +521,7 @@ var barchart_and_map = (function () {
 				interval = setInterval(function () {
 					cycleGoing = 1;
 					$('#current_trip_mode option:eq(' + currentVal + ')').prop('selected', true);
+					updateCurrentTripModeOrClassification();
 					redrawMap();
 					currentVal++;
 					if (currentVal >= $("#current_trip_mode option").size()) {
@@ -656,15 +666,19 @@ var barchart_and_map = (function () {
 			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
 			var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
 			var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
-			zoneData.forEach(function (zoneDatum) {
-				var bubbleCenter = zoneData.centroid;
-				var quantity = zoneData[currentTripMode].QUANTITY;
-				var sqrtRadius = scaleSqrt(quantity);
-				var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
-				circle.setRadius(sqrtRadius);
-				//add circle to circlesLayerGroup
-				circlesLayerGroup.addLayer(circle);
-			}); //end zoneData.forEach
+			Object.keys(zoneData).forEach(function (zoneKey) {
+				var zoneDatum = zoneData[zoneKey];
+				var bubbleCenter = zoneDatum.centroid;
+				var zoneTripData = zoneDatum[currentTripMode];
+				if (zoneTripData != undefined) {
+					var quantity = zoneTripData.QUANTITY;
+					var sqrtRadius = scaleSqrt(quantity);
+					var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
+					circle.setRadius(sqrtRadius);
+					//add circle to circlesLayerGroup
+					circlesLayerGroup.addLayer(circle);
+				} //end if have data for this zone and trip mode
+			}); //end Object.keys(zoneData).forEach
 		} //end if bubbles showing
 	}; //end updateBubbles
 	function updateCurrentTripModeOrClassification() {
@@ -673,8 +687,7 @@ var barchart_and_map = (function () {
 		var startTime = Date.now();
 		console.log('updateCurrentTripModeOrClassification: #current_trip_mode.val()=' + currentTripMode);
 		var serie = new geostats(modeData[currentTripMode].serie);
-		console.log((Date.now() - startTime) + ' made geostats');
-		var maxFeature = serie.max();
+		maxFeature = serie.max();
 		//handle the different classifications
 		var classification = $("#classification").val();
 		$("#slider").slider({
@@ -687,7 +700,6 @@ var barchart_and_map = (function () {
 		}
 		else {
 			$("#update_map").css("display", "none");
-			console.log((Date.now() - startTime) + ' before getting geostats class');
 			if (classification == "even_interval") {
 				breakUp = serie.getClassEqInterval(4);
 			}
@@ -700,7 +712,6 @@ var barchart_and_map = (function () {
 			else {
 				throw ("Unhandled classification: " + classification);
 			}
-			console.log((Date.now() - startTime) + ' before ui updates');
 			$("#val1").val(breakUp[0]);
 			$("#val2").val(breakUp[1]);
 			$("#val3").val(breakUp[2]);
@@ -716,68 +727,17 @@ var barchart_and_map = (function () {
 			$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[0] + '</div></div>');
 			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[1] + '</div></div>');
 			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
-			console.log((Date.now() - startTime) + ' before updateColors');
 			updateColors(new_values, breakUp[4]);
 		} //end if !custom
-		console.log((Date.now() - startTime) + ' before updateBubbles');
 		updateBubbles();
-		console.log((Date.now() - startTime) + ' updateCurrentTripModeOrClassification: #current_trip_mode.val()=' + currentTripMode);
 	}; //end updateCurrentTripModeOrClassification
-	var tileLayer = L.canvasTiles().params({
-		debug: false
-		, padding: 5
-	}).drawing(drawingOnCanvas);
-	var pad = 0;
-	/* map helper function */
-	function drawingOnCanvas(canvasOverlay, params) {
-		"use strict";
-		var bounds = params.bounds;
-		params.tilePoint.z = params.zoom;
-		var ctx = params.canvas.getContext('2d');
-		ctx.globalCompositeOperation = 'source-over';
-		var tile = tileIndex.getTile(params.tilePoint.z, params.tilePoint.x, params.tilePoint.y);
-		if (!tile) {
-			return;
-		}
-		ctx.clearRect(0, 0, params.canvas.width, params.canvas.height);
-		var features = tile.features;
-		ctx.strokeStyle = 'grey';
-		ctx.lineWidth = 0;
-		for (var i = 0; i < features.length; i++) {
-			var feature = features[i]
-				, type = feature.type;
-			ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
-			ctx.beginPath();
-			for (var j = 0; j < feature.geometry.length; j++) {
-				var geom = feature.geometry[j];
-				if (type == 1) {
-					ctx.arc(geom[0] * ratio + pad, geom[1] * ratio + pad, 2, 0, 2 * Math.PI, false);
-					continue;
-				}
-				for (var k = 0; k < geom.length; k++) {
-					var p = geom[k];
-					var extent = 4096;
-					var x = p[0] / extent * 256;
-					var y = p[1] / extent * 256;
-					if (k) {
-						ctx.lineTo(x + pad, y + pad);
-					}
-					else {
-						ctx.moveTo(x + pad, y + pad);
-					}
-				}
-			}
-			if (type == 3 || type == 1) {
-				ctx.fill('evenodd');
-			}
-			if ($("#stroke").is(":checked")) {
-				ctx.stroke();
-			}
-		}
-	} //end drawingOnCanvas
+	function updateOutline() {
+		showOutline = ($("#stroke").is(":checked"));
+		redrawMap();
+	}
 	//return only the parts that need to be global
 	return {
-		redrawMap: redrawMap
+		updateOutline: updateOutline
 		, updateBubbles: updateBubbles
 	};
 }()); //end encapsulating IIFE
