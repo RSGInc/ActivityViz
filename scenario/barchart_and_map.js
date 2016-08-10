@@ -1,10 +1,9 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
+//global object barchart_and_map will contain functions and variables that must be accessible from elsewhere
 var barchart_and_map = (function () {
 	"use strict";
-	var chart, zonetiles, baselayer, map, tileIndex, tileOptions;
-	var center = [33.754525, -84.384774];
-	var naColor = "White"
-		, bubbleColor = "#ff7800";
+	var naColor = "White";
+	var bubbleColor = "#ff7800";
 	var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
 	var selectedColorRampIndex = 0;
 	var palette = [
@@ -25,12 +24,13 @@ var barchart_and_map = (function () {
     ];
 	//slider
 	var handlers = [25, 50, 75];
-	//data
+	var map;
 	var zoneData;
 	var dataItems = [];
 	var currentCounty = "";
 	var modes;
 	var counties;
+	var countiesSet;
 	var enabledCounties;
 	var circlesLayerGroup;
 	var chartData = null;
@@ -41,7 +41,6 @@ var barchart_and_map = (function () {
 	var zoneColumn;
 	var modeColumn;
 	var url = "../data/" + GetURLParameter("scenario") + "/BarChartAndMapData.csv"
-	var centroids = {};
 	var svgSelector = "#chart";
 	var svgElement;
 	var extNvd3Chart;
@@ -53,8 +52,23 @@ var barchart_and_map = (function () {
 	var marginRight = 50;
 	var CSS_UPDATE_PAUSE = 150; //milliseconds to pause before redrawing map
 	var interval;
-	var currentVal = 0;
-	var cycleGoing = 0;
+	var currentCycleModeIndex = 0;
+	var cycleGoing = false;
+	var breakUp;
+	var currentTripMode;
+	var bubblesShowing = false;
+	var showOutline = false;
+	var maxFeature;
+	var zoneDataLayer;
+	var countyLayer;
+	var barsWrap;
+	var barsWrapRect;
+	var barsWrapRectHeight;
+	var circleStyle = {
+		"stroke": false
+		, "fillColor": bubbleColor
+		, "fillOpacity": 0.5
+	};
 
 	function GetURLParameter(sParam) {
 		"use strict";
@@ -70,10 +84,7 @@ var barchart_and_map = (function () {
 
 	function redrawMap() {
 		"use strict";
-		colorizeFeatures(zonetiles);
-		tileIndex = geojsonvt(zonetiles, tileOptions);
-		tileLayer.addTo(map);
-		tileLayer.redraw();
+		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
 	}
 
 	function readInData(callback) {
@@ -125,6 +136,7 @@ var barchart_and_map = (function () {
 				} //end if keeping this object
 				return keepThisObject;
 			}); //end filtering and other data prep
+			countiesSet = new Set(counties);
 			modes = Object.keys(modeData);
 			data = null; //allow GC to reclaim memory
 			//need to run through rawChartData and put modes in order and insert ones that are missing
@@ -165,19 +177,19 @@ var barchart_and_map = (function () {
 		d3.selectAll(".trip-mode").html(modeColumn);
 		d3.selectAll(".trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
-			$("#attribute").append("<option>" + modeName + "</option>");
+			$("#current_trip_mode").append("<option>" + modeName + "</option>");
 		});
 		// 		chartData.forEach(function (chartObject) {
 		// 			$("#chart_selection").append("<option>" + chartObject.groupLabel + "</option>");
 		// 		});
 		// 		$("#chart_selection").chosen();
 	} //end setDataSpecificDOM
-	function updateChart() {
+	function updateChart(callback) {
 		"use strict";
-		updateChartNVD3();
+		updateChartNVD3(callback);
 	}
 
-	function updateChartNVD3() {
+	function updateChartNVD3(callback) {
 		"use strict";
 		//nvd3 expects data in the opposite hierarchy than rest of code so need to create 
 		//but can also filter out counties at same time
@@ -210,9 +222,36 @@ var barchart_and_map = (function () {
 			return extNvd3Chart != undefined;
 		}, function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
+			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
+			//first check if 
+			barsWrap = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+			//if first time (enter() selection) create rect
+			var barsWrapRectId = "barsWrapRectRSG"
+			var barsWrapRectSelector = "#" + barsWrapRectId;
+			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().append("rect").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+				//console.log('barsWrap mousemove');
+				var mouseY = d3.mouse(this)[1];
+				var numCounties = enabledCounties.length;
+				var heightPerGroup = barsWrapRectHeight / numCounties;
+				var countyIndex = Math.floor(mouseY / heightPerGroup);
+				var countyObject = enabledCounties[countyIndex];
+				var newCounty = countyObject.groupLabel;
+				changeCurrentCounty(newCounty);
+			});
+			//for the update selection set height and width to zero so bounding box not influenced by barsWrapRect
+			barsWrap.select(barsWrapRectSelector).attr("width", 0).attr("height", 0);
+			//must delay so that chart elements have chance to redraw so that bBox is filled out
+			setTimeout(function () {
+				var bounds = barsWrap.node().getBBox();
+				var width = bounds.width + marginLeft;
+				barsWrapRectHeight = bounds.height;
+				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
+				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
+			}, 2000); //end setTimeout
 		}, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		}); //end call to poll
+		callback();
 	}; //end updateChartNVD3
 	//from https://davidwalsh.name/javascript-polling
 	function poll(fn, callback, errback, timeout, interval) {
@@ -234,6 +273,29 @@ var barchart_and_map = (function () {
 		})();
 	}
 
+	function changeCurrentCounty(newCurrentCounty) {
+		if (currentCounty != newCurrentCounty) {
+			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
+			currentCounty = newCurrentCounty;
+			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+			countyLabels.classed("current-county", function (d, i) {
+				var setClass = d == currentCounty;
+				return setClass;
+			}); //end classed of group rect
+			countyLayer.setStyle(function (feature) {
+				var style = {};
+				if (feature.properties.NAME == currentCounty) {
+					style.weight = 4;
+				}
+				else {
+					style.weight = 1;
+				}
+				return (style);
+			}); //end setStyle function
+			//add delay to redrawMap so that text has chance to bold
+			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		} //end if county is changing
+	}; //end change currentCounty
 	function createEmptyChart() {
 		nv.addGraph({
 			generate: function chartGenerator() {
@@ -263,73 +325,158 @@ var barchart_and_map = (function () {
 						nvd3Chart.margin({
 							top: marginTop
 						});
-						updateChart();
+						updateChart(function () {
+							console.log('updateChart callback after windowResize');
+						});
 					});
-
-					function changeCurrentCounty(newCurrentCounty) {
-						currentCounty = newCurrentCounty;
-						var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-						countyLabels.classed("current-county", function (d, i) {
-							var setClass = d == currentCounty;
-							return setClass;
-						}); //end classed of group rect
-						//add delay to redrawMap so that text has chance to bold
-						setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-					}; //end change currentCounty
-					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
-						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
-						changeCurrentCounty(e.data.label);
+					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
+						var newTripMode = event.key;
+						console.log('legend legendDblclick on trip mode: ' + newTripMode);
+						$('#current_trip_mode').val(newTripMode);
+						updateCurrentTripModeOrClassification();
+						redrawMap();
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
-					svgElement.on('click', function (event) {
-						var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
-						var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
-						var mouseY = d3.mouse(this)[1];
-						//the main area is shifted -(legendHeight)
-						var chartYOffset = d3.transform(entireChartWithLegend.attr("transform")).translate[1];
-						var mainChartHeight = d3.transform(mainChart.attr("transform")).translate[1];
-						var mouseChartY = mouseY - chartYOffset;
-						if (mouseChartY > 0 && mouseChartY < mainChartHeight) {
-							var numCounties = enabledCounties.length;
-							var heightPerGroup = mainChartHeight / numCounties;
-							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
-							var countyObject = enabledCounties[countyIndex];
-							//console.log('click in county: ' + countyObject.groupLabel);
-							changeCurrentCounty(countyObject.groupLabel);
-						} //end if click in chart area
-					}); //end on svgElement click
 					return nvd3Chart;
 				} //end generate
 				
 			, callback: function (newGraph) {
 					extNvd3Chart = newGraph;
-					console.log("***********************barchart_nvd3 callback called");
-					//sizeSVG();
-					//setTimeout(sizeSVG, 2500);
+					updateChart(function () {
+						console.log("updateChart callback during after the nvd3 callback called");
+					});
 				} //end callback function
 		}); //end nv.addGraph
 	}; //end createEmptyChart
-	//load tiles
-	function loadTiles(callback) {
-		$.getJSON("../scripts/ZoneShape.GeoJSON", function (json) {
-			"use strict";
-			zonetiles = json;
-			//calculate the zone centeriods
-			for (var i = 0; i < zonetiles.features.length; i++) {
-				centroids[zonetiles.features[i].properties.id] = L.latLngBounds(zonetiles.features[i].geometry.coordinates[0]).getCenter();
-			}
-			baselayer = L.geoJson(zonetiles);
-			setTimeout(function () {
-				redrawMap();
-			}, 2000);
-			callback();
+	function styleZoneGeoJSONLayer(feature) {
+		var color = naColor;
+		if (feature.zoneData != undefined) {
+			var zoneDataFeature = feature.zoneData[currentTripMode];
+			//possible that even if data for zone exists, could be missing this particular trip mode
+			if (zoneDataFeature != undefined) {
+				var quantity = zoneDataFeature.QUANTITY;
+				if (zoneDataFeature.QUANTITY == undefined) {
+					throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
+				}
+				if (quantity >= breakUp[3]) {
+					color = colors[3];
+				}
+				else if (quantity >= breakUp[2]) {
+					color = colors[2];
+				}
+				else if (quantity >= breakUp[1]) {
+					color = colors[1];
+				}
+				else {
+					color = colors[0];
+				}
+			} //end if we have data for this trip mode
+		} //end if we have data for this zone
+		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
+		var returnStyle = {
+			//all SVG styles allowed
+			fillColor: color
+			, fillOpacity: 0.3
+			, weight: 1
+			, color: "darkGrey"
+			, strokeOpacity: 0.05
+			, stroke: showOutline
+		};
+		return (returnStyle);
+	} //end styleZoneGeoJSONLayer function
+	function styleCountyGeoJSONLayer(feature) {
+		var returnStyle = {
+			//all SVG styles allowed
+			fill: true
+			, fillOpacity: 0.0
+			, stroke: true
+			, weight: 1
+			, strokeOpacity: 0.25
+			, color: "gray"
+		};
+		return (returnStyle);
+	} //end styleCountyGeoJSONLayer function
+	function createMap(callback) {
+		map = L.map("map").setView([33.754525, -84.384774], 9); //centered at Atlanta
+		map.on('zoomend', function (type, target) {
+			var zoomLevel = map.getZoom();
+			var zoomScale = map.getZoomScale();
+			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
 		});
-	};
-	loadTiles(function () {
-		console.log("loadTiles callback")
-	});
-
+		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
+			"use strict";
+			//there should be at least as many zones as the number we have data for.
+			if (zoneTiles.features.length < Object.keys(zoneData).length) {
+				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
+			}
+			//calculate the zone centeriods
+			for (var i = 0; i < zoneTiles.features.length; i++) {
+				var feature = zoneTiles.features[i];
+				var featureZoneData = zoneData[feature.properties.id];
+				if (featureZoneData == undefined) {
+					//missing data for this zone
+				}
+				else {
+					feature.zoneData = featureZoneData;
+					featureZoneData.centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
+				}
+			}
+			//http://leafletjs.com/reference.html#tilelayer
+			zoneDataLayer = L.geoJson(zoneTiles, {
+				updateWhenIdle: true
+				, unloadInvisibleFiles: true
+				, reuseTiles: true
+				, opacity: 1.0
+				, style: styleZoneGeoJSONLayer
+			});
+			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
+			//map.addLayer(stamenTileLayer);
+			var underlyingMapLayer = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+				updateWhenIdle: true
+				, unloadInvisibleFiles: true
+				, reuseTiles: true
+				, opacity: 1.0
+			});
+			underlyingMapLayer.addTo(map);
+			$.getJSON("../scripts/GeorgiaCounties.GeoJSON", function (countyTiles) {
+				"use strict";
+				console.log("GeorgiaCounties.GeoJSON success");
+				//http://leafletjs.com/reference.html#tilelayer
+				countyLayer = L.geoJson(countyTiles, {
+					//keep only counties that we have data foe
+					filter: function (feature) {
+						return countiesSet.has(feature.properties.NAME);
+					}
+					, updateWhenIdle: true
+					, unloadInvisibleFiles: true
+					, reuseTiles: true
+					, opacity: 1.0
+					, style: styleCountyGeoJSONLayer
+					, onEachFeature: onEachCounty
+				});
+				zoneDataLayer.addTo(map);
+				countyLayer.addTo(map);
+			}).success(function () {
+				console.log("GeorgiaCounties.GeoJSON second success");
+			}).error(function (jqXHR, textStatus, errorThrown) {
+				console.log("GeorgiaCounties.GeoJSON textStatus " + textStatus);
+				console.log("GeorgiaCounties.GeoJSON errorThrown" + errorThrown);
+				console.log("GeorgiaCounties.GeoJSON responseText (incoming?)" + jqXHR.responseText);
+			}).complete(function () {
+				console.log("GeorgiaCounties.GeoJSON complete");
+			}); //end geoJson of county layer
+			function onEachCounty(feature, layer) {
+				layer.on({
+					mouseover: mouseoverCounty
+				});
+			} //end on each County
+			function mouseoverCounty(e) {
+				var layer = e.target;
+				changeCurrentCounty(layer.feature.properties.NAME);
+			}
+		}); //end geoJson of zone layer
+	}; //end createMap
 	function updateColors(values, themax) {
 		"use strict";
 		var colorStops = colors[0] + ", "; // start left with the first color
@@ -374,12 +521,15 @@ var barchart_and_map = (function () {
 		$(document).ready(function () {
 			"use strict";
 			console.log("enter ready callback");
+			createMap(function () {
+				console.log("createMap callback")
+			});
 			//NOTE: data should have been fully read in opn entry because 
 			//readInData() set holdReady until finished
 			setDataSpecificDOM();
 			svgElement = d3.select(svgSelector);
+			updateCurrentTripModeOrClassification();
 			createEmptyChart();
-			updateChart();
 			$("#stacked").click(function () {
 				extNvd3Chart.stacked(this.checked);
 				extNvd3Chart.update();
@@ -420,64 +570,32 @@ var barchart_and_map = (function () {
 			$("#start_cycle_map").click(function () {
 				$("#stop_cycle_map").css("display", "inline");
 				$("#start_cycle_map").css("display", "none");
-				interval = setInterval(function () {
-					cycleGoing = 1;
-					$('#attribute option:eq(' + currentVal + ')').prop('selected', true);
-					redrawMap();
-					currentVal++;
-					if (currentVal >= $("#attribute option").size()) {
-						currentVal = 0;
-					}
-				}, parseInt($("#cycle_frequency").val()) * 1000);
+				cycleGoing = true;
+				currentCycleModeIndex = 0;
+				cycleTripMode();
 			});
 			$("#stop_cycle_map").click(function () {
-				clearInterval(interval);
-				cycleGoing = 0;
+				cycleGoing = false;
 				$("#stop_cycle_map").css("display", "none");
 				$("#start_cycle_map").css("display", "inline");
 			});
+
+			function cycleTripMode() {
+				var newTripMode = modes[currentCycleModeIndex];
+				$('#current_trip_mode').val(newTripMode);
+				updateCurrentTripModeOrClassification();
+				redrawMap();
+				currentCycleModeIndex++;
+				if (currentCycleModeIndex >= $("#current_trip_mode option").size()) {
+					currentCycleModeIndex = 0;
+				}
+				if (cycleGoing) {
+					var timeInterval = parseInt($("#cycle_frequency").val()) * 1000;
+					setTimeout(cycleTripMode, timeInterval);
+				} //end if cycleGoing
+			} //end cycleTripMode
 			$("#cycle_frequency").change(function () {
-				if (cycleGoing == 1) {
-					clearInterval(interval);
-					interval = setInterval(function () {
-						$('#attribute option:eq(' + currentVal + ')').prop('selected', true);
-						redrawMap();
-						currentVal++;
-						if (currentVal >= $("#attribute option").size()) {
-							currentVal = 0;
-						}
-					}, parseInt($("#cycle_frequency").val()) * 1000);
-				}
-			});
-			map = L.map("map").setView(center, 9);
-			var maxZoom = 20;
-			//B&W stylized background map
-			var stamenTileLayer = new L.StamenTileLayer("toner-lite");
-			map.addLayer(stamenTileLayer);
-			tileOptions = {
-				maxZoom: 20
-				, tolerance: 5
-				, extent: 4096
-				, buffer: 64
-				, debug: 0
-				, indexMaxZoom: maxZoom
-				, indexMaxPoints: 100000
-			, };
-			map.on('zoomend', function (type, target) {
-				var zoomLevel = map.getZoom();
-				var zoomScale = map.getZoomScale();
-				console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
-			});
-			map.on('click', function (e) {
-				var layer = leafletPip.pointInLayer(e.latlng, baselayer, true);
-				if (layer.length > 0) {
-					currentCounty = zoneData[layer[0].feature.properties.id][modes[0]].COUNTY;
-					redrawMap();
-					chart.selectAll("text.label").style('font-size', "15px");
-					chart.selectAll("text").filter(function () {
-						return this.innerHTML == currentCounty;
-					}).style('font-size', "20px");
-				}
+				//no need to do anything since cycleTripMode always reads the current #cycle_frequency
 			});
 			$("#update_map").click(function () {
 				var slider_values = $("#slider").slider("values");
@@ -507,20 +625,12 @@ var barchart_and_map = (function () {
 				}
 			});
 			updateColors(handlers, $("#slider").slider("option", "max"));
-			$("#attribute").change(function () {
+			$("#current_trip_mode").change(function () {
+				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
 			$("#classification").change(function () {
-				if ($("#classification").val() == "custom") {
-					$("#update_map").css("display", "inline");
-				}
-				else {
-					$("#update_map").css("display", "none");
-				}
-				$("#slider").slider({
-					range: false
-					, disabled: ($("#classification").val() != "custom")
-				});
+				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
 			$("#naColor").spectrum({
@@ -581,19 +691,64 @@ var barchart_and_map = (function () {
 			, b: parseInt(result[3], 16)
 		} : undefined;
 	}
-	//main map display function
-	function colorizeFeatures(data) {
+
+	function updateBubbles() {
 		"use strict";
-		var attribute = $('#attribute').val();
-		var serie = new geostats(modeData[attribute].serie);
-		var maxFeature = serie.max();
+		bubblesShowing = $("#bubbles").is(":checked");
+		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
+		if (circlesLayerGroup == undefined) {
+			//first time must initalize by creating and adding to map
+			circlesLayerGroup = L.layerGroup([]);
+			circlesLayerGroup.addTo(map);
+		}
+		else {
+			circlesLayerGroup.clearLayers();
+		}
+		if (bubblesShowing) {
+			//get current map width to determine maximum bubble size
+			var mapCenter = map.getCenter();
+			var eastBound = map.getBounds().getEast();
+			var centerEast = L.latLng(mapCenter.lat, eastBound);
+			var bubbleMultiplier = parseInt($("#bubble_size").val());
+			var mapBounds = d3.select("#map").node().getBoundingClientRect();
+			var mapRadiusInPixels = mapBounds.width / 2;
+			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
+			var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
+			var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
+			Object.keys(zoneData).forEach(function (zoneKey) {
+				var zoneDatum = zoneData[zoneKey];
+				var bubbleCenter = zoneDatum.centroid;
+				var zoneTripData = zoneDatum[currentTripMode];
+				if (zoneTripData != undefined) {
+					var quantity = zoneTripData.QUANTITY;
+					var sqrtRadius = scaleSqrt(quantity);
+					var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
+					circle.setRadius(sqrtRadius);
+					//add circle to circlesLayerGroup
+					circlesLayerGroup.addLayer(circle);
+				} //end if have data for this zone and trip mode
+			}); //end Object.keys(zoneData).forEach
+		} //end if bubbles showing
+	}; //end updateBubbles
+	function updateCurrentTripModeOrClassification() {
+		"use strict";
+		currentTripMode = $('#current_trip_mode').val();
+		var startTime = Date.now();
+		console.log('updateCurrentTripModeOrClassification: #current_trip_mode.val()=' + currentTripMode);
+		var serie = new geostats(modeData[currentTripMode].serie);
+		maxFeature = serie.max();
 		//handle the different classifications
 		var classification = $("#classification").val();
-		var breakUp;
+		$("#slider").slider({
+			range: false
+			, disabled: ($("#classification").val() != "custom")
+		});
 		if (classification == "custom") {
+			$("#update_map").css("display", "inline");
 			breakUp = [$("#val1").val(), $("#val2").val(), $("#val3").val(), $("#val4").val(), $("#val5").val()];
 		}
 		else {
+			$("#update_map").css("display", "none");
 			if (classification == "even_interval") {
 				breakUp = serie.getClassEqInterval(4);
 			}
@@ -623,133 +778,15 @@ var barchart_and_map = (function () {
 			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
 			updateColors(new_values, breakUp[4]);
 		} //end if !custom
-		if (circlesLayerGroup == undefined) {
-			//first time must initalize by creating and adding to map
-			circlesLayerGroup = L.layerGroup([]);
-			circlesLayerGroup.addTo(map);
-		}
-		else {
-			circlesLayerGroup.clearLayers();
-		}
-		var counter = 0;
-		var circleStyle = {
-			"stroke": false
-			, "fillColor": bubbleColor
-			, "fillOpacity": 0.75
-		};
-		//get current map width to determine maximum bubble size
-		var mapCenter = map.getCenter();
-		var eastBound = map.getBounds().getEast();
-		var centerEast = L.latLng(mapCenter.lat, eastBound);
-		var bubbleMultiplier = parseInt($("#bubble_size").val());
-		var mapBounds = d3.select("#map").node().getBoundingClientRect();
-		var mapRadiusInPixels = mapBounds.width / 2;
-		var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
-		var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
-		var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
-		for (var i = 0; i < data.features.length; i++) {
-			var color = naColor;
-			if (zoneData[data.features[i].properties.id] != undefined) {
-				if (zoneData[data.features[i].properties.id][attribute] != undefined) {
-					//add circle
-					if ($("#bubbles").is(":checked")) {
-						var bubbleCenter = centroids[data.features[i].properties.id];
-						var quantity = zoneData[data.features[i].properties.id][attribute].QUANTITY;
-						var sqrtRadius = scaleSqrt(quantity);
-						var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
-						circle.setRadius(sqrtRadius);
-						//add circle to circlesLayerGroup
-						circlesLayerGroup.addLayer(circle);
-					}
-					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[0]) {
-						color = colors[0];
-					}
-					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[1]) {
-						color = colors[1];
-					}
-					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[2]) {
-						color = colors[2];
-					}
-					if (parseInt(zoneData[data.features[i].properties.id][attribute].QUANTITY) >= breakUp[3]) {
-						color = colors[3];
-					}
-				}
-			}
-			if (color != naColor) {
-				if (zoneData[data.features[i].properties.id][attribute].COUNTY == currentCounty) {
-					if (color.toHex != undefined) {
-						color = color.toHex();
-					}
-					var rgb = hexToRgb(color);
-					color = "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + ",0.4)";
-				}
-			}
-			data.features[i].properties.color = color;
-		}
-		return counter;
-	}; //end colorizefeatures
-	var tileLayer = L.canvasTiles().params({
-		debug: false
-		, padding: 5
-	}).drawing(drawingOnCanvas);
-	var pad = 0;
-	/* map helper function */
-	function drawingOnCanvas(canvasOverlay, params) {
-		"use strict";
-		var bounds = params.bounds;
-		params.tilePoint.z = params.zoom;
-		var ctx = params.canvas.getContext('2d');
-		ctx.globalCompositeOperation = 'source-over';
-		var tile = tileIndex.getTile(params.tilePoint.z, params.tilePoint.x, params.tilePoint.y);
-		if (!tile) {
-			return;
-		}
-		ctx.clearRect(0, 0, params.canvas.width, params.canvas.height);
-		var features = tile.features;
-		ctx.strokeStyle = 'grey';
-		ctx.lineWidth = 0;
-		for (var i = 0; i < features.length; i++) {
-			var feature = features[i]
-				, type = feature.type;
-			ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
-			ctx.beginPath();
-			for (var j = 0; j < feature.geometry.length; j++) {
-				var geom = feature.geometry[j];
-				if (type == 1) {
-					ctx.arc(geom[0] * ratio + pad, geom[1] * ratio + pad, 2, 0, 2 * Math.PI, false);
-					continue;
-				}
-				for (var k = 0; k < geom.length; k++) {
-					var p = geom[k];
-					var extent = 4096;
-					var x = p[0] / extent * 256;
-					var y = p[1] / extent * 256;
-					if (k) {
-						ctx.lineTo(x + pad, y + pad);
-					}
-					else {
-						ctx.moveTo(x + pad, y + pad);
-					}
-				}
-			}
-			if (type == 3 || type == 1) {
-				ctx.fill('evenodd');
-			}
-			if ($("#stroke").is(":checked")) {
-				ctx.stroke();
-			}
-		}
-	} //end drawingOnCanvas
-	var display_chart_dic = {};
-	//main chart function
-	var hiddenModes = [];
-	var data;
-	var countyModeTotalsArray;
-	var displaySeries;
-	var seriesLength;
-	var xAxis;
+		updateBubbles();
+	}; //end updateCurrentTripModeOrClassification
+	function updateOutline() {
+		showOutline = ($("#stroke").is(":checked"));
+		redrawMap();
+	}
 	//return only the parts that need to be global
 	return {
-		redrawMap: redrawMap
+		updateOutline: updateOutline
+		, updateBubbles: updateBubbles
 	};
 }()); //end encapsulating IIFE

@@ -18,7 +18,6 @@
 	<script src="../bower_components/chosen/chosen.jquery.js"></script>
 	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="../bower_components/leaflet/dist/leaflet.js"></script>
-	<script src="../bower_components/leaflet-pip/leaflet-pip.min.js"></script>
 	<script src="../bower_components/d3/d3.min.js"></script>
 	<script src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script src="../bower_components/underscore/underscore-min.js"></script>
@@ -52,7 +51,7 @@
 							<li>Click on the 'Stacked' checkbox to change chart style</li>
 							<li>Click anywhere on a row to highlight the <span class="area-type">PLACEHOLDER</span> area on the map</li>
 							<li>Click on legend symbols/labels to show or hide the <span class="trip-mode">PLACEHOLDER</span></li>
-							<li>Double click on the bar label to show a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
+							<li>Double click on legend symbols/labels to change map and charts to a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
 						</ul>
 					</div>
 					<div class="col-md-2">
@@ -75,12 +74,12 @@
 				<div id="classification_label">Classification</div>
 			</div>
 			<div class="col-md-6">
-				<select class="form-control" id="attribute"></select>
+				<select class="form-control" id="current_trip_mode"></select>
 			</div>
 			<div class="col-md-6" style="margin-bottom:2em;">
 				<select class="form-control" id="classification">
-					<option value="jenks" selected="selected">Natural breaks (Jenks)</option>
-					<option value="quartiles">Quartiles</option>
+					<option value="quartiles" selected="selected">Quartiles</option>
+					<option value="jenks">Natural breaks (Jenks)</option>
 					<option value="even_interval">Even interval</option>
 					<option value="custom">Custom</option>
 				</select>
@@ -156,14 +155,14 @@
 				</table>
 			</div>
 			<div class="col-md-6" style="margin-top:1em;text-align:right">
-				<input type="checkbox" id="bubbles" onclick="barchart_and_map.redrawMap()" /> Bubbles
+				<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
 				<input type="text" id="bubble_color" /> Size:
-				<select onchange="barchart_and_map.redrawMap()" id="bubble_size">
+				<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
 					<option>1</option>
 					<option>2</option>
 					<option>3</option>
 				</select>
-				<input type="checkbox" id="stroke" onclick="barchart_and_map.redrawMap()" /> Outline
+				<input type="checkbox" id="stroke" onclick="barchart_and_map.updateOutline()" /> Outline
 				<nobr>
 					<input type="text" id="naColor" /> N/A</nobr>
 			</div>
