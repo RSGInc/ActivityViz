@@ -61,6 +61,9 @@ var barchart_and_map = (function () {
 	var maxFeature;
 	var zoneDataLayer;
 	var countyLayer;
+	var barsWrap;
+	var barsWrapRect;
+	var barsWrapRectHeight;
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
@@ -219,6 +222,32 @@ var barchart_and_map = (function () {
 			return extNvd3Chart != undefined;
 		}, function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
+			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
+			//first check if 
+			barsWrap = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+			//if first time (enter() selection) create rect
+			var barsWrapRectId = "barsWrapRectRSG"
+			var barsWrapRectSelector = "#" + barsWrapRectId;
+			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().append("rect").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+				//console.log('barsWrap mousemove');
+				var mouseY = d3.mouse(this)[1];
+				var numCounties = enabledCounties.length;
+				var heightPerGroup = barsWrapRectHeight / numCounties;
+				var countyIndex = Math.floor(mouseY / heightPerGroup);
+				var countyObject = enabledCounties[countyIndex];
+				var newCounty = countyObject.groupLabel;
+				changeCurrentCounty(newCounty);
+			});
+			//for the update selection set height and width to zero so bounding box not influenced by barsWrapRect
+			barsWrap.select(barsWrapRectSelector).attr("width", 0).attr("height", 0);
+			//must delay so that chart elements have chance to redraw so that bBox is filled out
+			setTimeout(function () {
+				var bounds = barsWrap.node().getBBox();
+				var width = bounds.width + marginLeft;
+				barsWrapRectHeight = bounds.height;
+				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
+				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
+			}, 2000); //end setTimeout
 		}, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		}); //end call to poll
@@ -300,46 +329,23 @@ var barchart_and_map = (function () {
 							console.log('updateChart callback after windowResize');
 						});
 					});
-					// 					nvd3Chart.multibar.dispatch.on("elementMouse", function (e) {
-					// 						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
-					// 						changeCurrentCounty(e.data.label);
-					// 					});
-					//furious has colored boxes with checkmarks
-					//nvd3Chart.legend.vers('furious');
-					svgElement.on('mouseover', function (event) {
-						var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
-						var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
-						var mouseY = d3.mouse(this)[1];
-						//the main area is shifted -(legendHeight)
-						var chartYOffset = d3.transform(entireChartWithLegend.attr("transform")).translate[1];
-						var mainChartHeight = d3.transform(mainChart.attr("transform")).translate[1];
-						var mouseChartY = mouseY - chartYOffset;
-						var overChart = mouseChartY > 0 && mouseChartY < mainChartHeight;
-						console.log('svgElement mouseChartY: ' + mouseChartY + " of maximum " + mainChartHeight + " overChart: " + overChart);
-						if (overChart) {
-							var numCounties = enabledCounties.length;
-							var heightPerGroup = mainChartHeight / numCounties;
-							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
-							var countyObject = enabledCounties[countyIndex];
-							//console.log('click in county: ' + countyObject.groupLabel);
-							changeCurrentCounty(countyObject.groupLabel);
-						} //end if click in chart area
-					}); //end on svgElement click
-					return nvd3Chart;
-				} //end generate
-				
-			, callback: function (newGraph) {
-					extNvd3Chart = newGraph;
-					extNvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
+					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
 						var newTripMode = event.key;
 						console.log('legend legendDblclick on trip mode: ' + newTripMode);
 						$('#current_trip_mode').val(newTripMode);
 						updateCurrentTripModeOrClassification();
 						redrawMap();
 					});
-					console.log("***********************barchart_nvd3 callback called");
-					//sizeSVG();
-					//setTimeout(sizeSVG, 2500);
+					//furious has colored boxes with checkmarks
+					//nvd3Chart.legend.vers('furious');
+					return nvd3Chart;
+				} //end generate
+				
+			, callback: function (newGraph) {
+					extNvd3Chart = newGraph;
+					updateChart(function () {
+						console.log("updateChart callback during after the nvd3 callback called");
+					});
 				} //end callback function
 		}); //end nv.addGraph
 	}; //end createEmptyChart
@@ -524,9 +530,6 @@ var barchart_and_map = (function () {
 			svgElement = d3.select(svgSelector);
 			updateCurrentTripModeOrClassification();
 			createEmptyChart();
-			updateChart(function () {
-				console.log("updateChart callback during handleDocumentReady");
-			});
 			$("#stacked").click(function () {
 				extNvd3Chart.stacked(this.checked);
 				extNvd3Chart.update();
@@ -588,7 +591,7 @@ var barchart_and_map = (function () {
 				}
 				if (cycleGoing) {
 					var timeInterval = parseInt($("#cycle_frequency").val()) * 1000;
-					window.setTimeout(cycleTripMode, timeInterval);
+					setTimeout(cycleTripMode, timeInterval);
 				} //end if cycleGoing
 			} //end cycleTripMode
 			$("#cycle_frequency").change(function () {
