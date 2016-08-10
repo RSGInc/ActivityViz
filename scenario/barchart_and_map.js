@@ -2,9 +2,8 @@
 //global object barchart_and_map will contain functions and variables that must be accessible from elsewhere
 var barchart_and_map = (function () {
 	"use strict";
-	var chart, zoneTiles, zoneDataLayer, map, tileIndex, tileOptions;
-	var naColor = "White"
-		, bubbleColor = "#ff7800";
+	var naColor = "White";
+	var bubbleColor = "#ff7800";
 	var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
 	var selectedColorRampIndex = 0;
 	var palette = [
@@ -25,12 +24,13 @@ var barchart_and_map = (function () {
     ];
 	//slider
 	var handlers = [25, 50, 75];
-	//data
+	var map;
 	var zoneData;
 	var dataItems = [];
 	var currentCounty = "";
 	var modes;
 	var counties;
+	var countiesSet;
 	var enabledCounties;
 	var circlesLayerGroup;
 	var chartData = null;
@@ -59,6 +59,8 @@ var barchart_and_map = (function () {
 	var bubblesShowing = false;
 	var showOutline = false;
 	var maxFeature;
+	var zoneDataLayer;
+	var countyLayer;
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
@@ -79,19 +81,7 @@ var barchart_and_map = (function () {
 
 	function redrawMap() {
 		"use strict";
-		//updateCurrentTripModeOrClassification();
-		//		tileIndex = geojsonvt(zoneTiles, tileOptions);
-		//		tileLayer.addTo(map);
-		//		tileLayer.redraw();
-		//map.update();
-		//resetting style causes the layer to call the function for each feauture which allows redraw
-		//console.log(Date.now() + " resetting layer style");
-		zoneDataLayer.setStyle(styleGeoJsonLayer);
-// 		zoneDataLayer.eachLayer(function (layer) {
-// 			var newStyle = styleGeoJsonLayer(layer.feature);
-// 			layer.setStyle(newStyle)
-// 		});
-		//console.log(Date.now() + " finished resetting layer style");
+		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
 	}
 
 	function readInData(callback) {
@@ -143,6 +133,7 @@ var barchart_and_map = (function () {
 				} //end if keeping this object
 				return keepThisObject;
 			}); //end filtering and other data prep
+			countiesSet = new Set(counties);
 			modes = Object.keys(modeData);
 			data = null; //allow GC to reclaim memory
 			//need to run through rawChartData and put modes in order and insert ones that are missing
@@ -330,7 +321,7 @@ var barchart_and_map = (function () {
 				} //end callback function
 		}); //end nv.addGraph
 	}; //end createEmptyChart
-	function styleGeoJsonLayer(feature) {
+	function styleZoneGeoJSONLayer(feature) {
 		var color = naColor;
 		if (feature.zoneData != undefined) {
 			var zoneDataFeature = feature.zoneData[currentTripMode];
@@ -354,19 +345,29 @@ var barchart_and_map = (function () {
 				}
 			} //end if we have data for this trip mode
 		} //end if we have data for this zone
-		
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
 			//all SVG styles allowed
 			fillColor: color
-			, fillOpacity: 0.8
+			, fillOpacity: 0.3
 			, weight: 1
-			,color: "lightGrey"
+			, color: "lightGrey"
 			, stroke: showOutline
 		};
 		return (returnStyle);
-	} //end end style function
-	//load tiles
+	} //end styleZoneGeoJSONLayer function
+	function styleCountyGeoJSONLayer(feature) {
+		var returnStyle = {
+			//all SVG styles allowed
+			fill: true
+			, fillOpacity: 0.0
+			, stroke: true
+			, weight: 1
+			, strokeOpacity: 0.25
+			, color: "gray"
+		};
+		return (returnStyle);
+	} //end styleCountyGeoJSONLayer function
 	function createMap(callback) {
 		map = L.map("map").setView([33.754525, -84.384774], 9); //centered at Atlanta
 		map.on('zoomend', function (type, target) {
@@ -381,9 +382,8 @@ var barchart_and_map = (function () {
 				changeCurrentCounty(newCurrentCounty);
 			}
 		});
-		$.getJSON("../scripts/ZoneShape.GeoJSON", function (json) {
+		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
 			"use strict";
-			zoneTiles = json;
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
 				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
@@ -406,9 +406,8 @@ var barchart_and_map = (function () {
 				, unloadInvisibleFiles: true
 				, reuseTiles: true
 				, opacity: 1.0
-				, style: styleGeoJsonLayer
+				, style: styleZoneGeoJSONLayer
 			});
-			zoneDataLayer.addTo(map);
 			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
 			//map.addLayer(stamenTileLayer);
 			var underlyingMapLayer = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
@@ -418,9 +417,51 @@ var barchart_and_map = (function () {
 				, opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			underlyingMapLayer.bringToFront();
-			zoneDataLayer.bringToBack();
-		});
+			$.getJSON("../scripts/GeorgiaCounties.GeoJSON", function (countyTiles) {
+				"use strict";
+				console.log("GeorgiaCounties.GeoJSON success");
+				//http://leafletjs.com/reference.html#tilelayer
+				countyLayer = L.geoJson(countyTiles, {
+					//keep only counties that we have data foe
+					filter: function (feature) {
+						return countiesSet.has(feature.properties.NAME);
+					}
+					, updateWhenIdle: true
+					, unloadInvisibleFiles: true
+					, reuseTiles: true
+					, opacity: 1.0
+					, style: styleCountyGeoJSONLayer
+					, onEachFeature: onEachCounty
+				});
+				zoneDataLayer.addTo(map);
+				countyLayer.addTo(map);
+			}).success(function () {
+				console.log("GeorgiaCounties.GeoJSON second success");
+			}).error(function (jqXHR, textStatus, errorThrown) {
+				console.log("GeorgiaCounties.GeoJSON textStatus " + textStatus);
+				console.log("GeorgiaCounties.GeoJSON errorThrown" + errorThrown);
+				console.log("GeorgiaCounties.GeoJSON responseText (incoming?)" + jqXHR.responseText);
+			}).complete(function () {
+				console.log("GeorgiaCounties.GeoJSON complete");
+			}); //end geoJson of county layer
+			function onEachCounty(feature, layer) {
+				layer.on({
+					mouseover: mouseoverCounty
+					, mouseout: mouseoutCounty
+				});
+			} //end on each County
+			function mouseoverCounty(e) {
+				var layer = e.target;
+				layer.setStyle({
+					weight: 3
+				});
+				changeCurrentCounty(layer.feature.properties.NAME);
+			} //end mouseOutCounty
+			function mouseoutCounty(e) {
+				var layer = e.target;
+				countyLayer.resetStyle(layer);
+			}
+		}); //end geoJson of zone layer
 	}; //end createMap
 	function updateColors(values, themax) {
 		"use strict";
