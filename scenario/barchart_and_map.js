@@ -64,6 +64,8 @@ var barchart_and_map = (function () {
 	var barsWrap;
 	var barsWrapRect;
 	var barsWrapRectHeight;
+	var barsWrapRectId = "barsWrapRectRSG"
+	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
@@ -224,11 +226,14 @@ var barchart_and_map = (function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
 			//first check if 
-			barsWrap = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+			var chartOuterSelector = ".nv-barsWrap.nvd3-svg";
+			barsWrap = d3.select(chartOuterSelector);
+			if (barsWrap[0].length == 0) {
+				throw ("did not find expected part of chart")
+			}
 			//if first time (enter() selection) create rect
-			var barsWrapRectId = "barsWrapRectRSG"
-			var barsWrapRectSelector = "#" + barsWrapRectId;
-			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().append("rect").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+			//nv-barsWrap nvd3-svg
+			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
 				//console.log('barsWrap mousemove');
 				var mouseY = d3.mouse(this)[1];
 				var numCounties = enabledCounties.length;
@@ -237,23 +242,32 @@ var barchart_and_map = (function () {
 				var countyObject = enabledCounties[countyIndex];
 				var newCounty = countyObject.groupLabel;
 				changeCurrentCounty(newCounty);
-				return true;
 			});
-			//for the update selection set height and width to zero so bounding box not influenced by barsWrapRect
-			barsWrap.select(barsWrapRectSelector).attr("width", 0).attr("height", 0);
-			//must delay so that chart elements have chance to redraw so that bBox is filled out
-			setTimeout(function () {
-				var bounds = barsWrap.node().getBBox();
-				var width = bounds.width + marginLeft;
-				barsWrapRectHeight = bounds.height;
-				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
-				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
-			}, 2000); //end setTimeout
+			setTimeout(updateChartMouseoverRect, 1000);
 		}, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		}); //end call to poll
 		callback();
 	}; //end updateChartNVD3
+	function updateChartMouseoverRect() {
+		var innerContainer = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+		var innerContainerNode = innerContainer.node();
+		var tryAgain = true;
+		if (innerContainerNode != undefined) {
+			var bounds = innerContainerNode.getBBox();
+			var width = bounds.width + marginLeft;
+			barsWrapRectHeight = bounds.height;
+			if (barsWrapRectHeight > 0) {
+				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
+				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
+				tryAgain = false;
+			}
+		} //end if innerContainerNode exists
+		if (tryAgain) {
+			console.log('updateChartMouseoverRect called but innerContainerNode is null so will try again shortly');
+			setTimeout(updateChartMouseoverRect, 500);
+		}
+	} //end updateChartMouseoverRect
 	//from https://davidwalsh.name/javascript-polling
 	function poll(fn, callback, errback, timeout, interval) {
 		var endTime = Number(new Date()) + (timeout || 2000);
@@ -337,12 +351,17 @@ var barchart_and_map = (function () {
 						updateCurrentTripModeOrClassification();
 						redrawMap();
 					});
+					nvd3Chart.multibar.dispatch.on("elementMouseover", function (d, i) {
+						var countyUnderMouse = d.value;
+						changeCurrentCounty(countyUnderMouse);
+					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
 					return nvd3Chart;
 				} //end generate
 				
 			, callback: function (newGraph) {
+					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called");
