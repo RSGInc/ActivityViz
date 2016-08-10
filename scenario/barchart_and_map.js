@@ -52,8 +52,8 @@ var barchart_and_map = (function () {
 	var marginRight = 50;
 	var CSS_UPDATE_PAUSE = 150; //milliseconds to pause before redrawing map
 	var interval;
-	var currentVal = 0;
-	var cycleGoing = 0;
+	var currentCycleModeIndex = 0;
+	var cycleGoing = false;
 	var breakUp;
 	var currentTripMode;
 	var bubblesShowing = false;
@@ -245,14 +245,27 @@ var barchart_and_map = (function () {
 	}
 
 	function changeCurrentCounty(newCurrentCounty) {
-		currentCounty = newCurrentCounty;
-		var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-		countyLabels.classed("current-county", function (d, i) {
-			var setClass = d == currentCounty;
-			return setClass;
-		}); //end classed of group rect
-		//add delay to redrawMap so that text has chance to bold
-		setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		if (currentCounty != newCurrentCounty) {
+			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
+			currentCounty = newCurrentCounty;
+			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+			countyLabels.classed("current-county", function (d, i) {
+				var setClass = d == currentCounty;
+				return setClass;
+			}); //end classed of group rect
+			countyLayer.setStyle(function (feature) {
+				var style = {};
+				if (feature.properties.NAME == currentCounty) {
+					style.weight = 4;
+				}
+				else {
+					style.weight = 1;
+				}
+				return (style);
+			}); //end setStyle function
+			//add delay to redrawMap so that text has chance to bold
+			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		} //end if county is changing
 	}; //end change currentCounty
 	function createEmptyChart() {
 		nv.addGraph({
@@ -287,13 +300,13 @@ var barchart_and_map = (function () {
 							console.log('updateChart callback after windowResize');
 						});
 					});
-					nvd3Chart.multibar.dispatch.on("elementClick", function (e) {
-						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
-						changeCurrentCounty(e.data.label);
-					});
+					// 					nvd3Chart.multibar.dispatch.on("elementMouse", function (e) {
+					// 						//console.log('elementClick on ' + e.data.label + ', ' + e.data.key + ', with value ' + e.data.value);
+					// 						changeCurrentCounty(e.data.label);
+					// 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
-					svgElement.on('click', function (event) {
+					svgElement.on('mouseover', function (event) {
 						var entireChartWithLegend = d3.select(".nvd3.nv-multiBarHorizontalChart");
 						var mainChart = d3.select(".nvd3 .nv-y.nv-axis");
 						var mouseY = d3.mouse(this)[1];
@@ -301,7 +314,9 @@ var barchart_and_map = (function () {
 						var chartYOffset = d3.transform(entireChartWithLegend.attr("transform")).translate[1];
 						var mainChartHeight = d3.transform(mainChart.attr("transform")).translate[1];
 						var mouseChartY = mouseY - chartYOffset;
-						if (mouseChartY > 0 && mouseChartY < mainChartHeight) {
+						var overChart = mouseChartY > 0 && mouseChartY < mainChartHeight;
+						console.log('svgElement mouseChartY: ' + mouseChartY + " of maximum " + mainChartHeight + " overChart: " + overChart);
+						if (overChart) {
 							var numCounties = enabledCounties.length;
 							var heightPerGroup = mainChartHeight / numCounties;
 							var countyIndex = Math.floor(mouseChartY / heightPerGroup);
@@ -315,6 +330,13 @@ var barchart_and_map = (function () {
 				
 			, callback: function (newGraph) {
 					extNvd3Chart = newGraph;
+					extNvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
+						var newTripMode = event.key;
+						console.log('legend legendDblclick on trip mode: ' + newTripMode);
+						$('#current_trip_mode').val(newTripMode);
+						updateCurrentTripModeOrClassification();
+						redrawMap();
+					});
 					console.log("***********************barchart_nvd3 callback called");
 					//sizeSVG();
 					//setTimeout(sizeSVG, 2500);
@@ -351,7 +373,8 @@ var barchart_and_map = (function () {
 			fillColor: color
 			, fillOpacity: 0.3
 			, weight: 1
-			, color: "lightGrey"
+			, color: "darkGrey"
+			, strokeOpacity: 0.05
 			, stroke: showOutline
 		};
 		return (returnStyle);
@@ -374,13 +397,6 @@ var barchart_and_map = (function () {
 			var zoomLevel = map.getZoom();
 			var zoomScale = map.getZoomScale();
 			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
-		});
-		map.on('click', function (e) {
-			var layer = leafletPip.pointInLayer(e.latlng, zoneDataLayer, true);
-			if (layer.length > 0) {
-				var newCurrentCounty = zoneData[layer[0].feature.properties.id][modes[0]].COUNTY;
-				changeCurrentCounty(newCurrentCounty);
-			}
 		});
 		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
 			"use strict";
@@ -447,19 +463,11 @@ var barchart_and_map = (function () {
 			function onEachCounty(feature, layer) {
 				layer.on({
 					mouseover: mouseoverCounty
-					, mouseout: mouseoutCounty
 				});
 			} //end on each County
 			function mouseoverCounty(e) {
 				var layer = e.target;
-				layer.setStyle({
-					weight: 3
-				});
 				changeCurrentCounty(layer.feature.properties.NAME);
-			} //end mouseOutCounty
-			function mouseoutCounty(e) {
-				var layer = e.target;
-				countyLayer.resetStyle(layer);
 			}
 		}); //end geoJson of zone layer
 	}; //end createMap
@@ -559,35 +567,32 @@ var barchart_and_map = (function () {
 			$("#start_cycle_map").click(function () {
 				$("#stop_cycle_map").css("display", "inline");
 				$("#start_cycle_map").css("display", "none");
-				interval = setInterval(function () {
-					cycleGoing = 1;
-					$('#current_trip_mode option:eq(' + currentVal + ')').prop('selected', true);
-					updateCurrentTripModeOrClassification();
-					redrawMap();
-					currentVal++;
-					if (currentVal >= $("#current_trip_mode option").size()) {
-						currentVal = 0;
-					}
-				}, parseInt($("#cycle_frequency").val()) * 1000);
+				cycleGoing = true;
+				currentCycleModeIndex = 0;
+				cycleTripMode();
 			});
 			$("#stop_cycle_map").click(function () {
-				clearInterval(interval);
-				cycleGoing = 0;
+				cycleGoing = false;
 				$("#stop_cycle_map").css("display", "none");
 				$("#start_cycle_map").css("display", "inline");
 			});
-			$("#cycle_frequency").change(function () {
-				if (cycleGoing == 1) {
-					clearInterval(interval);
-					interval = setInterval(function () {
-						$('#current_trip_mode option:eq(' + currentVal + ')').prop('selected', true);
-						redrawMap();
-						currentVal++;
-						if (currentVal >= $("#current_trip_mode option").size()) {
-							currentVal = 0;
-						}
-					}, parseInt($("#cycle_frequency").val()) * 1000);
+
+			function cycleTripMode() {
+				var newTripMode = modes[currentCycleModeIndex];
+				$('#current_trip_mode').val(newTripMode);
+				updateCurrentTripModeOrClassification();
+				redrawMap();
+				currentCycleModeIndex++;
+				if (currentCycleModeIndex >= $("#current_trip_mode option").size()) {
+					currentCycleModeIndex = 0;
 				}
+				if (cycleGoing) {
+					var timeInterval = parseInt($("#cycle_frequency").val()) * 1000;
+					window.setTimeout(cycleTripMode, timeInterval);
+				} //end if cycleGoing
+			} //end cycleTripMode
+			$("#cycle_frequency").change(function () {
+				//no need to do anything since cycleTripMode always reads the current #cycle_frequency
 			});
 			$("#update_map").click(function () {
 				var slider_values = $("#slider").slider("values");
