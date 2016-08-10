@@ -237,6 +237,7 @@ var barchart_and_map = (function () {
 				var countyObject = enabledCounties[countyIndex];
 				var newCounty = countyObject.groupLabel;
 				changeCurrentCounty(newCounty);
+				return (true);
 			});
 			//for the update selection set height and width to zero so bounding box not influenced by barsWrapRect
 			barsWrap.select(barsWrapRectSelector).attr("width", 0).attr("height", 0);
