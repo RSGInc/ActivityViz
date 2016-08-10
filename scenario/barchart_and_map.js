@@ -237,7 +237,7 @@ var barchart_and_map = (function () {
 				var countyObject = enabledCounties[countyIndex];
 				var newCounty = countyObject.groupLabel;
 				changeCurrentCounty(newCounty);
-				return (true);
+				return true;
 			});
 			//for the update selection set height and width to zero so bounding box not influenced by barsWrapRect
 			barsWrap.select(barsWrapRectSelector).attr("width", 0).attr("height", 0);
@@ -440,9 +440,9 @@ var barchart_and_map = (function () {
 				, opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../scripts/GeorgiaCounties.GeoJSON", function (countyTiles) {
+			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
 				"use strict";
-				console.log("GeorgiaCounties.GeoJSON success");
+				console.log("cb_2015_us_county_500k GEORGIA.json success");
 				//http://leafletjs.com/reference.html#tilelayer
 				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data foe
@@ -459,13 +459,13 @@ var barchart_and_map = (function () {
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
-				console.log("GeorgiaCounties.GeoJSON second success");
+				console.log("cb_2015_us_county_500k GEORGIA.json second success");
 			}).error(function (jqXHR, textStatus, errorThrown) {
-				console.log("GeorgiaCounties.GeoJSON textStatus " + textStatus);
-				console.log("GeorgiaCounties.GeoJSON errorThrown" + errorThrown);
-				console.log("GeorgiaCounties.GeoJSON responseText (incoming?)" + jqXHR.responseText);
+				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
+				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
+				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
 			}).complete(function () {
-				console.log("GeorgiaCounties.GeoJSON complete");
+				console.log("cb_2015_us_county_500k GEORGIA.json complete");
 			}); //end geoJson of county layer
 			function onEachCounty(feature, layer) {
 				layer.on({

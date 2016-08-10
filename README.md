@@ -15,11 +15,12 @@ ARC ABMVIZ HTML 5
 #Scripts folder
 1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
 2. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
-3. BarChartAndMapExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart and map visual demo data set
-4. TimeUseExample.sql - SQL script to query the ABMVIZ DB to produce the time use visual demo data set
+3. cb_2015_us_county_500k GEORGIA.json us counties from: https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html and then converted to json at http://www.mapshaper.org/ with console filter 'STATEFP == "13"'
+4. BarChartAndMapExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart and map visual demo data set
+5. TimeUseExample.sql - SQL script to query the ABMVIZ DB to produce the time use visual demo data set
 6. 3DAnimatedMapExample.sql - SQL script to query the ABMVIZ DB to produce the 3D animated map demo data set
-5. TreeMapExample.sql - SQL script to query the ABMVIZ DB to produce the tree map visual demo data set
-7. RadarChartsExample.sql - SQL script to query the ABMVIZ DB to produce the radar charts visual demo data set
+7. TreeMapExample.sql - SQL script to query the ABMVIZ DB to produce the tree map visual demo data set
+8. RadarChartsExample.sql - SQL script to query the ABMVIZ DB to produce the radar charts visual demo data set
 
 #Exporting demo data set from SQL Server
 1. Open SQL server management studio
