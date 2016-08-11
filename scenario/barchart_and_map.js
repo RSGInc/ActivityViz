@@ -464,7 +464,7 @@ var barchart_and_map = (function () {
 				console.log("cb_2015_us_county_500k GEORGIA.json success");
 				//http://leafletjs.com/reference.html#tilelayer
 				countyLayer = L.geoJson(countyTiles, {
-					//keep only counties that we have data foe
+					//keep only counties that we have data for
 					filter: function (feature) {
 						return countiesSet.has(feature.properties.NAME);
 					}
