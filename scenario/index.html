@@ -23,214 +23,212 @@
 				<li class="nav-item"><a href="../index.html">Back to scenario selection</a></li>
 			</ul>
 		</nav>
-		<div id="sunburst">
-			<div class="row">
-				<p class="text-center" style="font-size:2em"><strong><span class="sunburst-maingroup"></span>,</strong> by <span class="sunburst-subgroup"></span></p>
-				<div id="sunburst-sequence"></div>
-				<div id="sunburst-sidebar" class="col-md-2">
-					<div id="sunburst-legend"></div>
+		<div id="sunburst" class="row">
+			<p class="text-center" style="font-size:2em"><strong><span class="sunburst-maingroup"></span></p>
+			<div id="sunburst-sidebar" class="col-md-2">
+				<div id="sunburst-legend"></div>
+			</div>
+			<div id="sunburst-main" class="col-md-10">
+				<div id="sunburst-explanation" style="visibility: hidden;">
+					<p><span id="sunburst-percentage"></span>
+						<br/><span id="sunburst-current-node"></span></p>
 				</div>
-				<div id="sunburst-main" class="col-md-10">
-					<div id="sunburst-explanation" style="visibility: hidden;">
-						<p><span id="sunburst-percentage"></span>
-							<br/> of tours begin with this sequence of trips</p>
+				<div id="sunburst-chart"> </div>
+			</div>
+		</div>
+		<hr>
+		<div id="mode-share-by-county">
+			<p class="text-center" style="font-size:2em"><strong><span class="trip-mode"></span>,</strong> by <span class="area-type"></span></p>
+			<div class="col-md-6 right-border" style="margin-top:4px">
+				<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
+					<div class="row" style="margin-top:4px">
+						<div class="col-md-10">
+							<ul>
+								<li>Click on the 'Stacked' checkbox to change chart style</li>
+								<li>Click anywhere on a row to highlight the <span class="area-type">PLACEHOLDER</span> area on the map</li>
+								<li>Click on legend symbols/labels to show or hide the <span class="trip-mode">PLACEHOLDER</span></li>
+								<li>Double click on legend symbols/labels to change map and charts to a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
+							</ul>
+						</div>
+						<div class="col-md-2">
+							<label>
+								<input type="checkbox" checked id="stacked" />Stacked</label>
+							<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
+						</div>
 					</div>
-					<div id="sunburst-chart"> </div>
+				</div>
+				<div class="row" style="width:100%;height:60%;">
+					<svg id="chart"></svg>
 				</div>
 			</div>
-			<hr>
-			<div id="mode-share-by-county">
-				<p class="text-center" style="font-size:2em"><strong><span class="trip-mode"></span>,</strong> by <span class="area-type"></span></p>
-				<div class="col-md-6 right-border" style="margin-top:4px">
-					<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
-						<div class="row" style="margin-top:4px">
-							<div class="col-md-10">
-								<ul>
-									<li>Click on the 'Stacked' checkbox to change chart style</li>
-									<li>Click anywhere on a row to highlight the <span class="area-type">PLACEHOLDER</span> area on the map</li>
-									<li>Click on legend symbols/labels to show or hide the <span class="trip-mode">PLACEHOLDER</span></li>
-									<li>Double click on legend symbols/labels to change map and charts to a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
-								</ul>
-							</div>
-							<div class="col-md-2">
-								<label>
-									<input type="checkbox" checked id="stacked" />Stacked</label>
-								<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
-							</div>
-						</div>
-					</div>
-					<div class="row" style="width:100%;height:60%;">
-						<svg id="chart"></svg>
-					</div>
+			<div class="col-md-6">
+				<div class="col-md-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
+				<div class="col-md-6">
+					<div class="trip-mode" style="font-weight:bold"></div>
+				</div>
+				<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
+					<div id="classification_label">Classification</div>
 				</div>
 				<div class="col-md-6">
-					<div class="col-md-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
-					<div class="col-md-6">
-						<div class="trip-mode" style="font-weight:bold"></div>
-					</div>
-					<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
-						<div id="classification_label">Classification</div>
-					</div>
-					<div class="col-md-6">
-						<select class="form-control" id="current_trip_mode"></select>
-					</div>
-					<div class="col-md-6" style="margin-bottom:2em;">
-						<select class="form-control" id="classification">
-							<option value="quartiles" selected="selected">Quartiles</option>
-							<option value="jenks">Natural breaks (Jenks)</option>
-							<option value="even_interval">Even interval</option>
-							<option value="custom">Custom</option>
-						</select>
-					</div>
-					<div class="col-md-12" id="map" style="width: 100%;height:50%;"></div>
-					<div class="col-md-6" style="margin-top:1em;text-align:right">
-						<table width="100%">
-							<tr>
-								<td rowspan="2">Palette:</td>
-								<td>
-									<div class="col-md-10">
-										<div class="row">
-											<div class="ramp Blues">
-												<svg width="60" height="15">
-													<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
-											<div class="ramp Greens">
-												<svg width="60" height="15">
-													<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
-											<div class="ramp Greys">
-												<svg width="60" height="15">
-													<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
-										</div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
+					<select class="form-control" id="current_trip_mode"></select>
+				</div>
+				<div class="col-md-6" style="margin-bottom:2em;">
+					<select class="form-control" id="classification">
+						<option value="quartiles" selected="selected">Quartiles</option>
+						<option value="jenks">Natural breaks (Jenks)</option>
+						<option value="even_interval">Even interval</option>
+						<option value="custom">Custom</option>
+					</select>
+				</div>
+				<div class="col-md-12" id="map" style="width: 100%;height:50%;"></div>
+				<div class="col-md-6" style="margin-top:1em;text-align:right">
+					<table width="100%">
+						<tr>
+							<td rowspan="2">Palette:</td>
+							<td>
+								<div class="col-md-10">
 									<div class="row">
-										<div class="col-md-10">
-											<div class="ramp Oranges">
-												<svg width="60" height="15">
-													<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
-											<div class="ramp Purples">
-												<svg width="60" height="15">
-													<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
-											<div class="ramp Reds">
-												<svg width="60" height="15">
-													<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-													<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-													<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-													<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-												</svg>
-											</div>
+										<div class="ramp Blues">
+											<svg width="60" height="15">
+												<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
+										<div class="ramp Greens">
+											<svg width="60" height="15">
+												<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
+										<div class="ramp Greys">
+											<svg width="60" height="15">
+												<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-md-6" style="margin-top:1em;text-align:right">
-						<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
-						<input type="text" id="bubble_color" /> Size:
-						<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-						</select>
-						<input type="checkbox" id="stroke" onclick="barchart_and_map.updateOutline()" /> Outline
-						<nobr>
-							<input type="text" id="naColor" /> N/A</nobr>
-					</div>
-					<div class="col-md-12" style="margin-top:1em;">
-						<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
-						<div class="row">
-							<div class="col-md-6">
-								<button id="update_map" style="display:none" class="btn">Update Map</button>
-								<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
-								<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
-							</div>
-							<div class="col-md-6"> Redraw
-								<select id="cycle_frequency" class="form-control form-control-inline">
-									<option value="1">every 1 sec</option>
-									<option value="2">every 2 sec</option>
-									<option value="3">every 3 sec</option>
-									<option value="4">every 4 sec</option>
-									<option value="5">every 5 sec</option>
-									<option value="6">every 6 sec</option>
-									<option value="7">every 7 sec</option>
-									<option value="8">every 8 sec</option>
-									<option value="9">every 9 sec</option>
-									<option value="10">every 10 sec</option>
-								</select>
-							</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-md-10">
+										<div class="ramp Oranges">
+											<svg width="60" height="15">
+												<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
+										<div class="ramp Purples">
+											<svg width="60" height="15">
+												<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
+										<div class="ramp Reds">
+											<svg width="60" height="15">
+												<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-6" style="margin-top:1em;text-align:right">
+					<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
+					<input type="text" id="bubble_color" /> Size:
+					<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+					</select>
+					<input type="checkbox" id="stroke" onclick="barchart_and_map.updateOutline()" /> Outline
+					<nobr>
+						<input type="text" id="naColor" /> N/A</nobr>
+				</div>
+				<div class="col-md-12" style="margin-top:1em;">
+					<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
+					<div class="row">
+						<div class="col-md-6">
+							<button id="update_map" style="display:none" class="btn">Update Map</button>
+							<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
+							<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
 						</div>
-						<div class="row">
-							<div class="col-md-12" style="margin-top:1em;">
-								<br>
-								<br> The Map interactive features include:
-								<ul>
-									<li>Click and drag to pan the map area</li>
-									<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
-									<li>Click on an area to highlight the SPATIALAGG both on the map and the bar chart</li>
-									<li>Turn the zone centroid bubbles on and off and set the scaling</li>
-									<li>Draw zones with an outline and draw zones with an NA value according to the color picker</li>
-									<li>Change the classification scheme from quantiles to equal intervals to custom</li>
-									<li>Redraw the map using a custom classification using the classification range sliders</li>
-									<li>Color zones with a semi-transparent fill to retain background network display</li>
-									<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
-								</ul>
-								<input type="hidden" size="4" 4 id="val1">
-								<input type="hidden" size="4" id="val2">
-								<br>
-								<input type="hidden" size="4" id="val3">
-								<br>
-								<input type="hidden" size="4" id="val4">
-								<br>
-								<input type="hidden" size="4" id="val5"> </div> Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </div>
+						<div class="col-md-6"> Redraw
+							<select id="cycle_frequency" class="form-control form-control-inline">
+								<option value="1">every 1 sec</option>
+								<option value="2">every 2 sec</option>
+								<option value="3">every 3 sec</option>
+								<option value="4">every 4 sec</option>
+								<option value="5">every 5 sec</option>
+								<option value="6">every 6 sec</option>
+								<option value="7">every 7 sec</option>
+								<option value="8">every 8 sec</option>
+								<option value="9">every 9 sec</option>
+								<option value="10">every 10 sec</option>
+							</select>
+						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-12" style="margin-top:1em;">
+							<br>
+							<br> The Map interactive features include:
+							<ul>
+								<li>Click and drag to pan the map area</li>
+								<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
+								<li>Click on an area to highlight the SPATIALAGG both on the map and the bar chart</li>
+								<li>Turn the zone centroid bubbles on and off and set the scaling</li>
+								<li>Draw zones with an outline and draw zones with an NA value according to the color picker</li>
+								<li>Change the classification scheme from quantiles to equal intervals to custom</li>
+								<li>Redraw the map using a custom classification using the classification range sliders</li>
+								<li>Color zones with a semi-transparent fill to retain background network display</li>
+								<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
+							</ul>
+							<input type="hidden" size="4" 4 id="val1">
+							<input type="hidden" size="4" id="val2">
+							<br>
+							<input type="hidden" size="4" id="val3">
+							<br>
+							<input type="hidden" size="4" id="val4">
+							<br>
+							<input type="hidden" size="4" id="val5"> </div> Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </div>
 				</div>
 			</div>
 		</div>
-		<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-		<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
-		<script src="../bower_components/spectrum/spectrum.js"></script>
-		<script src="../bower_components/chosen/chosen.jquery.js"></script>
-		<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script src="../bower_components/leaflet/dist/leaflet.js"></script>
-		<script src="../bower_components/d3/d3.min.js"></script>
-		<script src="../bower_components/nvd3/build/nv.d3.js"></script>
-		<script src="../bower_components/underscore/underscore-min.js"></script>
-		<script src="../bower_components/geostats/lib/geostats.min.js"></script>
-		<!-- http://maps.stamen.com/ -->
-		<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-		<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
-		<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
-		<script src="../abmviz_utilities.js"></script>
-		<script src="barchart_and_map.js"></script>
-		<script src="sunburst.js"></script>
+	</div>
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
+	<script src="../bower_components/spectrum/spectrum.js"></script>
+	<script src="../bower_components/chosen/chosen.jquery.js"></script>
+	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="../bower_components/leaflet/dist/leaflet.js"></script>
+	<script src="../bower_components/d3/d3.min.js"></script>
+	<script src="../bower_components/nvd3/build/nv.d3.js"></script>
+	<script src="../bower_components/underscore/underscore-min.js"></script>
+	<script src="../bower_components/geostats/lib/geostats.min.js"></script>
+	<!-- http://maps.stamen.com/ -->
+	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+	<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
+	<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
+	<script src="../abmviz_utilities.js"></script>
+	<script src="barchart_and_map.js"></script>
+	<script src="sunburst.js"></script>
 </body>
 
 </html>

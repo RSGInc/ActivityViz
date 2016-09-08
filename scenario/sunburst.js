@@ -3,6 +3,7 @@
 var sunburst = (function () {
 	"use strict";
 	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
+	//var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/visit-sequences.csv";
 	var legendWidth = 150;
 	var allKeys; //filled in by buildHierarchy -- all possible sections of the sunburst
 	var json = null;
@@ -63,7 +64,6 @@ var sunburst = (function () {
 				var subgroupColumn = headers[1];
 				var quantityColumn = headers[2];
 				d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
-				d3.selectAll(".sunburst-subgroup").html(subgroupColumn);
 				var json = buildHierarchy(csv);
 				var c20 = d3.scale.category20();
 				allKeys.forEach(function (d, i) {
@@ -80,7 +80,6 @@ var sunburst = (function () {
 		// Main function to draw and set up the visualization, once we have the data.
 		function createVisualization(json) {
 			// Basic setup of page elements.
-			initializeBreadcrumbTrail();
 			drawLegend();
 			// Bounding circle underneath the sunburst, to make it easier to detect
 			// when the mouse leaves the parent g.
@@ -99,7 +98,7 @@ var sunburst = (function () {
 			// Get total size of the tree = value of root node from partition.
 			totalSize = paths.node().__data__.value;
 		};
-		// Fade all but the current sequence, and show it in the breadcrumb trail.
+		// Fade all but the current sequence, and show it sorted to the top of the legend.
 		function mouseover(d) {
 			var percentage = (100 * d.value / totalSize).toPrecision(3);
 			var percentageString = percentage + "%";
@@ -107,19 +106,14 @@ var sunburst = (function () {
 				percentageString = "< 0.1%";
 			}
 			d3.select("#sunburst-percentage").text(percentageString);
+			d3.select("#sunburst-current-node").text(d.name);
 			d3.select("#sunburst-explanation").style("visibility", "");
 			var sequenceArray = getAncestors(d);
-			updateBreadcrumbs(sequenceArray, percentageString);
 			// Fade all the segments.
 			paths.style("opacity", function (node) {
 				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
-			// 			vis.selectAll("path").style("opacity", 0.3);
-			// 			// Then highlight only those that are an ancestor of the current segment.
-			// 			vis.selectAll("path").filter(function (node) {
-			// 				return (sequenceArray.indexOf(node) >= 0);
-			// 			}).style("opacity", 1);
 			var sequenceArrayNames = sequenceArray.map(function (obj) {
 				return obj.name;
 			})
@@ -127,7 +121,6 @@ var sunburst = (function () {
 				var opacity = (sequenceArrayNames.indexOf(d.key) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
-
 			var numSequenceMembersFound = 0;
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				var xTranslation = i * (li.h + li.s);
@@ -137,7 +130,7 @@ var sunburst = (function () {
 					numSequenceMembersFound += 1;
 				}
 				else {
-					xTranslation = (sequenceArrayNames.length + i - numSequenceMembersFound) * (li.h + li.s);
+					xTranslation = (sequenceArrayNames.length + i - numSequenceMembersFound + 1) * (li.h + li.s);
 				}
 				return "translate(0," + xTranslation + ")";
 			});
@@ -149,12 +142,9 @@ var sunburst = (function () {
 		}; //end mouseover
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
-			// Hide the breadcrumb trail
-			d3.select("#sunburst-trail").style("visibility", "hidden");
 			paths.transition().duration(500).style("opacity", 1);
 			legendRects.transition().duration(500).style("opacity", 1);
 			legendTexts.transition().duration(500).style("fill", "#fff");
-
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
@@ -178,55 +168,11 @@ var sunburst = (function () {
 			return path;
 		}
 
-		function initializeBreadcrumbTrail() {
-			// Add the svg area.
-			var trail = d3.select("#sunburst-sequence").append("svg:svg").attr("width", width).attr("height", 50).attr("id", "sunburst-trail");
-			// Add the label at the end, for the percentage.
-			trail.append("svg:text").attr("id", "sunburst-endlabel").style("fill", "#000");
-		}
-		// Generate a string that describes the points of a breadcrumb polygon.
-		function breadcrumbPoints(d, i) {
-			var points = [];
-			points.push("0,0");
-			points.push(breadcrumb.w + ",0");
-			points.push(breadcrumb.w + breadcrumb.tipWidth + "," + (breadcrumb.h / 2));
-			points.push(breadcrumb.w + "," + breadcrumb.h);
-			points.push("0," + breadcrumb.h);
-			if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
-				points.push(breadcrumb.tipWidth + "," + (breadcrumb.h / 2));
-			}
-			return points.join(" ");
-		}
-		// Update the breadcrumb trail to show the current sequence and percentage.
-		function updateBreadcrumbs(nodeArray, percentageString) {
-			// Data join; key function combines name and depth (= position in sequence).
-			var g = d3.select("#sunburst-trail").selectAll("g").data(nodeArray, function (d) {
-				return d.name + d.depth;
-			});
-			// Add breadcrumb and label for entering nodes.
-			var entering = g.enter().append("svg:g");
-			//entering.append("svg:polygon").attr("points", breadcrumbPoints).style("fill", c20);
-			entering.append("svg:polygon").attr("points", breadcrumbPoints).style("fill", function (d) {
-				return colors[d.name];
-			});
-			entering.append("svg:text").attr("x", (breadcrumb.w + breadcrumb.tipWidth) / 2).attr("y", breadcrumb.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
-				return d.name;
-			});
-			// Set position for entering and updating nodes.
-			g.attr("transform", function (d, i) {
-				return "translate(" + i * (breadcrumb.w + breadcrumb.spacing) + ", 0)";
-			});
-			// Remove exiting nodes.
-			g.exit().remove();
-			// Now move and update the percentage at the end.
-			d3.select("#sunburst-trail").select("#sunburst-endlabel").attr("x", (nodeArray.length + 0.5) * (breadcrumb.w + breadcrumb.spacing)).attr("y", breadcrumb.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(percentageString);
-			// Make the breadcrumb trail visible, if it's hidden.
-			d3.select("#sunburst-trail").style("visibility", "");
-		}
 
 		function drawLegend() {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
-			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", d3.keys(colors).length * (li.h + li.s));
+			//for height leave an extra space so that when showing breadcrumb trail  can have a space
+			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", (d3.keys(colors).length + 1) * (li.h + li.s));
 			legendGroups = legend.selectAll("g").data(d3.entries(colors)).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
@@ -236,7 +182,8 @@ var sunburst = (function () {
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.key;
 			});
-		}
+		};	 //end drawLegend
+
 		// Take a multi-column CSV and transform it into a hierarchical structure suitable
 		// for a partition layout. The first column to the next to last column is a sequence of step names, from
 		// root to leaf. The last column is a count of how 
