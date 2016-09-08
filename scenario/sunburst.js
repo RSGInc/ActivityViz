@@ -7,6 +7,9 @@ var sunburst = (function () {
 	var allKeys; //filled in by buildHierarchy -- all possible sections of the sunburst
 	var json = null;
 	var maxDepth;
+	var paths;
+	var legendRects;
+	var legendTexts;
 
 	function createSunburst() {
 		var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
@@ -78,7 +81,7 @@ var sunburst = (function () {
 			var nodes = partition.nodes(json).filter(function (d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
 			});
-			var path = vis.data([json]).selectAll("path").data(nodes).enter().append("svg:path").attr("display", function (d) {
+			paths = vis.data([json]).selectAll("path").data(nodes).enter().append("svg:path").attr("display", function (d) {
 				return d.depth ? null : "none";
 			}).attr("d", arc).attr("fill-rule", "evenodd").style("fill", function (d) {
 				return colors[d.name];
@@ -86,7 +89,7 @@ var sunburst = (function () {
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
 			// Get total size of the tree = value of root node from partition.
-			totalSize = path.node().__data__.value;
+			totalSize = paths.node().__data__.value;
 		};
 		// Fade all but the current sequence, and show it in the breadcrumb trail.
 		function mouseover(d) {
@@ -100,22 +103,42 @@ var sunburst = (function () {
 			var sequenceArray = getAncestors(d);
 			updateBreadcrumbs(sequenceArray, percentageString);
 			// Fade all the segments.
-			d3.selectAll("path").style("opacity", 0.3);
-			// Then highlight only those that are an ancestor of the current segment.
-			vis.selectAll("path").filter(function (node) {
-				return (sequenceArray.indexOf(node) >= 0);
-			}).style("opacity", 1);
-		}
+			paths.style("opacity", function (node) {
+				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
+				return opacity;
+			});
+
+// 			vis.selectAll("path").style("opacity", 0.3);
+// 			// Then highlight only those that are an ancestor of the current segment.
+// 			vis.selectAll("path").filter(function (node) {
+// 				return (sequenceArray.indexOf(node) >= 0);
+// 			}).style("opacity", 1);
+			var sequenceArrayNames =sequenceArray.map(function(obj) {
+				return obj.name;
+			})
+			legendRects.style("opacity", function (d) {
+				var opacity = (sequenceArrayNames.indexOf(d.key) >= 0) ? 1.0 : 0.3;
+				return opacity;
+			});
+			legendTexts.style("fill", function (d) {
+				//text is either black or white
+				var fill = (sequenceArrayNames.indexOf(d.key) >= 0) ? "#000" : "#fff";
+				return fill;
+			});
+		}; //end mouseover
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
 			// Hide the breadcrumb trail
 			d3.select("#sunburst-trail").style("visibility", "hidden");
-			// Deactivate all segments during transition.
-			d3.selectAll("path").on("mouseover", null);
-			// Transition each segment to full opacity and then reactivate it.
-			d3.selectAll("path").transition().duration(1000).style("opacity", 1).each("end", function () {
-				d3.select(this).on("mouseover", mouseover);
-			});
+			paths.transition().duration(500).style("opacity", 1);
+			legendRects.transition().duration(500).style("opacity", 1);
+			legendTexts.transition().duration(500).style("fill", "#fff");
+// 			// Deactivate all segments during transition.
+// 			d3.selectAll("path").on("mouseover", null);
+// 			// Transition each segment to full opacity and then reactivate it.
+// 			d3.selectAll("path").transition().duration(1000).style("opacity", 1).each("end", function () {
+// 				d3.select(this).on("mouseover", mouseover);
+// 			});
 			d3.select("#sunburst-explanation").style("visibility", "hidden");
 		}
 		// Given a node in a partition layout, return an array of all of its ancestor
@@ -189,10 +212,10 @@ var sunburst = (function () {
 			var g = legend.selectAll("g").data(d3.entries(colors)).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
-			g.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
+			legendRects = g.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return d.value;
 			});
-			g.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
+			legendTexts = g.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.key;
 			});
 		}
@@ -260,7 +283,7 @@ var sunburst = (function () {
 		};
 	}; //end createSunburst
 	createSunburst();
-	window.addEventListener("resize", function() {
+	window.addEventListener("resize", function () {
 		console.log("Got resize event. Calling sunburst");
 		createSunburst();
 	});
