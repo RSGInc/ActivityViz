@@ -1,20 +1,21 @@
 #sunburst-main {
-	float:left;
-	width: 500px;
+	//
+	padding: 0px;
+	padding-left: 0;
+	padding-top: 0;
 }
 
 #sunburst-sidebar {
-	float: right;
-	width: 200px;
+	padding-left: 10px;
 }
 
 #sunburst-sequence {
-	width: 600px;
-	height: 70px;
+	/* 	width: 600px; */
+	height: 40px;
 }
 
 #sunburst-legend {
-	padding: 10px 0 0 3px;
+	vertical-align: middle;
 }
 
 #sunburst-sequence text,
@@ -24,7 +25,10 @@
 }
 
 #sunburst-chart {
+	//
 	position: relative;
+	padding-left: 0;
+	padding-top: 0;
 }
 
 #sunburst-chart path {
@@ -33,12 +37,18 @@
 
 #sunburst-explanation {
 	position: absolute;
-	top: 260px;
-	left: 305px;
-	width: 140px;
-	text-align: center;
+	top: 0px;
+	left: 0px;
+	display: table;
 	color: #666;
 	z-index: -1;
+	padding-left: 0px;
+}
+
+#sunburst-explanation p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
 }
 
 #sunburst-percentage {
