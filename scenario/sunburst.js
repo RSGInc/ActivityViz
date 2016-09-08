@@ -10,6 +10,14 @@ var sunburst = (function () {
 	var paths;
 	var legendRects;
 	var legendTexts;
+	var legendGroups;
+	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
+	var li = {
+		w: legendWidth
+		, h: 30
+		, s: 3
+		, r: 3
+	};
 
 	function createSunburst() {
 		var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
@@ -107,18 +115,31 @@ var sunburst = (function () {
 				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
-
-// 			vis.selectAll("path").style("opacity", 0.3);
-// 			// Then highlight only those that are an ancestor of the current segment.
-// 			vis.selectAll("path").filter(function (node) {
-// 				return (sequenceArray.indexOf(node) >= 0);
-// 			}).style("opacity", 1);
-			var sequenceArrayNames =sequenceArray.map(function(obj) {
+			// 			vis.selectAll("path").style("opacity", 0.3);
+			// 			// Then highlight only those that are an ancestor of the current segment.
+			// 			vis.selectAll("path").filter(function (node) {
+			// 				return (sequenceArray.indexOf(node) >= 0);
+			// 			}).style("opacity", 1);
+			var sequenceArrayNames = sequenceArray.map(function (obj) {
 				return obj.name;
 			})
 			legendRects.style("opacity", function (d) {
 				var opacity = (sequenceArrayNames.indexOf(d.key) >= 0) ? 1.0 : 0.3;
 				return opacity;
+			});
+
+			var numSequenceMembersFound = 0;
+			legendGroups.transition().duration(500).attr("transform", function (d, i) {
+				var xTranslation = i * (li.h + li.s);
+				var sequenceIndex = sequenceArrayNames.indexOf(d.key);
+				if (sequenceIndex >= 0) {
+					xTranslation = sequenceIndex * (li.h + li.s);
+					numSequenceMembersFound += 1;
+				}
+				else {
+					xTranslation = (sequenceArrayNames.length + i - numSequenceMembersFound) * (li.h + li.s);
+				}
+				return "translate(0," + xTranslation + ")";
 			});
 			legendTexts.style("fill", function (d) {
 				//text is either black or white
@@ -133,12 +154,16 @@ var sunburst = (function () {
 			paths.transition().duration(500).style("opacity", 1);
 			legendRects.transition().duration(500).style("opacity", 1);
 			legendTexts.transition().duration(500).style("fill", "#fff");
-// 			// Deactivate all segments during transition.
-// 			d3.selectAll("path").on("mouseover", null);
-// 			// Transition each segment to full opacity and then reactivate it.
-// 			d3.selectAll("path").transition().duration(1000).style("opacity", 1).each("end", function () {
-// 				d3.select(this).on("mouseover", mouseover);
-// 			});
+
+			legendGroups.transition().duration(500).attr("transform", function (d, i) {
+				return "translate(0," + i * (li.h + li.s) + ")";
+			});
+			// 			// Deactivate all segments during transition.
+			// 			d3.selectAll("path").on("mouseover", null);
+			// 			// Transition each segment to full opacity and then reactivate it.
+			// 			d3.selectAll("path").transition().duration(1000).style("opacity", 1).each("end", function () {
+			// 				d3.select(this).on("mouseover", mouseover);
+			// 			});
 			d3.select("#sunburst-explanation").style("visibility", "hidden");
 		}
 		// Given a node in a partition layout, return an array of all of its ancestor
@@ -200,22 +225,15 @@ var sunburst = (function () {
 		}
 
 		function drawLegend() {
-			// Dimensions of legend item: width, height, spacing, radius of rounded rect.
-			var li = {
-				w: legendWidth
-				, h: 30
-				, s: 3
-				, r: 3
-			};
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", d3.keys(colors).length * (li.h + li.s));
-			var g = legend.selectAll("g").data(d3.entries(colors)).enter().append("svg:g").attr("transform", function (d, i) {
+			legendGroups = legend.selectAll("g").data(d3.entries(colors)).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
-			legendRects = g.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
+			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return d.value;
 			});
-			legendTexts = g.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
+			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.key;
 			});
 		}
