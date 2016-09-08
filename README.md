@@ -6,10 +6,10 @@ ARC ABMVIZ HTML 5
 2. BS10 - Example scenario data folder with its name equal to its scenarios.csv entry
 
 #BS10 folder
-1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone and mode
+1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone, county, and mode
 2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
-4. TreeMapData.csv - demo data source for the tree map visual - trips by mode group and mode
+4. TreeMapData.csv - demo data source for the tree map visual - trips by mode groups and mode
 5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
 
 #Scripts folder
