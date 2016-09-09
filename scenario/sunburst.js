@@ -5,7 +5,6 @@ var sunburst = (function () {
 	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
 	//var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/visit-sequences.csv";
 	var legendWidth = 150;
-	var allKeys; //filled in by buildHierarchy -- all possible sections of the sunburst
 	var json = null;
 	var maxDepth;
 	var paths;
@@ -27,7 +26,6 @@ var sunburst = (function () {
 		var width = Math.min(700, sunburstBounds.width);
 		var height = width;
 		var radius = Math.min(width, height) / 2;
-		// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 		var colors = {}; //will be filled in to map keys to colors
 		var breadcrumb = {
 			w: legendWidth
@@ -59,7 +57,6 @@ var sunburst = (function () {
 				if (error) throw error; //expected data should have columns similar to: MAINGROUP,SUBGROUP,QUANTITY
 				var csv = d3.csv.parseRows(data);
 				var headers = csv[0];
-				//abmviz_utilities.assert(headers.length == 3, "Expect three columns - something like: MAINGROUP,SUBGROUP,QUANTITY");
 				var maingroupColumn = headers[0];
 				var subgroupColumn = headers[1];
 				var quantityColumn = headers[2];
@@ -78,7 +75,7 @@ var sunburst = (function () {
 			// Basic setup of page elements.
 			// Bounding circle underneath the sunburst, to make it easier to detect
 			// when the mouse leaves the parent g.
-			vis.append("svg:circle").attr("r", radius).style("opacity", 0);
+			//vis.append("svg:circle").attr("r", radius).style("opacity", 0);
 			// For efficiency, filter nodes to keep only those large enough to see.
 			var nodes = partition.nodes(json).filter(function (d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
@@ -190,7 +187,6 @@ var sunburst = (function () {
 		// root to leaf. The last column is a count of how 
 		// often that sequence occurred.
 		function buildHierarchy(csv) {
-			allKeys = new Set();
 			var root = {
 				"name": "root"
 				, "children": []
@@ -243,8 +239,6 @@ var sunburst = (function () {
 					}
 				}
 			}
-			//change from set to array
-			allKeys = Array.from(allKeys);
 			return root;
 		};
 	}; //end createSunburst
