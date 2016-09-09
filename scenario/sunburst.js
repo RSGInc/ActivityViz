@@ -207,7 +207,6 @@ var sunburst = (function () {
 				for (var j = 0; j < parts.length; j++) {
 					var children = currentNode["children"];
 					var nodeName = parts[j];
-					allKeys.add(nodeName);
 					var childNode;
 					if (j + 1 < parts.length) {
 						// Not yet at the end of the sequence; move down the tree.
