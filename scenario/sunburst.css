@@ -7,14 +7,17 @@
 
 #sunburst-sidebar {
 	padding-left: 10px;
+	display: table;
 }
 
 #sunburst-legend {
+	display: table-cell;
 	vertical-align: middle;
+	cursor: default;
 }
 
 #sunburst-legend text {
-	font-weight: 600;
+	font-weight: 400;
 	fill: #fff;
 }
 
@@ -44,9 +47,14 @@
 	text-align: center;
 }
 
-#sunburst-percentage  {
+#sunburst-percentage {
 	font-size: 2.5em;
 }
-#sunburst-current-node  {
+
+#sunburst-current-node {
 	font-size: 2em;
+}
+
+#sunburst-current-node-value {
+	font-size: 1.5em;
 }
