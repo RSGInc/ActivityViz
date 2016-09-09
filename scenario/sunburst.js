@@ -18,38 +18,11 @@ var sunburst = (function () {
 		, s: 3
 		, r: 3
 	};
+	var colors = {}; //will be filled in to map keys to colors
+	// Total size of all segments; we set this later, after loading the data.
+	var totalSize;
 
 	function createSunburst() {
-		var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
-		//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
-		// Dimensions of sunburst.
-		var width = Math.min(700, sunburstBounds.width);
-		var height = width;
-		var radius = Math.min(width, height) / 2;
-		var colors = {}; //will be filled in to map keys to colors
-		var breadcrumb = {
-			w: legendWidth
-			, h: 30
-			, spacing: 3
-			, tipWidth: 10 //the arro on the right side of each breadcrumb
-		};
-		// Total size of all segments; we set this later, after loading the data.
-		var totalSize = 0;
-		d3.select("#sunburst-explanation").style("width", width).style("height", height);
-		d3.select("#sunburst-chart svg").remove(); //in case window resize delete contents
-		var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-		var partition = d3.layout.partition().size([2 * Math.PI, radius * radius]).value(function (d) {
-			return d.size;
-		});
-		var arc = d3.svg.arc().startAngle(function (d) {
-			return d.x;
-		}).endAngle(function (d) {
-			return d.x + d.dx;
-		}).innerRadius(function (d) {
-			return Math.sqrt(d.y);
-		}).outerRadius(function (d) {
-			return Math.sqrt(d.y + d.dy);
-		});
 		//read in data and create sunburst when finished
 		if (json === null) {
 			d3.text(url, function (error, data) {
@@ -63,7 +36,7 @@ var sunburst = (function () {
 				d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
 				var json = buildHierarchy(csv);
 				createVisualization(json);
-			}); //end d3.text	
+			}); //end d3.text
 		}
 		else {
 			//if already exists don't need to read in and parse again
@@ -73,32 +46,49 @@ var sunburst = (function () {
 		// Main function to draw and set up the visualization, once we have the data.
 		function createVisualization(json) {
 			// Basic setup of page elements.
+			var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
+			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
+			// Dimensions of sunburst.
+			var width = Math.min(700, sunburstBounds.width);
+			var height = width;
+			var radius = Math.min(width, height) / 2;
+			d3.select("#sunburst-explanation").style("width", width).style("height", height);
+			d3.select("#sunburst-chart svg").remove(); //in case window resize delete contents
+			var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+			var partition = d3.layout.partition().size([2 * Math.PI, radius * radius]).value(function (d) {
+				return d.size;
+			});
 			// Bounding circle underneath the sunburst, to make it easier to detect
 			// when the mouse leaves the parent g.
 			//vis.append("svg:circle").attr("r", radius).style("opacity", 0);
-			// For efficiency, filter nodes to keep only those large enough to see.
-			var nodes = partition.nodes(json).filter(function (d) {
+			// For efficiency, filter nodeData to keep only those large enough to see.
+			var nodeData = partition.nodes(json).filter(function (d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
 			});
+			//remove the root node since will not draw an object for that
+			var rootNode = nodeData.shift();
+			// Get total size of the tree = value of root node from partition.
+			totalSize = rootNode.value;
 			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
 			var c20 = d3.scale.category20();
-			nodes.forEach(function (d, i) {
-				//do not allocate a color for the root node
-				if (i > 0) {
-					d.uniqueId = i;
-					colors[d.uniqueId] = c20(i - 1);
-				}
+			nodeData.forEach(function (d, i) {
+				d.uniqueId = i;
+				colors[d.uniqueId] = c20(i - 1);
 			});
-			drawLegend(nodes);
-			paths = vis.data([json]).selectAll("path").data(nodes).enter().append("svg:path").attr("display", function (d) {
-				return d.depth ? null : "none";
-			}).attr("d", arc).attr("fill-rule", "evenodd").style("fill", function (d) {
+			drawLegend(nodeData);
+			paths = vis.data([json]).selectAll("path").data(nodeData).enter().append("svg:path").attr("d", d3.svg.arc().startAngle(function (d) {
+				return d.x;
+			}).endAngle(function (d) {
+				return d.x + d.dx;
+			}).innerRadius(function (d) {
+				return Math.sqrt(d.y);
+			}).outerRadius(function (d) {
+				return Math.sqrt(d.y + d.dy);
+			})).attr("fill-rule", "evenodd").style("fill", function (d) {
 				return colors[d.uniqueId];
 			}).style("opacity", 1).on("mouseover", mouseover);
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
-			// Get total size of the tree = value of root node from partition.
-			totalSize = paths.node().__data__.value;
 		};
 		// Fade all but the current sequence, and show it sorted to the top of the legend.
 		function mouseover(d) {
@@ -167,12 +157,12 @@ var sunburst = (function () {
 			return path;
 		}
 
-		function drawLegend(nodes) {
+		function drawLegend(nodeData) {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
-			var totalLegendHeight = (nodes.length + 1) * (li.h + li.s);
+			var totalLegendHeight = (nodeData.length + 1) * (li.h + li.s);
 			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", totalLegendHeight);
-			legendGroups = legend.selectAll("g").data(nodes.slice(1)).enter().append("svg:g").attr("transform", function (d, i) {
+			legendGroups = legend.selectAll("g").data(nodeData).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
@@ -184,7 +174,7 @@ var sunburst = (function () {
 		}; //end drawLegend
 		// Take a multi-column CSV and transform it into a hierarchical structure suitable
 		// for a partition layout. The first column to the next to last column is a sequence of step names, from
-		// root to leaf. The last column is a count of how 
+		// root to leaf. The last column is a count of how
 		// often that sequence occurred.
 		function buildHierarchy(csv) {
 			var root = {
