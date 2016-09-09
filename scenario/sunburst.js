@@ -7,7 +7,7 @@ var sunburst = (function () {
 	var legendWidth = 150;
 	var json = null;
 	var maxDepth;
-	var paths;
+	var nodeVisuals;
 	var legendRects;
 	var legendTexts;
 	var legendGroups;
@@ -54,21 +54,35 @@ var sunburst = (function () {
 			var radius = Math.min(width, height) / 2;
 			d3.select("#sunburst-explanation").style("width", width).style("height", height);
 			d3.select("#sunburst-chart svg").remove(); //in case window resize delete contents
-			var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-			var partition = d3.layout.partition().size([2 * Math.PI, radius * radius]).value(function (d) {
+			var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container");
+			var partition = d3.layout.partition().value(function (d) {
 				return d.size;
 			});
-			// Bounding circle underneath the sunburst, to make it easier to detect
-			// when the mouse leaves the parent g.
-			//vis.append("svg:circle").attr("r", radius).style("opacity", 0);
-			// For efficiency, filter nodeData to keep only those large enough to see.
-			var nodeData = partition.nodes(json).filter(function (d) {
-				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
-			});
+			var makeSunburst = false;
+			if (makeSunburst) {
+				partition.size([2 * Math.PI, radius * radius]);
+				vis.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+			}
+			else {
+				partition.size([width, height]);
+			}
+			var nodeData = partition.nodes(json);
 			//remove the root node since will not draw an object for that
 			var rootNode = nodeData.shift();
 			// Get total size of the tree = value of root node from partition.
 			totalSize = rootNode.value;
+
+			//for efficiency, remove nodes too small to see
+			if (makeSunburst) {
+				nodeData = nodeData.filter(function (d) {
+					return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+				});
+			}
+			else {
+				nodeData = nodeData.filter(function (d) {
+					return (d.dx > 0.5);
+				});
+			}
 			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
 			var c20 = d3.scale.category20();
 			nodeData.forEach(function (d, i) {
@@ -76,15 +90,31 @@ var sunburst = (function () {
 				colors[d.uniqueId] = c20(i - 1);
 			});
 			drawLegend(nodeData);
-			paths = vis.data([json]).selectAll("path").data(nodeData).enter().append("svg:path").attr("d", d3.svg.arc().startAngle(function (d) {
-				return d.x;
-			}).endAngle(function (d) {
-				return d.x + d.dx;
-			}).innerRadius(function (d) {
-				return Math.sqrt(d.y);
-			}).outerRadius(function (d) {
-				return Math.sqrt(d.y + d.dy);
-			})).attr("fill-rule", "evenodd").style("fill", function (d) {
+			nodeVisuals = vis.data([json]).selectAll(".sunburst-node").data(nodeData);
+			if (makeSunburst) {
+				nodeVisuals = nodeVisuals.enter().append("svg:path").attr("d", d3.svg.arc().startAngle(function (d) {
+					return d.x;
+				}).endAngle(function (d) {
+					return d.x + d.dx;
+				}).innerRadius(function (d) {
+					return Math.sqrt(d.y);
+				}).outerRadius(function (d) {
+					return Math.sqrt(d.y + d.dy);
+				}));
+			}
+			else {
+				//make icicleChart
+				nodeVisuals = nodeVisuals.enter().append("rect").attr("x", function (d) {
+					return d.x;
+				}).attr("y", function (d) {
+					return d.y;
+				}).attr("width", function (d) {
+					return d.dx;
+				}).attr("height", function (d) {
+					return d.dy;
+				});
+			}
+			nodeVisuals.attr("class", "sunburst-node").attr("fill-rule", "evenodd").style("fill", function (d) {
 				return colors[d.uniqueId];
 			}).style("opacity", 1).on("mouseover", mouseover);
 			// Add the mouseleave handler to the bounding circle.
@@ -102,7 +132,7 @@ var sunburst = (function () {
 			d3.select("#sunburst-explanation").style("visibility", "");
 			var sequenceArray = getAncestors(d);
 			// Fade all the segments.
-			paths.style("opacity", function (node) {
+			nodeVisuals.style("opacity", function (node) {
 				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
@@ -131,7 +161,7 @@ var sunburst = (function () {
 		}; //end mouseover
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
-			paths.transition().duration(500).style("opacity", 1);
+			nodeVisuals.transition().duration(500).style("opacity", 1);
 			legendRects.transition().duration(500).style("opacity", 1);
 			legendTexts.transition().duration(500).style("fill", "#fff");
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
