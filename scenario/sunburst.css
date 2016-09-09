@@ -1,0 +1,60 @@
+#sunburst-main {
+	//
+	padding: 0px;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#sunburst-sidebar {
+	padding-left: 10px;
+	display: table;
+}
+
+#sunburst-legend {
+	display: table-cell;
+	vertical-align: middle;
+	cursor: default;
+}
+
+#sunburst-legend text {
+	font-weight: 400;
+	fill: #fff;
+}
+
+#sunburst-chart {
+	position: relative;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#sunburst-chart path {
+	stroke: #fff;
+}
+
+#sunburst-explanation {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: table;
+	color: #666;
+	z-index: -1;
+	padding-left: 0px;
+}
+
+#sunburst-explanation p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#sunburst-percentage {
+	font-size: 2.5em;
+}
+
+#sunburst-current-node {
+	font-size: 2em;
+}
+
+#sunburst-current-node-value {
+	font-size: 1.5em;
+}
