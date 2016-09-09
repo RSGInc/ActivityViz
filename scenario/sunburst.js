@@ -51,7 +51,7 @@ var sunburst = (function () {
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
 			// Dimensions of sunburst.
 			var makeSunburst = true;
-			var width = makeSunburst ? Math.min(700, sunburstBounds.width) : sunburstBounds.width;
+			var width = makeSunburst ? Math.min(7000, sunburstBounds.width) : sunburstBounds.width;
 			var height = width;
 			//set explanation and sidebar dimensions so that table-cell vertical align will center
 			d3.select("#sunburst-explanation").style("width", width).style("height", height);
@@ -88,7 +88,7 @@ var sunburst = (function () {
 			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
 			var c10 = d3.scale.category10();
 			var luminance = d3.scale.sqrt().domain([0, totalSize]).clamp(true).range([90, 20]);
-			var maxDepth = 0;
+			maxDepth = 0;
 			nodeData.forEach(function (d, i) {
 				d.uniqueId = i;
 				if (d.depth == 1) {
@@ -267,8 +267,17 @@ function getDepthIndent(d) {
 				"name": "root"
 				, "children": []
 			};
-			for (var i = 0; i < csv.length; i++) {
-				var row = csv[i];
+			for (var rowIndex = 0; rowIndex < csv.length; rowIndex++) {
+				var row = csv[rowIndex];
+
+				//remove any consecutive duplicates
+				var lastCellString = row[0];
+				 for (var columnIndex = 1; columnIndex< row.length; columnIndex++) {
+					if (row[columnIndex] === lastCellString) {         
+					  row.splice(columnIndex, 1);
+					  columnIndex--;
+					}
+				  }
 				//support unbalanced trees where each row could go a different depth
 				var numColumns = row.length;
 				while (row[numColumns - 1].length == 0) {

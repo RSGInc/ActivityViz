@@ -25,10 +25,10 @@
 		</nav>
 		<div id="sunburst" class="row">
 			<p class="text-center" style="font-size:2em"><strong><span class="sunburst-maingroup"></span></p>
-			<div id="sunburst-sidebar" class="col-md-2">
+			<div id="sunburst-sidebar" class="col-sm-2">
 				<div id="sunburst-legend"></div>
 			</div>
-			<div id="sunburst-main" class="col-md-10">
+			<div id="sunburst-main" class="col-sm-8">
 				<div id="sunburst-explanation" style="visibility: hidden;">
 					<p><span id="sunburst-percentage"></span>
 						<br/><span id="sunburst-current-node"></span>
@@ -36,14 +36,17 @@
 				</div>
 				<div id="sunburst-chart"> </div>
 			</div>
+			<div id="sunburst-text-area" class="col-sm-2">
+					<p>Ben is very intelligent and articulate and loves writing</p>
+			</div>
 		</div>
 		<hr>
 		<div id="mode-share-by-county">
 			<p class="text-center" style="font-size:2em"><strong><span class="trip-mode"></span>,</strong> by <span class="area-type"></span></p>
-			<div class="col-md-6 right-border" style="margin-top:4px">
+			<div class="col-sm-6 right-border" style="margin-top:4px">
 				<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
 					<div class="row" style="margin-top:4px">
-						<div class="col-md-10">
+						<div class="col-sm-10">
 							<ul>
 								<li>Click on the 'Stacked' checkbox to change chart style</li>
 								<li>Click anywhere on a row to highlight the <span class="area-type">PLACEHOLDER</span> area on the map</li>
@@ -51,7 +54,7 @@
 								<li>Double click on legend symbols/labels to change map and charts to a single <span class="trip-mode">PLACEHOLDER</span> such as <span class="trip-mode-example">PLACEHOLDER</span></li>
 							</ul>
 						</div>
-						<div class="col-md-2">
+						<div class="col-sm-2">
 							<label>
 								<input type="checkbox" checked id="stacked" />Stacked</label>
 							<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
@@ -62,18 +65,18 @@
 					<svg id="chart"></svg>
 				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="col-md-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
-				<div class="col-md-6">
+			<div class="col-sm-6">
+				<div class="col-sm-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
+				<div class="col-sm-6">
 					<div class="trip-mode" style="font-weight:bold"></div>
 				</div>
-				<div class="col-md-6" style="margin-bottom:.1em;font-weight:bold">
+				<div class="col-sm-6" style="margin-bottom:.1em;font-weight:bold">
 					<div id="classification_label">Classification</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-sm-6">
 					<select class="form-control" id="current_trip_mode"></select>
 				</div>
-				<div class="col-md-6" style="margin-bottom:2em;">
+				<div class="col-sm-6" style="margin-bottom:2em;">
 					<select class="form-control" id="classification">
 						<option value="quartiles" selected="selected">Quartiles</option>
 						<option value="jenks">Natural breaks (Jenks)</option>
@@ -81,13 +84,13 @@
 						<option value="custom">Custom</option>
 					</select>
 				</div>
-				<div class="col-md-12" id="map" style="width: 100%;height:50%;"></div>
-				<div class="col-md-6" style="margin-top:1em;text-align:right">
+				<div class="col-sm-12" id="map" style="width: 100%;height:50%;"></div>
+				<div class="col-sm-6" style="margin-top:1em;text-align:right">
 					<table width="100%">
 						<tr>
 							<td rowspan="2">Palette:</td>
 							<td>
-								<div class="col-md-10">
+								<div class="col-sm-10">
 									<div class="row">
 										<div class="ramp Blues">
 											<svg width="60" height="15">
@@ -120,7 +123,7 @@
 						<tr>
 							<td>
 								<div class="row">
-									<div class="col-md-10">
+									<div class="col-sm-10">
 										<div class="ramp Oranges">
 											<svg width="60" height="15">
 												<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
@@ -151,7 +154,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="col-md-6" style="margin-top:1em;text-align:right">
+				<div class="col-sm-6" style="margin-top:1em;text-align:right">
 					<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
 					<input type="text" id="bubble_color" /> Size:
 					<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
@@ -163,15 +166,15 @@
 					<nobr>
 						<input type="text" id="naColor" /> N/A</nobr>
 				</div>
-				<div class="col-md-12" style="margin-top:1em;">
+				<div class="col-sm-12" style="margin-top:1em;">
 					<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-sm-6">
 							<button id="update_map" style="display:none" class="btn">Update Map</button>
 							<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
 							<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
 						</div>
-						<div class="col-md-6"> Redraw
+						<div class="col-sm-6"> Redraw
 							<select id="cycle_frequency" class="form-control form-control-inline">
 								<option value="1">every 1 sec</option>
 								<option value="2">every 2 sec</option>
@@ -187,7 +190,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12" style="margin-top:1em;">
+						<div class="col-sm-12" style="margin-top:1em;">
 							<br>
 							<br> The Map interactive features include:
 							<ul>
