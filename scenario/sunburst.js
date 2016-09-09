@@ -139,7 +139,7 @@ var sunburst = (function () {
 		};
 
 		function showNodeExplanation(node) {
-						var percentage = (100 * node.value / totalSize).toPrecision(3);
+			var percentage = (100 * node.value / totalSize).toPrecision(3);
 			var percentageString = percentage + "%";
 			if (percentage < 0.1) {
 				percentageString = "< 0.1%";
@@ -147,15 +147,14 @@ var sunburst = (function () {
 			d3.select("#sunburst-percentage").text(percentageString);
 			d3.select("#sunburst-current-node").text(node.name);
 			d3.select("#sunburst-explanation").style("visibility", "");
-
 		}
-		function hideNodeExplanation() {
 
+		function hideNodeExplanation() {
+			d3.select("#sunburst-explanation").style("visibility", "hidden");
 		}
 		// Fade all but the current sequence, and show it sorted to the top of the legend.
 		function mouseoverNode(d) {
 			showNodeExplanation(d);
-
 			var sequenceArray = getAncestors(d);
 			// Fade all the segments.
 			nodeVisuals.style("opacity", function (node) {
