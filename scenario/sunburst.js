@@ -51,7 +51,7 @@ var sunburst = (function () {
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
 			// Dimensions of sunburst.
 			var makeSunburst = true;
-			var widthAdjustment = 0.5;
+			var widthAdjustment = 0.75;
 			var width = makeSunburst ? Math.min(4000, sunburstBounds.width * widthAdjustment) : sunburstBounds.width * widthAdjustment;
 			var height = width;
 			//set explanation and sidebar dimensions so that table-cell vertical align will center
