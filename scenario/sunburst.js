@@ -65,10 +65,6 @@ var sunburst = (function () {
 				var quantityColumn = headers[2];
 				d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
 				var json = buildHierarchy(csv);
-				var c20 = d3.scale.category20();
-				allKeys.forEach(function (d, i) {
-					colors[d] = c20(i);
-				});
 				createVisualization(json);
 			}); //end d3.text	
 		}
@@ -80,7 +76,6 @@ var sunburst = (function () {
 		// Main function to draw and set up the visualization, once we have the data.
 		function createVisualization(json) {
 			// Basic setup of page elements.
-			drawLegend();
 			// Bounding circle underneath the sunburst, to make it easier to detect
 			// when the mouse leaves the parent g.
 			vis.append("svg:circle").attr("r", radius).style("opacity", 0);
@@ -88,10 +83,20 @@ var sunburst = (function () {
 			var nodes = partition.nodes(json).filter(function (d) {
 				return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
 			});
+			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
+			var c20 = d3.scale.category20();
+			nodes.forEach(function (d, i) {
+				//do not allocate a color for the root node
+				if (i > 0) {
+					d.uniqueId = i;
+					colors[d.uniqueId] = c20(i - 1);
+				}
+			});
+			drawLegend(nodes);
 			paths = vis.data([json]).selectAll("path").data(nodes).enter().append("svg:path").attr("display", function (d) {
 				return d.depth ? null : "none";
 			}).attr("d", arc).attr("fill-rule", "evenodd").style("fill", function (d) {
-				return colors[d.name];
+				return colors[d.uniqueId];
 			}).style("opacity", 1).on("mouseover", mouseover);
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
@@ -114,29 +119,26 @@ var sunburst = (function () {
 				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
-			var sequenceArrayNames = sequenceArray.map(function (obj) {
-				return obj.name;
-			})
 			legendRects.style("opacity", function (d) {
-				var opacity = (sequenceArrayNames.indexOf(d.key) >= 0) ? 1.0 : 0.3;
+				var opacity = (sequenceArray.indexOf(d) >= 0) ? 1.0 : 0.3;
 				return opacity;
 			});
 			var numSequenceMembersFound = 0;
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				var xTranslation = i * (li.h + li.s);
-				var sequenceIndex = sequenceArrayNames.indexOf(d.key);
+				var sequenceIndex = sequenceArray.indexOf(d);
 				if (sequenceIndex >= 0) {
 					xTranslation = sequenceIndex * (li.h + li.s);
 					numSequenceMembersFound += 1;
 				}
 				else {
-					xTranslation = (sequenceArrayNames.length + i - numSequenceMembersFound + 1) * (li.h + li.s);
+					xTranslation = (sequenceArray.length + i - numSequenceMembersFound + 1) * (li.h + li.s);
 				}
 				return "translate(0," + xTranslation + ")";
 			});
 			legendTexts.style("fill", function (d) {
 				//text is either black or white
-				var fill = (sequenceArrayNames.indexOf(d.key) >= 0) ? "#000" : "#fff";
+				var fill = (sequenceArray.indexOf(d) >= 0) ? "#000" : "#fff";
 				return fill;
 			});
 		}; //end mouseover
@@ -168,22 +170,21 @@ var sunburst = (function () {
 			return path;
 		}
 
-
-		function drawLegend() {
+		function drawLegend(nodes) {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
-			//for height leave an extra space so that when showing breadcrumb trail  can have a space
-			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", (d3.keys(colors).length + 1) * (li.h + li.s));
-			legendGroups = legend.selectAll("g").data(d3.entries(colors)).enter().append("svg:g").attr("transform", function (d, i) {
+			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
+			var totalLegendHeight = (nodes.length + 1) * (li.h + li.s);
+			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", totalLegendHeight);
+			legendGroups = legend.selectAll("g").data(nodes.slice(1)).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
-				return d.value;
+				return colors[d.uniqueId];
 			});
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
-				return d.key;
+				return d.name;
 			});
-		};	 //end drawLegend
-
+		}; //end drawLegend
 		// Take a multi-column CSV and transform it into a hierarchical structure suitable
 		// for a partition layout. The first column to the next to last column is a sequence of step names, from
 		// root to leaf. The last column is a count of how 
