@@ -137,16 +137,25 @@ var sunburst = (function () {
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
 		};
-		// Fade all but the current sequence, and show it sorted to the top of the legend.
-		function mouseoverNode(d) {
-			var percentage = (100 * d.value / totalSize).toPrecision(3);
+
+		function showNodeExplanation(node) {
+						var percentage = (100 * node.value / totalSize).toPrecision(3);
 			var percentageString = percentage + "%";
 			if (percentage < 0.1) {
 				percentageString = "< 0.1%";
 			}
 			d3.select("#sunburst-percentage").text(percentageString);
-			d3.select("#sunburst-current-node").text(d.name);
+			d3.select("#sunburst-current-node").text(node.name);
 			d3.select("#sunburst-explanation").style("visibility", "");
+
+		}
+		function hideNodeExplanation() {
+
+		}
+		// Fade all but the current sequence, and show it sorted to the top of the legend.
+		function mouseoverNode(d) {
+			showNodeExplanation(d);
+
 			var sequenceArray = getAncestors(d);
 			// Fade all the segments.
 			nodeVisuals.style("opacity", function (node) {
@@ -189,7 +198,7 @@ var sunburst = (function () {
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
-			d3.select("#sunburst-explanation").style("visibility", "hidden");
+			hideNodeExplanation();
 		}
 		// Given a node in a partition layout, return an array of all of its ancestor
 		// nodes, highest first, but excluding the root.
@@ -207,12 +216,26 @@ var sunburst = (function () {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
 			var totalLegendHeight = (nodeData.length + 1) * (li.h + li.s);
-			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", totalLegendHeight);
+			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", li.w).attr("height", totalLegendHeight).on("mouseleave", function () {
+				nodeVisuals.style("opacity", 1);
+				legendRects.style("opacity", 1);
+				d3.select("#sunburst-explanation").style("visibility", "hidden");
+			});
 			legendGroups = legend.selectAll("g").data(nodeData).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return colors[d.uniqueId];
+			}).on("mouseover", function (d, i) {
+				nodeVisuals.style("opacity", function (node) {
+					var opacity = (node === d) ? 1.0 : 0.3;
+					return opacity;
+				});
+				legendRects.style("opacity", function (node) {
+					var opacity = (node === d) ? 1.0 : 0.3;
+					return opacity;
+				});
+				showNodeExplanation(d);
 			});
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.name;
