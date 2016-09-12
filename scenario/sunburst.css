@@ -11,11 +11,14 @@
 }
 
 #sunburst-legend {
-	display: table-cell;
+	//display: table-cell;
 	vertical-align: middle;
 	cursor: default;
 }
 
+#sunburst-text-area {
+	margin-bottom: 30;
+}
 #sunburst-legend text {
 	font-weight: 400;
 	fill: #fff;
