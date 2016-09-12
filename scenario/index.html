@@ -12,17 +12,32 @@
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
 	<link rel="stylesheet" href="style.css" />
-	<link rel="stylesheet" href="sunburst.css" /> </head>
+	<link rel="stylesheet" href="sunburst.css" />
+	<link rel="stylesheet" href="timeuse.css" /> </head>
 
 <body>
 	<div class="container-fluid">
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-header">
-				<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"> <img width="40" height="17" src="../img/arc_logo.png"></a> <a class="navbar-brand" href="../index.html">ABMVIZ</a> <span id="scenario_header" style="font-size:2em;cursor:default" class="navbar-brand pull-right"></span> </div>
+				<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"> <img width="40" height="17" src="../img/arc_logo.png"></a> <a class="navbar-brand" href="../index.html">ABMVIZ</a> <span id="scenario-header" style="font-size:2em;cursor:default" class="navbar-brand pull-right"></span> </div>
 			<ul class="nav navbar-nav navbar-right" style="margin-right:1em;">
 				<li class="nav-item"><a href="../index.html">Back to scenario selection</a></li>
 			</ul>
 		</nav>
+		<div id="timeuse" class="row">
+			<p class="text-center" style="font-size:2em"><span class="timeuse-maingroup"></span></p>
+			<div id="timeuse-sidebar" class="col-lg-2">
+				<div id="timeuse-text-area"> Time Use contains an interactive visual that displays person time use by activity purpose and period of the day. The vertical axis displays the percent of activity and the horizontal axis displays the periodof the day. The vertical axis sums to 100%. </div>
+				<select class="form-control" id="timeuse-current-person-type"></select>
+				<div id="timeuse-legend"></div>
+			</div>
+			<div id="timeuse-main" class="col-lg-10">
+				<div id="timeuse-chart">
+					<svg></svg>
+				</div>
+			</div>
+		</div>
+		<hr>
 		<div id="sunburst" class="row">
 			<p class="text-center" style="font-size:2em"><span class="sunburst-maingroup"></span></p>
 			<div id="sunburst-sidebar" class="col-lg-2">
@@ -60,7 +75,7 @@
 						<div class="col-lg-2">
 							<label>
 								<input type="checkbox" checked id="stacked" />Stacked</label>
-							<!-- <label><input type="checkbox" checked id="legend_type" />Classic Legend/label>-->
+							<!-- <label><input type="checkbox" checked id="legend-type" />Classic Legend/label>-->
 						</div>
 					</div>
 				</div>
@@ -74,10 +89,10 @@
 					<div class="trip-mode" style="font-weight:bold"></div>
 				</div>
 				<div class="col-lg-6" style="margin-bottom:.1em;font-weight:bold">
-					<div id="classification_label">Classification</div>
+					<div id="classification-label">Classification</div>
 				</div>
 				<div class="col-lg-6">
-					<select class="form-control" id="current_trip_mode"></select>
+					<select class="form-control" id="current-trip-mode"></select>
 				</div>
 				<div class="col-lg-6" style="margin-bottom:2em;">
 					<select class="form-control" id="classification">
@@ -159,8 +174,8 @@
 				</div>
 				<div class="col-lg-6" style="margin-top:1em;text-align:right">
 					<input type="checkbox" id="bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
-					<input type="text" id="bubble_color" /> Size:
-					<select onchange="barchart_and_map.updateBubbles()" id="bubble_size">
+					<input type="text" id="bubble-color" /> Size:
+					<select onchange="barchart_and_map.updateBubbles()" id="bubble-size">
 						<option>1</option>
 						<option>2</option>
 						<option>3</option>
@@ -173,12 +188,12 @@
 					<div style="margin-bottom:1em;margin-top:1.6em;" id="slider"></div>
 					<div class="row">
 						<div class="col-lg-6">
-							<button id="update_map" style="display:none" class="btn">Update Map</button>
-							<button id="start_cycle_map" class="btn">Cycle Through Maps</button>
-							<button id="stop_cycle_map" class="btn" style="display:none">Stop Cycle</button>
+							<button id="update-map" style="display:none" class="btn">Update Map</button>
+							<button id="start-cycle-map" class="btn">Cycle Through Maps</button>
+							<button id="stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
 						</div>
 						<div class="col-lg-6"> Redraw
-							<select id="cycle_frequency" class="form-control form-control-inline">
+							<select id="cycle-frequency" class="form-control form-control-inline">
 								<option value="1">every 1 sec</option>
 								<option value="2">every 2 sec</option>
 								<option value="3">every 3 sec</option>
@@ -236,9 +251,7 @@
 	<script src="../abmviz_utilities.js"></script>
 	<script src="barchart_and_map.js"></script>
 	<script src="sunburst.js"></script>
-</body>
-
-</html>burst.js"></script>
+	<script src="timeuse.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,60 @@
+#timeuse-main {
+	//
+	padding: 0px;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#timeuse-sidebar {
+	padding-left: 10px;
+	display: table;
+}
+
+#timeuse-legend {
+	//display: table-cell;
+	vertical-align: middle;
+	cursor: default;
+}
+
+#timeuse-legend text {
+	font-weight: 400;
+	fill: #fff;
+}
+
+#timeuse-chart {
+	position: relative;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#timeuse-chart path {
+	stroke: #fff;
+}
+
+#timeuse-explanation {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: table;
+	color: #666;
+	z-index: -1;
+	padding-left: 0px;
+}
+
+#timeuse-explanation p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#timeuse-percentage {
+	font-size: 2.5em;
+}
+
+#timeuse-current-node {
+	font-size: 2em;
+}
+
+#timeuse-current-node-value {
+	font-size: 1.5em;
+}

@@ -226,14 +226,15 @@ var sunburst = (function () {
 			return Math.max(valueToConvert, 0.1).toFixed(1) + numberUnits[i];
 		};
 
-function getDepthIndent(d) {
-	return (d.depth-1) * legendDepthIndent;
-}
+		function getDepthIndent(d) {
+			return (d.depth - 1) * legendDepthIndent;
+		}
+
 		function drawLegend(nodeData) {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
 			var totalLegendHeight = (nodeData.length + 1) * (li.h + li.s);
-			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth-1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
+			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth - 1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
 				nodeVisuals.style("opacity", 1);
 				legendRects.style("opacity", 1);
 				d3.select("#sunburst-explanation").style("visibility", "hidden");
@@ -269,15 +270,14 @@ function getDepthIndent(d) {
 			};
 			for (var rowIndex = 0; rowIndex < csv.length; rowIndex++) {
 				var row = csv[rowIndex];
-
 				//remove any consecutive duplicates
 				var lastCellString = row[0];
-				 for (var columnIndex = 1; columnIndex< row.length; columnIndex++) {
-					if (row[columnIndex] === lastCellString) {         
-					  row.splice(columnIndex, 1);
-					  columnIndex--;
+				for (var columnIndex = 1; columnIndex < row.length; columnIndex++) {
+					if (row[columnIndex] === lastCellString) {
+						row.splice(columnIndex, 1);
+						columnIndex--;
 					}
-				  }
+				}
 				//support unbalanced trees where each row could go a different depth
 				var numColumns = row.length;
 				while (row[numColumns - 1].length == 0) {

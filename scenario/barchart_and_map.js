@@ -162,17 +162,17 @@ var barchart_and_map = (function () {
 	});
 
 	function setDataSpecificDOM() {
-		$("#attribute_label").html(modeColumn);
+		$("#attribute-label").html(modeColumn);
 		d3.selectAll(".area-type").html(countyColumn);
 		d3.selectAll(".trip-mode").html(modeColumn);
 		d3.selectAll(".trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
-			$("#current_trip_mode").append("<option>" + modeName + "</option>");
+			$("#current-trip-mode").append("<option>" + modeName + "</option>");
 		});
 		// 		chartData.forEach(function (chartObject) {
-		// 			$("#chart_selection").append("<option>" + chartObject.groupLabel + "</option>");
+		// 			$("#chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
 		// 		});
-		// 		$("#chart_selection").chosen();
+		// 		$("#chart-selection").chosen();
 	} //end setDataSpecificDOM
 	function updateChart(callback) {
 		"use strict";
@@ -181,7 +181,7 @@ var barchart_and_map = (function () {
 
 	function updateChartNVD3(callback) {
 		"use strict";
-		//nvd3 expects data in the opposite hierarchy than rest of code so need to create 
+		//nvd3 expects data in the opposite hierarchy than rest of code so need to create
 		//but can also filter out counties at same time
 		enabledCounties = chartData.filter(function (countyObject) {
 			return countyObject.enabled;
@@ -213,7 +213,7 @@ var barchart_and_map = (function () {
 		}, function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
-			//first check if 
+			//first check if
 			var chartOuterSelector = ".nv-barsWrap.nvd3-svg";
 			barsWrap = d3.select(chartOuterSelector);
 			if (barsWrap[0].length == 0) {
@@ -261,7 +261,7 @@ var barchart_and_map = (function () {
 		var endTime = Number(new Date()) + (timeout || 2000);
 		interval = interval || 100;
 		(function pollInternal() {
-			// If the condition is met, we're done! 
+			// If the condition is met, we're done!
 			if (fn()) {
 				callback();
 			}
@@ -335,7 +335,7 @@ var barchart_and_map = (function () {
 					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
 						var newTripMode = event.key;
 						console.log('legend legendDblclick on trip mode: ' + newTripMode);
-						$('#current_trip_mode').val(newTripMode);
+						$('#current-trip-mode').val(newTripMode);
 						updateCurrentTripModeOrClassification();
 						redrawMap();
 					});
@@ -347,7 +347,7 @@ var barchart_and_map = (function () {
 					//nvd3Chart.legend.vers('furious');
 					return nvd3Chart;
 				} //end generate
-				
+
 			, callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
@@ -500,7 +500,7 @@ var barchart_and_map = (function () {
 			css = '-moz-linear-gradient(left,' + colorStops + ')';
 		}
 		else if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent.toLowerCase().indexOf('safari') > -1) {
-			// Safari 5.1, Chrome 10+ 
+			// Safari 5.1, Chrome 10+
 			css = '-webkit-linear-gradient(left,' + colorStops + ')';
 		}
 		else {
@@ -532,7 +532,7 @@ var barchart_and_map = (function () {
 			createMap(function () {
 				console.log("createMap callback")
 			});
-			//NOTE: data should have been fully read in opn entry because 
+			//NOTE: data should have been fully read in opn entry because
 			//readInData() set holdReady until finished
 			setDataSpecificDOM();
 			svgElement = d3.select(svgSelector);
@@ -542,7 +542,7 @@ var barchart_and_map = (function () {
 				extNvd3Chart.stacked(this.checked);
 				extNvd3Chart.update();
 			});
-			$("#legend_type").click(function () {
+			$("#legend-type").click(function () {
 				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 				extNvd3Chart.update();
 			});
@@ -553,13 +553,13 @@ var barchart_and_map = (function () {
 				setTimeout(redrawMap, CSS_UPDATE_PAUSE);
 			}); //end on click for ramp/palette
 			if ($("#classification").val() == "custom") {
-				$("#update_map").css("display", "inline");
+				$("#update-map").css("display", "inline");
 			};
-			$("#scenario_header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
-			// 			$("#chart_selection").change(function () {
+			$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
+			// 			$("#chart-selection").change(function () {
 			// 				//check ALL
 			// 				var allIsSet;
-			// 				var options = $("#chart_selection option");
+			// 				var options = $("#chart-selection option");
 			// 				options.each(function () {
 			// 					var option = this;
 			// 					var optionName = option.text;
@@ -575,41 +575,41 @@ var barchart_and_map = (function () {
 			// 				updateChart();
 			// 			});
 			//Logic for cycling through the maps
-			$("#start_cycle_map").click(function () {
-				$("#stop_cycle_map").css("display", "inline");
-				$("#start_cycle_map").css("display", "none");
+			$("#start-cycle-map").click(function () {
+				$("#stop-cycle-map").css("display", "inline");
+				$("#start-cycle-map").css("display", "none");
 				cycleGoing = true;
 				currentCycleModeIndex = 0;
 				cycleTripMode();
 			});
-			$("#stop_cycle_map").click(function () {
+			$("#stop-cycle-map").click(function () {
 				cycleGoing = false;
-				$("#stop_cycle_map").css("display", "none");
-				$("#start_cycle_map").css("display", "inline");
+				$("#stop-cycle-map").css("display", "none");
+				$("#start-cycle-map").css("display", "inline");
 			});
 
 			function cycleTripMode() {
 				var newTripMode = modes[currentCycleModeIndex];
-				$('#current_trip_mode').val(newTripMode);
+				$('#current-trip-mode').val(newTripMode);
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 				currentCycleModeIndex++;
-				if (currentCycleModeIndex >= $("#current_trip_mode option").size()) {
+				if (currentCycleModeIndex >= $("#current-trip-mode option").size()) {
 					currentCycleModeIndex = 0;
 				}
 				if (cycleGoing) {
-					var timeInterval = parseInt($("#cycle_frequency").val()) * 1000;
+					var timeInterval = parseInt($("#cycle-frequency").val()) * 1000;
 					setTimeout(cycleTripMode, timeInterval);
 				} //end if cycleGoing
 			} //end cycleTripMode
-			$("#cycle_frequency").change(function () {
-				//no need to do anything since cycleTripMode always reads the current #cycle_frequency
+			$("#cycle-frequency").change(function () {
+				//no need to do anything since cycleTripMode always reads the current #cycle-frequency
 			});
-			$("#update_map").click(function () {
-				var slider_values = $("#slider").slider("values");
-				$("#val2").val(slider_values[0]);
-				$("#val3").val(slider_values[1]);
-				$("#val4").val(slider_values[2]);
+			$("#update-map").click(function () {
+				var sliderValues = $("#slider").slider("values");
+				$("#val2").val(sliderValues[0]);
+				$("#val3").val(sliderValues[1]);
+				$("#val4").val(sliderValues[2]);
 				redrawMap();
 			});
 			//value slider
@@ -633,7 +633,7 @@ var barchart_and_map = (function () {
 				}
 			});
 			updateColors(handlers, $("#slider").slider("option", "max"));
-			$("#current_trip_mode").change(function () {
+			$("#current-trip-mode").change(function () {
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
@@ -659,7 +659,7 @@ var barchart_and_map = (function () {
 					updateColors($("#slider").slider("values"));
 				}
 			});
-			$("#bubble_color").spectrum({
+			$("#bubble-color").spectrum({
 				color: bubbleColor
 				, showInput: true
 				, className: "full-spectrum"
@@ -685,7 +685,7 @@ var barchart_and_map = (function () {
 	handleDocumentReady(function () {
 		console.log("Finished handling document ready");
 	});
-	//hex to rgb for handling transparancy     
+	//hex to rgb for handling transparancy
 	function hexToRgb(hex) {
 		"use strict";
 		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -717,7 +717,7 @@ var barchart_and_map = (function () {
 			var mapCenter = map.getCenter();
 			var eastBound = map.getBounds().getEast();
 			var centerEast = L.latLng(mapCenter.lat, eastBound);
-			var bubbleMultiplier = parseInt($("#bubble_size").val());
+			var bubbleMultiplier = parseInt($("#bubble-size").val());
 			var mapBounds = d3.select("#map").node().getBoundingClientRect();
 			var mapRadiusInPixels = mapBounds.width / 2;
 			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
@@ -740,9 +740,9 @@ var barchart_and_map = (function () {
 	}; //end updateBubbles
 	function updateCurrentTripModeOrClassification() {
 		"use strict";
-		currentTripMode = $('#current_trip_mode').val();
+		currentTripMode = $('#current-trip-mode').val();
 		var startTime = Date.now();
-		console.log('updateCurrentTripModeOrClassification: #current_trip_mode.val()=' + currentTripMode);
+		console.log('updateCurrentTripModeOrClassification: #current-trip-mode.val()=' + currentTripMode);
 		var serie = new geostats(modeData[currentTripMode].serie);
 		maxFeature = serie.max();
 		//handle the different classifications
@@ -752,12 +752,12 @@ var barchart_and_map = (function () {
 			, disabled: ($("#classification").val() != "custom")
 		});
 		if (classification == "custom") {
-			$("#update_map").css("display", "inline");
+			$("#update-map").css("display", "inline");
 			breakUp = [$("#val1").val(), $("#val2").val(), $("#val3").val(), $("#val4").val(), $("#val5").val()];
 		}
 		else {
-			$("#update_map").css("display", "none");
-			if (classification == "even_interval") {
+			$("#update-map").css("display", "none");
+			if (classification == "even-interval") {
 				breakUp = serie.getClassEqInterval(4);
 			}
 			else if (classification == "quartiles") {
@@ -774,17 +774,17 @@ var barchart_and_map = (function () {
 			$("#val3").val(breakUp[2]);
 			$("#val4").val(breakUp[3]);
 			$("#val5").val(breakUp[4]);
-			var new_values = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
+			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
 			$("#slider").slider({
 				min: breakUp[0]
 				, max: breakUp[4]
-				, values: new_values
+				, values: newValues
 			});
-			$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[0] + '</div></div>');
-			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[1] + '</div></div>');
-			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + new_values[2] + '</div></div>');
-			updateColors(new_values, breakUp[4]);
+			$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
+			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
+			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
+			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();
 	}; //end updateCurrentTripModeOrClassification
