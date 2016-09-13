@@ -88,7 +88,7 @@ var barchart_and_map = (function () {
 			modeColumn = headers[2];
 			quantityColumn = headers[3];
 			var rawChartData = new Map([]);
-			//run through data. Filter out 'total' psuedo-mode, convert quantity to int, create zoneData
+			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
 			zoneData = {};
 			counties = [];
 			data.forEach(function (d) {

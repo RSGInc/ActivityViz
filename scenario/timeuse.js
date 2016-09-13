@@ -40,10 +40,11 @@ var timeuse = (function () {
 					return d[0];
 				});
 				var doubleLevelNest = singleLevelNest.key(function (d) {
-					return d[1];
+					return d[2];
 				});
 				var tripleLevelNest = doubleLevelNest.key(function (d) {
-					return d[2];
+					d.period = d[2];
+					return d[1];
 				});
 				var rollUpTripleNest = tripleLevelNest.rollup(function (leaves) {
 					return {
@@ -83,15 +84,15 @@ var timeuse = (function () {
 			var selectedIndex = personTypeSelector.node().selectedIndex;
 			var currentPersonTypeData = rolledUpData[selectedIndex];
 			//alternative curData = personTypeSelectorOptions[0][selectedIndex].__data__
-			var newPersonType = personTypeSelector.key;
+			var newPersonType = currentPersonTypeData.key;
 			console.log("changed person type to: " + newPersonType);
 			//poll every 150ms for up to two seconds waiting for chart
 			abmviz_utilities.GetURLParameter("fish");
 			abmviz_utilities.poll(function () {
 				return extNvd3Chart != undefined;
 			}, function () {
-				var key = currentPersonTypeData.key;
-				svgElement.datum(currentPersonTypeData.values).call(extNvd3Chart);
+				var datum = currentPersonTypeData.values;
+				svgElement.datum(datum).call(extNvd3Chart);
 			}, function () {
 				throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 			}); //end call to poll
@@ -112,7 +113,7 @@ var timeuse = (function () {
 					var chart = nv.models.stackedAreaChart().margin({
 							right: 100
 						}).x(function (d) {
-							return d.index + 1;
+							return parseInt(d.key);
 						}) //We can modify the data accessor functions...
 						.y(function (d) {
 							return d.values.total_quantity;
