@@ -3,6 +3,9 @@
 var timeuse = (function () {
 	"use strict";
 	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
+	var svgSelector = "#timeuse-chart svg";
+	var svgElement = d3.select(svgSelector);
+	var extNvd3Chart;
 	var legendBoxWidth = 150;
 	var legendDepthIndent = 10;
 	var json = null;
@@ -21,6 +24,10 @@ var timeuse = (function () {
 	// Total size of all segments; we set this later, after loading the data.
 	var totalSize;
 	var personTypes;
+	var rolledUpData;
+	var personTypeSelector;
+	var personTypeSelectorOptions;
+	var nvd3Data = {};
 
 	function createTimeuse() {
 		//read in data and create timeuse when finished
@@ -46,53 +53,89 @@ var timeuse = (function () {
 						})
 					};
 				});
-				var rolledUpData = rollUpTripleNest.entries(csv);
-				//populate drop down of all person -types
-				var personTypeSelector = d3.select("#timeuse-current-person-type");
-				personTypeSelector.selectAll("option").data(rolledUpData).enter().append("option").text(function (d) {
+				var rolledUpMap = rollUpTripleNest.map(csv);
+				rolledUpData = rollUpTripleNest.entries(csv);
+				rolledUpData.forEach(function (d) {
+						var personTypeData = [];
+						nvd3Data[d.key] = personTypeData;
+					})
+					//convert data to format nvd3 expects it
+					//populate drop down of all person -types
+				personTypeSelector = d3.select("#timeuse-current-person-type");
+				personTypeSelectorOptions = personTypeSelector.selectAll("option").data(rolledUpData).enter().append("option").text(function (d) {
 					return d.key;
 				});
-				personTypeSelector.on("change", function() {
-					var newPersonType = this.value;
-					console.log("changed person type to: " + newPersonType);
-				});
-				
-				createVisualization(rolledUpData);
+				personTypeSelector.on("change", setPersonType);
+				createEmptyChart();
 			}); //end d3.text
-		}
+		} //end if json == null
 		else {
 			//if already exists don't need to read in and parse again
-			createVisualization(rolledUpData);
-		}
-		//https://bl.ocks.org/kerryrodden/7090426
-		// Main function to draw and set up the visualization, once we have the data.
-		function createVisualization(rolledUpData) {
+			createEmptyChart();
+		} //end if data already read in
+		function setPersonType() {
+			updateChart(function () {
+				console.log("finished updateChartNVD3 from setPersonType");
+			});
+		};
+
+		function updateChart(callback) {
+			var selectedIndex = personTypeSelector.node().selectedIndex;
+			var currentPersonTypeData = rolledUpData[selectedIndex];
+			//alternative curData = personTypeSelectorOptions[0][selectedIndex].__data__
+			var newPersonType = personTypeSelector.key;
+			console.log("changed person type to: " + newPersonType);
+			//poll every 150ms for up to two seconds waiting for chart
+			abmviz_utilities.GetURLParameter("fish");
+			abmviz_utilities.poll(function () {
+				return extNvd3Chart != undefined;
+			}, function () {
+				var key = currentPersonTypeData.key;
+				svgElement.datum(currentPersonTypeData.values).call(extNvd3Chart);
+			}, function () {
+				throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
+			}); //end call to poll
+			if (callback != undefined) {
+				callback();
+			}
+			//end updateChart
+		};
+
+		function createEmptyChart() {
+			//https://bl.ocks.org/kerryrodden/7090426
+			// Main function to draw and set up the visualization, once we have the data.
 			// Basic setup of page elements.
 			var timeuseBounds = d3.select("#timeuse-main").node().getBoundingClientRect();
 			//http://nvd3.org/examples/stackedArea.html
-			nv.addGraph(function () {
-				var chart = nv.models.stackedAreaChart().margin({
-						right: 100
-					}).x(function (d) {
-						return d[0]
-					}) //We can modify the data accessor functions...
-					.y(function (d) {
-						return d[1]
-					}) //...in case your data is formatted differently.
-					.useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-					.rightAlignYAxis(true) //Let's move the y-axis to the right side.
-					.transitionDuration(500).showControls(true) //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
-					.clipEdge(true);
-				//Format x-axis labels with custom function.
-				chart.xAxis.tickFormat(function (d) {
-					return d3.time.format('%x')(new Date(d))
-				});
-				chart.yAxis.tickFormat(d3.format(',.2f'));
-				d3.select('#timeuse-chart svg').datum(rolledUpData).call(chart);
-				nv.utils.windowResize(chart.update);
-				return chart;
-			});
-		}; //end createVisualization 
+			nv.addGraph({
+				generate: function () {
+					var chart = nv.models.stackedAreaChart().margin({
+							right: 100
+						}).x(function (d) {
+							return d.index + 1;
+						}) //We can modify the data accessor functions...
+						.y(function (d) {
+							return d.values.total_quantity;
+						}) //...in case your data is formatted differently.
+						.clipEdge(true).useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
+						.showControls(true); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+					//Format x-axis labels with custom function.
+					// 					chart.xAxis.tickFormat(function (d) {
+					// 						return d3.time.format('%x')(new Date(d))
+					// 					});
+					chart.yAxis.tickFormat(d3.format(',.2f'));
+					nv.utils.windowResize(chart.update);
+					return chart;
+				}
+				, callback: function (newGraph) {
+						console.log("timeuse nv.addGraph callback called");
+						extNvd3Chart = newGraph;
+						updateChart(function () {
+							console.log("updateChart callback during after the nvd3 callback called");
+						});
+					} //end callback function
+			}); //end nv.addGraph
+		}; //end createEmptyChart 
 	}; //end createTimeuse
 	createTimeuse();
 	window.addEventListener("resize", function () {

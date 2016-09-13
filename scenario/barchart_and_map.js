@@ -180,9 +180,10 @@ var barchart_and_map = (function () {
 	}
 
 	function updateChartNVD3(callback) {
-		"use strict";
+	"use strict";
 		//nvd3 expects data in the opposite hierarchy than rest of code so need to create
 		//but can also filter out counties at same time
+		//NOTE: ability to enable/disable counties  removed from UI so currently never used.
 		enabledCounties = chartData.filter(function (countyObject) {
 			return countyObject.enabled;
 		})
@@ -208,7 +209,7 @@ var barchart_and_map = (function () {
 			}); //end loop over chartData countyObjects
 		}); //end loop over modes
 		//poll every 150ms for up to two seconds waiting for chart
-		poll(function () {
+		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
@@ -256,26 +257,6 @@ var barchart_and_map = (function () {
 			setTimeout(updateChartMouseoverRect, 500);
 		}
 	} //end updateChartMouseoverRect
-	//from https://davidwalsh.name/javascript-polling
-	function poll(fn, callback, errback, timeout, interval) {
-		var endTime = Number(new Date()) + (timeout || 2000);
-		interval = interval || 100;
-		(function pollInternal() {
-			// If the condition is met, we're done!
-			if (fn()) {
-				callback();
-			}
-			// If the condition isn't met but the timeout hasn't elapsed, go again
-			else if (Number(new Date()) < endTime) {
-				setTimeout(pollInternal, interval);
-			}
-			// Didn't match and too much time, reject!
-			else {
-				errback(new Error('timed out for ' + fn + ': ' + arguments));
-			}
-		})();
-	}
-
 	function changeCurrentCounty(newCurrentCounty) {
 		if (currentCounty != newCurrentCounty) {
 			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
