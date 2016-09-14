@@ -22,6 +22,11 @@ var abmviz_utilities = (function () {
 			}
 		}
 	}
+
+//from http://stackoverflow.com/a/12190006/283973
+	function insertArrayAt(array, index, arrayToInsert) {
+    Array.prototype.splice.apply(array, [index, 0].concat(arrayToInsert));
+}
 	//from https://davidwalsh.name/javascript-polling
 	function poll(fn, callback, errback, timeout, interval) {
 		var endTime = Number(new Date()) + (timeout || 2000);
@@ -46,5 +51,6 @@ var abmviz_utilities = (function () {
 		assert: assert
 		, GetURLParameter: GetURLParameter
 		, poll: poll
+		,insertArrayAt : insertArrayAt
 	};
 }()); //end encapsulating IIFE
