@@ -42,13 +42,18 @@ var timeuse = (function () {
 				var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
 				if (error) throw error; //expected data should have columns similar to: PERSON_TYPE	PER	ORIG_PURPOSE	QUANTITY
 				var csv = d3.csv.parseRows(data).slice(1);
+				data = null; //allow memory to be GC'ed
 				var rolledUpMap = d3.nest().key(function (d) {
 					return d[0]; //group by PERSON_TYPE
 				}).key(function (d) {
-					d.timePeriod = +d[1];
-					d.quantity = +d[3];
-					var origPurpose = d[2];
-					periods.add(d.timePeriod);
+					return d[2]; //secondary group by ORIG_PURPOSE
+				}).key(function (d) {
+					return d[1];
+				})
+				.rollup(function(d) { 
+					var timePeriod = +d[0][1];
+					periods.add(timePeriod);
+					var origPurpose = d[0][2];
 					if (!nonRequiredOrigPurposesSet.has(origPurpose)) {
 						if (requiredOrigPurposesSet.has(origPurpose)) {
 							if (!requiredOrigPurposesFound.has(origPurpose)) {
@@ -59,8 +64,11 @@ var timeuse = (function () {
 							nonRequiredOrigPurposesSet.add(origPurpose);
 						}
 					} //else already in nonRequiredSet
-					return origPurpose; //secondary group by ORIG_PURPOSE
-				}).map(csv);
+				return { timePeriod: timePeriod,
+					quantity: +d[0][3]}; 
+				})
+				.map(csv);
+				csv = null; //allow memory to be GC'ed
 				//cannot simply use nest.entries because there may be missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
 				//rolledUpData = makeNest.entries(csv);
 				//var reorderedArray = [];
@@ -79,21 +87,26 @@ var timeuse = (function () {
 						if (personTypesOrigPurposeArray == undefined) {
 							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
 							//make an empty item to use to fill in personTypes that are missing data
-							var emptyPersonTypesOrigPurposeArray = [];
-							periods.forEach(function (period) {
-								var emptyArray = [];
-								emptyArray.timePeriod = period;
-								emptyArray.quantity = 1;
-								emptyPersonTypesOrigPurposeArray.push(emptyArray);
-							});
-							personTypesOrigPurposeArray = emptyPersonTypesOrigPurposeArray;
+							personTypesOrigPurposeArray = {};
 							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
 						}
-						var purposeObject = {
+						var periodDataArray = [];
+					//must make sure data has all periods since nvd3 picky
+						periods.forEach(function (period) {
+							var periodDataObject = personTypesOrigPurposeArray[period];
+							if (periodDataObject == undefined) {
+								periodDataObject = {
+								timePeriod : period,
+								quantity : 0
+								}
+								console.log('Person type "' + personType + '" missing data for period: ' + period);
+							}
+							periodDataArray.push(periodDataObject);
+						});
+						chartData[personType].push({
 							key: origPurpose
-							, values: personTypesOrigPurposeArray
-						};
-						chartData[personType].push(purposeObject);
+							, values: periodDataArray
+						});
 					}); //end loop over origPurposes 
 				}); //end loop over personTypes
 				rolledUpData = chartData;
@@ -166,8 +179,7 @@ var timeuse = (function () {
 						if ((halfHoursPast3Am % 2) == 1) {
 							timeOfDayAmPm += ':30';
 						}
-						
-							timeOfDayAmPm += ' ' + ((hours < 12) ? 'am' : 'pm');
+						timeOfDayAmPm += ' ' + ((hours < 12) ? 'am' : 'pm');
 						return timeOfDayAmPm;
 					});
 					chart.yAxis.tickFormat(d3.format(',.2f'));
