@@ -32,7 +32,7 @@ var timeuse = (function () {
 
 	function createTimeuse() {
 		//read in data and create timeuse when finished
-		if (json === null) {
+		if (rolledUpData === undefined) {
 			d3.text(url, function (error, data) {
 				"use strict";
 				var requiredOrigPurposesArray = ["HOME", "UNIVERSITY", "SCHOOL", "WORK"];
@@ -119,7 +119,7 @@ var timeuse = (function () {
 				personTypeSelector.on("change", setPersonType);
 				createEmptyChart();
 			}); //end d3.text
-		} //end if json == null
+		} //end if rolledUpData === undefined
 		else {
 			//if already exists don't need to read in and parse again
 			createEmptyChart();
