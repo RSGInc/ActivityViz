@@ -300,7 +300,7 @@ var barchart_and_map = (function () {
 						, right: marginRight
 						, top: marginTop
 						, bottom: marginBottom
-					}).stacked(true).showControls(false);
+					}).id("mode-share-by-county-multiBarHorizontalChart").stacked(true).showControls(false);
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(countyColumn);
 					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
