@@ -11,6 +11,7 @@ var timeuse = (function () {
 	var legendRects;
 	var legendTexts;
 	var legendGroups;
+	var chartData;
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth
@@ -19,17 +20,15 @@ var timeuse = (function () {
 		, r: 3
 	};
 	var personTypes;
-	var rolledUpMap;
 	var personTypeSelector;
 	var personTypeSelectorOptions;
-	var origPurposesArray;
-	var periods = new Set();
 
 	function createTimeuse() {
 		//read in data and create timeuse when finished
-		if (rolledUpMap === undefined) {
+		if (chartData === undefined) {
 			d3.text(url, function (error, data) {
 				"use strict";
+				var periods = new Set();
 				var requiredOrigPurposesArray = ["HOME", "UNIVERSITY", "SCHOOL", "WORK"];
 				var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
 				var requiredOrigPurposesFound = new Set();
@@ -37,7 +36,7 @@ var timeuse = (function () {
 				if (error) throw error; //expected data should have columns similar to: PERSON_TYPE	PER	ORIG_PURPOSE	QUANTITY
 				var csv = d3.csv.parseRows(data).slice(1);
 				data = null; //allow memory to be GC'ed
-				rolledUpMap = d3.nest().key(function (d) {
+				var rolledUpMap = d3.nest().key(function (d) {
 					return d[0]; //group by PERSON_TYPE
 				}).key(function (d) {
 					return d[2]; //secondary group by ORIG_PURPOSE
@@ -68,7 +67,7 @@ var timeuse = (function () {
 				//var reorderedArray = [];
 				//re-order so the starts with WORK, SCHOOL, UNIVERSITY and ends with HOME
 				abmviz_utilities.assert(requiredOrigPurposesSet.size == requiredOrigPurposesFound.size, "ORIG_PURPOSE must contain WORK, SCHOOL, UNIVERSITY, and HOME but only found these ones: " + Array.from(requiredOrigPurposesFound));
-				origPurposesArray = Array.from(requiredOrigPurposesArray);
+				var origPurposesArray = Array.from(requiredOrigPurposesArray);
 				//insert non-reqired items between UNIVERSITY and HOME
 				abmviz_utilities.insertArrayAt(origPurposesArray, 1, Array.from(nonRequiredOrigPurposesSet));
 				var personTypes = Object.keys(rolledUpMap);
@@ -78,81 +77,99 @@ var timeuse = (function () {
 				personTypeSelectorOptions = personTypeSelector.selectAll("option").data(personTypes).enter().append("option").text(function (d) {
 					return d;
 				});
-				personTypeSelector.on("change", setPersonType);
-				console.log('timeuse finished reading data - about to call updateChart()');
-				updateChart();
-			}); //end d3.text
-		} //end if rolledUpMap === undefined
-		else {
-			//if already exists don't need to read in and parse again
-			updateChart();
-		} //end if data already read in
-		function setPersonType() {
-			updateChart(function () {
-				console.log("finished updateChartNVD3 from setPersonType");
-			});
-		};
-
-		function getPersonTypeChartData(personType) {
-			var rolledUpPersonTypeMap = rolledUpMap[personType];
-			abmviz_utilities.assert(rolledUpPersonTypeMap != null, "rolledUpPersonTypeMap not found for personType: " + personType);
-			var personTypeChartData = [];
-			origPurposesArray.forEach(function (origPurpose) {
-				var personTypesOrigPurposeArray = rolledUpPersonTypeMap[origPurpose];
-				if (personTypesOrigPurposeArray == undefined) {
-					//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
-					//make an empty item to use to fill in personTypes that are missing data
-					personTypesOrigPurposeArray = {};
-					console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
-				}
-				var periodDataArray = [];
-				//must make sure data has all periods since nvd3 picky
-				periods.forEach(function (period) {
-					var periodDataObject = personTypesOrigPurposeArray[period];
-					if (periodDataObject == undefined) {
-						periodDataObject = {
-							timePeriod: period
-							, quantity: 0
-						};
-						console.log('Person type "' + personType + '" missing data for period: ' + period);
-					}
-					else {
-						periodDataObject = {
-							timePeriod: period
-							, quantity: periodDataObject.quantity
-						};
-					}
-					periodDataArray.push(periodDataObject);
-				}); //end loop over periods
-				personTypeChartData.push({
-					key: origPurpose
-					, values: periodDataArray
+				personTypeSelector.on("change", function () {
+					clearHighlightPoints();
+					updateChart();
 				});
-			}); //end loop over origPurposes 
-			return personTypeChartData;
-		} //end getPersonTypeChartData
+				chartData = {};
+				personTypes.forEach(function (personType) {
+					chartData[personType] = getPersonTypeChartData(personType);
+				});
+
+				function getPersonTypeChartData(personType) {
+					var rolledUpPersonTypeMap = rolledUpMap[personType];
+					abmviz_utilities.assert(rolledUpPersonTypeMap != null, "rolledUpMap[personType] not found for personType: " + personType);
+					var personTypeChartData = [];
+					origPurposesArray.forEach(function (origPurpose) {
+						var personTypesOrigPurposeArray = rolledUpPersonTypeMap[origPurpose];
+						var personTypeOrigPurposeExists = personTypesOrigPurposeArray != undefined
+						if (!personTypeOrigPurposeExists) {
+							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
+							//make an empty item to use to fill in personTypes that are missing data
+							personTypesOrigPurposeArray = {};
+							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
+						}
+						var periodDataArray = [];
+						//must make sure data has all periods since nvd3 picky
+						periods.forEach(function (period) {
+							var periodDataObject = personTypesOrigPurposeArray[period];
+							if (periodDataObject == undefined) {
+								periodDataObject = {
+									timePeriod: period
+									, quantity: 0
+								};
+								if (personTypeOrigPurposeExists) console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
+							}
+							else {
+								periodDataObject = {
+									timePeriod: period
+									, quantity: periodDataObject.quantity
+								};
+							}
+							periodDataArray.push(periodDataObject);
+						}); //end loop over periods
+						personTypeChartData.push({
+							key: origPurpose
+							, values: periodDataArray
+						});
+					}); //end loop over origPurposes 
+					return personTypeChartData;
+				} //end getPersonTypeChartData
+				console.log('timeuse finished reading data');
+				createEmptyChart(updateChart);
+			}); //end d3.text
+		} //end if chartData === undefined
+		else {
+			//if just a window resize, don't re-read data
+			//createEmptyChart(updateChart);
+		}
+
+		function turnOffAreaClick() {
+			//nvd3 allows a single series to be shown but not helpful. Need to disable both double click in legend and click in area
+			//Way to disable toggle found in: https://github.com/novus/nvd3/issues/590 in comment by liquidpele
+			extNvd3Chart.stacked.dispatch.on('areaClick.toggle', function (e) {
+				console.log('ignoring chart areaClick.toggle dispatched.');
+			});
+			extNvd3Chart.stacked.dispatch.on('areaClick', function (e) {
+				console.log('ignoring chart areaClick dispatched.');
+			});
+		}
+		//because of a bug in nvd3 #1814 https://github.com/novus/nvd3/issues/1814
+		//we must remove all of the current point positions which will force them to be re-created.
+		function clearHighlightPoints() {
+			svgElement.selectAll('path.nv-point').remove();
+		}
+
 		function updateChart(callback) {
-			createEmptyChart(function () {
+			//poll to make sure chart has finished being created
+			abmviz_utilities.poll(function () {
+				return extNvd3Chart != undefined;
+			}, function () {
 				var newPersonType = personTypeSelector[0][0].value;
-				var currentPersonTypeData = getPersonTypeChartData(newPersonType);
+				var currentPersonTypeData = chartData[newPersonType];
 				svgElement.datum(currentPersonTypeData).call(extNvd3Chart);
 				//kluge - should not need to call nvd3 update here but occassionally in some window positions
 				//the legend lays out differently after the first updateChart
 				//so call immediately so user will never see the initial legend layout
-				extNvd3Chart.update();
-				//Way to disable toggle found in: https://github.com/novus/nvd3/issues/590 in comment by liquidpele
-				extNvd3Chart.stacked.dispatch.on('areaClick.toggle', function (e) {
-					console.log('ignoring chart areaClick.toggle dispatched.');
+				//extNvd3Chart.update();
+				extNvd3Chart.legend.dispatch.on('legendClick', function (e, i) {
+					clearHighlightPoints()
+					setTimeout(function () {
+						//this somehow gets turned back on so must do again
+						turnOffAreaClick();
+					}, 1);
 				});
-				extNvd3Chart.stacked.dispatch.on('areaClick', function (e) {
-					console.log('ignoring chart areaClick dispatched.');
-				});
-				//because of a bug in nvd3 #1814 https://github.com/novus/nvd3/issues/1814
-				//we must remove all of the current point positions which will force them to be re-created.
-				extNvd3Chart.legend.dispatch.on('legendClick', function (e, arg2, arg3) {
-					svgElement.selectAll('path.nv-point').remove();
-				});
-
+				turnOffAreaClick();
 				//wish to prevent the double click in the legend from toggling off all items other than clicked
 				extNvd3Chart.legend.dispatch.on('legendDblclick', function (e) {
 					console.log('ignoring chart legend legendDblclick dispatched.');
@@ -162,30 +179,6 @@ var timeuse = (function () {
 						extNvd3Chart.legend.updateState(true);
 					}, 1);
 				});
-				// 					extNvd3Chart.legend.dispatch.on('stateChange', function(e) {
-				// 						console.log('ignoring chart legend stateChange dispatched: ' + JSON.stringify(e));
-				// 					});
-				if (callback) {
-					callback();
-				}
-			});
-			//end updateChart
-		};
-
-		function updateChartOLD(callback) {
-			var newPersonType = personTypeSelector[0][0].value;
-			var currentPersonTypeData = getPersonTypeChartData(newPersonType);
-			console.log("changed person type to: " + newPersonType);
-			//poll every 150ms for up to two seconds waiting for chart
-			abmviz_utilities.poll(function () {
-				return extNvd3Chart != undefined;
-			}, function () {
-				var datum = currentPersonTypeData;
-				//svgElement.datum([]).call(extNvd3Chart);
-				svgElement.datum(datum).call(extNvd3Chart, function () {
-					console.log('does datum have a callback?');
-				});
-				extNvd3Chart.update();
 			}, function () {
 				throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 			}); //end call to poll
@@ -228,17 +221,8 @@ var timeuse = (function () {
 						return timeOfDayAmPm;
 					});
 					chart.yAxis.tickFormat(d3.format(',.2f'));
-					nv.utils.windowResize(chart.update);
-// 					chart.dispatch.on('changeState', function (e) {
-// 						console.log('chart changeState dispatched: ' + JSON.stringify(e));
-// 					});
-// 					chart.dispatch.on('renderEnd', function (e) {
-// 						console.log('chart renderEnd dispatched: ' + JSON.stringify(e));
-// 					});
-// 					chart.dispatch.on('stateChange', function (e) {
-// 						console.log('chart stateChange dispatched: ' + JSON.stringify(e));
-// 					});
-chart.legend.vers('furious');
+					//nv.utils.windowResize(chart.update);
+					chart.legend.vers('classic');
 					return chart;
 				}
 				, callback: function (newGraph) {
