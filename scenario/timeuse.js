@@ -6,7 +6,7 @@ var timeuse = (function () {
 	var svgSelector = "#timeuse-chart svg";
 	var svgElement = d3.select(svgSelector);
 	var extNvd3Chart;
-	var legendBoxWidth = 150;
+	var legendBoxWidth = 240;
 	var nodeVisuals;
 	var legendRects;
 	var legendTexts;
@@ -16,12 +16,10 @@ var timeuse = (function () {
 	var li = {
 		w: legendBoxWidth
 		, h: 22
-		, s: 3
+		, s: 15
 		, r: 3
 	};
-	var personTypes;
-	var personTypeSelector;
-	var personTypeSelectorOptions;
+	var personType = "ALL";
 
 	function createTimeuse() {
 		//read in data and create timeuse when finished
@@ -73,14 +71,7 @@ var timeuse = (function () {
 				var personTypes = Object.keys(rolledUpMap);
 				//convert data to format nvd3 expects it
 				//populate drop down of all person -types
-				personTypeSelector = d3.select("#timeuse-current-person-type");
-				personTypeSelectorOptions = personTypeSelector.selectAll("option").data(personTypes).enter().append("option").text(function (d) {
-					return d;
-				});
-				personTypeSelector.on("change", function () {
-					clearHighlightPoints();
-					updateChart();
-				});
+				drawLegend(personTypes);
 				chartData = {};
 				personTypes.forEach(function (personType) {
 					chartData[personType] = getPersonTypeChartData(personType);
@@ -92,39 +83,42 @@ var timeuse = (function () {
 					var personTypeChartData = [];
 					origPurposesArray.forEach(function (origPurpose) {
 						var personTypesOrigPurposeArray = rolledUpPersonTypeMap[origPurpose];
-						var personTypeOrigPurposeExists = personTypesOrigPurposeArray != undefined
-						if (!personTypeOrigPurposeExists) {
-							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
-							//make an empty item to use to fill in personTypes that are missing data
-							personTypesOrigPurposeArray = {};
-							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
-						}
-						var periodDataArray = [];
-						//must make sure data has all periods since nvd3 picky
-						periods.forEach(function (period) {
-							var periodDataObject = personTypesOrigPurposeArray[period];
-							if (periodDataObject == undefined) {
-								periodDataObject = {
-									timePeriod: period
-									, quantity: 0
-								};
-								if (personTypeOrigPurposeExists) console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
-							}
-							else {
-								periodDataObject = {
-									timePeriod: period
-									, quantity: periodDataObject.quantity
-								};
-							}
-							periodDataArray.push(periodDataObject);
-						}); //end loop over periods
-						personTypeChartData.push({
-							key: origPurpose
-							, values: periodDataArray
-						});
+						// 						if (personTypesOrigPurposeArray == undefined) {
+						// 							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
+						// 							//make an empty item to use to fill in personTypes that are missing data
+						// 							personTypesOrigPurposeArray = {};
+						// 							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
+						// 						} else  {
+						if (personTypesOrigPurposeArray != undefined) {
+							var periodDataArray = [];
+							//must make sure data has all periods since nvd3 picky
+							periods.forEach(function (period) {
+								var periodDataObject = personTypesOrigPurposeArray[period];
+								//if period missing from data, create it
+								if (periodDataObject == undefined) {
+									periodDataObject = {
+										timePeriod: period
+										, quantity: 0
+									};
+									/* 								if (personTypeOrigPurposeExists) */
+									console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
+								}
+								// 							else {
+								// 								periodDataObject = {
+								// 									timePeriod: period
+								// 									, quantity: periodDataObject.quantity
+								// 								};
+								// 							}
+								periodDataArray.push(periodDataObject);
+							}); //end loop over periods
+							personTypeChartData.push({
+								key: origPurpose
+								, values: periodDataArray
+							});
+						} //end if have data for purpose
 					}); //end loop over origPurposes 
 					return personTypeChartData;
-				} //end getPersonTypeChartData
+				}; //end getPersonTypeChartData
 				console.log('timeuse finished reading data');
 				createEmptyChart(updateChart);
 			}); //end d3.text
@@ -155,8 +149,7 @@ var timeuse = (function () {
 			abmviz_utilities.poll(function () {
 				return extNvd3Chart != undefined;
 			}, function () {
-				var newPersonType = personTypeSelector[0][0].value;
-				var currentPersonTypeData = chartData[newPersonType];
+				var currentPersonTypeData = chartData[personType];
 				svgElement.datum(currentPersonTypeData).call(extNvd3Chart);
 				//kluge - should not need to call nvd3 update here but occassionally in some window positions
 				//the legend lays out differently after the first updateChart
@@ -201,7 +194,7 @@ var timeuse = (function () {
 							return d.quantity;
 						}) //...in case your data is formatted differently.
 						.clipEdge(true).id("timeuse-stackedAreaChart").useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-						.showControls(true).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+						.showControls(false).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
 					//How to Remove control options from NVD3.js Stacked Area Chart
 					//http://www.bainweb.com/2015/09/how-to-remove-control-options-from.html
 					chart._options.controlOptions = ['Stacked', 'Expanded'];
@@ -234,6 +227,31 @@ var timeuse = (function () {
 					} //end callback function
 			}); //end nv.addGraph
 		}; //end createEmptyChart 
+		function drawLegend(personTypes) {
+			d3.select("#timeuse-legend svg").remove(); //remove in case this is a window resize event
+			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
+			var totalLegendHeight = personTypes.length * (li.h + li.s);
+			var legend = d3.select("#timeuse-legend").append("svg:svg").attr("width", legendBoxWidth).attr("height", totalLegendHeight);
+			legendGroups = legend.selectAll("g").data(personTypes).enter().append("svg:g").attr("transform", function (d, i) {
+				return "translate(0," + i * (li.h + li.s) + ")";
+			});
+			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).on("mouseover", function (d, i) {
+				personType = d;
+				clearHighlightPoints();
+				updateChart();
+				setPersonTypeClass();
+			});
+			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
+				return d;
+			});
+
+			function setPersonTypeClass() {
+				legendRects.classed("timeuse-current-person-type", function (d) {
+					return (d === personType);
+				});
+			};
+			setPersonTypeClass();
+		}; //end drawLegend
 	}; //end createTimeuse
 	createTimeuse();
 	window.addEventListener("resize", function () {

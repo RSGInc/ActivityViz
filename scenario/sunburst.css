@@ -19,9 +19,14 @@
 #sunburst-text-area {
 	margin-bottom: 30;
 }
+
 #sunburst-legend text {
 	font-weight: 400;
-	fill: #fff;
+	fill: white;
+}
+
+.sunburst-dimmed {
+	opacity: 0.3;
 }
 
 #sunburst-chart {

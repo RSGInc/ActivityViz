@@ -7,7 +7,11 @@
 
 #timeuse-sidebar {
 	padding-left: 10px;
-	display: table;
+	//display: table;
+}
+
+#timeuse-text-area {
+	margin-bottom: 30px;
 }
 
 #timeuse-legend {
@@ -16,9 +20,18 @@
 	cursor: default;
 }
 
+#timeuse-legend rect {
+	fill: darkcyan;
+	opacity: 0.3;
+}
+
+#timeuse-legend rect.timeuse-current-person-type {
+	opacity: 1.0;
+}
+
 #timeuse-legend text {
 	font-weight: 400;
-	fill: #fff;
+	fill: black;
 }
 
 #timeuse-chart {
@@ -26,6 +39,7 @@
 	padding-left: 0;
 	padding-top: 0;
 	height: 600px;
+	width: 100%;
 }
 
 #timeuse-chart path {

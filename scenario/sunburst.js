@@ -175,30 +175,14 @@ var sunburst = (function () {
 				return "translate(" + getDepthIndent(d) + "," + xTranslation + ")";
 			});
 			// Fade all segments not in sequenceArray.
-			nodeVisuals.style("opacity", function (node) {
-				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
-				return opacity;
-			});
-			legendRects.style("opacity", function (d) {
-				var opacity = (sequenceArray.indexOf(d) >= 0) ? 1.0 : 0.3;
-				return opacity;
-			});
-			legendTexts.style("fill", function (d) {
-				//text is either black or white
-				var fill = (sequenceArray.indexOf(d) >= 0) ? "#000" : "#fff";
-				return fill;
-			});
+			dimAllBut(nodeVisuals, sequenceArray);
+			dimAllBut(legendRects, sequenceArray);
 		}; //end mouseoverNode
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
 			// Deactivate all segments during transition.
-			//nodeVisuals.on("mouseover", null);
-			nodeVisuals.transition().duration(500).style("opacity", 1).each("end", function () {
-				//re-activate mouseover after transition ended
-				d3.select(this).on("mouseover", mouseoverNode);
-			});
-			legendRects.transition().duration(500).style("opacity", 1);
-			legendTexts.transition().duration(500).style("fill", "#fff");
+			unDimClass(nodeVisuals);
+			unDimClass(legendRects);
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				return "translate(" + getDepthIndent(d) + "," + i * (li.h + li.s) + ")";
 			});
@@ -230,13 +214,23 @@ var sunburst = (function () {
 			return (d.depth - 1) * legendDepthIndent;
 		}
 
+		function dimAllBut(selection, undimmed) {
+			selection.classed("sunburst-dimmed", function (d) {
+				return (undimmed.indexOf(d) == -1);
+			});
+		};
+
+		function unDimClass(selection) {
+			selection.classed("sunburst-dimmed", false);
+		};
+
 		function drawLegend(nodeData) {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
 			var totalLegendHeight = (nodeData.length + 1) * (li.h + li.s);
 			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth - 1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
-				nodeVisuals.style("opacity", 1);
-				legendRects.style("opacity", 1);
+				unDimClass(nodeVisuals);
+				unDimClass(legendRects);
 				d3.select("#sunburst-explanation").style("visibility", "hidden");
 			});
 			legendGroups = legend.selectAll("g").data(nodeData).enter().append("svg:g").attr("transform", function (d, i) {
@@ -245,14 +239,8 @@ var sunburst = (function () {
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return colors[d.uniqueId];
 			}).on("mouseover", function (d, i) {
-				nodeVisuals.style("opacity", function (node) {
-					var opacity = (node === d) ? 1.0 : 0.3;
-					return opacity;
-				});
-				legendRects.style("opacity", function (node) {
-					var opacity = (node === d) ? 1.0 : 0.3;
-					return opacity;
-				});
+				dimAllBut(nodeVisuals, [d]);
+				dimAllBut(legendRects, [d]);
 				showNodeExplanation(d);
 			});
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
