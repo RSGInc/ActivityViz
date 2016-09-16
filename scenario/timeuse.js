@@ -147,6 +147,12 @@ var timeuse = (function () {
 				extNvd3Chart.stacked.dispatch.on('areaClick', function (e) {
 					console.log('ignoring chart areaClick dispatched.');
 				});
+				//because of a bug in nvd3 #1814 https://github.com/novus/nvd3/issues/1814
+				//we must remove all of the current point positions which will force them to be re-created.
+				extNvd3Chart.legend.dispatch.on('legendClick', function (e, arg2, arg3) {
+					svgElement.selectAll('path.nv-point').remove();
+				});
+
 				//wish to prevent the double click in the legend from toggling off all items other than clicked
 				extNvd3Chart.legend.dispatch.on('legendDblclick', function (e) {
 					console.log('ignoring chart legend legendDblclick dispatched.');
@@ -223,15 +229,16 @@ var timeuse = (function () {
 					});
 					chart.yAxis.tickFormat(d3.format(',.2f'));
 					nv.utils.windowResize(chart.update);
-					chart.dispatch.on('changeState', function (e) {
-						console.log('chart changeState dispatched: ' + JSON.stringify(e));
-					});
-					chart.dispatch.on('renderEnd', function (e) {
-						console.log('chart renderEnd dispatched: ' + JSON.stringify(e));
-					});
-					chart.dispatch.on('stateChange', function (e) {
-						console.log('chart stateChange dispatched: ' + JSON.stringify(e));
-					});
+// 					chart.dispatch.on('changeState', function (e) {
+// 						console.log('chart changeState dispatched: ' + JSON.stringify(e));
+// 					});
+// 					chart.dispatch.on('renderEnd', function (e) {
+// 						console.log('chart renderEnd dispatched: ' + JSON.stringify(e));
+// 					});
+// 					chart.dispatch.on('stateChange', function (e) {
+// 						console.log('chart stateChange dispatched: ' + JSON.stringify(e));
+// 					});
+chart.legend.vers('furious');
 					return chart;
 				}
 				, callback: function (newGraph) {
