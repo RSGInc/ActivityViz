@@ -51,8 +51,7 @@ var sunburst = (function () {
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
 			// Dimensions of sunburst.
 			var makeSunburst = true;
-			var widthAdjustment = 0.75;
-			var width = makeSunburst ? Math.min(4000, sunburstBounds.width * widthAdjustment) : sunburstBounds.width * widthAdjustment;
+			var width = makeSunburst ? Math.min(750, sunburstBounds.width) : sunburstBounds.width;
 			var height = width;
 			//set explanation and sidebar dimensions so that table-cell vertical align will center
 			d3.select("#sunburst-explanation").style("width", width).style("height", height);
@@ -176,30 +175,14 @@ var sunburst = (function () {
 				return "translate(" + getDepthIndent(d) + "," + xTranslation + ")";
 			});
 			// Fade all segments not in sequenceArray.
-			nodeVisuals.style("opacity", function (node) {
-				var opacity = (sequenceArray.indexOf(node) >= 0) ? 1.0 : 0.3;
-				return opacity;
-			});
-			legendRects.style("opacity", function (d) {
-				var opacity = (sequenceArray.indexOf(d) >= 0) ? 1.0 : 0.3;
-				return opacity;
-			});
-			legendTexts.style("fill", function (d) {
-				//text is either black or white
-				var fill = (sequenceArray.indexOf(d) >= 0) ? "#000" : "#fff";
-				return fill;
-			});
+			dimAllBut(nodeVisuals, sequenceArray);
+			dimAllBut(legendRects, sequenceArray);
 		}; //end mouseoverNode
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
 			// Deactivate all segments during transition.
-			//nodeVisuals.on("mouseover", null);
-			nodeVisuals.transition().duration(500).style("opacity", 1).each("end", function () {
-				//re-activate mouseover after transition ended
-				d3.select(this).on("mouseover", mouseoverNode);
-			});
-			legendRects.transition().duration(500).style("opacity", 1);
-			legendTexts.transition().duration(500).style("fill", "#fff");
+			unDimClass(nodeVisuals);
+			unDimClass(legendRects);
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
 				return "translate(" + getDepthIndent(d) + "," + i * (li.h + li.s) + ")";
 			});
@@ -227,16 +210,27 @@ var sunburst = (function () {
 			return Math.max(valueToConvert, 0.1).toFixed(1) + numberUnits[i];
 		};
 
-function getDepthIndent(d) {
-	return (d.depth-1) * legendDepthIndent;
-}
+		function getDepthIndent(d) {
+			return (d.depth - 1) * legendDepthIndent;
+		}
+
+		function dimAllBut(selection, undimmed) {
+			selection.classed("sunburst-dimmed", function (d) {
+				return (undimmed.indexOf(d) == -1);
+			});
+		};
+
+		function unDimClass(selection) {
+			selection.classed("sunburst-dimmed", false);
+		};
+
 		function drawLegend(nodeData) {
 			d3.select("#sunburst-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
 			var totalLegendHeight = (nodeData.length + 1) * (li.h + li.s);
-			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth-1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
-				nodeVisuals.style("opacity", 1);
-				legendRects.style("opacity", 1);
+			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth - 1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
+				unDimClass(nodeVisuals);
+				unDimClass(legendRects);
 				d3.select("#sunburst-explanation").style("visibility", "hidden");
 			});
 			legendGroups = legend.selectAll("g").data(nodeData).enter().append("svg:g").attr("transform", function (d, i) {
@@ -245,14 +239,8 @@ function getDepthIndent(d) {
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return colors[d.uniqueId];
 			}).on("mouseover", function (d, i) {
-				nodeVisuals.style("opacity", function (node) {
-					var opacity = (node === d) ? 1.0 : 0.3;
-					return opacity;
-				});
-				legendRects.style("opacity", function (node) {
-					var opacity = (node === d) ? 1.0 : 0.3;
-					return opacity;
-				});
+				dimAllBut(nodeVisuals, [d]);
+				dimAllBut(legendRects, [d]);
 				showNodeExplanation(d);
 			});
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
@@ -270,15 +258,14 @@ function getDepthIndent(d) {
 			};
 			for (var rowIndex = 0; rowIndex < csv.length; rowIndex++) {
 				var row = csv[rowIndex];
-
 				//remove any consecutive duplicates
 				var lastCellString = row[0];
-				 for (var columnIndex = 1; columnIndex< row.length; columnIndex++) {
-					if (row[columnIndex] === lastCellString) {         
-					  row.splice(columnIndex, 1);
-					  columnIndex--;
+				for (var columnIndex = 1; columnIndex < row.length; columnIndex++) {
+					if (row[columnIndex] === lastCellString) {
+						row.splice(columnIndex, 1);
+						columnIndex--;
 					}
-				  }
+				}
 				//support unbalanced trees where each row could go a different depth
 				var numColumns = row.length;
 				while (row[numColumns - 1].length == 0) {
