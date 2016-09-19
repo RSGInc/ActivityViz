@@ -83,39 +83,37 @@ var timeuse = (function () {
 					var personTypeChartData = [];
 					origPurposesArray.forEach(function (origPurpose) {
 						var personTypesOrigPurposeArray = rolledUpPersonTypeMap[origPurpose];
-						// 						if (personTypesOrigPurposeArray == undefined) {
-						// 							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
-						// 							//make an empty item to use to fill in personTypes that are missing data
-						// 							personTypesOrigPurposeArray = {};
-						// 							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
-						// 						} else  {
-						if (personTypesOrigPurposeArray != undefined) {
-							var periodDataArray = [];
-							//must make sure data has all periods since nvd3 picky
-							periods.forEach(function (period) {
-								var periodDataObject = personTypesOrigPurposeArray[period];
-								//if period missing from data, create it
-								if (periodDataObject == undefined) {
-									periodDataObject = {
-										timePeriod: period
-										, quantity: 0
-									};
-									/* 								if (personTypeOrigPurposeExists) */
-									console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
-								}
-								// 							else {
-								// 								periodDataObject = {
-								// 									timePeriod: period
-								// 									, quantity: periodDataObject.quantity
-								// 								};
-								// 							}
-								periodDataArray.push(periodDataObject);
-							}); //end loop over periods
-							personTypeChartData.push({
-								key: origPurpose
-								, values: periodDataArray
-							});
-						} //end if have data for purpose
+						if (personTypesOrigPurposeArray == undefined) {
+							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
+							//make an empty item to use to fill in personTypes that are missing data
+							personTypesOrigPurposeArray = {};
+							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
+						}
+						var periodDataArray = [];
+						//must make sure data has all periods since nvd3 picky
+						periods.forEach(function (period) {
+							var periodDataObject = personTypesOrigPurposeArray[period];
+							//if period missing from data, create it
+							if (periodDataObject == undefined) {
+								periodDataObject = {
+									timePeriod: period
+									, quantity: 0
+								};
+								/* 								if (personTypeOrigPurposeExists) */
+								console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
+							}
+							// 							else {
+							// 								periodDataObject = {
+							// 									timePeriod: period
+							// 									, quantity: periodDataObject.quantity
+							// 								};
+							// 							}
+							periodDataArray.push(periodDataObject);
+						}); //end loop over periods
+						personTypeChartData.push({
+							key: origPurpose
+							, values: periodDataArray
+						});
 					}); //end loop over origPurposes 
 					return personTypeChartData;
 				}; //end getPersonTypeChartData
