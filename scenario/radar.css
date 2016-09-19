@@ -1,0 +1,75 @@
+#radar-main {
+	//
+	padding: 0px;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#radar-sidebar {
+	padding-left: 10px;
+	//display: table;
+}
+
+#radar-text-area {
+	margin-bottom: 30px;
+}
+
+#radar-legend {
+	//display: table-cell;
+	vertical-align: middle;
+	cursor: default;
+}
+
+#radar-legend rect {
+	fill: darkcyan;
+	opacity: 0.3;
+}
+
+#radar-legend rect.radar-current-person-type {
+	opacity: 1.0;
+}
+
+#radar-legend text {
+	font-weight: 400;
+	fill: black;
+}
+
+#radar-chart {
+	position: relative;
+	padding-left: 0;
+	padding-top: 0;
+	height: 600px;
+	width: 100%;
+}
+
+#radar-chart path {
+	stroke: #fff;
+}
+
+#radar-explanation {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: table;
+	color: #666;
+	z-index: -1;
+	padding-left: 0px;
+}
+
+#radar-explanation p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#radar-percentage {
+	font-size: 2.5em;
+}
+
+#radar-current-node {
+	font-size: 2em;
+}
+
+#radar-current-node-value {
+	font-size: 1.5em;
+}
