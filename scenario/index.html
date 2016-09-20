@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
+	<link rel="stylesheet" href="../bower_components/radar-chart-d3/src/radar-chart.css" />
 	<link rel="stylesheet" href="style.css" />
 	<link rel="stylesheet" href="sunburst.css" />
 	<link rel="stylesheet" href="timeuse.css" />
@@ -37,7 +38,6 @@
 			</div>
 			<div id="radar-main" class="col-xs-10">
 				<div id="radar-chart">
-					<svg></svg>
 				</div>
 			</div>
 		</div>
@@ -264,10 +264,12 @@
 	<script src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script src="../bower_components/underscore/underscore-min.js"></script>
 	<script src="../bower_components/geostats/lib/geostats.min.js"></script>
-	<!-- http://maps.stamen.com/ -->
+	<script src="../bower_components/radar-chart-d3/src/radar-chart.js"></script>
+<!-- http://maps.stamen.com/ -->
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-	<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
-	<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
+<!--
+<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
+<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>-->
 	<script src="../abmviz_utilities.js"></script>
 	<script src="barchart_and_map.js"></script>
 	<script src="sunburst.js"></script>

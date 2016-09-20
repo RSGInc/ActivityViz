@@ -34,42 +34,60 @@
 	fill: black;
 }
 
-#radar-chart {
+.radar-chart .area {
+	fill-opacity: 0.7;
+}
+
+.radar-chart.focus .area {
+	fill-opacity: 0.3;
+}
+
+.radar-chart.focus .area.focused {
+	fill-opacity: 0.9;
+}
+
+.area.germany,
+.germany .circle {
+	fill: #FFD700;
+	stroke: none;
+}
+
+.area.argentina,
+.argentina .circle {
+	fill: #ADD8E6;
+	stroke: none;
+}
+
+.column {
+	width: 170px;
+	float: left;
+	padding-bottom: 100px;
+}
+
+.portlet {
+	margin: 0 1em 1em 0;
+	padding: 0.3em;
+}
+
+.portlet-header {
+	padding: 0.2em 0.3em;
+	margin-bottom: 0.5em;
 	position: relative;
-	padding-left: 0;
-	padding-top: 0;
-	height: 600px;
-	width: 100%;
 }
 
-#radar-chart path {
-	stroke: #fff;
-}
-
-#radar-explanation {
+.portlet-toggle {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	display: table;
-	color: #666;
-	z-index: -1;
-	padding-left: 0px;
+	top: 50%;
+	right: 0;
+	margin-top: -8px;
 }
 
-#radar-explanation p {
-	display: table-cell;
-	vertical-align: middle;
-	text-align: center;
+.portlet-content {
+	padding: 0.4em;
 }
 
-#radar-percentage {
-	font-size: 2.5em;
-}
-
-#radar-current-node {
-	font-size: 2em;
-}
-
-#radar-current-node-value {
-	font-size: 1.5em;
+.portlet-placeholder {
+	border: 1px dotted black;
+	margin: 0 1em 1em 0;
+	height: 50px;
 }

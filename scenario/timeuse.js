@@ -21,7 +21,7 @@ var timeuse = (function () {
 	};
 	var personType = "ALL";
 
-	function createTimeuse() {
+	function createTimeUse() {
 		//read in data and create timeuse when finished
 		if (chartData === undefined) {
 			d3.text(url, function (error, data) {
@@ -87,7 +87,7 @@ var timeuse = (function () {
 							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
 							//make an empty item to use to fill in personTypes that are missing data
 							personTypesOrigPurposeArray = {};
-							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
+							//console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
 						}
 						var periodDataArray = [];
 						//must make sure data has all periods since nvd3 picky
@@ -100,14 +100,8 @@ var timeuse = (function () {
 									, quantity: 0
 								};
 								/* 								if (personTypeOrigPurposeExists) */
-								console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
+								//console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
 							}
-							// 							else {
-							// 								periodDataObject = {
-							// 									timePeriod: period
-							// 									, quantity: periodDataObject.quantity
-							// 								};
-							// 							}
 							periodDataArray.push(periodDataObject);
 						}); //end loop over periods
 						personTypeChartData.push({
@@ -139,7 +133,7 @@ var timeuse = (function () {
 		//because of a bug in nvd3 #1814 https://github.com/novus/nvd3/issues/1814
 		//we must remove all of the current point positions which will force them to be re-created.
 		function clearHighlightPoints() {
-			svgElement.selectAll('path.nv-point').remove();
+			//svgElement.selectAll('path.nv-point').remove();
 		}
 
 		function updateChart(callback) {
@@ -250,11 +244,11 @@ var timeuse = (function () {
 			};
 			setPersonTypeClass();
 		}; //end drawLegend
-	}; //end createTimeuse
-	createTimeuse();
+	}; //end createTimeUse
+	createTimeUse();
 	window.addEventListener("resize", function () {
-		console.log("Got resize event. Calling timeuse");
-		createTimeuse();
+		console.log("Got resize event. Calling createTimeUse");
+		createTimeUse();
 	});
 	//return only the parts that need to be global
 	return {};
