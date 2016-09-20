@@ -11,9 +11,11 @@
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
+	<link rel="stylesheet" href="../bower_components/radar-chart-d3/src/radar-chart.css" />
 	<link rel="stylesheet" href="style.css" />
 	<link rel="stylesheet" href="sunburst.css" />
-	<link rel="stylesheet" href="timeuse.css" /> </head>
+	<link rel="stylesheet" href="timeuse.css" />
+	<link rel="stylesheet" href="radar.css" /> </head>
 
 <body>
 	<div class="container-fluid">
@@ -24,16 +26,29 @@
 				<li class="nav-item"><a href="../index.html">Back to scenario selection</a></li>
 			</ul>
 		</nav>
+		<div id="radar" class="row">
+			<p class="text-center" style="font-size:2em"><span class="radar-maingroup">RADAR CHARTS</span></p>
+			<div id="radar-sidebar" class="col-xs-2">
+				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare different entities across multiple measures. For example, a zone’s attractiveness could be compared by accessibility to jobs, cost of housing, and availability of fixed rail. </div>
+				<ul>
+					<li>Select a person type below to filter the data</li>
+					<li>Click on legend symbols/labels to show or hide the purpose</li>
+				</ul>
+				<div id="radar-legend"></div>
+			</div>
+			<div id="radar-main" class="col-xs-10">
+				<div id="radar-chart">
+				</div>
+			</div>
+		</div>
 		<div id="timeuse" class="row">
 			<p class="text-center" style="font-size:2em"><span class="timeuse-maingroup">TIME USE</span></p>
 			<div id="timeuse-sidebar" class="col-xs-2">
 				<div id="timeuse-text-area"> Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the percent of activity and the horizontal axis displays the period of the day. The vertical axis sums to 100%. </div>
-				
 				<ul>
-						<li>Select a person type below to filter the data</li>
-						<li>Click on legend symbols/labels to show or hide the purpose</li>
-					</ul>
-					
+					<li>Select a person type below to filter the data</li>
+					<li>Click on legend symbols/labels to show or hide the purpose</li>
+				</ul>
 				<div id="timeuse-legend"></div>
 			</div>
 			<div id="timeuse-main" class="col-xs-10">
@@ -249,14 +264,17 @@
 	<script src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script src="../bower_components/underscore/underscore-min.js"></script>
 	<script src="../bower_components/geostats/lib/geostats.min.js"></script>
-	<!-- http://maps.stamen.com/ -->
+	<script src="../bower_components/radar-chart-d3/src/radar-chart.js"></script>
+<!-- http://maps.stamen.com/ -->
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-	<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
-	<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>
+<!--
+<script src="http://www.sumbera.com/gist/js/vt/geojson-vt-dev.js"></script>
+<script src="http://www.sumbera.com/gist/js/leaflet/canvas/L.CanvasTiles.js"></script>-->
 	<script src="../abmviz_utilities.js"></script>
 	<script src="barchart_and_map.js"></script>
 	<script src="sunburst.js"></script>
 	<script src="timeuse.js"></script>
+	<script src="radar.js"></script>
 </body>
 
 </html>
