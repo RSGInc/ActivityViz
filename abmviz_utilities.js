@@ -22,11 +22,16 @@ var abmviz_utilities = (function () {
 			}
 		}
 	}
-
-//from http://stackoverflow.com/a/12190006/283973
+	//from http://stackoverflow.com/a/2901298/283973
+	function numberWithCommas(x) {
+		var parts = x.toString().split(".");
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		return parts.join(".");
+	}
+	//from http://stackoverflow.com/a/12190006/283973
 	function insertArrayAt(array, index, arrayToInsert) {
-    Array.prototype.splice.apply(array, [index, 0].concat(arrayToInsert));
-}
+		Array.prototype.splice.apply(array, [index, 0].concat(arrayToInsert));
+	}
 	//from https://davidwalsh.name/javascript-polling
 	function poll(fn, callback, errback, timeout, interval) {
 		var endTime = Number(new Date()) + (timeout || 2000);
@@ -51,6 +56,7 @@ var abmviz_utilities = (function () {
 		assert: assert
 		, GetURLParameter: GetURLParameter
 		, poll: poll
-		,insertArrayAt : insertArrayAt
+		, insertArrayAt: insertArrayAt
+		, numberWithCommas: numberWithCommas
 	};
 }()); //end encapsulating IIFE

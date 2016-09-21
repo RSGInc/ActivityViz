@@ -2,16 +2,11 @@
 //global object radar will contain functions and variables that must be accessible from elsewhere
 var radar = (function () {
 	"use strict";
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv";
-	var svgSelector = "#radar-chart";
-	var svgElement = d3.select(svgSelector);
-	var extNvd3Chart;
 	var legendBoxWidth = 240;
 	var nodeVisuals;
 	var legendRects;
 	var legendTexts;
 	var legendGroups;
-	var chartData;
 	var displayedCharts = new Set();
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
@@ -20,6 +15,8 @@ var radar = (function () {
 		, s: 15
 		, r: 3
 	};
+	var chartData;
+	var chartColor = "#0000FF"; //blue
 	var AXIS_COLUMN = 0;
 	var QUANTITY_COLUMN = 1;
 	var CHART_COLUMN = 2;
@@ -27,7 +24,7 @@ var radar = (function () {
 	function createRadar() {
 		//read in data and create radar when finished
 		if (chartData === undefined) {
-			d3.text(url, function (error, data) {
+			d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
 				"use strict";
 				new Set();
 				if (error) throw error; //expected data should have columns similar to: AXIS	QUANTITY CHART
@@ -70,21 +67,18 @@ var radar = (function () {
 				for (var key in axesInfo) {
 					if (axesInfo.hasOwnProperty(key)) {
 						var axisInfo = axesInfo[key];
-						axisInfo.scale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
+						axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
 					}
 				}
 				csv = null; //allow memory to be GC'ed
 				//convert data to format nvd3 expects it
 				//populate drop down of all person -types
-				var chartNames = Object.keys(rolledUpMap);
-				drawLegend(chartNames);
 				chartData = [];
-				chartNames.forEach(function (chartName) {
+				var minSumPercentages = 10000;
+				var maxSumPercentages = -10000;
+				Object.keys(rolledUpMap).forEach(function (chartName) {
+					var sumPercentages = 0;
 					var axesData = [];
-					chartData.push({
-						className: chartName
-						, axes: axesData
-					});
 					var rolledUpChartNameMap = rolledUpMap[chartName];
 					//must make sure data has all radarAxes since wish each chart to look similar
 					for (var key in axesInfo) {
@@ -101,14 +95,31 @@ var radar = (function () {
 								console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + radarAxis);
 							}
 							else {
-								radarAxisDataObject.percentValue = axisInfo.scale(radarAxisDataObject.value);
+								radarAxisDataObject.percentValue = axisInfo.percentageScale(radarAxisDataObject.value);
+								sumPercentages += radarAxisDataObject.percentValue;
 							}
 							axesData.push(radarAxisDataObject);
 						}
 					}; //end loop over radarAxes
+					minSumPercentages = Math.min(minSumPercentages, sumPercentages);
+					maxSumPercentages = Math.max(maxSumPercentages, sumPercentages);
+					chartData.push({
+						chartName: chartName
+						, axes: axesData
+						, sumPercentages: sumPercentages
+					});
+					//end loop over charts
 				});
+				//now calculate color as scaled value of the max and min sumPercentages
+				var identityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
+				var opacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([.2, 0.8]);
+				chartData.forEach(function (chartDatum) {
+					chartDatum.scaledOpacity = opacityScale(chartDatum.sumPercentages);
+					chartDatum.scaledPercentage = identityScale(chartDatum.sumPercentages);
+				});
+				drawLegend();
 				console.log('radar finished reading and processing data');
-				createCharts(chartData);
+				createCharts();
 			}); //end d3.text
 		} //end if chartData === undefined
 		else {
@@ -116,13 +127,13 @@ var radar = (function () {
 			//createEmptyChart(updateChart);
 		}
 
-		function createCharts(chartData) {
+		function createCharts() {
 			var portlets = d3.select("#radar-chart").selectAll(".portlet").data(chartData);
 			var divPortlets = portlets.enter().append("div").attr("class", "portlet").attr("id", function (d) {
 				return "radar-" + d.className;
 			});
 			divPortlets.append("div").attr("class", "portlet-header").text(function (d) {
-				return d.className;
+				return d.chartName;
 			});
 			var dataIndex = 0;
 			divPortlets.append("div").attr("class", "portlet-content").append("svg:svg");
@@ -137,6 +148,10 @@ var radar = (function () {
 				chart.config({
 					w: 300
 					, h: 300
+					, color: function () {
+						return chartColor;
+					}
+					, tooltipFormatValue: abmviz_utilities.numberWithCommas
 				})
 				return [d];
 			}).call(chart);
@@ -157,23 +172,27 @@ var radar = (function () {
 			//end createCharts
 		}
 
-		function drawLegend(chartNames) {
+		function drawLegend() {
+			var textGreyScale = d3.scale.linear().domain([0, 1]).range(["black", "white"]);
 			d3.select("#radar-legend svg").remove(); //remove in case this is a window resize event
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
-			var totalLegendHeight = chartNames.length * (li.h + li.s);
+			var totalLegendHeight = chartData.length * (li.h + li.s);
 			var legend = d3.select("#radar-legend").append("svg:svg").attr("width", legendBoxWidth).attr("height", totalLegendHeight);
-			legendGroups = legend.selectAll("g").data(chartNames).enter().append("svg:g").attr("transform", function (d, i) {
+			legendGroups = legend.selectAll("g").data(chartData).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
-			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).on("mouseover", function (d, i) {
-				chartName = d;
-				clearHighlightPoints();
-				updateChart();
-				setChartNameClass();
+			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).attr("style", function (chartDatum, i) {
+				return "fill: " + chartColor + "; opacity: " + chartDatum.scaledOpacity;
+			}).on("mouseover", function (chartDatum, i) {
+				//do something to highlight this chart?
 			});
-			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
-				return d;
-			});
+			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle")
+				// 			.style("fill", function (chartDatum, i) 	
+				// 				return ((chartDatum.scaledPercentage > .4) && (chartDatum.scaledPercentage < .6)) ? "white" : textGreyScale(chartDatum.scaledPercentage);
+				// 				})
+				.text(function (chartDatum) {
+					return chartDatum.chartName;
+				});
 
 			function setChartNameClass() {
 				legendRects.classed("radar-current-person-type", function (d) {

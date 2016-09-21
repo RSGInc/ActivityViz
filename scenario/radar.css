@@ -31,8 +31,9 @@
 
 #radar-legend text {
 	font-weight: 400;
-	fill: black;
-}
+	fill: white;
+	/* text shadow blog: http://www.uxbooth.com/articles/4-tips-and-tricks-for-more-legible-content/ */
+ }
 
 .radar-chart {
 	height: 300;

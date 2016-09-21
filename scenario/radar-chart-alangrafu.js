@@ -230,8 +230,12 @@ var RadarChart = {
 					// styles should only be transitioned with css
 					.style('stroke', function (d, i) {
 						return cfg.color(i);
+					}).style('stroke-opacity', function (d, i) {
+						return d.scaledOpacity;
 					}).style('fill', function (d, i) {
 						return cfg.color(i);
+					}).style('fill-opacity', function (d, i) {
+						return d.scaledOpacity;
 					}).transition().duration(cfg.transitionDuration)
 					// svg attrs with js
 					.attr('points', function (d) {
@@ -270,7 +274,7 @@ var RadarChart = {
 						, 'd3-enter': 1
 					}).on('mouseover', function (dd) {
 						d3.event.stopPropagation();
-						setTooltip(tooltip, cfg.tooltipFormatValue(dd[0].value) + cfg.tooltipFormatValue(dd[0].percentValue) + '%');
+						setTooltip(tooltip, Math.floor(dd[0].percentValue * 100) + '%' + ' (' + cfg.tooltipFormatValue(dd[0].value) + ')');
 						//container.classed('focus', 1);
 						//container.select('.area.radar-chart-serie'+dd[1]).classed('focused', 1);
 					}).on('mouseout', function (dd) {
