@@ -147,6 +147,7 @@ var radar = (function () {
 					, bottom: 55
 					, left: 60
 				}
+				, tooltipFormatValue: abmviz_utilities.numberWithCommas
 				, strokeWidth: 0
 				, maxValue: 1.0
 				, levels: 3

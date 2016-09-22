@@ -23,6 +23,9 @@ function RadarChart(id, data, options) {
 		opacityCircles: 0.1, //The opacity of the circles of each blob
 		strokeWidth: 2, //The width of the stroke around each blob
 		roundStrokes: false, //If true the area and stroke will follow a round path (cardinal-closed)
+		tooltipFormatValue: function (d) {
+				return d;
+			},
 		color: d3.scale.category10() //Color function
 	};
 	//Put all of the options into a variable called cfg
@@ -165,7 +168,7 @@ function RadarChart(id, data, options) {
 	}).style("fill", "none").style("pointer-events", "all").on("mouseover", function (d, i) {
 		newX = parseFloat(d3.select(this).attr('cx')) - 10;
 		newY = parseFloat(d3.select(this).attr('cy')) - 10;
-		tooltip.attr('x', newX).attr('y', newY).text(Format(d.value)).transition().duration(200).style('opacity', 1);
+		tooltip.attr('x', newX).attr('y', newY).text(Format(d.value) + ' (' + cfg.tooltipFormatValue(d.originalValue) + ')').transition().duration(200).style('opacity', 1);
 	}).on("mouseout", function () {
 		tooltip.transition().duration(200).style("opacity", 0);
 	});
