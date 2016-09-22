@@ -77,9 +77,15 @@ var radar = (function () {
 				var minSumPercentages = 10000;
 				var maxSumPercentages = -10000;
 				Object.keys(rolledUpMap).forEach(function (chartName) {
-					var sumPercentages = 0;
 					var axesData = [];
+					var chartDatumObject = {
+						chartName: chartName
+						, axes: axesData
+						, sumPercentages: 0
+					}
+					chartData.push(chartDatumObject);
 					var rolledUpChartNameMap = rolledUpMap[chartName];
+					var axisOpacityScale = d3.scale.linear().domain([0, 1]).range([.2, 0.8]);
 					//must make sure data has all radarAxes since wish each chart to look similar
 					for (var key in axesInfo) {
 						if (axesInfo.hasOwnProperty(key)) {
@@ -96,28 +102,23 @@ var radar = (function () {
 							}
 							else {
 								radarAxisDataObject.percentValue = axisInfo.percentageScale(radarAxisDataObject.value);
-								sumPercentages += radarAxisDataObject.percentValue;
 							}
+							radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.percentValue);
+							chartDatumObject.sumPercentages += radarAxisDataObject.percentValue;
 							axesData.push(radarAxisDataObject);
 						}
 					}; //end loop over radarAxes
-					minSumPercentages = Math.min(minSumPercentages, sumPercentages);
-					maxSumPercentages = Math.max(maxSumPercentages, sumPercentages);
-					chartData.push({
-						chartName: chartName
-						, axes: axesData
-						, sumPercentages: sumPercentages
-					});
+					minSumPercentages = Math.min(minSumPercentages, chartDatumObject.sumPercentages);
+					maxSumPercentages = Math.max(maxSumPercentages, chartDatumObject.sumPercentages);
 					//end loop over charts
 				});
 				//now calculate color as scaled value of the max and min sumPercentages
-				var identityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
-				var opacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([.2, 0.8]);
+				var summedIdentityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
+				var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([.2, 0.8]);
 				chartData.forEach(function (chartDatum) {
-					chartDatum.scaledOpacity = opacityScale(chartDatum.sumPercentages);
-					chartDatum.scaledPercentage = identityScale(chartDatum.sumPercentages);
+					chartDatum.scaledPercentage = summedIdentityScale(chartDatum.sumPercentages);
+					chartDatum.scaledOpacity = summedOpacityScale(chartDatum.sumPercentages);
 				});
-				drawLegend();
 				console.log('radar finished reading and processing data');
 				createCharts();
 			}); //end d3.text
@@ -128,33 +129,35 @@ var radar = (function () {
 		}
 
 		function createCharts() {
-			var portlets = d3.select("#radar-chart").selectAll(".portlet").data(chartData);
-			var divPortlets = portlets.enter().append("div").attr("class", "portlet").attr("id", function (d) {
-				return "radar-" + d.className;
-			});
-			divPortlets.append("div").attr("class", "portlet-header").text(function (d) {
-				return d.chartName;
-			});
-			var dataIndex = 0;
-			divPortlets.append("div").attr("class", "portlet-content").append("svg:svg");
-			//RadarChart.defaultConfig.color = function () {};
-			//RadarChart.defaultConfig.radius = 3;
-			RadarChart.defaultConfig.w = 300;
-			RadarChart.defaultConfig.h = 300;
-			var chartSvgs = divPortlets.selectAll("svg");
-			var chart;
-			chartSvgs.datum(function (d) {
-				chart = RadarChart.chart();
-				chart.config({
-					w: 300
-					, h: 300
-					, color: function () {
-						return chartColor;
-					}
-					, tooltipFormatValue: abmviz_utilities.numberWithCommas
-				})
-				return [d];
-			}).call(chart);
+			var radarChartContainer = d3.select("#radar-chart-container");
+			//need to create columns and then fill each column with portlets
+			//tricky because (AFAIK) I need to attach the data to each column separately
+			var numColumns = 4;
+			var chartConfig = {
+				w: 200
+				, h: 200
+				, color: function () {
+					return chartColor;
+				}
+				, tooltipFormatValue: abmviz_utilities.numberWithCommas
+			};
+			for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
+				radarChartContainer.append("div").attr("class", "column");
+			} //end loop over columns
+			var columns = radarChartContainer.selectAll(".column");
+			columns[0].forEach(function (d, columnIndex) {
+					var everyThirdDataItem = chartData.filter(function (chartDatum, chartDatumIndex) {
+						return (chartDatumIndex % numColumns) == columnIndex;
+					});
+					var columnPortlets = d3.select(d).selectAll(".portlet").data(everyThirdDataItem).enter().append("div").attr("class", "portlet").attr("id", function (d) {
+						return "radar-" + d.chartName;
+					});
+					columnPortlets.append("div").attr("class", "portlet-header").text(function (d) {
+						return d.chartName;
+					});
+					var chartSvgs = columnPortlets.append("div").attr("class", "portlet-content").append("svg:svg");
+					chartSvgs.call(RadarChart.chart().config(chartConfig));
+				}) //end each column
 			$(function () {
 				$(".column").sortable({
 					connectWith: ".column"
@@ -171,37 +174,6 @@ var radar = (function () {
 			});
 			//end createCharts
 		}
-
-		function drawLegend() {
-			var textGreyScale = d3.scale.linear().domain([0, 1]).range(["black", "white"]);
-			d3.select("#radar-legend svg").remove(); //remove in case this is a window resize event
-			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
-			var totalLegendHeight = chartData.length * (li.h + li.s);
-			var legend = d3.select("#radar-legend").append("svg:svg").attr("width", legendBoxWidth).attr("height", totalLegendHeight);
-			legendGroups = legend.selectAll("g").data(chartData).enter().append("svg:g").attr("transform", function (d, i) {
-				return "translate(0," + i * (li.h + li.s) + ")";
-			});
-			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).attr("style", function (chartDatum, i) {
-				return "fill: " + chartColor + "; opacity: " + chartDatum.scaledOpacity;
-			}).on("mouseover", function (chartDatum, i) {
-				//do something to highlight this chart?
-			});
-			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle")
-				// 			.style("fill", function (chartDatum, i) 	
-				// 				return ((chartDatum.scaledPercentage > .4) && (chartDatum.scaledPercentage < .6)) ? "white" : textGreyScale(chartDatum.scaledPercentage);
-				// 				})
-				.text(function (chartDatum) {
-					return chartDatum.chartName;
-				});
-
-			function setChartNameClass() {
-				legendRects.classed("radar-current-person-type", function (d) {
-					return (displayedCharts.has(d));
-				});
-			};
-			setChartNameClass();
-			//end drawLegend
-		};
 		//end createRadar
 	};
 	createRadar();

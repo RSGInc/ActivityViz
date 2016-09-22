@@ -33,11 +33,11 @@
 	font-weight: 400;
 	fill: white;
 	/* text shadow blog: http://www.uxbooth.com/articles/4-tips-and-tricks-for-more-legible-content/ */
- }
+}
 
 .radar-chart {
-	height: 300;
-	width: 300;
+	height: 200;
+	width: 200;
 }
 
 .radar-chart .area {
@@ -52,22 +52,10 @@
 	fill-opacity: 0.9;
 }
 
-.area.germany,
-.germany .circle {
-	fill: #FFD700;
-	stroke: none;
-}
-
-.area.argentina,
-.argentina .circle {
-	fill: #ADD8E6;
-	stroke: none;
-}
-
 .column {
-	width: 170px;
+	width: 220px;
 	float: left;
-	padding-bottom: 100px;
+	padding-bottom: 20px;
 }
 
 .portlet {
@@ -76,14 +64,15 @@
 	padding: 1px;
 	display: inline-block;
 	vertical-align: top;
+	cursor: default;
 	//height: 300px;
 }
-
 
 .portlet-header {
 	padding: 0.2em 0.3em;
 	margin-bottom: 0.5em;
 	position: relative;
+	text-align: center;
 }
 
 .portlet-toggle {
@@ -100,5 +89,5 @@
 .portlet-placeholder {
 	border: 1px dotted black;
 	margin: 0 1em 1em 0;
-	height: 50px;
+	height: 100px;
 }
