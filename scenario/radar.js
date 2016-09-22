@@ -20,6 +20,7 @@ var radar = (function () {
 	var AXIS_COLUMN = 0;
 	var QUANTITY_COLUMN = 1;
 	var CHART_COLUMN = 2;
+	var opacityScaleRange = [0.3, 0.9];
 
 	function createRadar() {
 		//read in data and create radar when finished
@@ -87,7 +88,7 @@ var radar = (function () {
 					}
 					chartData.push(chartDatumObject);
 					var rolledUpChartNameMap = rolledUpMap[chartName];
-					var axisOpacityScale = d3.scale.linear().domain([0, 1]).range([.2, 0.8]);
+					var axisOpacityScale = d3.scale.linear().domain([0, 1]).range(opacityScaleRange);
 					//must make sure data has all radarAxes since wish each chart to look similar
 					for (var key in axesInfo) {
 						if (axesInfo.hasOwnProperty(key)) {
@@ -118,7 +119,7 @@ var radar = (function () {
 				});
 				//now calculate color as scaled value of the max and min sumPercentages
 				var summedIdentityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
-				var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([.2, 0.8]);
+				var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range(opacityScaleRange);
 				chartData.forEach(function (chartDatum) {
 					chartDatum.percentageBestChart = summedIdentityScale(chartDatum.sumPercentages);
 					chartDatum.scaledOpacity = summedOpacityScale(chartDatum.sumPercentages);
@@ -137,25 +138,8 @@ var radar = (function () {
 			//need to create columns and then fill each column with portlets
 			//tricky because (AFAIK) I need to attach the data to each column separately
 			var numColumns = 4;
-			var totalChartHeightAndWidth = 300;
-			var marginSize = 60;
-			var chartHeightAndWidth = totalChartHeightAndWidth - (2 * marginSize);
-			var chartConfig = {
-				w: chartHeightAndWidth
-				, h: chartHeightAndWidth
-				, margin: {
-					top: marginSize
-					, right: marginSize
-					, bottom: marginSize
-					, left: marginSize
-				}
-				, color: function () {
-					return chartColor;
-				}
-				, tooltipFormatValue: abmviz_utilities.numberWithCommas
-			};
 			var radarChartOptions = {
-				w: 150
+				w: 180
 				, h: 150
 				, margin: {
 					top: 40
@@ -163,11 +147,13 @@ var radar = (function () {
 					, bottom: 55
 					, left: 60
 				}
+				, strokeWidth: 0
 				, maxValue: 1.0
-				, levels: 4
+				, levels: 3
 				, wrapWidth: 70
-				, labelFactor: 1.355
-				, roundStrokes: false
+				, labelFactor: 1.3
+				, roundStrokes: true
+				, strokeWidth: 0
 				, color: function () {
 					return chartColor;
 				}
@@ -188,11 +174,12 @@ var radar = (function () {
 					});
 
 					function getChartId(d) {
-						return "radar-" + d.chartId;
+						var id = "radar-" + d.chartId;
+						return id;
 					}
 					var chartSvgs = columnPortlets.append("div").attr("class", "portlet-content").attr("id", getChartId);
 					chartSvgs.each(function (d) {
-						RadarChart('#' + getChartId(d), [d.axes], radarChartOptions);
+						RadarChart('#' + getChartId(d), [d], radarChartOptions);
 					}); //end each svg
 				}) //end each column
 			$(function () {
