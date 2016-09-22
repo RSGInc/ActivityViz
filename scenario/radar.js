@@ -20,7 +20,6 @@ var radar = (function () {
 	var AXIS_COLUMN = 0;
 	var QUANTITY_COLUMN = 1;
 	var CHART_COLUMN = 2;
-	var radarRadius = 200;
 
 	function createRadar() {
 		//read in data and create radar when finished
@@ -77,10 +76,12 @@ var radar = (function () {
 				chartData = [];
 				var minSumPercentages = 10000;
 				var maxSumPercentages = -10000;
+				var chartId = 1;
 				Object.keys(rolledUpMap).forEach(function (chartName) {
 					var axesData = [];
 					var chartDatumObject = {
-						chartName: chartName
+						chartId: chartId++
+						, chartName: chartName
 						, axes: axesData
 						, sumPercentages: 0
 					}
@@ -96,16 +97,18 @@ var radar = (function () {
 							if (radarAxisDataObject == undefined) {
 								radarAxisDataObject = {
 									axis: radarAxis
-									, value: NaN
-									, percentValue: 0
+									, originalValue: NaN
+									, value: 0
 								};
 								console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + radarAxis);
 							}
 							else {
-								radarAxisDataObject.percentValue = axisInfo.percentageScale(radarAxisDataObject.value);
+								radarAxisDataObject.originalValue = radarAxisDataObject.value
+								radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
 							}
-							radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.percentValue);
-							chartDatumObject.sumPercentages += radarAxisDataObject.percentValue;
+							//at this point 'value' has been overwritten by percent value and original copied to originalValue
+							radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
+							chartDatumObject.sumPercentages += radarAxisDataObject.value;
 							axesData.push(radarAxisDataObject);
 						}
 					}; //end loop over radarAxes
@@ -117,7 +120,7 @@ var radar = (function () {
 				var summedIdentityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
 				var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([.2, 0.8]);
 				chartData.forEach(function (chartDatum) {
-					chartDatum.scaledPercentage = summedIdentityScale(chartDatum.sumPercentages);
+					chartDatum.percentageBestChart = summedIdentityScale(chartDatum.sumPercentages);
 					chartDatum.scaledOpacity = summedOpacityScale(chartDatum.sumPercentages);
 				});
 				console.log('radar finished reading and processing data');
@@ -134,14 +137,43 @@ var radar = (function () {
 			//need to create columns and then fill each column with portlets
 			//tricky because (AFAIK) I need to attach the data to each column separately
 			var numColumns = 4;
+			var totalChartHeightAndWidth = 300;
+			var marginSize = 60;
+			var chartHeightAndWidth = totalChartHeightAndWidth - (2 * marginSize);
 			var chartConfig = {
-				w: radarRadius
-				, h: radarRadius
+				w: chartHeightAndWidth
+				, h: chartHeightAndWidth
+				, margin: {
+					top: marginSize
+					, right: marginSize
+					, bottom: marginSize
+					, left: marginSize
+				}
 				, color: function () {
 					return chartColor;
 				}
 				, tooltipFormatValue: abmviz_utilities.numberWithCommas
 			};
+			var radarChartOptions = {
+				w: 150
+				, h: 150
+				, margin: {
+					top: 40
+					, right: 60
+					, bottom: 55
+					, left: 60
+				}
+				, maxValue: 1.0
+				, levels: 4
+				, wrapWidth: 70
+				, labelFactor: 1.355
+				, roundStrokes: false
+				, color: function () {
+					return chartColor;
+				}
+				, tooltipFormatValue: abmviz_utilities.numberWithCommas
+			};
+			var chartId = 1;
 			for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
 				radarChartContainer.append("div").attr("class", "column");
 			} //end loop over columns
@@ -150,14 +182,18 @@ var radar = (function () {
 					var everyThirdDataItem = chartData.filter(function (chartDatum, chartDatumIndex) {
 						return (chartDatumIndex % numColumns) == columnIndex;
 					});
-					var columnPortlets = d3.select(d).selectAll(".portlet").data(everyThirdDataItem).enter().append("div").attr("class", "portlet").attr("id", function (d) {
-						return "radar-" + d.chartName;
-					});
+					var columnPortlets = d3.select(d).selectAll(".portlet").data(everyThirdDataItem).enter().append("div").attr("class", "portlet")
 					columnPortlets.append("div").attr("class", "portlet-header").text(function (d) {
 						return d.chartName;
 					});
-					var chartSvgs = columnPortlets.append("div").attr("class", "portlet-content").append("svg:svg");
-					chartSvgs.call(RadarChart.chart().config(chartConfig));
+
+					function getChartId(d) {
+						return "radar-" + d.chartId;
+					}
+					var chartSvgs = columnPortlets.append("div").attr("class", "portlet-content").attr("id", getChartId);
+					chartSvgs.each(function (d) {
+						RadarChart('#' + getChartId(d), [d.axes], radarChartOptions);
+					}); //end each svg
 				}) //end each column
 			$(function () {
 				$(".column").sortable({

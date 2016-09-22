@@ -53,7 +53,7 @@
 }
 
 .column {
-	width: 220px;
+	width: 320px;
 	float: left;
 	padding-bottom: 20px;
 }
@@ -89,5 +89,5 @@
 .portlet-placeholder {
 	border: 1px dotted black;
 	margin: 0 1em 1em 0;
-	height: 220px;
+	height: 320px;
 }
