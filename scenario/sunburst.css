@@ -25,6 +25,16 @@
 	fill: white;
 }
 
+#sunburst-chart path {
+	stroke: #fff;
+}
+
+.sunburst-negative *,.sunburst-negative,#sunburst-chart .sunburst-negative {
+	stroke: red;
+	stroke-width: 5px;
+	color: red;
+}
+
 .sunburst-dimmed {
 	opacity: 0.3;
 }
@@ -35,9 +45,6 @@
 	padding-top: 0;
 }
 
-#sunburst-chart path {
-	stroke: #fff;
-}
 
 #sunburst-explanation {
 	position: absolute;
