@@ -133,7 +133,7 @@ var timeuse = (function () {
 		//because of a bug in nvd3 #1814 https://github.com/novus/nvd3/issues/1814
 		//we must remove all of the current point positions which will force them to be re-created.
 		function clearHighlightPoints() {
-			//svgElement.selectAll('path.nv-point').remove();
+			svgElement.selectAll('path.nv-point').remove();
 		}
 
 		function updateChart(callback) {
@@ -178,7 +178,7 @@ var timeuse = (function () {
 			nv.addGraph({
 				generate: function () {
 					var chart = nv.models.stackedAreaChart().margin({
-							right: 100
+							right: 200
 						}).x(function (d) {
 							return d.timePeriod;
 						}) //We can modify the data accessor functions...
@@ -186,7 +186,7 @@ var timeuse = (function () {
 							return d.quantity;
 						}) //...in case your data is formatted differently.
 						.clipEdge(true).id("timeuse-stackedAreaChart").useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-						.showControls(false).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+						.showControls(true).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
 					//How to Remove control options from NVD3.js Stacked Area Chart
 					//http://www.bainweb.com/2015/09/how-to-remove-control-options-from.html
 					chart._options.controlOptions = ['Stacked', 'Expanded'];
