@@ -20,6 +20,7 @@ var radar = (function () {
 	var AXIS_COLUMN = 0;
 	var QUANTITY_COLUMN = 1;
 	var CHART_COLUMN = 2;
+	var radarRadius = 200;
 
 	function createRadar() {
 		//read in data and create radar when finished
@@ -134,8 +135,8 @@ var radar = (function () {
 			//tricky because (AFAIK) I need to attach the data to each column separately
 			var numColumns = 4;
 			var chartConfig = {
-				w: 200
-				, h: 200
+				w: radarRadius
+				, h: radarRadius
 				, color: function () {
 					return chartColor;
 				}
