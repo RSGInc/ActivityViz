@@ -21,7 +21,7 @@ var timeuse = (function () {
 	};
 	var personType = "ALL";
 
-	function createTimeuse() {
+	function createTimeUse() {
 		//read in data and create timeuse when finished
 		if (chartData === undefined) {
 			d3.text(url, function (error, data) {
@@ -87,7 +87,7 @@ var timeuse = (function () {
 							//missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
 							//make an empty item to use to fill in personTypes that are missing data
 							personTypesOrigPurposeArray = {};
-							console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
+							//console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
 						}
 						var periodDataArray = [];
 						//must make sure data has all periods since nvd3 picky
@@ -100,14 +100,8 @@ var timeuse = (function () {
 									, quantity: 0
 								};
 								/* 								if (personTypeOrigPurposeExists) */
-								console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
+								//console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
 							}
-							// 							else {
-							// 								periodDataObject = {
-							// 									timePeriod: period
-							// 									, quantity: periodDataObject.quantity
-							// 								};
-							// 							}
 							periodDataArray.push(periodDataObject);
 						}); //end loop over periods
 						personTypeChartData.push({
@@ -184,7 +178,7 @@ var timeuse = (function () {
 			nv.addGraph({
 				generate: function () {
 					var chart = nv.models.stackedAreaChart().margin({
-							right: 100
+							right: 200
 						}).x(function (d) {
 							return d.timePeriod;
 						}) //We can modify the data accessor functions...
@@ -192,7 +186,7 @@ var timeuse = (function () {
 							return d.quantity;
 						}) //...in case your data is formatted differently.
 						.clipEdge(true).id("timeuse-stackedAreaChart").useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-						.showControls(false).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+						.showControls(true).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
 					//How to Remove control options from NVD3.js Stacked Area Chart
 					//http://www.bainweb.com/2015/09/how-to-remove-control-options-from.html
 					chart._options.controlOptions = ['Stacked', 'Expanded'];
@@ -250,11 +244,11 @@ var timeuse = (function () {
 			};
 			setPersonTypeClass();
 		}; //end drawLegend
-	}; //end createTimeuse
-	createTimeuse();
+	}; //end createTimeUse
+	createTimeUse();
 	window.addEventListener("resize", function () {
-		console.log("Got resize event. Calling timeuse");
-		createTimeuse();
+		console.log("Got resize event. Calling createTimeUse");
+		createTimeUse();
 	});
 	//return only the parts that need to be global
 	return {};

@@ -12,6 +12,7 @@ var sunburst = (function () {
 	var legendRects;
 	var legendTexts;
 	var legendGroups;
+	var negativePrefix = "- ";
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth
@@ -89,23 +90,29 @@ var sunburst = (function () {
 			var c10 = d3.scale.category10();
 			var luminance = d3.scale.sqrt().domain([0, totalSize]).clamp(true).range([90, 20]);
 			maxDepth = 0;
+			//first give all nodes ids and set baseColors for all the top level objects
+			var numDepth1 = 0;
 			nodeData.forEach(function (d, i) {
-				d.uniqueId = i;
+				d.uniqueId = d.depth + ' ' + i;
+				maxDepth = Math.max(d.depth, maxDepth);
 				if (d.depth == 1) {
 					d.luminance = d3.scale.sqrt().domain([0, d.value]).clamp(true).range([90, 20]);
-					var baseColor = d3.lab(c10(d.uniqueId));
-					baseColor.l = d.luminance(d.value);
-					colors[d.uniqueId] = baseColor;
+					d.baseColor = d3.lab(c10(numDepth1));
+					numDepth1 += 1;
+					d.baseColor.l = d.luminance(d.value);
+					colors[d.uniqueId] = d.baseColor;
 				}
-				else {
+			});
+			//now for all lower level objects, set the color as a scaled luminance copy of the base color of the top level
+			nodeData.forEach(function (d, i) {
+				if (d.depth > 1) {
 					var p = d;
 					while (p.depth > 1) p = p.parent;
 					var topAncestor = p;
-					var c = d3.lab(colors[topAncestor.uniqueId]);
+					var c = d3.lab(topAncestor.baseColor);
 					c.l = topAncestor.luminance(d.value);
 					colors[d.uniqueId] = c;
 				}
-				maxDepth = Math.max(d.depth, maxDepth);
 			});
 			drawLegend(nodeData);
 			nodeVisuals = vis.data([json]).selectAll(".sunburst-node").data(nodeData);
@@ -139,6 +146,9 @@ var sunburst = (function () {
 			}).on("mouseover", mouseoverNode);
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
+			nodeVisuals.classed("sunburst-negative", function (d) {
+				return d.name.startsWith(negativePrefix);
+			});
 		};
 
 		function showNodeExplanation(node) {
@@ -150,8 +160,10 @@ var sunburst = (function () {
 			d3.select("#sunburst-percentage").text(percentageString);
 			d3.select("#sunburst-current-node").text(node.name);
 			d3.select("#sunburst-current-node-value").text(getReadableValueString(node.value));
-			d3.select("#sunburst-explanation").style("visibility", "");
-		}
+			d3.select("#sunburst-explanation").style("visibility", "").classed("sunburst-negative", function (d) {
+				return node.name.startsWith(negativePrefix);
+			});
+		};
 
 		function hideNodeExplanation() {
 			d3.select("#sunburst-explanation").style("visibility", "hidden");
@@ -246,6 +258,10 @@ var sunburst = (function () {
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.name;
 			});
+					legendRects.classed("sunburst-negative", function (d) {
+				return d.name.startsWith(negativePrefix);
+			});
+
 		}; //end drawLegend
 		// Take a multi-column CSV and transform it into a hierarchical structure suitable
 		// for a partition layout. The first column to the next to last column is a sequence of step names, from
@@ -276,10 +292,17 @@ var sunburst = (function () {
 				if (isNaN(size)) { // e.g. if this is a header row
 					continue;
 				}
+				var isNegative = (size < 0);
+				if (isNegative) {
+					size = Math.abs(size);
+				}
 				var currentNode = root;
 				for (var j = 0; j < parts.length; j++) {
 					var children = currentNode["children"];
 					var nodeName = parts[j];
+					if (isNegative) {
+						nodeName = negativePrefix + nodeName;
+					}
 					var childNode;
 					if (j + 1 < parts.length) {
 						// Not yet at the end of the sequence; move down the tree.
@@ -306,6 +329,7 @@ var sunburst = (function () {
 						childNode = {
 							"name": nodeName
 							, "size": size
+							, "isNegative": isNegative
 						};
 						children.push(childNode);
 					}
