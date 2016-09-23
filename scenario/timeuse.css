@@ -21,12 +21,15 @@
 }
 
 #timeuse-legend rect {
-	fill: darkcyan;
-	opacity: 0.3;
+	fill: white;
+	stroke:black;
+	stroke-width:2;
+	opacity: 1.0;
 }
 
 #timeuse-legend rect.timeuse-current-person-type {
 	opacity: 1.0;
+	fill: yellow;
 }
 
 #timeuse-legend text {
