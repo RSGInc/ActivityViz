@@ -29,10 +29,11 @@
 		<div id="radar" class="row">
 			<p class="text-center" style="font-size:2em"><span class="radar-maingroup">RADAR CHARTS</span></p>
 			<div id="radar-sidebar" class="col-xs-12">
-				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare different entities across multiple measures. For example, a zone’s attractiveness could be compared by accessibility to jobs, cost of housing, and availability of fixed rail. </div>
+				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, a neighborhood's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium transit. </div>
 				<ul>
+				  <li>The larger the area, the "better" that chart (neighborhood/market/etc) does as compared to others</li>
 					<li>In addition to size, the intensity of the color increases with total area</li>
-					<li>The title top bar of each chart can be picked up and dragged so you can position the graphs as you wish.</li>
+					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
 				</ul>
 				<div id="radar-legend"></div>
 			</div>
@@ -43,10 +44,11 @@
 		<div id="timeuse" class="row">
 			<p class="text-center" style="font-size:2em"><span class="timeuse-maingroup">TIME USE</span></p>
 			<div id="timeuse-sidebar" class="col-xs-2">
-				<div id="timeuse-text-area"> Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the percent of activity and the horizontal axis displays the period of the day. The vertical axis sums to 100%. </div>
+				<div id="timeuse-text-area"> Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of activity and the horizontal axis displays the period of the day.</div>
 				<ul>
 					<li>Select a person type below to filter the data</li>
 					<li>Click on legend symbols/labels to show or hide the purpose</li>
+					<li>Select stacked to show absolute numbers or expanded to show percents</li>
 				</ul>
 				<div id="timeuse-legend"></div>
 			</div>
@@ -64,6 +66,7 @@
 					<ul>
 						<li>The inner ring shows the most aggregate group</li>
 						<li>The larger the group value, the more intense the color</li>
+						<li>If included, negative values are shown in absolute terms and outlined in red</li>
 					</ul>
 				</div>
 				<div id="sunburst-legend"></div>
