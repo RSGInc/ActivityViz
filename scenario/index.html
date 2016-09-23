@@ -26,21 +26,7 @@
 				<li class="nav-item"><a href="../index.html">Back to scenario selection</a></li>
 			</ul>
 		</nav>
-		<div id="radar" class="row">
-			<p class="text-center" style="font-size:2em"><span class="radar-maingroup">RADAR CHARTS</span></p>
-			<div id="radar-sidebar" class="col-xs-12">
-				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, a neighborhood's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium transit. </div>
-				<ul>
-				  <li>The larger the area, the "better" that chart (neighborhood/market/etc) does as compared to others</li>
-					<li>In addition to size, the intensity of the color increases with total area</li>
-					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
-				</ul>
-				<div id="radar-legend"></div>
-			</div>
-			<div id="radar-main" class="col-xs-12">
-				<div id="radar-chart-container"> </div>
-			</div>
-		</div>
+		
 		<div id="timeuse" class="row">
 			<p class="text-center" style="font-size:2em"><span class="timeuse-maingroup">TIME USE</span></p>
 			<div id="timeuse-sidebar" class="col-xs-2">
@@ -58,29 +44,9 @@
 				</div>
 			</div>
 		</div>
+		
 		<hr>
-		<div id="sunburst" class="row">
-			<p class="text-center" style="font-size:2em"><span class="sunburst-maingroup"></span></p>
-			<div id="sunburst-sidebar" class="col-xs-2">
-				<div id="sunburst-text-area"> The Sunburst displays grouped data, such as trips by mode
-					<ul>
-						<li>The inner ring shows the most aggregate group</li>
-						<li>The larger the group value, the more intense the color</li>
-						<li>If included, negative values are shown in absolute terms and outlined in red</li>
-					</ul>
-				</div>
-				<div id="sunburst-legend"></div>
-			</div>
-			<div id="sunburst-main" class="col-xs-10">
-				<div id="sunburst-explanation" style="visibility: hidden;">
-					<p><span id="sunburst-percentage"></span>
-						<br/><span id="sunburst-current-node"></span>
-						<br/><span id="sunburst-current-node-value"></span></p>
-				</div>
-				<div id="sunburst-chart"> </div>
-			</div>
-		</div>
-		<hr>
+				
 		<div id="mode-share-by-county">
 			<p class="text-center" style="font-size:2em"><strong><span class="trip-mode"></span>,</strong> by <span class="area-type"></span></p>
 			<div class="col-xs-6 right-border" style="margin-top:4px">
@@ -231,7 +197,6 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-12" style="margin-top:1em;">
-							<br>
 							<br> The Map interactive features include:
 							<ul>
 								<li>Click and drag to pan the map area</li>
@@ -244,18 +209,63 @@
 								<li>Color zones with a semi-transparent fill to retain background network display</li>
 								<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
 							</ul>
-							<input type="hidden" size="4" 4 id="val1">
-							<input type="hidden" size="4" id="val2">
-							<br>
-							<input type="hidden" size="4" id="val3">
-							<br>
-							<input type="hidden" size="4" id="val4">
-							<br>
-							<input type="hidden" size="4" id="val5"> </div> Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </div>
+						</div> 
+						Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. </div>
+						<input type="hidden" size="4" id="val1">
+						<input type="hidden" size="4" id="val2">
+						<input type="hidden" size="4" id="val3">
+						<input type="hidden" size="4" id="val4">
+						<input type="hidden" size="4" id="val5">
+				  </div>
+			  </div>
+		  </div>
+		</div>
+		
+		<hr>
+		
+		<div id="sunburst" class="row">
+			<p class="text-center" style="font-size:2em"><span class="sunburst-maingroup"></span></p>
+			<div id="sunburst-sidebar" class="col-xs-3">
+				<div id="sunburst-text-area"> The Sunburst displays grouped data, such as trips by mode
+					<ul>
+						<li>The inner ring shows the most aggregate group</li>
+						<li>The larger the group value, the more intense the color</li>
+						<li>If included, negative values are shown in absolute terms and outlined in red</li>
+					</ul>
 				</div>
+				<div id="sunburst-legend"></div>
+			</div>
+			<div id="sunburst-main" class="col-xs-9">
+				<div id="sunburst-explanation" style="visibility: hidden;">
+					<p><span id="sunburst-percentage"></span>
+						<br/><span id="sunburst-current-node"></span>
+						<br/><span id="sunburst-current-node-value"></span></p>
+				</div>
+				<div id="sunburst-chart"> </div>
 			</div>
 		</div>
+		
+		<hr>
+		
+		<div id="radar" class="row">
+			<p class="text-center" style="font-size:2em"><span class="radar-maingroup">RADAR CHARTS</span></p>
+			<div id="radar-sidebar" class="col-xs-2">
+				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, a neighborhood's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium transit. </div>
+				<ul>
+				  <li>The larger the area, the "better" that chart (neighborhood/market/etc) does as compared to others</li>
+					<li>In addition to size, the intensity of the color increases with total area</li>
+					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
+				</ul>
+				<div id="radar-legend"></div>
+			</div>
+			<div id="radar-main" class="col-xs-10">
+				<div id="radar-chart-container"> </div>
+			</div>
+		</div>
+		
+		
 	</div>
+	
 	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
 	<script src="../bower_components/spectrum/spectrum.js"></script>
