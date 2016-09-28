@@ -1,0 +1,17 @@
+#threed-main {
+	padding: 0px;
+	padding-left: 0;
+	padding-top: 0;
+}
+
+#threed-sidebar {
+	padding-left: 30px;
+}
+
+#threed-text-area {
+	margin-bottom: 30px;
+}
+
+#threed-map-container .tooltip {
+	fill: #333333;
+}

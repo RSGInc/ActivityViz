@@ -2,19 +2,6 @@
 //global object radar will contain functions and variables that must be accessible from elsewhere
 var radar = (function () {
 	"use strict";
-	var legendBoxWidth = 240;
-	var nodeVisuals;
-	var legendRects;
-	var legendTexts;
-	var legendGroups;
-	var displayedCharts = new Set();
-	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
-	var li = {
-		w: legendBoxWidth
-		, h: 22
-		, s: 15
-		, r: 3
-	};
 	var chartData;
 	var chartColor = "#0000FF"; //blue
 	var AXIS_COLUMN = 0;
@@ -27,7 +14,6 @@ var radar = (function () {
 		if (chartData === undefined) {
 			d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
 				"use strict";
-				new Set();
 				if (error) throw error; //expected data should have columns similar to: AXIS	QUANTITY CHART
 				var csv = d3.csv.parseRows(data).slice(1);
 				data = null; //allow memory to be GC'ed
