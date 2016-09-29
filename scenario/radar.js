@@ -148,15 +148,15 @@ var radar = (function () {
 			};
 			var chartId = 1;
 			for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
-				radarChartContainer.append("div").attr("class", "column");
+				radarChartContainer.append("div").attr("class", "radar-column");
 			} //end loop over columns
-			var columns = radarChartContainer.selectAll(".column");
+			var columns = radarChartContainer.selectAll(".radar-column");
 			columns[0].forEach(function (d, columnIndex) {
 					var everyThirdDataItem = chartData.filter(function (chartDatum, chartDatumIndex) {
 						return (chartDatumIndex % numColumns) == columnIndex;
 					});
-					var columnPortlets = d3.select(d).selectAll(".portlet").data(everyThirdDataItem).enter().append("div").attr("class", "portlet")
-					columnPortlets.append("div").attr("class", "portlet-header").text(function (d) {
+					var columnPortlets = d3.select(d).selectAll(".radar-portlet").data(everyThirdDataItem).enter().append("div").attr("class", "radar-portlet")
+					columnPortlets.append("div").attr("class", "radar-portlet-header").text(function (d) {
 						return d.chartName;
 					});
 
@@ -164,7 +164,7 @@ var radar = (function () {
 						var id = "radar-" + d.chartId;
 						return id;
 					}
-					var chartSvgs = columnPortlets.append("div").attr("class", "portlet-content").attr("id", getChartId);
+					var chartSvgs = columnPortlets.append("div").attr("class", "radar-portlet-content").attr("id", getChartId);
 					chartSvgs.each(function (d) {
 						RadarChart('#' + getChartId(d), [d], radarChartOptions);
 					}); //end each svg
@@ -172,15 +172,15 @@ var radar = (function () {
 			$(function () {
 				$(".column").sortable({
 					connectWith: ".column"
-					, handle: ".portlet-header"
-					, cancel: ".portlet-toggle"
-					, placeholder: "portlet-placeholder ui-corner-all"
+					, handle: ".radar-portlet-header"
+					, cancel: ".radar-portlet-toggle"
+					, placeholder: "radar-portlet-placeholder ui-corner-all"
 				});
-				$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all").find(".portlet-header").addClass("ui-widget-header ui-corner-all").prepend("<span class='ui-icon ui-icon-minusthick portlet-toggle'></span>");
-				$(".portlet-toggle").on("click", function () {
+				$(".radar-portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all").find(".radar-portlet-header").addClass("ui-widget-header ui-corner-all").prepend("<span class='ui-icon ui-icon-minusthick radar-portlet-toggle'></span>");
+				$(".radar-portlet-toggle").on("click", function () {
 					var icon = $(this);
 					icon.toggleClass("ui-icon-minusthick ui-icon-plusthick");
-					icon.closest(".portlet").find(".portlet-content").toggle();
+					icon.closest(".radar-portlet").find(".radar-portlet-content").toggle();
 				});
 			});
 			//end createCharts

@@ -1,25 +1,77 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
-//global object three3d_map will contain functions and variables that must be accessible from elsewhere
+//global object three3d will contain functions and variables that must be accessible from elsewhere
 var three3d = (function () {
 	"use strict";
+	var naColor = "White";
+	var bubbleColor = "#ff7800";
 	var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
 	var selectedColorRampIndex = 0;
+	var palette = [
+        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)"
+        , "rgb(204, 204, 204)", "rgb(217, 217, 217)", "rgb(255, 255, 255)"]
+        , ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)"
+        , "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"]
+        , ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)"
+        , "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)"
+        , "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)"
+        , "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)"
+        , "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)"
+        , "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)"
+        , "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)"
+        , "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)"
+        , "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)"
+        , "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+    ];
 	//slider
 	var handlers = [25, 50, 75];
 	var map;
 	var zoneData;
 	var dataItems = [];
-	var periods;
+	var currentCounty = "";
+	var modes;
+	var counties;
+	var countiesSet;
+	var enabledCounties;
+	var circlesLayerGroup;
+	var chartData = null;
+	//use Map instead of vanilla object because wish to preserve insertion order
+	var modeData = new Map([]);
 	var quantityColumn;
+	var countyColumn;
 	var zoneColumn;
-	var periodColumn;
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv"
+	var modeColumn;
+	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
+	var svgSelector = "#three3d-chart";
+	var svgElement;
+	var extNvd3Chart;
+	var minBarWidth = 2;
+	var minBarSpacing = 1;
+	var marginTop = 0;
+	var marginBottom = 50;
+	var marginLeft = 110;
+	var marginRight = 50;
+	var CSS_UPDATE_PAUSE = 150; //milliseconds to pause before redrawing map
 	var interval;
-	var currentCyclePeriodIndex = 0;
+	var currentCycleModeIndex = 0;
 	var cycleGoing = false;
-	var currentPeriod;
+	var breakUp;
+	var currentTripMode;
+	var bubblesShowing = false;
+	var showOutline = false;
+	var maxFeature;
 	var zoneDataLayer;
-	var periodLayer;
+	var countyLayer;
+	var barsWrap;
+	var barsWrapRect;
+	var barsWrapRectHeight;
+	var barsWrapRectId = "three3d-barsWrapRectRSG"
+	var barsWrapRectSelector = "#" + barsWrapRectId;
+	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
+	var circleStyle = {
+		"stroke": false
+		, "fillColor": bubbleColor
+		, "fillOpacity": 0.5
+	};
 
 	function redrawMap() {
 		"use strict";
@@ -30,73 +82,74 @@ var three3d = (function () {
 		"use strict";
 		d3.csv(url, function (error, data) {
 			"use strict";
-			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,TRIP_MODE_NAME,QUANTITY
+			if (error) throw error; //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
 			var headers = d3.keys(data[0]);
 			zoneColumn = headers[0];
-			periodColumn = headers[1];
-			quantityColumn = headers[2];
+			countyColumn = headers[1];
+			modeColumn = headers[2];
+			quantityColumn = headers[3];
 			var rawChartData = new Map([]);
-			//run through data. Filter out 'total' pseudo-period, convert quantity to int, create zoneData
+			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
 			zoneData = {};
 			counties = [];
 			data.forEach(function (d) {
-				var periodName = d[periodColumn];
-				var keepThisObject = periodName != "TOTAL";
+				var modeName = d[modeColumn];
+				var keepThisObject = modeName != "TOTAL";
 				if (keepThisObject) {
 					var zoneName = d[zoneColumn];
-					var periodName = d[periodColumn];
+					var countyName = d[countyColumn];
 					var quantity = parseInt(d[quantityColumn]);
 					if (zoneData[zoneName] == undefined) {
 						zoneData[zoneName] = {};
 					}
-					zoneData[zoneName][periodName] = {
-						PERIOD: periodName
+					zoneData[zoneName][modeName] = {
+						COUNTY: countyName
 						, QUANTITY: quantity
 					};
-					if (rawChartData[periodName] == undefined) {
-						rawChartData[periodName] = {};
-						counties.push(periodName);
+					if (rawChartData[countyName] == undefined) {
+						rawChartData[countyName] = {};
+						counties.push(countyName);
 					}
-					if (rawChartData[periodName][periodName] == undefined) {
-						rawChartData[periodName][periodName] = 0;
-						//keep track of counts for each period
-						//don't actually care about counts but this also implicitly keeps a list of all periods
+					if (rawChartData[countyName][modeName] == undefined) {
+						rawChartData[countyName][modeName] = 0;
+						//keep track of counts for each mode
+						//don't actually care about counts but this also implicitly keeps a list of all modes
 						//in the order they were encountered because properties are ordered
-						if (periodData[periodName] == undefined) {
-							periodData[periodName] = {
+						if (modeData[modeName] == undefined) {
+							modeData[modeName] = {
 								enabled: true
 								, serie: []
 							};
 						}
 					}
-					periodData[periodName].serie.push(quantity);
-					rawChartData[periodName][periodName] += quantity;
+					modeData[modeName].serie.push(quantity);
+					rawChartData[countyName][modeName] += quantity;
 				} //end if keeping this object
 				return keepThisObject;
 			}); //end filtering and other data prep
 			countiesSet = new Set(counties);
-			periods = Object.keys(periodData);
+			modes = Object.keys(modeData);
 			data = null; //allow GC to reclaim memory
-			//need to run through rawChartData and put periods in order and insert ones that are missing
+			//need to run through rawChartData and put modes in order and insert ones that are missing
 			chartData = [];
-			counties.forEach(function (periodName) {
-				var rawPeriodObject = rawChartData[periodName];
-				var newPeriodObject = {
-					groupLabel: periodName
+			counties.forEach(function (countyName) {
+				var rawCountyObject = rawChartData[countyName];
+				var newCountyObject = {
+					groupLabel: countyName
 					, subgroups: []
 					, enabled: true
 				};
-				chartData.push(newPeriodObject);
-				periods.forEach(function (periodName) {
-					var periodPeriodTotalQuantity = rawPeriodObject[periodName];
-					if (periodPeriodTotalQuantity == undefined) {
-						periodPeriodTotalQuantity = 0;
+				chartData.push(newCountyObject);
+				modes.forEach(function (modeName) {
+					var countyModeTotalQuantity = rawCountyObject[modeName];
+					if (countyModeTotalQuantity == undefined) {
+						countyModeTotalQuantity = 0;
 					}
-					newPeriodObject.subgroups.push({
-						subgroupLabel: periodName
-						, value: periodPeriodTotalQuantity
+					newCountyObject.subgroups.push({
+						subgroupLabel: modeName
+						, value: countyModeTotalQuantity
 					});
-				}); //end periods foreach
+				}); //end modes foreach
 			}); //end counties forEach
 			rawChartData = null; //allow GC to reclaim memory
 			callback();
@@ -110,17 +163,16 @@ var three3d = (function () {
 	});
 
 	function setDataSpecificDOM() {
-		$("#attribute-label").html(periodColumn);
-		d3.selectAll(".area-type").html(periodColumn);
-		d3.selectAll(".trip-period").html(periodColumn);
-		d3.selectAll(".trip-period-example").html(periods[0]);
-		periods.forEach(function (periodName) {
-			$("#current-trip-period").append("<option>" + periodName + "</option>");
+		d3.selectAll(".three3d-area-type").html(countyColumn);
+		d3.selectAll(".three3d-trip-mode").html(modeColumn);
+		d3.selectAll(".three3d-trip-mode-example").html(modes[0]);
+		modes.forEach(function (modeName) {
+			$("#three3d-current-trip-mode").append("<option>" + modeName + "</option>");
 		});
 		// 		chartData.forEach(function (chartObject) {
-		// 			$("#chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
+		// 			$("#three3d-chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
 		// 		});
-		// 		$("#chart-selection").chosen();
+		// 		$("#three3d-chart-selection").chosen();
 	} //end setDataSpecificDOM
 	function updateChart(callback) {
 		"use strict";
@@ -132,36 +184,36 @@ var three3d = (function () {
 		//nvd3 expects data in the opposite hierarchy than rest of code so need to create
 		//but can also filter out counties at same time
 		//NOTE: ability to enable/disable counties  removed from UI so currently never used.
-		enabledCounties = chartData.filter(function (periodObject) {
-			return periodObject.enabled;
+		enabledCounties = chartData.filter(function (countyObject) {
+			return countyObject.enabled;
 		})
 		var hierarchicalData = [];
-		periods.forEach(function (periodName, periodIndex) {
+		modes.forEach(function (modeName, modeIndex) {
 			var subgroups = [];
-			var periodObject = {
-				key: periodName
+			var modeObject = {
+				key: modeName
 				, values: subgroups
 			};
-			hierarchicalData.push(periodObject);
-			enabledCounties.forEach(function (periodWithPeriodsObject) {
-				var simplePeriodObject = periodWithPeriodsObject.subgroups[periodIndex];
-				var retrievedPeriodName = simplePeriodObject.subgroupLabel;
-				if (retrievedPeriodName != periodName) {
-					throw ("SOMETHING IS WRONG. Period is not as expected. Expected period: " + periodName + ", found periodName: " + retrievedPeriodName);
+			hierarchicalData.push(modeObject);
+			enabledCounties.forEach(function (countyWithModesObject) {
+				var simpleModeObject = countyWithModesObject.subgroups[modeIndex];
+				var retrievedModeName = simpleModeObject.subgroupLabel;
+				if (retrievedModeName != modeName) {
+					throw ("SOMETHING IS WRONG. Mode is not as expected. Expected mode: " + modeName + ", found modeName: " + retrievedModeName);
 				}
-				var simplePeriodObject = {
-					label: periodWithPeriodsObject.groupLabel
-					, value: simplePeriodObject.value
+				var simpleCountyObject = {
+					label: countyWithModesObject.groupLabel
+					, value: simpleModeObject.value
 				}
-				subgroups.push(simplePeriodObject);
-			}); //end loop over chartData periodObjects
-		}); //end loop over periods
+				subgroups.push(simpleCountyObject);
+			}); //end loop over chartData countyObjects
+		}); //end loop over modes
 		//poll every 150ms for up to two seconds waiting for chart
 		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
 			svgElement.datum(hierarchicalData).call(extNvd3Chart);
-			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include period labels
+			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
 			//first check if
 			var chartOuterSelector = ".nv-barsWrap.nvd3-svg";
 			barsWrap = d3.select(chartOuterSelector);
@@ -175,10 +227,10 @@ var three3d = (function () {
 				var mouseY = d3.mouse(this)[1];
 				var numCounties = enabledCounties.length;
 				var heightPerGroup = barsWrapRectHeight / numCounties;
-				var periodIndex = Math.floor(mouseY / heightPerGroup);
-				var periodObject = enabledCounties[periodIndex];
-				var newPeriod = periodObject.groupLabel;
-				changeCurrentPeriod(newPeriod);
+				var countyIndex = Math.floor(mouseY / heightPerGroup);
+				var countyObject = enabledCounties[countyIndex];
+				var newCounty = countyObject.groupLabel;
+				changeCurrentCounty(newCounty);
 			});
 			setTimeout(updateChartMouseoverRect, 1000);
 		}, function () {
@@ -205,18 +257,18 @@ var three3d = (function () {
 			setTimeout(updateChartMouseoverRect, 500);
 		}
 	} //end updateChartMouseoverRect
-	function changeCurrentPeriod(newCurrentPeriod) {
-		if (currentPeriod != newCurrentPeriod) {
-			console.log('changing from ' + currentPeriod + " to " + newCurrentPeriod);
-			currentPeriod = newCurrentPeriod;
-			var periodLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-			periodLabels.classed("current-period", function (d, i) {
-				var setClass = d == currentPeriod;
+	function changeCurrentCounty(newCurrentCounty) {
+		if (currentCounty != newCurrentCounty) {
+			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
+			currentCounty = newCurrentCounty;
+			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+			countyLabels.classed("three3d-current-county", function (d, i) {
+				var setClass = d == currentCounty;
 				return setClass;
 			}); //end classed of group rect
-			periodLayer.setStyle(function (feature) {
+			countyLayer.setStyle(function (feature) {
 				var style = {};
-				if (feature.properties.NAME == currentPeriod) {
+				if (feature.properties.NAME == currentCounty) {
 					style.weight = 4;
 				}
 				else {
@@ -226,14 +278,14 @@ var three3d = (function () {
 			}); //end setStyle function
 			//add delay to redrawMap so that text has chance to bold
 			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-		} //end if period is changing
-	}; //end change currentPeriod
+		} //end if county is changing
+	}; //end change currentCounty
 	function createEmptyChart() {
 		nv.addGraph({
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
-					var nvd3Chart = nv.periodls.multiBarHorizontalChart();
+					var nvd3Chart = nv.models.multiBarHorizontalChart();
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 					nvd3Chart.x(function (d, i) {
 						return d.label
@@ -241,16 +293,16 @@ var three3d = (function () {
 						return d.value
 					}).color(function (d, i) {
 						var color = colorScale(i);
-						//console.log('barColor i=' + i + ' periodColorIndex=' + periodColorIndex + ' period=' + d.key + ' period=' + d.label + ' count=' + d.value + ' color=' + color);
+						//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 						return color;
 					}).duration(250).margin({
 						left: marginLeft
 						, right: marginRight
 						, top: marginTop
 						, bottom: marginBottom
-					}).id("period-share-by-period-multiBarHorizontalChart").stacked(true).showControls(false);
+					}).id("three3d-multiBarHorizontalChart").stacked(true).showControls(false);
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
-					nvd3Chart.yAxis.axisLabel(periodColumn);
+					nvd3Chart.yAxis.axisLabel(countyColumn);
 					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
@@ -262,15 +314,15 @@ var three3d = (function () {
 						});
 					});
 					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
-						var newPeriod = event.key;
-						console.log('legend legendDblclick on trip period: ' + newPeriod);
-						$('#current-trip-period').val(newPeriod);
-						updateCurrentPeriodOrClassification();
+						var newTripMode = event.key;
+						console.log('legend legendDblclick on trip mode: ' + newTripMode);
+						$('#current-trip-mode').val(newTripMode);
+						updateCurrentTripModeOrClassification();
 						redrawMap();
 					});
 					nvd3Chart.multibar.dispatch.on("elementMouseover", function (d, i) {
-						var periodUnderMouse = d.value;
-						changeCurrentPeriod(periodUnderMouse);
+						var countyUnderMouse = d.value;
+						changeCurrentCounty(countyUnderMouse);
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
@@ -289,8 +341,8 @@ var three3d = (function () {
 	function styleZoneGeoJSONLayer(feature) {
 		var color = naColor;
 		if (feature.zoneData != undefined) {
-			var zoneDataFeature = feature.zoneData[currentPeriod];
-			//possible that even if data for zone exists, could be missing this particular trip period
+			var zoneDataFeature = feature.zoneData[currentTripMode];
+			//possible that even if data for zone exists, could be missing this particular trip mode
 			if (zoneDataFeature != undefined) {
 				var quantity = zoneDataFeature.QUANTITY;
 				if (zoneDataFeature.QUANTITY == undefined) {
@@ -308,7 +360,7 @@ var three3d = (function () {
 				else {
 					color = colors[0];
 				}
-			} //end if we have data for this trip period
+			} //end if we have data for this trip mode
 		} //end if we have data for this zone
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
@@ -322,7 +374,7 @@ var three3d = (function () {
 		};
 		return (returnStyle);
 	} //end styleZoneGeoJSONLayer function
-	function stylePeriodGeoJSONLayer(feature) {
+	function styleCountyGeoJSONLayer(feature) {
 		var returnStyle = {
 			//all SVG styles allowed
 			fill: true
@@ -333,9 +385,9 @@ var three3d = (function () {
 			, color: "gray"
 		};
 		return (returnStyle);
-	} //end stylePeriodGeoJSONLayer function
+	} //end styleCountyGeoJSONLayer function
 	function createMap(callback) {
-		map = L.map("map").setView([33.754525, -84.384774], 9); //centered at Atlanta
+		map = L.map("three3d-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
 			var zoomScale = map.getZoomScale();
@@ -376,11 +428,11 @@ var three3d = (function () {
 				, opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../scripts/cb_2015_us_period_500k_GEORGIA.json", function (periodTiles) {
+			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
 				"use strict";
-				console.log("cb_2015_us_period_500k GEORGIA.json success");
+				console.log("cb_2015_us_county_500k GEORGIA.json success");
 				//http://leafletjs.com/reference.html#tilelayer
-				periodLayer = L.geoJson(periodTiles, {
+				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data for
 					filter: function (feature) {
 						return countiesSet.has(feature.properties.NAME);
@@ -389,28 +441,28 @@ var three3d = (function () {
 					, unloadInvisibleFiles: true
 					, reuseTiles: true
 					, opacity: 1.0
-					, style: stylePeriodGeoJSONLayer
-					, onEachFeature: onEachPeriod
+					, style: styleCountyGeoJSONLayer
+					, onEachFeature: onEachCounty
 				});
 				zoneDataLayer.addTo(map);
-				periodLayer.addTo(map);
+				countyLayer.addTo(map);
 			}).success(function () {
-				console.log("cb_2015_us_period_500k GEORGIA.json second success");
+				console.log("cb_2015_us_county_500k GEORGIA.json second success");
 			}).error(function (jqXHR, textStatus, errorThrown) {
-				console.log("cb_2015_us_period_500k GEORGIA.json textStatus " + textStatus);
-				console.log("cb_2015_us_period_500k GEORGIA.json errorThrown" + errorThrown);
-				console.log("cb_2015_us_period_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
+				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
+				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
+				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
 			}).complete(function () {
-				console.log("cb_2015_us_period_500k GEORGIA.json complete");
-			}); //end geoJson of period layer
-			function onEachPeriod(feature, layer) {
+				console.log("cb_2015_us_county_500k GEORGIA.json complete");
+			}); //end geoJson of county layer
+			function onEachCounty(feature, layer) {
 				layer.on({
-					mouseover: mouseoverPeriod
+					mouseover: mouseoverCounty
 				});
-			} //end on each Period
-			function mouseoverPeriod(e) {
+			} //end on each County
+			function mouseoverCounty(e) {
 				var layer = e.target;
-				changeCurrentPeriod(layer.feature.properties.NAME);
+				changeCurrentCounty(layer.feature.properties.NAME);
 			}
 		}); //end geoJson of zone layer
 	}; //end createMap
@@ -441,15 +493,13 @@ var three3d = (function () {
 
 	function setColorPalette(clickedIndex) {
 		selectedColorRampIndex = clickedIndex;
-		var paletteRamps = d3.selectAll(".ramp");
 		var currentPalette = paletteRamps[0][selectedColorRampIndex];
 		var rects = d3.select(currentPalette).selectAll("rect");
 		rects.each(function (d, i) {
 			var paletteColor = d3.rgb(d3.select(this).attr("fill"));
-			paletteRamps
 			colors[i] = paletteColor;
 		});
-		d3.selectAll(".ramp").classed("selected", function (d, tempColorRampIndex) {
+		d3.selectAll("#mode-share-by-county .ramp").classed("selected", function (d, tempColorRampIndex) {
 			return tempColorRampIndex == selectedColorRampIndex;
 		});
 	}; //end setColorPalette
@@ -465,84 +515,65 @@ var three3d = (function () {
 			//readInData() set holdReady until finished
 			setDataSpecificDOM();
 			svgElement = d3.select(svgSelector);
-			updateCurrentPeriodOrClassification();
+			updateCurrentTripModeOrClassification();
 			createEmptyChart();
-			$("#stacked").click(function () {
+			$("#three3d-stacked").click(function () {
 				extNvd3Chart.stacked(this.checked);
 				extNvd3Chart.update();
 			});
-			$("#legend-type").click(function () {
+			$("#three3d-legend-type").click(function () {
 				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 				extNvd3Chart.update();
 			});
-			var colorRamps = d3.selectAll(".ramp").on('click', function (d, i) {
+			var colorRamps = d3.selectAll("#mode-share-by-county .ramp").on('click', function (d, i) {
 				setColorPalette(i);
-				updateColors($("#slider").slider("values"));
+				updateColors($("#three3d-slider").slider("values"));
 				//add delay to redrawMap so css has change to updates
 				setTimeout(redrawMap, CSS_UPDATE_PAUSE);
 			}); //end on click for ramp/palette
-			if ($("#classification").val() == "custom") {
-				$("#update-map").css("display", "inline");
+			if ($("#three3d-classification").val() == "custom") {
+				$("#three3d-update-map").css("display", "inline");
 			};
-			$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
-			// 			$("#chart-selection").change(function () {
-			// 				//check ALL
-			// 				var allIsSet;
-			// 				var options = $("#chart-selection option");
-			// 				options.each(function () {
-			// 					var option = this;
-			// 					var optionName = option.text;
-			// 					if (optionName == "All") {
-			// 						allIsSet = option.selected;
-			// 					}
-			// 					else {
-			// 						var periodIndex = option.index - 1; //subtract 'All'
-			// 						var isSelected = allIsSet || option.selected;
-			// 						chartData[periodIndex].enabled = isSelected;
-			// 					}
-			// 				});
-			// 				updateChart();
-			// 			});
 			//Logic for cycling through the maps
-			$("#start-cycle-map").click(function () {
-				$("#stop-cycle-map").css("display", "inline");
-				$("#start-cycle-map").css("display", "none");
+			$("#three3d-start-cycle-map").click(function () {
+				$("#three3d-stop-cycle-map").css("display", "inline");
+				$("#three3d-start-cycle-map").css("display", "none");
 				cycleGoing = true;
-				currentCyclePeriodIndex = 0;
-				cyclePeriod();
+				currentCycleModeIndex = 0;
+				cycleTripMode();
 			});
-			$("#stop-cycle-map").click(function () {
+			$("#three3d-stop-cycle-map").click(function () {
 				cycleGoing = false;
-				$("#stop-cycle-map").css("display", "none");
-				$("#start-cycle-map").css("display", "inline");
+				$("#three3d-stop-cycle-map").css("display", "none");
+				$("#three3d-start-cycle-map").css("display", "inline");
 			});
 
-			function cyclePeriod() {
-				var newPeriod = periods[currentCyclePeriodIndex];
-				$('#current-trip-period').val(newPeriod);
-				updateCurrentPeriodOrClassification();
+			function cycleTripMode() {
+				var newTripMode = modes[currentCycleModeIndex];
+				$('#current-trip-mode').val(newTripMode);
+				updateCurrentTripModeOrClassification();
 				redrawMap();
-				currentCyclePeriodIndex++;
-				if (currentCyclePeriodIndex >= $("#current-trip-period option").size()) {
-					currentCyclePeriodIndex = 0;
+				currentCycleModeIndex++;
+				if (currentCycleModeIndex >= $("#current-trip-mode option").size()) {
+					currentCycleModeIndex = 0;
 				}
 				if (cycleGoing) {
-					var timeInterval = parseInt($("#cycle-frequency").val()) * 1000;
-					setTimeout(cyclePeriod, timeInterval);
+					var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
+					setTimeout(cycleTripMode, timeInterval);
 				} //end if cycleGoing
-			} //end cyclePeriod
-			$("#cycle-frequency").change(function () {
-				//no need to do anything since cyclePeriod always reads the current #cycle-frequency
+			} //end cycleTripMode
+			$("#three3d-cycle-frequency").change(function () {
+				//no need to do anything since cycleTripMode always reads the current #cycle-frequency
 			});
-			$("#update-map").click(function () {
-				var sliderValues = $("#slider").slider("values");
-				$("#val2").val(sliderValues[0]);
-				$("#val3").val(sliderValues[1]);
-				$("#val4").val(sliderValues[2]);
+			$("#three3d-update-map").click(function () {
+				var sliderValues = $("#three3d-slider").slider("values");
+				$("#three3d-val2").val(sliderValues[0]);
+				$("#three3d-val3").val(sliderValues[1]);
+				$("#three3d-val4").val(sliderValues[2]);
 				redrawMap();
 			});
 			//value slider
-			$("#slider").slider({
+			$("#three3d-slider").slider({
 				range: false
 				, disabled: ($("#classification").val() != "custom")
 				, min: 0
@@ -554,20 +585,20 @@ var three3d = (function () {
 					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
 				}
 				, slide: function (event, ui) {
-					var themax = $("#slider").slider("option", "max");
+					var themax = $("#three3d-slider").slider("option", "max");
 					updateColors(ui.values, themax);
 					$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
 					$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
 					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
 				}
 			});
-			updateColors(handlers, $("#slider").slider("option", "max"));
-			$("#current-trip-period").change(function () {
-				updateCurrentPeriodOrClassification();
+			updateColors(handlers, $("#three3d-slider").slider("option", "max"));
+			$("#current-trip-mode").change(function () {
+				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
 			$("#classification").change(function () {
-				updateCurrentPeriodOrClassification();
+				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
 			$("#naColor").spectrum({
@@ -585,7 +616,7 @@ var three3d = (function () {
 				, change: function (color) {
 					naColor = color;
 					redrawMap();
-					updateColors($("#slider").slider("values"));
+					updateColors($("#three3d-slider").slider("values"));
 				}
 			});
 			$("#bubble-color").spectrum({
@@ -646,7 +677,7 @@ var three3d = (function () {
 			var mapCenter = map.getCenter();
 			var eastBound = map.getBounds().getEast();
 			var centerEast = L.latLng(mapCenter.lat, eastBound);
-			var bubbleMultiplier = parseInt($("#bubble-size").val());
+			var bubbleMultiplier = parseInt($("#three3d-bubble-size").val());
 			var mapBounds = d3.select("#map").node().getBoundingClientRect();
 			var mapRadiusInPixels = mapBounds.width / 2;
 			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
@@ -655,7 +686,7 @@ var three3d = (function () {
 			Object.keys(zoneData).forEach(function (zoneKey) {
 				var zoneDatum = zoneData[zoneKey];
 				var bubbleCenter = zoneDatum.centroid;
-				var zoneTripData = zoneDatum[currentPeriod];
+				var zoneTripData = zoneDatum[currentTripMode];
 				if (zoneTripData != undefined) {
 					var quantity = zoneTripData.QUANTITY;
 					var sqrtRadius = scaleSqrt(quantity);
@@ -663,29 +694,29 @@ var three3d = (function () {
 					circle.setRadius(sqrtRadius);
 					//add circle to circlesLayerGroup
 					circlesLayerGroup.addLayer(circle);
-				} //end if have data for this zone and trip period
+				} //end if have data for this zone and trip mode
 			}); //end Object.keys(zoneData).forEach
 		} //end if bubbles showing
 	}; //end updateBubbles
-	function updateCurrentPeriodOrClassification() {
+	function updateCurrentTripModeOrClassification() {
 		"use strict";
-		currentPeriod = $('#current-trip-period').val();
+		currentTripMode = $('#three3d-current-trip-mode').val();
 		var startTime = Date.now();
-		console.log('updateCurrentPeriodOrClassification: #current-trip-period.val()=' + currentPeriod);
-		var serie = new geostats(periodData[currentPeriod].serie);
+		console.log('updateCurrentTripModeOrClassification: #current-trip-mode.val()=' + currentTripMode);
+		var serie = new geostats(modeData[currentTripMode].serie);
 		maxFeature = serie.max();
 		//handle the different classifications
-		var classification = $("#classification").val();
-		$("#slider").slider({
+		var classification = $("#three3d-classification").val();
+		$("#three3d-slider").slider({
 			range: false
-			, disabled: ($("#classification").val() != "custom")
+			, disabled: ($("#three3d-classification").val() != "custom")
 		});
 		if (classification == "custom") {
-			$("#update-map").css("display", "inline");
-			breakUp = [$("#val1").val(), $("#val2").val(), $("#val3").val(), $("#val4").val(), $("#val5").val()];
+			$("#three3d-update-map").css("display", "inline");
+			breakUp = [$("#three3d-val1").val(), $("#three3d-val2").val(), $("#three3d-val3").val(), $("#three3d-val4").val(), $("#three3d-val5").val()];
 		}
 		else {
-			$("#update-map").css("display", "none");
+			$("#three3d-update-map").css("display", "none");
 			if (classification == "even-interval") {
 				breakUp = serie.getClassEqInterval(4);
 			}
@@ -698,14 +729,14 @@ var three3d = (function () {
 			else {
 				throw ("Unhandled classification: " + classification);
 			}
-			$("#val1").val(breakUp[0]);
-			$("#val2").val(breakUp[1]);
-			$("#val3").val(breakUp[2]);
-			$("#val4").val(breakUp[3]);
-			$("#val5").val(breakUp[4]);
+			$("#three3d-val1").val(breakUp[0]);
+			$("#three3d-val2").val(breakUp[1]);
+			$("#three3d-val3").val(breakUp[2]);
+			$("#three3d-val4").val(breakUp[3]);
+			$("#three3d-val5").val(breakUp[4]);
 			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
-			$("#slider").slider({
+			$("#three3d-slider").slider({
 				min: breakUp[0]
 				, max: breakUp[4]
 				, values: newValues
@@ -716,9 +747,9 @@ var three3d = (function () {
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();
-	}; //end updateCurrentPeriodOrClassification
+	}; //end updateCurrentTripModeOrClassification
 	function updateOutline() {
-		showOutline = ($("#stroke").is(":checked"));
+		showOutline = ($("#three3d-stroke").is(":checked"));
 		redrawMap();
 	}
 	//return only the parts that need to be global

@@ -1,0 +1,12 @@
+
+/* strangely the nvd3 multiBarHorizontalChart has the axis names reversed so that the yaxis is actually along bottom.
+Presumably this is because it used the smae code as the vertical chart
+*/
+
+.nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text {
+	font-size: 15;
+}
+
+.nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.current-county {
+	font-weight: bold;
+}
