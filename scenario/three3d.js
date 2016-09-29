@@ -66,7 +66,7 @@ var three3d = (function () {
 	var barsWrapRectHeight;
 	var barsWrapRectId = "three3d-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
-	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
+	var paletteRamps = d3.selectAll("#three3d .ramp");
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
@@ -488,7 +488,7 @@ var three3d = (function () {
 			//ie
 			css = '-ms-linear-gradient(left,' + colorStops + ')';
 		}
-		$('#slider').css('background-image', css);
+		$('#three3d-slider').css('background-image', css);
 	}
 
 	function setColorPalette(clickedIndex) {
@@ -499,7 +499,7 @@ var three3d = (function () {
 			var paletteColor = d3.rgb(d3.select(this).attr("fill"));
 			colors[i] = paletteColor;
 		});
-		d3.selectAll("#mode-share-by-county .ramp").classed("selected", function (d, tempColorRampIndex) {
+		d3.selectAll("#three3d .ramp").classed("selected", function (d, tempColorRampIndex) {
 			return tempColorRampIndex == selectedColorRampIndex;
 		});
 	}; //end setColorPalette
@@ -525,7 +525,7 @@ var three3d = (function () {
 				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 				extNvd3Chart.update();
 			});
-			var colorRamps = d3.selectAll("#mode-share-by-county .ramp").on('click', function (d, i) {
+			var colorRamps = d3.selectAll("#three3d .ramp").on('click', function (d, i) {
 				setColorPalette(i);
 				updateColors($("#three3d-slider").slider("values"));
 				//add delay to redrawMap so css has change to updates
@@ -550,11 +550,11 @@ var three3d = (function () {
 
 			function cycleTripMode() {
 				var newTripMode = modes[currentCycleModeIndex];
-				$('#current-trip-mode').val(newTripMode);
+				$('#three3d-current-trip-mode').val(newTripMode);
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 				currentCycleModeIndex++;
-				if (currentCycleModeIndex >= $("#current-trip-mode option").size()) {
+				if (currentCycleModeIndex >= $("#three3d-current-trip-mode option").size()) {
 					currentCycleModeIndex = 0;
 				}
 				if (cycleGoing) {
@@ -570,38 +570,39 @@ var three3d = (function () {
 				$("#three3d-val2").val(sliderValues[0]);
 				$("#three3d-val3").val(sliderValues[1]);
 				$("#three3d-val4").val(sliderValues[2]);
+			breakUp = [$("#three3d-val1").val(), $("#three3d-val2").val(), $("#three3d-val3").val(), $("#three3d-val4").val(), $("#three3d-val5").val()];
 				redrawMap();
 			});
 			//value slider
 			$("#three3d-slider").slider({
 				range: false
-				, disabled: ($("#classification").val() != "custom")
+				, disabled: ($("#three3d-classification").val() != "custom")
 				, min: 0
 				, max: 100
 				, values: handlers
 				, create: function (event, ui) {
-					$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
-					$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
+					$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
+					$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
 					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
 				}
 				, slide: function (event, ui) {
 					var themax = $("#three3d-slider").slider("option", "max");
 					updateColors(ui.values, themax);
-					$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
-					$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
-					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
+					$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
+					$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
+					$('#three3d .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
 				}
 			});
 			updateColors(handlers, $("#three3d-slider").slider("option", "max"));
-			$("#current-trip-mode").change(function () {
+			$("#three3d-current-trip-mode").change(function () {
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
-			$("#classification").change(function () {
+			$("#three3d-classification").change(function () {
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
-			$("#naColor").spectrum({
+			$("#three3d-naColor").spectrum({
 				color: naColor
 				, showInput: true
 				, className: "full-spectrum"
@@ -619,7 +620,7 @@ var three3d = (function () {
 					updateColors($("#three3d-slider").slider("values"));
 				}
 			});
-			$("#bubble-color").spectrum({
+			$("#three3d-bubble-color").spectrum({
 				color: bubbleColor
 				, showInput: true
 				, className: "full-spectrum"
@@ -662,7 +663,7 @@ var three3d = (function () {
 
 	function updateBubbles() {
 		"use strict";
-		bubblesShowing = $("#bubbles").is(":checked");
+		bubblesShowing = $("#three3d-bubbles").is(":checked");
 		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
 		if (circlesLayerGroup == undefined) {
 			//first time must initalize by creating and adding to map
@@ -678,7 +679,7 @@ var three3d = (function () {
 			var eastBound = map.getBounds().getEast();
 			var centerEast = L.latLng(mapCenter.lat, eastBound);
 			var bubbleMultiplier = parseInt($("#three3d-bubble-size").val());
-			var mapBounds = d3.select("#map").node().getBoundingClientRect();
+			var mapBounds = d3.select("#three3d-map").node().getBoundingClientRect();
 			var mapRadiusInPixels = mapBounds.width / 2;
 			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
 			var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
@@ -713,7 +714,6 @@ var three3d = (function () {
 		});
 		if (classification == "custom") {
 			$("#three3d-update-map").css("display", "inline");
-			breakUp = [$("#three3d-val1").val(), $("#three3d-val2").val(), $("#three3d-val3").val(), $("#three3d-val4").val(), $("#three3d-val5").val()];
 		}
 		else {
 			$("#three3d-update-map").css("display", "none");
@@ -741,9 +741,9 @@ var three3d = (function () {
 				, max: breakUp[4]
 				, values: newValues
 			});
-			$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
-			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
-			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
+			$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
+			$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
+			$('#three3d .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();

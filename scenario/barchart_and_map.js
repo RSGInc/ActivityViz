@@ -488,7 +488,7 @@ var barchart_and_map = (function () {
 			//ie
 			css = '-ms-linear-gradient(left,' + colorStops + ')';
 		}
-		$('#slider').css('background-image', css);
+		$('#mode-share-by-county-slider').css('background-image', css);
 	}
 
 	function setColorPalette(clickedIndex) {
@@ -550,11 +550,11 @@ var barchart_and_map = (function () {
 
 			function cycleTripMode() {
 				var newTripMode = modes[currentCycleModeIndex];
-				$('#current-trip-mode').val(newTripMode);
+				$('#mode-share-by-county-current-trip-mode').val(newTripMode);
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 				currentCycleModeIndex++;
-				if (currentCycleModeIndex >= $("#current-trip-mode option").size()) {
+				if (currentCycleModeIndex >= $("#mode-share-by-county-current-trip-mode option").size()) {
 					currentCycleModeIndex = 0;
 				}
 				if (cycleGoing) {
@@ -570,38 +570,39 @@ var barchart_and_map = (function () {
 				$("#mode-share-by-county-val2").val(sliderValues[0]);
 				$("#mode-share-by-county-val3").val(sliderValues[1]);
 				$("#mode-share-by-county-val4").val(sliderValues[2]);
+			breakUp = [$("#mode-share-by-county-val1").val(), $("#mode-share-by-county-val2").val(), $("#mode-share-by-county-val3").val(), $("#mode-share-by-county-val4").val(), $("#mode-share-by-county-val5").val()];
 				redrawMap();
 			});
 			//value slider
 			$("#mode-share-by-county-slider").slider({
 				range: false
-				, disabled: ($("#classification").val() != "custom")
+				, disabled: ($("#mode-share-by-county-classification").val() != "custom")
 				, min: 0
 				, max: 100
 				, values: handlers
 				, create: function (event, ui) {
-					$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
-					$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
-					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
 				}
 				, slide: function (event, ui) {
 					var themax = $("#mode-share-by-county-slider").slider("option", "max");
 					updateColors(ui.values, themax);
-					$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
-					$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
-					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
 				}
 			});
 			updateColors(handlers, $("#mode-share-by-county-slider").slider("option", "max"));
-			$("#current-trip-mode").change(function () {
+			$("#mode-share-by-county-current-trip-mode").change(function () {
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
-			$("#classification").change(function () {
+			$("#mode-share-by-county-classification").change(function () {
 				updateCurrentTripModeOrClassification();
 				redrawMap();
 			});
-			$("#naColor").spectrum({
+			$("#mode-share-by-county-naColor").spectrum({
 				color: naColor
 				, showInput: true
 				, className: "full-spectrum"
@@ -619,7 +620,7 @@ var barchart_and_map = (function () {
 					updateColors($("#mode-share-by-county-slider").slider("values"));
 				}
 			});
-			$("#bubble-color").spectrum({
+			$("#mode-share-by-county-bubble-color").spectrum({
 				color: bubbleColor
 				, showInput: true
 				, className: "full-spectrum"
@@ -662,7 +663,7 @@ var barchart_and_map = (function () {
 
 	function updateBubbles() {
 		"use strict";
-		bubblesShowing = $("#bubbles").is(":checked");
+		bubblesShowing = $("#mode-share-by-county-ubbles").is(":checked");
 		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
 		if (circlesLayerGroup == undefined) {
 			//first time must initalize by creating and adding to map
@@ -713,7 +714,6 @@ var barchart_and_map = (function () {
 		});
 		if (classification == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
-			breakUp = [$("#mode-share-by-county-val1").val(), $("#mode-share-by-county-val2").val(), $("#mode-share-by-county-val3").val(), $("#mode-share-by-county-val4").val(), $("#mode-share-by-county-val5").val()];
 		}
 		else {
 			$("#mode-share-by-county-update-map").css("display", "none");
@@ -741,9 +741,9 @@ var barchart_and_map = (function () {
 				, max: breakUp[4]
 				, values: newValues
 			});
-			$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
-			$('.ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
-			$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
+			$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
+			$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
+			$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();

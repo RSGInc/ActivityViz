@@ -29,29 +29,7 @@
 		</nav>
 		<div id="three3d">
 			<p class="text-center" style="font-size:2em"><strong><span class="three3d-trip-mode"></span>,</strong> by <span class="three3d-area-type"></span></p>
-			<div class="col-xs-6 right-border" style="margin-top:4px">
-				<div class="row"> The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
-					<div class="row" style="margin-top:4px">
-						<div class="col-xs-10">
-							<ul>
-								<li>Click on the 'Stacked' checkbox to change chart style</li>
-								<li>Click anywhere on a row to highlight the <span class="three3d-area-type">PLACEHOLDER</span> area on the map</li>
-								<li>Click on legend symbols/labels to show or hide the <span class="three3d-trip-mode">PLACEHOLDER</span></li>
-								<li>Double click on legend symbols/labels to change map and charts to a single <span class="three3d-trip-mode">PLACEHOLDER</span> such as <span class="three3d-trip-mode-example">PLACEHOLDER</span></li>
-							</ul>
-						</div>
-						<div class="col-xs-2">
-							<label>
-								<input type="checkbox" checked id="three3d-stacked" />Stacked</label>
-							<!-- <label><input type="checkbox" checked id="three3d-legend-type" />Classic Legend/label>-->
-						</div>
-					</div>
-				</div>
-				<div class="row" style="width:100%;height:60%;">
-					<svg id="three3d-chart"></svg>
-				</div>
-			</div>
-			<div class="col-xs-6">
+			<div class="col-xs-12">
 				<div class="col-xs-12"> The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
 				<div class="col-xs-6">
 					<div class="trip-mode" style="font-weight:bold"></div>
@@ -66,7 +44,7 @@
 					<select class="form-control" id="three3d-classification">
 						<option value="quartiles" selected="selected">Quartiles</option>
 						<option value="jenks">Natural breaks (Jenks)</option>
-						<option value="even_interval">Even interval</option>
+						<option value="even-interval">Even interval</option>
 						<option value="custom">Custom</option>
 					</select>
 				</div>
@@ -141,14 +119,14 @@
 					</table>
 				</div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
-					<input type="checkbox" id="three3d-bubbles" onclick="barchart_and_map.updateBubbles()" /> Bubbles
+					<input type="checkbox" id="three3d-bubbles" onclick="three3d.updateBubbles()" /> Bubbles
 					<input type="text" id="three3d-bubble-color" /> Size:
-					<select onchange="barchart_and_map.updateBubbles()" id="three3d-bubble-size">
+					<select onchange="three3d.updateBubbles()" id="three3d-bubble-size">
 						<option>1</option>
 						<option>2</option>
 						<option>3</option>
 					</select>
-					<input type="checkbox" id="three3d-stroke" onclick="barchart_and_map.updateOutline()" /> Outline
+					<input type="checkbox" id="three3d-stroke" onclick="three3d.updateOutline()" /> Outline
 					<nobr>
 						<input type="text" id="three3d-naColor" /> N/A</nobr>
 				</div>
@@ -255,7 +233,7 @@
 					<select class="form-control" id="mode-share-by-county-classification">
 						<option value="quartiles" selected="selected">Quartiles</option>
 						<option value="jenks">Natural breaks (Jenks)</option>
-						<option value="even_interval">Even interval</option>
+						<option value="even-interval">Even interval</option>
 						<option value="custom">Custom</option>
 					</select>
 				</div>
