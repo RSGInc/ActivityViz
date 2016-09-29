@@ -10,6 +10,23 @@ var abmviz_utilities = (function () {
 			throw message; // Fallback
 		}
 	}
+	//ABM often uses half hour periods 0 to 47 to represent time from 3 am to 2:30 am the following day
+	function halfHourTimePeriodToTimeString(timePeriod) {
+		var halfHoursPast3Am = timePeriod - 1;
+		//period is from 1 to 48 and is in half hours starting at 3 am
+		var hours = (Math.floor(halfHoursPast3Am / 2) + 3) % 24;
+		var minutes = (halfHoursPast3Am % 2) * 30; //if period is odd then add half hour
+		//var timeOfDay = twoDigitIntegerFormat(hours) + ':' + twoDigitIntegerFormat(minutes);
+		var timeOfDayAmPm = (hours % 12);
+		if (timeOfDayAmPm == 0) {
+			timeOfDayAmPm = 12;
+		}
+		if ((halfHoursPast3Am % 2) == 1) {
+			timeOfDayAmPm += ':30';
+		}
+		timeOfDayAmPm += ' ' + ((hours < 12) ? 'am' : 'pm');
+		return timeOfDayAmPm;
+	}
 
 	function GetURLParameter(sParam) {
 		"use strict";
@@ -58,5 +75,6 @@ var abmviz_utilities = (function () {
 		, poll: poll
 		, insertArrayAt: insertArrayAt
 		, numberWithCommas: numberWithCommas
+		, halfHourTimePeriodToTimeString: halfHourTimePeriodToTimeString
 	};
 }()); //end encapsulating IIFE

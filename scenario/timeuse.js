@@ -192,18 +192,7 @@ var timeuse = (function () {
 					chart._options.controlOptions = ['Stacked', 'Expanded'];
 					//Format x-axis labels with custom function. 
 					chart.xAxis.tickFormat(function (d) {
-						var halfHoursPast3Am = d - 1;
-						//period is from 1 to 48 and is in half hours starting at 3 am
-						var hours = (Math.floor(halfHoursPast3Am / 2) + 3) % 24;
-						var minutes = (halfHoursPast3Am % 2) * 30; //if period is odd then add half hour
-						//var timeOfDay = twoDigitIntegerFormat(hours) + ':' + twoDigitIntegerFormat(minutes);
-						var am = hours < 12;
-						var timeOfDayAmPm = (hours % 13);
-						if ((halfHoursPast3Am % 2) == 1) {
-							timeOfDayAmPm += ':30';
-						}
-						timeOfDayAmPm += ' ' + ((hours < 12) ? 'am' : 'pm');
-						return timeOfDayAmPm;
+						return abmviz_utilities.halfHourTimePeriodToTimeString(d);
 					});
 					chart.yAxis.tickFormat(d3.format(',.2f'));
 					//nv.utils.windowResize(chart.update);

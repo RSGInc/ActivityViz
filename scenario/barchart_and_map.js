@@ -41,8 +41,8 @@ var barchart_and_map = (function () {
 	var zoneColumn;
 	var modeColumn;
 	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
-	var svgSelector = "#mode-share-by-county-chart";
-	var svgElement;
+	var chartSelector = "#mode-share-by-county-chart";
+	var svgChart;
 	var extNvd3Chart;
 	var minBarWidth = 2;
 	var minBarSpacing = 1;
@@ -72,7 +72,17 @@ var barchart_and_map = (function () {
 		, "fillColor": bubbleColor
 		, "fillOpacity": 0.5
 	};
-
+	//start off chain of initialization by reading in the data	
+	readInData(function () {
+		createMap(function () {
+			console.log("createMap callback")
+		});
+		setDataSpecificDOM();
+		svgChart = d3.select(chartSelector);
+		updateCurrentTripModeOrClassification();
+		createEmptyChart();
+		initializeMuchOfUI();
+	}); //end call to readInData and its follwing callback
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
@@ -155,13 +165,6 @@ var barchart_and_map = (function () {
 			callback();
 		}); //end d3.csv
 	}; //end readInData
-	console.log("About to hold ready");
-	$.holdReady(true); //prevent ready event to fire
-	readInData(function () {
-		console.log("Finished loading data");
-		$.holdReady(false); //allow ready event to fire}
-	});
-
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
 		d3.selectAll(".mode-share-by-county-trip-mode").html(modeColumn);
@@ -212,11 +215,10 @@ var barchart_and_map = (function () {
 		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
-			svgElement.datum(hierarchicalData).call(extNvd3Chart);
+			svgChart.datum(hierarchicalData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
 			//first check if
-			var chartOuterSelector = ".nv-barsWrap.nvd3-svg";
-			barsWrap = d3.select(chartOuterSelector);
+			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
 			}
@@ -239,7 +241,7 @@ var barchart_and_map = (function () {
 		callback();
 	}; //end updateChartNVD3
 	function updateChartMouseoverRect() {
-		var innerContainer = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+		var innerContainer = svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
 		var innerContainerNode = innerContainer.node();
 		var tryAgain = true;
 		if (innerContainerNode != undefined) {
@@ -503,149 +505,130 @@ var barchart_and_map = (function () {
 			return tempColorRampIndex == selectedColorRampIndex;
 		});
 	}; //end setColorPalette
-	function handleDocumentReady(callback) {
-		"use strict";
-		$(document).ready(function () {
-			"use strict";
-			console.log("enter ready callback");
-			createMap(function () {
-				console.log("createMap callback")
-			});
-			//NOTE: data should have been fully read in opn entry because
-			//readInData() set holdReady until finished
-			setDataSpecificDOM();
-			svgElement = d3.select(svgSelector);
-			updateCurrentTripModeOrClassification();
-			createEmptyChart();
-			$("#mode-share-by-county-stacked").click(function () {
-				extNvd3Chart.stacked(this.checked);
-				extNvd3Chart.update();
-			});
-			$("#mode-share-by-county-legend-type").click(function () {
-				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
-				extNvd3Chart.update();
-			});
-			var colorRamps = d3.selectAll("#mode-share-by-county .ramp").on('click', function (d, i) {
-				setColorPalette(i);
-				updateColors($("#mode-share-by-county-slider").slider("values"));
-				//add delay to redrawMap so css has change to updates
-				setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-			}); //end on click for ramp/palette
-			if ($("#mode-share-by-county-classification").val() == "custom") {
-				$("#mode-share-by-county-update-map").css("display", "inline");
-			};
-			//Logic for cycling through the maps
-			$("#mode-share-by-county-start-cycle-map").click(function () {
-				$("#mode-share-by-county-stop-cycle-map").css("display", "inline");
-				$("#mode-share-by-county-start-cycle-map").css("display", "none");
-				cycleGoing = true;
-				currentCycleModeIndex = 0;
-				cycleTripMode();
-			});
-			$("#mode-share-by-county-stop-cycle-map").click(function () {
-				cycleGoing = false;
-				$("#mode-share-by-county-stop-cycle-map").css("display", "none");
-				$("#mode-share-by-county-start-cycle-map").css("display", "inline");
-			});
+	function initializeMuchOfUI() {
+		$("#mode-share-by-county-stacked").click(function () {
+			extNvd3Chart.stacked(this.checked);
+			extNvd3Chart.update();
+		});
+		$("#mode-share-by-county-legend-type").click(function () {
+			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
+			extNvd3Chart.update();
+		});
+		var colorRamps = d3.selectAll("#mode-share-by-county .ramp").on('click', function (d, i) {
+			setColorPalette(i);
+			updateColors($("#mode-share-by-county-slider").slider("values"));
+			//add delay to redrawMap so css has change to updates
+			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		}); //end on click for ramp/palette
+		if ($("#mode-share-by-county-classification").val() == "custom") {
+			$("#mode-share-by-county-update-map").css("display", "inline");
+		};
+		//Logic for cycling through the maps
+		$("#mode-share-by-county-start-cycle-map").click(function () {
+			$("#mode-share-by-county-stop-cycle-map").css("display", "inline");
+			$("#mode-share-by-county-start-cycle-map").css("display", "none");
+			cycleGoing = true;
+			currentCycleModeIndex = 0;
+			cycleTripMode();
+		});
+		$("#mode-share-by-county-stop-cycle-map").click(function () {
+			cycleGoing = false;
+			$("#mode-share-by-county-stop-cycle-map").css("display", "none");
+			$("#mode-share-by-county-start-cycle-map").css("display", "inline");
+		});
 
-			function cycleTripMode() {
-				var newTripMode = modes[currentCycleModeIndex];
-				$('#mode-share-by-county-current-trip-mode').val(newTripMode);
-				updateCurrentTripModeOrClassification();
+		function cycleTripMode() {
+			var newTripMode = modes[currentCycleModeIndex];
+			$('#mode-share-by-county-current-trip-mode').val(newTripMode);
+			updateCurrentTripModeOrClassification();
+			redrawMap();
+			currentCycleModeIndex++;
+			if (currentCycleModeIndex >= $("#mode-share-by-county-current-trip-mode option").size()) {
+				currentCycleModeIndex = 0;
+			}
+			if (cycleGoing) {
+				var timeInterval = parseInt($("#mode-share-by-county-cycle-frequency").val()) * 1000;
+				setTimeout(cycleTripMode, timeInterval);
+			} //end if cycleGoing
+		} //end cycleTripMode
+		$("#mode-share-by-county-cycle-frequency").change(function () {
+			//no need to do anything since cycleTripMode always reads the current #cycle-frequency
+		});
+		$("#mode-share-by-county-update-map").click(function () {
+			var sliderValues = $("#mode-share-by-county-slider").slider("values");
+			breakUp[1] = sliderValues[0];
+			breakUp[2] = sliderValues[1];
+			breakUp[3] = sliderValues[2];
+			redrawMap();
+		});
+		//value slider
+		$("#mode-share-by-county-slider").slider({
+			range: false
+			, disabled: ($("#mode-share-by-county-classification").val() != "custom")
+			, min: 0
+			, max: 100
+			, values: handlers
+			, create: function (event, ui) {
+				console.log("Slider created")
+				$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
+				$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
+				$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
+			}
+			, slide: function (event, ui) {
+				var themax = $("#mode-share-by-county-slider").slider("option", "max");
+				updateColors(ui.values, themax);
+				$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
+				$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
+				$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
+			}
+		});
+		updateColors(handlers, $("#mode-share-by-county-slider").slider("option", "max"));
+		$("#mode-share-by-county-current-trip-mode").change(function () {
+			updateCurrentTripModeOrClassification();
+			redrawMap();
+		});
+		$("#mode-share-by-county-classification").change(function () {
+			updateCurrentTripModeOrClassification();
+			redrawMap();
+		});
+		$("#mode-share-by-county-naColor").spectrum({
+			color: naColor
+			, showInput: true
+			, className: "full-spectrum"
+			, showInitial: false
+			, showPalette: true
+			, showAlpha: true
+			, showSelectionPalette: true
+			, maxSelectionSize: 10
+			, preferredFormat: "hex"
+			, localStorageKey: "spectrum.demo"
+			, palette: palette
+			, change: function (color) {
+				naColor = color;
 				redrawMap();
-				currentCycleModeIndex++;
-				if (currentCycleModeIndex >= $("#mode-share-by-county-current-trip-mode option").size()) {
-					currentCycleModeIndex = 0;
-				}
-				if (cycleGoing) {
-					var timeInterval = parseInt($("#mode-share-by-county-cycle-frequency").val()) * 1000;
-					setTimeout(cycleTripMode, timeInterval);
-				} //end if cycleGoing
-			} //end cycleTripMode
-			$("#mode-share-by-county-cycle-frequency").change(function () {
-				//no need to do anything since cycleTripMode always reads the current #cycle-frequency
-			});
-			$("#mode-share-by-county-update-map").click(function () {
-				var sliderValues = $("#mode-share-by-county-slider").slider("values");
-				$("#mode-share-by-county-val2").val(sliderValues[0]);
-				$("#mode-share-by-county-val3").val(sliderValues[1]);
-				$("#mode-share-by-county-val4").val(sliderValues[2]);
-			breakUp = [$("#mode-share-by-county-val1").val(), $("#mode-share-by-county-val2").val(), $("#mode-share-by-county-val3").val(), $("#mode-share-by-county-val4").val(), $("#mode-share-by-county-val5").val()];
+				updateColors($("#mode-share-by-county-slider").slider("values"));
+			}
+		});
+		$("#mode-share-by-county-bubble-color").spectrum({
+			color: bubbleColor
+			, showInput: true
+			, className: "full-spectrum"
+			, showInitial: true
+			, showPalette: true
+			, showAlpha: true
+			, showSelectionPalette: true
+			, maxSelectionSize: 10
+			, preferredFormat: "hex"
+			, localStorageKey: "spectrum.demo"
+			, palette: palette
+			, change: function (color) {
+				bubbleColor = color;
 				redrawMap();
-			});
-			//value slider
-			$("#mode-share-by-county-slider").slider({
-				range: false
-				, disabled: ($("#mode-share-by-county-classification").val() != "custom")
-				, min: 0
-				, max: 100
-				, values: handlers
-				, create: function (event, ui) {
-					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
-					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
-					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
-				}
-				, slide: function (event, ui) {
-					var themax = $("#mode-share-by-county-slider").slider("option", "max");
-					updateColors(ui.values, themax);
-					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
-					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
-					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
-				}
-			});
-			updateColors(handlers, $("#mode-share-by-county-slider").slider("option", "max"));
-			$("#mode-share-by-county-current-trip-mode").change(function () {
-				updateCurrentTripModeOrClassification();
-				redrawMap();
-			});
-			$("#mode-share-by-county-classification").change(function () {
-				updateCurrentTripModeOrClassification();
-				redrawMap();
-			});
-			$("#mode-share-by-county-naColor").spectrum({
-				color: naColor
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: false
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					naColor = color;
-					redrawMap();
-					updateColors($("#mode-share-by-county-slider").slider("values"));
-				}
-			});
-			$("#mode-share-by-county-bubble-color").spectrum({
-				color: bubbleColor
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					bubbleColor = color;
-					redrawMap();
-				}
-			});
-			//initialize the map palette
-			setColorPalette(selectedColorRampIndex);
-			callback();
-		}); //end on document ready
-	}; //end handleDocumentReady
-	console.log("Before handling document ready");
-	handleDocumentReady(function () {
-		console.log("Finished handling document ready");
-	});
+			}
+		});
+		//initialize the map palette
+		setColorPalette(selectedColorRampIndex);
+	} //end initialize much of ui
 	//hex to rgb for handling transparancy
 	function hexToRgb(hex) {
 		"use strict";
@@ -729,21 +712,18 @@ var barchart_and_map = (function () {
 			else {
 				throw ("Unhandled classification: " + classification);
 			}
-			$("#mode-share-by-county-val1").val(breakUp[0]);
-			$("#mode-share-by-county-val2").val(breakUp[1]);
-			$("#mode-share-by-county-val3").val(breakUp[2]);
-			$("#mode-share-by-county-val4").val(breakUp[3]);
-			$("#mode-share-by-county-val5").val(breakUp[4]);
 			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
 			$("#mode-share-by-county-slider").slider({
 				min: breakUp[0]
 				, max: breakUp[4]
 				, values: newValues
+				, start: function (event, ui) {
+					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
+					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
+				}
 			});
-			$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
-			$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
-			$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();

@@ -1,6 +1,6 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
 //global object three3d will contain functions and variables that must be accessible from elsewhere
-var three3d = (function () {
+var three3d = (function three3dFunction() {
 	"use strict";
 	var naColor = "White";
 	var bubbleColor = "#ff7800";
@@ -25,330 +25,100 @@ var three3d = (function () {
 	//slider
 	var handlers = [25, 50, 75];
 	var map;
-	var zoneData;
-	var dataItems = [];
-	var currentCounty = "";
-	var modes;
-	var counties;
-	var countiesSet;
-	var enabledCounties;
+	var zoneData = {}; //map of zoneIds with secondary map for period quantities
+	var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
+	var currentPeriod = 19; //12 noon
+	var periods;
 	var circlesLayerGroup;
-	var chartData = null;
 	//use Map instead of vanilla object because wish to preserve insertion order
-	var modeData = new Map([]);
-	var quantityColumn;
-	var countyColumn;
-	var zoneColumn;
-	var modeColumn;
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
-	var svgSelector = "#three3d-chart";
-	var svgElement;
-	var extNvd3Chart;
-	var minBarWidth = 2;
-	var minBarSpacing = 1;
 	var marginTop = 0;
 	var marginBottom = 50;
 	var marginLeft = 110;
 	var marginRight = 50;
 	var CSS_UPDATE_PAUSE = 150; //milliseconds to pause before redrawing map
 	var interval;
-	var currentCycleModeIndex = 0;
+	var currentCyclePeriodIndex = 0;
 	var cycleGoing = false;
 	var breakUp;
-	var currentTripMode;
 	var bubblesShowing = false;
 	var showOutline = false;
 	var maxFeature;
 	var zoneDataLayer;
 	var countyLayer;
-	var barsWrap;
-	var barsWrapRect;
-	var barsWrapRectHeight;
-	var barsWrapRectId = "three3d-barsWrapRectRSG"
-	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var paletteRamps = d3.selectAll("#three3d .ramp");
 	var circleStyle = {
 		"stroke": false
 		, "fillColor": bubbleColor
 		, "fillOpacity": 0.5
 	};
-
+	var ZONE_COLUMN = 0;
+	var PERIOD_COLUMN = 1;
+	var QUANTITY_COLUMN = 2;
+	//start off chain of initialization by reading in the data	
+	readInData(function () {
+		"use strict";
+		createMap(function () {
+			console.log("createMap callback")
+		});
+		setDataSpecificDOM();
+		initializeMuchOfUI();
+		updateCurrentPeriodOrClassification();
+	}); //end call to readInData and its follwing callback
 	function redrawMap() {
 		"use strict";
-		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
+		if (zoneDataLayer != undefined) {
+			zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
+		}
 	}
 
 	function readInData(callback) {
 		"use strict";
-		d3.csv(url, function (error, data) {
+		d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
 			"use strict";
-			if (error) throw error; //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
-			var headers = d3.keys(data[0]);
-			zoneColumn = headers[0];
-			countyColumn = headers[1];
-			modeColumn = headers[2];
-			quantityColumn = headers[3];
-			var rawChartData = new Map([]);
-			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
-			zoneData = {};
-			counties = [];
-			data.forEach(function (d) {
-				var modeName = d[modeColumn];
-				var keepThisObject = modeName != "TOTAL";
-				if (keepThisObject) {
-					var zoneName = d[zoneColumn];
-					var countyName = d[countyColumn];
-					var quantity = parseInt(d[quantityColumn]);
-					if (zoneData[zoneName] == undefined) {
-						zoneData[zoneName] = {};
-					}
-					zoneData[zoneName][modeName] = {
-						COUNTY: countyName
-						, QUANTITY: quantity
-					};
-					if (rawChartData[countyName] == undefined) {
-						rawChartData[countyName] = {};
-						counties.push(countyName);
-					}
-					if (rawChartData[countyName][modeName] == undefined) {
-						rawChartData[countyName][modeName] = 0;
-						//keep track of counts for each mode
-						//don't actually care about counts but this also implicitly keeps a list of all modes
-						//in the order they were encountered because properties are ordered
-						if (modeData[modeName] == undefined) {
-							modeData[modeName] = {
-								enabled: true
-								, serie: []
-							};
-						}
-					}
-					modeData[modeName].serie.push(quantity);
-					rawChartData[countyName][modeName] += quantity;
-				} //end if keeping this object
-				return keepThisObject;
-			}); //end filtering and other data prep
-			countiesSet = new Set(counties);
-			modes = Object.keys(modeData);
-			data = null; //allow GC to reclaim memory
-			//need to run through rawChartData and put modes in order and insert ones that are missing
-			chartData = [];
-			counties.forEach(function (countyName) {
-				var rawCountyObject = rawChartData[countyName];
-				var newCountyObject = {
-					groupLabel: countyName
-					, subgroups: []
-					, enabled: true
-				};
-				chartData.push(newCountyObject);
-				modes.forEach(function (modeName) {
-					var countyModeTotalQuantity = rawCountyObject[modeName];
-					if (countyModeTotalQuantity == undefined) {
-						countyModeTotalQuantity = 0;
-					}
-					newCountyObject.subgroups.push({
-						subgroupLabel: modeName
-						, value: countyModeTotalQuantity
-					});
-				}); //end modes foreach
-			}); //end counties forEach
-			rawChartData = null; //allow GC to reclaim memory
+			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
+			var csv = d3.csv.parseRows(data).slice(1);
+			data = null; //allow memory to be GC'ed
+			var rolledUpMap = d3.nest().key(function (d) {
+				//convert quantity to a number
+				var quantity = d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
+				//convert periods to integers by removing all non-numeric characters
+				var period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
+				var zone = d[ZONE_COLUMN] = +d[ZONE_COLUMN];
+				if (zoneData[zone] == undefined) {
+					zoneData[zone] = {};
+				}
+				zoneData[zone][period] = quantity;
+				if (periodData[period] == undefined) {
+					periodData[period] = [] //array of all quantities during this period for use with geostats
+				}
+				if (!isNaN(quantity)) {
+									periodData[period].push(quantity);
+				}
+				return zone;
+			}).sortKeys(d3.ascending).key(function (d) {
+				return d[PERIOD_COLUMN];
+			}).sortKeys(d3.ascending).rollup(function (d) {
+				return d[0][QUANTITY_COLUMN];
+			}).map(csv);
+			periods = Object.keys(periodData);
 			callback();
-		}); //end d3.csv
-	}; //end readInData
-	console.log("About to hold ready");
-	$.holdReady(true); //prevent ready event to fire
-	readInData(function () {
-		console.log("Finished loading data");
-		$.holdReady(false); //allow ready event to fire}
-	});
-
+		}); //end d3.text
+	}; //end readInData 
 	function setDataSpecificDOM() {
-		d3.selectAll(".three3d-area-type").html(countyColumn);
-		d3.selectAll(".three3d-trip-mode").html(modeColumn);
-		d3.selectAll(".three3d-trip-mode-example").html(modes[0]);
-		modes.forEach(function (modeName) {
-			$("#three3d-current-trip-mode").append("<option>" + modeName + "</option>");
-		});
-		// 		chartData.forEach(function (chartObject) {
-		// 			$("#three3d-chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
-		// 		});
-		// 		$("#three3d-chart-selection").chosen();
+		"use strict";
 	} //end setDataSpecificDOM
-	function updateChart(callback) {
-		"use strict";
-		updateChartNVD3(callback);
-	}
-
-	function updateChartNVD3(callback) {
-		"use strict";
-		//nvd3 expects data in the opposite hierarchy than rest of code so need to create
-		//but can also filter out counties at same time
-		//NOTE: ability to enable/disable counties  removed from UI so currently never used.
-		enabledCounties = chartData.filter(function (countyObject) {
-			return countyObject.enabled;
-		})
-		var hierarchicalData = [];
-		modes.forEach(function (modeName, modeIndex) {
-			var subgroups = [];
-			var modeObject = {
-				key: modeName
-				, values: subgroups
-			};
-			hierarchicalData.push(modeObject);
-			enabledCounties.forEach(function (countyWithModesObject) {
-				var simpleModeObject = countyWithModesObject.subgroups[modeIndex];
-				var retrievedModeName = simpleModeObject.subgroupLabel;
-				if (retrievedModeName != modeName) {
-					throw ("SOMETHING IS WRONG. Mode is not as expected. Expected mode: " + modeName + ", found modeName: " + retrievedModeName);
-				}
-				var simpleCountyObject = {
-					label: countyWithModesObject.groupLabel
-					, value: simpleModeObject.value
-				}
-				subgroups.push(simpleCountyObject);
-			}); //end loop over chartData countyObjects
-		}); //end loop over modes
-		//poll every 150ms for up to two seconds waiting for chart
-		abmviz_utilities.poll(function () {
-			return extNvd3Chart != undefined;
-		}, function () {
-			svgElement.datum(hierarchicalData).call(extNvd3Chart);
-			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
-			//first check if
-			var chartOuterSelector = ".nv-barsWrap.nvd3-svg";
-			barsWrap = d3.select(chartOuterSelector);
-			if (barsWrap[0].length == 0) {
-				throw ("did not find expected part of chart")
-			}
-			//if first time (enter() selection) create rect
-			//nv-barsWrap nvd3-svg
-			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
-				//console.log('barsWrap mousemove');
-				var mouseY = d3.mouse(this)[1];
-				var numCounties = enabledCounties.length;
-				var heightPerGroup = barsWrapRectHeight / numCounties;
-				var countyIndex = Math.floor(mouseY / heightPerGroup);
-				var countyObject = enabledCounties[countyIndex];
-				var newCounty = countyObject.groupLabel;
-				changeCurrentCounty(newCounty);
-			});
-			setTimeout(updateChartMouseoverRect, 1000);
-		}, function () {
-			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
-		}); //end call to poll
-		callback();
-	}; //end updateChartNVD3
-	function updateChartMouseoverRect() {
-		var innerContainer = d3.select(".nvd3.nv-wrap.nv-multibarHorizontal");
-		var innerContainerNode = innerContainer.node();
-		var tryAgain = true;
-		if (innerContainerNode != undefined) {
-			var bounds = innerContainerNode.getBBox();
-			var width = bounds.width + marginLeft;
-			barsWrapRectHeight = bounds.height;
-			if (barsWrapRectHeight > 0) {
-				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
-				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
-				tryAgain = false;
-			}
-		} //end if innerContainerNode exists
-		if (tryAgain) {
-			console.log('updateChartMouseoverRect called but innerContainerNode is null so will try again shortly');
-			setTimeout(updateChartMouseoverRect, 500);
-		}
-	} //end updateChartMouseoverRect
-	function changeCurrentCounty(newCurrentCounty) {
-		if (currentCounty != newCurrentCounty) {
-			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
-			currentCounty = newCurrentCounty;
-			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-			countyLabels.classed("three3d-current-county", function (d, i) {
-				var setClass = d == currentCounty;
-				return setClass;
-			}); //end classed of group rect
-			countyLayer.setStyle(function (feature) {
-				var style = {};
-				if (feature.properties.NAME == currentCounty) {
-					style.weight = 4;
-				}
-				else {
-					style.weight = 1;
-				}
-				return (style);
-			}); //end setStyle function
-			//add delay to redrawMap so that text has chance to bold
-			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-		} //end if county is changing
-	}; //end change currentCounty
-	function createEmptyChart() {
-		nv.addGraph({
-			generate: function chartGenerator() {
-					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
-					var colorScale = d3.scale.category20();
-					var nvd3Chart = nv.models.multiBarHorizontalChart();
-					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
-					nvd3Chart.x(function (d, i) {
-						return d.label
-					}).y(function (d) {
-						return d.value
-					}).color(function (d, i) {
-						var color = colorScale(i);
-						//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
-						return color;
-					}).duration(250).margin({
-						left: marginLeft
-						, right: marginRight
-						, top: marginTop
-						, bottom: marginBottom
-					}).id("three3d-multiBarHorizontalChart").stacked(true).showControls(false);
-					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
-					nvd3Chart.yAxis.axisLabel(countyColumn);
-					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
-					nv.utils.windowResize(function () {
-						//reset marginTop in case legend has gotten less tall
-						nvd3Chart.margin({
-							top: marginTop
-						});
-						updateChart(function () {
-							console.log('updateChart callback after windowResize');
-						});
-					});
-					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
-						var newTripMode = event.key;
-						console.log('legend legendDblclick on trip mode: ' + newTripMode);
-						$('#current-trip-mode').val(newTripMode);
-						updateCurrentTripModeOrClassification();
-						redrawMap();
-					});
-					nvd3Chart.multibar.dispatch.on("elementMouseover", function (d, i) {
-						var countyUnderMouse = d.value;
-						changeCurrentCounty(countyUnderMouse);
-					});
-					//furious has colored boxes with checkmarks
-					//nvd3Chart.legend.vers('furious');
-					return nvd3Chart;
-				} //end generate
-				
-			, callback: function (newGraph) {
-					console.log("nv.addGraph callback called");
-					extNvd3Chart = newGraph;
-					updateChart(function () {
-						console.log("updateChart callback during after the nvd3 callback called");
-					});
-				} //end callback function
-		}); //end nv.addGraph
-	}; //end createEmptyChart
 	function styleZoneGeoJSONLayer(feature) {
+		"use strict";
 		var color = naColor;
 		if (feature.zoneData != undefined) {
-			var zoneDataFeature = feature.zoneData[currentTripMode];
-			//possible that even if data for zone exists, could be missing this particular trip mode
+			var zoneDataFeature = feature.zoneData[currentPeriod];
+			//possible that even if data for zone exists, could be missing this particular period
 			if (zoneDataFeature != undefined) {
-				var quantity = zoneDataFeature.QUANTITY;
-				if (zoneDataFeature.QUANTITY == undefined) {
-					throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
+				var quantity = zoneDataFeature;
+				if (isNaN(quantity)) {
+					color = naColor;
 				}
-				if (quantity >= breakUp[3]) {
+				else if (quantity >= breakUp[3]) {
 					color = colors[3];
 				}
 				else if (quantity >= breakUp[2]) {
@@ -360,7 +130,7 @@ var three3d = (function () {
 				else {
 					color = colors[0];
 				}
-			} //end if we have data for this trip mode
+			} //end if we have data for this period
 		} //end if we have data for this zone
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
@@ -375,6 +145,7 @@ var three3d = (function () {
 		return (returnStyle);
 	} //end styleZoneGeoJSONLayer function
 	function styleCountyGeoJSONLayer(feature) {
+		"use strict";
 		var returnStyle = {
 			//all SVG styles allowed
 			fill: true
@@ -387,6 +158,7 @@ var three3d = (function () {
 		return (returnStyle);
 	} //end styleCountyGeoJSONLayer function
 	function createMap(callback) {
+		"use strict";
 		map = L.map("three3d-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
@@ -435,7 +207,7 @@ var three3d = (function () {
 				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data for
 					filter: function (feature) {
-						return countiesSet.has(feature.properties.NAME);
+						return true; //countiesSet.has(feature.properties.NAME);
 					}
 					, updateWhenIdle: true
 					, unloadInvisibleFiles: true
@@ -462,7 +234,7 @@ var three3d = (function () {
 			} //end on each County
 			function mouseoverCounty(e) {
 				var layer = e.target;
-				changeCurrentCounty(layer.feature.properties.NAME);
+				console.log('mouseover county: ' + layer.feature.properties.NAME);
 			}
 		}); //end geoJson of zone layer
 	}; //end createMap
@@ -503,149 +275,148 @@ var three3d = (function () {
 			return tempColorRampIndex == selectedColorRampIndex;
 		});
 	}; //end setColorPalette
-	function handleDocumentReady(callback) {
-		"use strict";
-		$(document).ready(function () {
-			"use strict";
-			console.log("enter ready callback");
-			createMap(function () {
-				console.log("createMap callback")
-			});
-			//NOTE: data should have been fully read in opn entry because
-			//readInData() set holdReady until finished
-			setDataSpecificDOM();
-			svgElement = d3.select(svgSelector);
-			updateCurrentTripModeOrClassification();
-			createEmptyChart();
-			$("#three3d-stacked").click(function () {
-				extNvd3Chart.stacked(this.checked);
-				extNvd3Chart.update();
-			});
-			$("#three3d-legend-type").click(function () {
-				extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
-				extNvd3Chart.update();
-			});
-			var colorRamps = d3.selectAll("#three3d .ramp").on('click', function (d, i) {
-				setColorPalette(i);
-				updateColors($("#three3d-slider").slider("values"));
-				//add delay to redrawMap so css has change to updates
-				setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-			}); //end on click for ramp/palette
-			if ($("#three3d-classification").val() == "custom") {
-				$("#three3d-update-map").css("display", "inline");
-			};
-			//Logic for cycling through the maps
-			$("#three3d-start-cycle-map").click(function () {
-				$("#three3d-stop-cycle-map").css("display", "inline");
-				$("#three3d-start-cycle-map").css("display", "none");
-				cycleGoing = true;
-				currentCycleModeIndex = 0;
-				cycleTripMode();
-			});
-			$("#three3d-stop-cycle-map").click(function () {
-				cycleGoing = false;
-				$("#three3d-stop-cycle-map").css("display", "none");
-				$("#three3d-start-cycle-map").css("display", "inline");
-			});
+	function initializeMuchOfUI() {
+		console.log("three3d initializeMuchOfUI");
+		$("#three3d-stacked").click(function () {
+			extNvd3Chart.stacked(this.checked);
+			extNvd3Chart.update();
+		});
+		$("#three3d-legend-type").click(function () {
+			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
+			extNvd3Chart.update();
+		});
 
-			function cycleTripMode() {
-				var newTripMode = modes[currentCycleModeIndex];
-				$('#three3d-current-trip-mode').val(newTripMode);
-				updateCurrentTripModeOrClassification();
+		function updateTimeSliderTooltip(value) {
+			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
+			$('#three3d-slider-time .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + timeString + '</div></div>');
+		}
+		$("#three3d-slider-time").slider({
+			range: false
+			, min: 1
+			, max: periods.length
+			, step: 1
+			, value: currentPeriod
+			, create: function (e, ui) {
+				updateTimeSliderTooltip(currentPeriod);
+			}
+			, change: function (e, ui) {
+				currentPeriod = ui.value;
+				updateTimeSliderTooltip(currentPeriod);
+				updateCurrentPeriodOrClassification();
+			}
+			, slide: function (e, ui) {
+				currentPeriod = ui.value;
+				updateTimeSliderTooltip(currentPeriod);
+				updateCurrentPeriodOrClassification();
+			}
+		});
+		var colorRamps = d3.selectAll("#three3d .ramp").on('click', function (d, i) {
+			setColorPalette(i);
+			updateColors($("#three3d-slider").slider("values"));
+			//add delay to redrawMap so css has change to updates
+			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		}); //end on click for ramp/palette
+		if ($("#three3d-classification").val() == "custom") {
+			$("#three3d-update-map").css("display", "inline");
+		};
+		//Logic for cycling through the maps
+		$("#three3d-start-cycle-map").click(function () {
+			$("#three3d-stop-cycle-map").css("display", "inline");
+			$("#three3d-start-cycle-map").css("display", "none");
+			cycleGoing = true;
+			currentCyclePeriodIndex = 0;
+			cyclePeriod();
+		});
+		$("#three3d-stop-cycle-map").click(function () {
+			cycleGoing = false;
+			$("#three3d-stop-cycle-map").css("display", "none");
+			$("#three3d-start-cycle-map").css("display", "inline");
+		});
+
+		function cyclePeriod() {
+			currentCyclePeriodIndex++;
+			if (currentCyclePeriodIndex >= periods.length) {
+				currentCyclePeriodIndex = 0;
+			}
+			$("#three3d-slider-time").slider({value: periods[currentCyclePeriodIndex]});
+			if (cycleGoing) {
+				var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
+				setTimeout(cyclePeriod, timeInterval);
+			} //end if cycleGoing
+		} //end cyclePeriod
+		$("#three3d-cycle-frequency").change(function () {
+			//no need to do anything since cyclePeriod always reads the current #cycle-frequency
+		});
+		$("#three3d-update-map").click(function () {
+			var sliderValues = $("#three3d-slider").slider("values");
+			breakUp[1] = sliderValues[0];
+			breakUp[2] = sliderValues[1];
+			breakUp[3] = sliderValues[2];
+			redrawMap();
+		});
+
+		function updateSliderTooltip(values) {
+			$('#three3d-slider .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + values[0] + '</div></div>');
+			$('#three3d-slider .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + values[1] + '</div></div>');
+			$('#three3d-slider .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + values[2] + '</div></div>');
+		}
+		$("#three3d-slider").slider({
+			range: false
+			, disabled: ($("#three3d-classification").val() != "custom")
+			, min: 0
+			, max: 100
+			, values: handlers
+			, create: function (event, ui) {
+				updateSliderTooltip(handlers);
+			}
+			, change: function (event, ui) {
+				updateSliderTooltip(ui.values);
+				var themax = $("#three3d-slider").slider("option", "max");
+				updateColors(ui.values, themax);
+			}
+		});
+		updateColors(handlers, $("#three3d-slider").slider("option", "max"));
+		$("#three3d-classification").change(function () {
+			updateCurrentPeriodOrClassification();
+		});
+		$("#three3d-naColor").spectrum({
+			color: naColor
+			, showInput: true
+			, className: "full-spectrum"
+			, showInitial: false
+			, showPalette: true
+			, showAlpha: true
+			, showSelectionPalette: true
+			, maxSelectionSize: 10
+			, preferredFormat: "hex"
+			, localStorageKey: "spectrum.demo"
+			, palette: palette
+			, change: function (color) {
+				naColor = color;
 				redrawMap();
-				currentCycleModeIndex++;
-				if (currentCycleModeIndex >= $("#three3d-current-trip-mode option").size()) {
-					currentCycleModeIndex = 0;
-				}
-				if (cycleGoing) {
-					var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
-					setTimeout(cycleTripMode, timeInterval);
-				} //end if cycleGoing
-			} //end cycleTripMode
-			$("#three3d-cycle-frequency").change(function () {
-				//no need to do anything since cycleTripMode always reads the current #cycle-frequency
-			});
-			$("#three3d-update-map").click(function () {
-				var sliderValues = $("#three3d-slider").slider("values");
-				$("#three3d-val2").val(sliderValues[0]);
-				$("#three3d-val3").val(sliderValues[1]);
-				$("#three3d-val4").val(sliderValues[2]);
-			breakUp = [$("#three3d-val1").val(), $("#three3d-val2").val(), $("#three3d-val3").val(), $("#three3d-val4").val(), $("#three3d-val5").val()];
+				updateColors($("#three3d-slider").slider("values"));
+			}
+		});
+		$("#three3d-bubble-color").spectrum({
+			color: bubbleColor
+			, showInput: true
+			, className: "full-spectrum"
+			, showInitial: true
+			, showPalette: true
+			, showAlpha: true
+			, showSelectionPalette: true
+			, maxSelectionSize: 10
+			, preferredFormat: "hex"
+			, localStorageKey: "spectrum.demo"
+			, palette: palette
+			, change: function (color) {
+				bubbleColor = color;
 				redrawMap();
-			});
-			//value slider
-			$("#three3d-slider").slider({
-				range: false
-				, disabled: ($("#three3d-classification").val() != "custom")
-				, min: 0
-				, max: 100
-				, values: handlers
-				, create: function (event, ui) {
-					$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
-					$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
-					$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
-				}
-				, slide: function (event, ui) {
-					var themax = $("#three3d-slider").slider("option", "max");
-					updateColors(ui.values, themax);
-					$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
-					$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
-					$('#three3d .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[2] + '</div></div>');
-				}
-			});
-			updateColors(handlers, $("#three3d-slider").slider("option", "max"));
-			$("#three3d-current-trip-mode").change(function () {
-				updateCurrentTripModeOrClassification();
-				redrawMap();
-			});
-			$("#three3d-classification").change(function () {
-				updateCurrentTripModeOrClassification();
-				redrawMap();
-			});
-			$("#three3d-naColor").spectrum({
-				color: naColor
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: false
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					naColor = color;
-					redrawMap();
-					updateColors($("#three3d-slider").slider("values"));
-				}
-			});
-			$("#three3d-bubble-color").spectrum({
-				color: bubbleColor
-				, showInput: true
-				, className: "full-spectrum"
-				, showInitial: true
-				, showPalette: true
-				, showAlpha: true
-				, showSelectionPalette: true
-				, maxSelectionSize: 10
-				, preferredFormat: "hex"
-				, localStorageKey: "spectrum.demo"
-				, palette: palette
-				, change: function (color) {
-					bubbleColor = color;
-					redrawMap();
-				}
-			});
-			//initialize the map palette
-			setColorPalette(selectedColorRampIndex);
-			callback();
-		}); //end on document ready
-	}; //end handleDocumentReady
-	console.log("Before handling document ready");
-	handleDocumentReady(function () {
-		console.log("Finished handling document ready");
-	});
+			}
+		});
+		//initialize the map palette
+		setColorPalette(selectedColorRampIndex);
+	} //end initializeMuchOfUI
 	//hex to rgb for handling transparancy
 	function hexToRgb(hex) {
 		"use strict";
@@ -687,7 +458,7 @@ var three3d = (function () {
 			Object.keys(zoneData).forEach(function (zoneKey) {
 				var zoneDatum = zoneData[zoneKey];
 				var bubbleCenter = zoneDatum.centroid;
-				var zoneTripData = zoneDatum[currentTripMode];
+				var zoneTripData = zoneDatum[currentPeriod];
 				if (zoneTripData != undefined) {
 					var quantity = zoneTripData.QUANTITY;
 					var sqrtRadius = scaleSqrt(quantity);
@@ -695,16 +466,15 @@ var three3d = (function () {
 					circle.setRadius(sqrtRadius);
 					//add circle to circlesLayerGroup
 					circlesLayerGroup.addLayer(circle);
-				} //end if have data for this zone and trip mode
+				} //end if have data for this zone and period
 			}); //end Object.keys(zoneData).forEach
 		} //end if bubbles showing
 	}; //end updateBubbles
-	function updateCurrentTripModeOrClassification() {
+	function updateCurrentPeriodOrClassification() {
 		"use strict";
-		currentTripMode = $('#three3d-current-trip-mode').val();
-		var startTime = Date.now();
-		console.log('updateCurrentTripModeOrClassification: #current-trip-mode.val()=' + currentTripMode);
-		var serie = new geostats(modeData[currentTripMode].serie);
+		$('#three3d-current-period').html(abmviz_utilities.halfHourTimePeriodToTimeString(currentPeriod));
+		console.log('updateCurrentPeriodOrClassification: #three3d-period.val()=' + currentPeriod);
+		var serie = new geostats(periodData[currentPeriod]);
 		maxFeature = serie.max();
 		//handle the different classifications
 		var classification = $("#three3d-classification").val();
@@ -729,25 +499,14 @@ var three3d = (function () {
 			else {
 				throw ("Unhandled classification: " + classification);
 			}
-			$("#three3d-val1").val(breakUp[0]);
-			$("#three3d-val2").val(breakUp[1]);
-			$("#three3d-val3").val(breakUp[2]);
-			$("#three3d-val4").val(breakUp[3]);
-			$("#three3d-val5").val(breakUp[4]);
 			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
-			$("#three3d-slider").slider({
-				min: breakUp[0]
-				, max: breakUp[4]
-				, values: newValues
-			});
-			$('#three3d .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
-			$('#three3d .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
-			$('#three3d .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
+			$("#three3d-slider").slider({values: newValues});
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();
-	}; //end updateCurrentTripModeOrClassification
+		redrawMap();
+	}; //end updateCurrentPeriodOrClassification
 	function updateOutline() {
 		showOutline = ($("#three3d-stroke").is(":checked"));
 		redrawMap();
@@ -757,4 +516,4 @@ var three3d = (function () {
 		updateOutline: updateOutline
 		, updateBubbles: updateBubbles
 	};
-}()); //end encapsulating IIFE
+}()); //end encapsulating IIFEddTo(map);(map);
