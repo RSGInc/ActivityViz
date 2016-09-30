@@ -157,6 +157,19 @@ var three3d = (function three3dFunction() {
 		};
 		return (returnStyle);
 	} //end styleCountyGeoJSONLayer function
+
+	function random255() {
+		return Math.floor(Math.random() * 255);
+	}
+	function getOsmBuildingsProperties(feature) {
+		return {
+			"wallColor": "rgb(" + random255() + "," + random255() + "," + random255() + ")"
+			, "roofColor": "rgb(255,128,0)"
+			, "height": Math.floor(Math.random() * 500)
+			, "minHeight": 0
+		}
+	}
+
 	function createMap(callback) {
 		"use strict";
 		map = L.map("three3d-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
@@ -171,6 +184,7 @@ var three3d = (function three3dFunction() {
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
 				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
 			}
+			var osmb = new OSMBuildings(map);
 			//calculate the zone centeriods
 			for (var i = 0; i < zoneTiles.features.length; i++) {
 				var feature = zoneTiles.features[i];
@@ -181,16 +195,20 @@ var three3d = (function three3dFunction() {
 				else {
 					feature.zoneData = featureZoneData;
 					featureZoneData.centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
+					feature.properties = getOsmBuildingsProperties();
+					feature.style = styleZoneGeoJSONLayer;
 				}
 			}
+			osmb.set(zoneTiles);
+			//osmb.style
 			//http://leafletjs.com/reference.html#tilelayer
-			zoneDataLayer = L.geoJson(zoneTiles, {
-				updateWhenIdle: true
-				, unloadInvisibleFiles: true
-				, reuseTiles: true
-				, opacity: 1.0
-				, style: styleZoneGeoJSONLayer
-			});
+			// 			zoneDataLayer = L.geoJson(zoneTiles, {
+			// 				updateWhenIdle: true
+			// 				, unloadInvisibleFiles: true
+			// 				, reuseTiles: true
+			// 				, opacity: 1.0
+			// 				, style: styleZoneGeoJSONLayer
+			//});
 			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
 			//map.addLayer(stamenTileLayer);
 			var underlyingMapLayer = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
@@ -216,7 +234,7 @@ var three3d = (function three3dFunction() {
 					, style: styleCountyGeoJSONLayer
 					, onEachFeature: onEachCounty
 				});
-				zoneDataLayer.addTo(map);
+				//zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
 				console.log("cb_2015_us_county_500k GEORGIA.json second success");
