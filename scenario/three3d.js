@@ -92,7 +92,7 @@ var three3d = (function three3dFunction() {
 					periodData[period] = [] //array of all quantities during this period for use with geostats
 				}
 				if (!isNaN(quantity)) {
-									periodData[period].push(quantity);
+					periodData[period].push(quantity);
 				}
 				return zone;
 			}).sortKeys(d3.ascending).key(function (d) {
@@ -338,7 +338,9 @@ var three3d = (function three3dFunction() {
 			if (currentCyclePeriodIndex >= periods.length) {
 				currentCyclePeriodIndex = 0;
 			}
-			$("#three3d-slider-time").slider({value: periods[currentCyclePeriodIndex]});
+			$("#three3d-slider-time").slider({
+				value: periods[currentCyclePeriodIndex]
+			});
 			if (cycleGoing) {
 				var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
 				setTimeout(cyclePeriod, timeInterval);
@@ -460,7 +462,7 @@ var three3d = (function three3dFunction() {
 				var bubbleCenter = zoneDatum.centroid;
 				var zoneTripData = zoneDatum[currentPeriod];
 				if (zoneTripData != undefined) {
-					var quantity = zoneTripData.QUANTITY;
+					var quantity = zoneTripData;
 					var sqrtRadius = scaleSqrt(quantity);
 					var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
 					circle.setRadius(sqrtRadius);
@@ -501,7 +503,9 @@ var three3d = (function three3dFunction() {
 			}
 			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
-			$("#three3d-slider").slider({values: newValues});
+			$("#three3d-slider").slider({
+				values: newValues
+			});
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
 		updateBubbles();
