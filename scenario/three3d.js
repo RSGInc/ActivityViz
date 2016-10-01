@@ -157,10 +157,10 @@ var three3d = (function three3dFunction() {
 		};
 		return (returnStyle);
 	} //end styleCountyGeoJSONLayer function
-
 	function random255() {
 		return Math.floor(Math.random() * 255);
 	}
+
 	function getOsmBuildingsProperties(feature) {
 		return {
 			"wallColor": "rgb(" + random255() + "," + random255() + "," + random255() + ")"
@@ -172,11 +172,33 @@ var three3d = (function three3dFunction() {
 
 	function createMap(callback) {
 		"use strict";
-		map = L.map("three3d-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
-		map.on('zoomend', function (type, target) {
-			var zoomLevel = map.getZoom();
-			var zoomScale = map.getZoomScale();
-			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
+		//map = L.map("three3d-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
+		var osmb = new OSMBuildings({
+			position: {
+				latitude: 33.754525
+				, longitude: -84.384774
+			}
+			, tilt: 0
+			, zoom: 16
+			, minZoom: 1
+			, maxZoom: 20
+			, baseURL: "../OSMBuildings-master/dist/OSMBuildings"
+		});
+
+		console.log('osmb.minZoom: ' + osmb.minZoom);
+		osmb.minZoom = 1;
+		console.log('osmb.minZoom: ' + osmb.minZoom);
+		osmb.appendTo("three3d-map");
+		//		map.on('zoomend', function (type, target) {
+		//			var zoomLevel = map.getZoom();
+		//			var zoomScale = map.getZoomScale();
+		//			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
+		//		});
+		osmb.on('zoom', function (event) {
+			console.log('got zoom event. Current zoom: ' + osmb.getZoom());
+		});
+		osmb.on('zoomPig', function (arg1, arg2, arg3) {
+			console.log('got zoom event');
 		});
 		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
 			"use strict";
@@ -184,8 +206,8 @@ var three3d = (function three3dFunction() {
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
 				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
 			}
-			var osmb = new OSMBuildings(map);
 			//calculate the zone centeriods
+			//zoneTiles.features = zoneTiles.features.slice(0,100);
 			for (var i = 0; i < zoneTiles.features.length; i++) {
 				var feature = zoneTiles.features[i];
 				var featureZoneData = zoneData[feature.properties.id];
@@ -199,8 +221,8 @@ var three3d = (function three3dFunction() {
 					feature.style = styleZoneGeoJSONLayer;
 				}
 			}
-			osmb.set(zoneTiles);
-			//osmb.style
+			//osmb.addGeoJSON(zoneTiles);
+			osmb.fixedZoom = 5;
 			//http://leafletjs.com/reference.html#tilelayer
 			// 			zoneDataLayer = L.geoJson(zoneTiles, {
 			// 				updateWhenIdle: true
@@ -211,40 +233,37 @@ var three3d = (function three3dFunction() {
 			//});
 			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
 			//map.addLayer(stamenTileLayer);
-			var underlyingMapLayer = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+			osmb.addMapTiles('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
 				updateWhenIdle: true
 				, unloadInvisibleFiles: true
 				, reuseTiles: true
 				, opacity: 1.0
 			});
-			underlyingMapLayer.addTo(map);
-			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
-				"use strict";
-				console.log("cb_2015_us_county_500k GEORGIA.json success");
-				//http://leafletjs.com/reference.html#tilelayer
-				countyLayer = L.geoJson(countyTiles, {
-					//keep only counties that we have data for
-					filter: function (feature) {
-						return true; //countiesSet.has(feature.properties.NAME);
-					}
-					, updateWhenIdle: true
-					, unloadInvisibleFiles: true
-					, reuseTiles: true
-					, opacity: 1.0
-					, style: styleCountyGeoJSONLayer
-					, onEachFeature: onEachCounty
-				});
-				//zoneDataLayer.addTo(map);
-				countyLayer.addTo(map);
-			}).success(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json second success");
-			}).error(function (jqXHR, textStatus, errorThrown) {
-				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
-				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
-				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
-			}).complete(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json complete");
-			}); //end geoJson of county layer
+			// 			//underlyingMapLayer.addTo(map);
+			// 			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
+			// 				"use strict";
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json success");
+			// 				osmb.addGeoJSON(countyTiles, {
+			// 					//keep only counties that we have data for
+			// 					filter: function (feature) {
+			// 						return true; //countiesSet.has(feature.properties.NAME);
+			// 					}
+			// 					, updateWhenIdle: true
+			// 					, unloadInvisibleFiles: true
+			// 					, reuseTiles: true
+			// 					, opacity: 1.0
+			// 					, style: styleCountyGeoJSONLayer
+			// 					, onEachFeature: onEachCounty
+			// 				});
+			// 			}).success(function () {
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json second success");
+			// 			}).error(function (jqXHR, textStatus, errorThrown) {
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
+			// 			}).complete(function () {
+			// 				console.log("cb_2015_us_county_500k GEORGIA.json complete");
+			// 			}); //end geoJson of county layer
 			function onEachCounty(feature, layer) {
 				layer.on({
 					mouseover: mouseoverCounty
@@ -255,6 +274,32 @@ var three3d = (function three3dFunction() {
 				console.log('mouseover county: ' + layer.feature.properties.NAME);
 			}
 		}); //end geoJson of zone layer
+		var controlButtons = document.querySelectorAll('.control button');
+		for (var i = 0; i < controlButtons.length; i++) {
+			controlButtons[i].addEventListener('click', function (e) {
+				var button = this;
+				var parentClassList = button.parentNode.classList;
+				var direction = button.classList.contains('inc') ? 1 : -1;
+				var increment;
+				var property;
+				if (parentClassList.contains('tilt')) {
+					property = 'Tilt';
+					increment = direction * 10;
+				}
+				if (parentClassList.contains('rotation')) {
+					property = 'Rotation';
+					increment = direction * 10;
+				}
+				if (parentClassList.contains('zoom')) {
+					property = 'Zoom';
+					increment = direction * 1;
+				}
+				console.log('osmb controls click: ' + property + " "  +increment);
+				if (property) {
+					osmb['set' + property](osmb['get' + property]() + increment);
+				}
+			});
+		}
 	}; //end createMap
 	function updateColors(values, themax) {
 		"use strict";
@@ -457,6 +502,7 @@ var three3d = (function three3dFunction() {
 		bubblesShowing = $("#three3d-bubbles").is(":checked");
 		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
 		if (circlesLayerGroup == undefined) {
+			return;
 			//first time must initalize by creating and adding to map
 			circlesLayerGroup = L.layerGroup([]);
 			circlesLayerGroup.addTo(map);

@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
+	<link rel="stylesheet" href="../OSMBuildings-master/dist/OSMBuildings/OSMBuildings.css" />
 	<link rel="stylesheet" href="style.css" />
 	<link rel="stylesheet" href="barchart_and_map.css" />
 	<link rel="stylesheet" href="sunburst.css" />
@@ -40,6 +41,18 @@
 							<option value="even-interval">Even interval</option>
 							<option value="custom">Custom</option>
 						</select>
+					</div>
+					<div class="control tilt">
+						<button class="dec">↙</button>
+						<button class="inc">↗</button>
+					</div>
+					<div class="control rotation">
+						<button class="inc">↶</button>
+						<button class="dec">↷</button>
+					</div>
+					<div class="control zoom">
+						<button class="dec">-</button>
+						<button class="inc">+</button>
 					</div>
 				</div>
 				<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
@@ -401,7 +414,7 @@
 	<script src="../bower_components/underscore/underscore-min.js"></script>
 	<script src="../bower_components/geostats/lib/geostats.min.js"></script>
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-	<script type="text/javascript" src="../OSMBuildings-Leaflet.js"></script>
+	<script type="text/javascript" src="../OSMBuildings-master/dist/OSMBuildings/OSMBuildings.debug.js"></script>
 	<script type="text/javascript" src="../abmviz_utilities.js"></script>
 	<script type="text/javascript">
 		//bad practice? It is not worth creating a new js script just to fill in the header

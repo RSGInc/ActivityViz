@@ -15,3 +15,47 @@
 #threed-map-container .tooltip {
 	fill: #333333;
 }
+
+.control {
+	position: absolute;
+	left: 10px;
+	/* This might need to be tweaked */
+	z-index: 1000;
+}
+
+.control.tilt {
+	top: 100px;
+	/* This might need to be tweaked */
+}
+
+.control.rotation {
+	top: 145px;
+	/* This might need to be tweaked */
+}
+
+.control.zoom {
+	top: 190px;
+	/* This might need to be tweaked */
+}
+
+.control.zoom button {
+	font-weight: normal;
+}
+
+.control button {
+	width: 30px;
+	height: 30px;
+	margin: 15px 0 0 15px;
+	border: 1px solid #999999;
+	background: #ffffff;
+	opacity: 0.6;
+	border-radius: 5px;
+	box-shadow: 0 0 5px #666666;
+	font-weight: bold;
+	text-align: center;
+}
+
+.control button:hover {
+	opacity: 1;
+	cursor: pointer;
+}
