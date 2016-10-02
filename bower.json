@@ -1,7 +1,6 @@
 {
   "name": "ABMVIZ-git",
   "dependencies": {
-    "leaflet": "~0.7.7",
     "bootstrap": "~3.3.6",
     "chosen": "~1.6.1",
     "spectrum": "~1.8.0",
