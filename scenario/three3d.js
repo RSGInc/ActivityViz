@@ -7,7 +7,9 @@ var three3d = (function three3dFunction() {
     var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
     var selectedColorRampIndex = 0;
     var periodSqrtScale;
+    var periodLinearScale;
     var allTimeSqrtScale;
+    var allTimeLinearScale;
     var palette = [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)"
         , "rgb(204, 204, 204)", "rgb(217, 217, 217)", "rgb(255, 255, 255)"]
@@ -26,6 +28,7 @@ var three3d = (function three3dFunction() {
     ];
     //slider
     var handlers = [25, 50, 75];
+    var controls;
     var map;
     var zoneData = {}; //map of zoneIds with secondary map for period quantities
     var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
@@ -68,9 +71,13 @@ var three3d = (function three3dFunction() {
     }); //end call to readInData and its follwing callback
     function redrawMap() {
         "use strict";
+        controls.update();
         if (zoneDataLayer != undefined) {
-            map.removeLayer(zoneDataLayer);
-            map.addLayer(zoneDataLayer);
+            console.log('zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
+            //zoneDataLayer.destroy();
+            //zoneDataLayer.addTo(map);
+            //map.removeLayer(zoneDataLayer);
+            //map.addLayer(zoneDataLayer);
         }
     }
 
@@ -110,7 +117,8 @@ var three3d = (function three3dFunction() {
                 return quantity;
             }).map(csv);
             periods = Object.keys(periodData);
-            allTimeSqrtScale = d3.scale.linear().domain(minMaxRange).range([0, 1]);
+            allTimeLinearScale = d3.scale.linear().domain(minMaxRange).range([0, 1]);
+            allTimeSqrtScale = d3.scale.sqrt().domain(minMaxRange).range([0, 1]);
             callback();
         }); //end d3.text
     }; //end readInData 
@@ -156,7 +164,9 @@ var three3d = (function three3dFunction() {
             //            , stroke: showOutline
             transparent: false
             , opacity: 0.4
-            , height: allTimeSqrtScale(quantity) * 5000
+                //, height: allTimeSqrtScale(quantity) * 5000
+                
+            , height: periodLinearScale(quantity) * 5000
             , color: color
             , fillColor: 'yellow'
             , fillRect: 'yellow'
@@ -184,12 +194,12 @@ var three3d = (function three3dFunction() {
             skybox: false
             , postProcessing: false
         }).setView([33.754525, -84.384774], 9); //centered at Atlanta
-        var controls = VIZI.Controls.orbit().addTo(map);
+        controls = VIZI.Controls.orbit().addTo(map);
         VIZI.imageTileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
         }).addTo(map);
         zoneDataLayer = VIZI.geoJSONLayer('../scripts/ZoneShape.GeoJSON', {
-            interactive: false
+            interactive: true
             , output: true
             , style: styleZoneGeoJSONLayer
         }).addTo(map);
@@ -499,6 +509,7 @@ var three3d = (function three3dFunction() {
         maxFeature = serie.max();
         var minFeature = serie.min();
         periodSqrtScale = d3.scale.sqrt().domain([minFeature, maxFeature]).range([0, 1]);
+        periodLinearScale = d3.scale.linear().domain([minFeature, maxFeature]).range([0, 1]);
         //handle the different classifications
         var classification = $("#three3d-classification").val();
         $("#three3d-slider").slider({
