@@ -3,11 +3,9 @@
 var three3d = (function three3dFunction() {
 	"use strict";
 	var naColor = "#ffffff"; //white
-	var bubbleColor = "#ff7800";
+
 	var colors = ["red", "red", "red", "red"]; //these will be replaced by default palette/ramp colors
 	var selectedColorRampIndex = 0;
-	var periodSqrtScale;
-	var periodLinearScale;
 	var allTimeSqrtScale;
 	var allTimeLinearScale;
 	var palette = [
@@ -33,7 +31,6 @@ var three3d = (function three3dFunction() {
 	var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
 	var currentPeriod = 19; //12 noon
 	var periods;
-	var circlesLayerGroup;
 	//use Map instead of vanilla object because wish to preserve insertion order
 	var marginTop = 0;
 	var marginBottom = 50;
@@ -44,22 +41,16 @@ var three3d = (function three3dFunction() {
 	var currentCyclePeriodIndex = 0;
 	var cycleGoing = false;
 	var breakUp;
-	var bubblesShowing = false;
-	var showOutline = false;
-	var maxFeature;
+
 	var zoneData = {}; //map of zoneIds with secondary map for period quantities
 	var zoneDataLayer;
 	var zoneGeoJSON;
-	var countyLayer;
 	var paletteRamps = d3.selectAll("#three3d .ramp");
-	var circleStyle = {
-		"stroke": false,
-		"fillColor": bubbleColor,
-		"fillOpacity": 0.5
-	};
+
 	var ZONE_COLUMN = 0;
 	var PERIOD_COLUMN = 1;
 	var QUANTITY_COLUMN = 2;
+	var geoStatsObject;
 
 	//start off chain of initialization by reading in the data	
 	readInData(function () {
@@ -79,7 +70,7 @@ var three3d = (function three3dFunction() {
 			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
 			var csv = d3.csv.parseRows(data).slice(1);
 			data = null; //allow memory to be GC'ed
-			var minMaxRange = [10000000, -10000000];
+			var allData = [];
 			var rolledUpMap = d3.nest().key(function (d) {
 				//convert quantity to a number
 				var quantity = d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
@@ -102,12 +93,31 @@ var three3d = (function three3dFunction() {
 			}).sortKeys(d3.ascending).rollup(function (d) {
 				var quantity = d[0][QUANTITY_COLUMN];
 				if (!isNaN(quantity)) {
-					minMaxRange[0] = Math.min(minMaxRange[0], quantity);
-					minMaxRange[1] = Math.max(minMaxRange[1], quantity);
+					allData.push(quantity);
 				}
 				return quantity;
 			}).map(csv);
 			periods = Object.keys(periodData);
+			geoStatsObject = new geostats(allData);
+			geoStatsObject.min = function () {
+				if (this._nodata())
+					return;
+
+				this.stat_min = d3.min(this.serie);
+
+				return this.stat_min;
+			};
+
+			geoStatsObject.max = function () {
+				if (this._nodata())
+					return;
+
+				this.stat_max = d3.max(this.serie);
+
+				return this.stat_max;
+			};
+
+			var minMaxRange = [geoStatsObject.min(), geoStatsObject.max()];
 			allTimeLinearScale = d3.scale.linear().domain(minMaxRange).range([0, 1]);
 			allTimeSqrtScale = d3.scale.sqrt().domain(minMaxRange).range([0, 1]);
 			callback();
@@ -217,8 +227,8 @@ var three3d = (function three3dFunction() {
 		var controlButtons = document.querySelectorAll('.control button');
 		for (var i = 0; i < controlButtons.length; i++) {
 			controlButtons[i].addEventListener('click', function (e) {
-			var button = this;
-			var title = button.title;
+				var button = this;
+				var title = button.title;
 				var increment = title.endsWith('forward') || title.endsWith('right') || title.endsWith('in') || title.endsWith('down');
 				var direction = increment ? 1 : -1;
 				var angle = direction * .1;
@@ -404,23 +414,6 @@ var three3d = (function three3dFunction() {
 				updateColors($("#three3d-slider").slider("values"));
 			}
 		});
-		$("#three3d-bubble-color").spectrum({
-			color: bubbleColor,
-			showInput: true,
-			className: "full-spectrum",
-			showInitial: true,
-			showPalette: true,
-			showAlpha: true,
-			showSelectionPalette: true,
-			maxSelectionSize: 10,
-			preferredFormat: "hex",
-			localStorageKey: "spectrum.demo",
-			palette: palette,
-			change: function (color) {
-				bubbleColor = color;
-				redrawMap();
-			}
-		});
 		//initialize the map palette
 		setColorPalette(selectedColorRampIndex);
 	} //end initializeMuchOfUI
@@ -439,53 +432,10 @@ var three3d = (function three3dFunction() {
 		} : undefined;
 	} //end hexToRgb
 
-	function updateBubbles() {
-		"use strict";
-		bubblesShowing = $("#three3d-bubbles").is(":checked");
-		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
-		if (circlesLayerGroup == undefined) {
-			return;
-			//first time must initalize by creating and adding to map
-			circlesLayerGroup = L.layerGroup([]);
-			circlesLayerGroup.addTo(map);
-		} else {
-			circlesLayerGroup.clearLayers();
-		}
-		if (bubblesShowing) {
-			//get current map width to determine maximum bubble size
-			var mapCenter = map.getCenter();
-			var eastBound = map.getBounds().getEast();
-			var centerEast = L.latLng(mapCenter.lat, eastBound);
-			var bubbleMultiplier = parseInt($("#three3d-bubble-size").val());
-			var mapBounds = d3.select("#three3d-map").node().getBoundingClientRect();
-			var mapRadiusInPixels = mapBounds.width / 2;
-			var maxBubbleRadiusInPixels = mapRadiusInPixels / 10;
-			var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
-			Object.keys(zoneData).forEach(function (zoneKey) {
-				var zoneDatum = zoneData[zoneKey];
-				var bubbleCenter = zoneDatum.centroid;
-				var zoneTripData = zoneDatum[currentPeriod];
-				if (zoneTripData != undefined) {
-					var quantity = zoneTripData;
-					var sqrtRadius = periodSqrtScale(quantity) * maxBubbleSize;
-					var circle = L.circleMarker(L.latLng(bubbleCenter.lng, bubbleCenter.lat), circleStyle);
-					circle.setRadius(sqrtRadius);
-					//add circle to circlesLayerGroup
-					circlesLayerGroup.addLayer(circle);
-				} //end if have data for this zone and period
-			}); //end Object.keys(zoneData).forEach
-		} //end if bubbles showing
-	}; //end updateBubbles
-
 	function updateCurrentPeriodOrClassification() {
 		"use strict";
 		$('#three3d-current-period').html(abmviz_utilities.halfHourTimePeriodToTimeString(currentPeriod));
 		console.log('updateCurrentPeriodOrClassification: #three3d-period.val()=' + currentPeriod);
-		var serie = new geostats(periodData[currentPeriod]);
-		maxFeature = serie.max();
-		var minFeature = serie.min();
-		periodSqrtScale = d3.scale.sqrt().domain([minFeature, maxFeature]).range([0, 1]);
-		periodLinearScale = d3.scale.linear().domain([minFeature, maxFeature]).range([0, 1]);
 		//handle the different classifications
 		var classification = $("#three3d-classification").val();
 		$("#three3d-slider").slider({
@@ -497,11 +447,11 @@ var three3d = (function three3dFunction() {
 		} else {
 			$("#three3d-update-map").css("display", "none");
 			if (classification == "even-interval") {
-				breakUp = serie.getClassEqInterval(4);
+				breakUp = geoStatsObject.getClassEqInterval(4);
 			} else if (classification == "quartiles") {
-				breakUp = serie.getClassQuantile(4);
+				breakUp = geoStatsObject.getClassQuantile(4);
 			} else if (classification == "jenks") {
-				breakUp = serie.getClassJenks(4);
+				breakUp = geoStatsObject.getClassJenks(4);
 			} else {
 				throw ("Unhandled classification: " + classification);
 			}
@@ -512,7 +462,6 @@ var three3d = (function three3dFunction() {
 			});
 			updateColors(newValues, breakUp[4]);
 		} //end if !custom
-		updateBubbles();
 		redrawMap();
 	}; //end updateCurrentPeriodOrClassification
 
@@ -522,8 +471,5 @@ var three3d = (function three3dFunction() {
 	} //end updateOutline
 
 	//return only the parts that need to be global
-	return {
-		updateOutline: updateOutline,
-		updateBubbles: updateBubbles
-	};
-}()); //end encapsulating IIFEddTo(map);(map);
+	return {};
+}()); //end encapsulating IIFE
