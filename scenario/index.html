@@ -34,8 +34,26 @@
 		<div id="three3d" class="row">
 			<p class="text-center" style="font-size:2em"><strong><span class="three3d-purpose">All</span> travel</strong> near <span id="three3d-current-period"></span></p>
 			<div class="col-xs-12">
-				<div class="col-xs-6"> The map displays the zonal level information in two ways: choropleth polygon coloring and height</div>
-				<div class="col-xs-6" style="margin-bottom:1em;font-weight:bold">
+				<div class="col-xs-8" style="margin-bottom:1em"> The map displays the zonal level information in two ways: choropleth polygon coloring and height
+					<div class="col-xs-12">
+						<div class="row control">
+						<!-- symbols defined at: https://graphemica.com/ -->
+							<button title="move left">&larr;</button>
+							<button title="move right">&rarr;</button>&nbsp;
+							<button title="move back">&uarr;</button>
+							<button title="move forward">&darr;</button>&nbsp;
+<!-- north east arrow ↗ https://graphemica.com/%E2%86%97 -->
+							<button title="tilt up">&#8599;</button>
+							<!-- left-side arc anticlockwise arrow https://graphemica.com/%E2%A4%B9 -->
+							<button title="tilt down">&#8601;</button>&nbsp;
+							<button title="rotate left">&#8635;</button>
+							<button title="rotate right">&#8634;</button>&nbsp;
+							<button title="zoom in">&#9547;</button>
+							<button title="zoom out">&#9473;</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-4" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-classification-label">Classification</div>
 					<select class="form-control" id="three3d-classification">
 							<option value="quartiles" selected="selected">Quartiles</option>
@@ -116,7 +134,7 @@
 				</table>
 			</div>
 			<div class="col-xs-6" style="margin-top:1em;text-align:right">
-<!--
+				<!--
 <input type="checkbox" id="three3d-bubbles" onclick="three3d.updateBubbles()" /> Bubbles
 <input type="text" id="three3d-bubble-color" /> Size:
 <select onchange="three3d.updateBubbles()" id="three3d-bubble-size">
@@ -127,7 +145,7 @@
 <input type="checkbox" id="three3d-stroke" onclick="three3d.updateOutline()" /> Outline
 <nobr>
 -->
-					<input type="text" id="three3d-naColor" /> N/A</nobr>
+				<input type="text" id="three3d-naColor" /> N/A</nobr>
 			</div>
 			<div class="col-xs-12" style="margin-top:1em;">
 				<div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>

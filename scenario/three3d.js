@@ -172,7 +172,9 @@ var three3d = (function three3dFunction() {
 
 	function createMap(callback) {
 		"use strict";
-		map = VIZI.world("three3d-map", {}).setView([33.754525, -84.384774], 5); //centered at Atlanta
+		map = VIZI.world("three3d-map", {
+			zoom: 17
+		}).setView([33.754525, -84.384774], 5); //centered at Atlanta
 
 		var logEvents = true;
 		if (logEvents) {
@@ -206,24 +208,38 @@ var three3d = (function three3dFunction() {
 			addZoneGeoJSONToMap();
 		}); //end getJSON of zoneTiles
 
-		//		var controlButtons = document.querySelectorAll('.control button');
-		//		for (var i = 0; i < controlButtons.length; i++) {
-		//			controlButtons[i].addEventListener('click', function (e) {
-		//				var button = this;
-		//				var parentClassList = button.parentNode.classList;
-		//				var direction = button.classList.contains('inc') ? 1 : -1;
-		//				var increment;
-		//				if (parentClassList.contains('tilt')) {
-		//					increment = direction * 10;
-		//					controls.tiltBy(increment, false);
-		//				} else if (parentClassList.contains('rotation')) {
-		//					increment = direction * 10;
-		//					controls.rotateBy(increment, false);
-		//				} else if (parentClassList.contains('zoom')) {
-		//					increment = direction * 1;
-		//					controls.zoomBy(increment, false);
-		//				}
-		//			});
+		var controlButtons = document.querySelectorAll('.control button');
+		for (var i = 0; i < controlButtons.length; i++) {
+			controlButtons[i].addEventListener('click', function (e) {
+				var button = this;
+				var title = button.title;
+				var increment = title.endsWith('forward') || title.endsWith('right') || title.endsWith('in')|| title.endsWith('down');
+				var direction = increment ? 1 : -1;
+				var angle = direction * .1;
+				if (title.startsWith('move')) {
+					var distance = direction * 20;
+					if (title.endsWith('back') | button.title.endsWith('forward')) {
+					controls._controls.pan(0, distance);
+					} else { 
+					controls._controls.pan(distance, 0);
+					}
+				} else if (title.startsWith('tilt')) {
+					controls._controls.rotateUp(angle);
+				} else if (title.startsWith('rotate')) {
+					controls._controls.rotateLeft(angle)
+				} else if (title.startsWith('zoom')) {
+					var zoomScale = controls._controls.getZoomScale();
+					console.log('zoomScale: ' + zoomScale);
+					if (increment) {
+						controls._controls.dollyOut(zoomScale);
+					} else {
+						controls._controls.dollyIn(zoomScale);
+					}
+
+
+				}
+			});
+		} //end for loop over controls
 	} //end createMap
 
 	function updateColors(values, themax) {
