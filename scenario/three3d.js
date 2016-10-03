@@ -28,7 +28,7 @@ var three3d = (function three3dFunction() {
     ];
 	//slider
 	var handlers = [25, 50, 75];
-	var controls;
+
 	var map;
 	var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
 	var currentPeriod = 19; //12 noon
@@ -164,7 +164,7 @@ var three3d = (function three3dFunction() {
 		color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
-			height: periodLinearScale(quantity) * 5000,
+			height: allTimeSqrtScale(quantity) * 5000,
 			color: color,
 		};
 		return (returnStyle);
@@ -172,11 +172,10 @@ var three3d = (function three3dFunction() {
 
 	function createMap(callback) {
 		"use strict";
-		map = VIZI.world("three3d-map", {
-			zoom: 17
-		}).setView([33.754525, -84.384774], 5); //centered at Atlanta
+		map = VIZI.world("three3d-map");
+		map.setView([33.754525, -84.384774]); //centered at Atlanta
 
-		var logEvents = true;
+		var logEvents = false;
 		if (logEvents) {
 			var oldEmitter = map.emit;
 
@@ -191,8 +190,8 @@ var three3d = (function three3dFunction() {
 			};
 		}
 
-		controls = VIZI.Controls.orbit().addTo(map);
-		VIZI.imageTileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+		var controls = VIZI.Controls.orbit().addTo(map);
+		VIZI.imageTileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
 			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
 		}).addTo(map);
 
@@ -206,37 +205,40 @@ var three3d = (function three3dFunction() {
 			zoneGeoJSON = zoneTiles;
 
 			addZoneGeoJSONToMap();
+			for (var zoomCtr = 0; zoomCtr < 50; zoomCtr++) {
+				zoomOut();
+			}
 		}); //end getJSON of zoneTiles
 
+		function zoomOut() {
+			controls._controls.dollyIn(controls._controls.getZoomScale());
+
+		}
 		var controlButtons = document.querySelectorAll('.control button');
 		for (var i = 0; i < controlButtons.length; i++) {
 			controlButtons[i].addEventListener('click', function (e) {
-				var button = this;
-				var title = button.title;
-				var increment = title.endsWith('forward') || title.endsWith('right') || title.endsWith('in')|| title.endsWith('down');
+			var button = this;
+			var title = button.title;
+				var increment = title.endsWith('forward') || title.endsWith('right') || title.endsWith('in') || title.endsWith('down');
 				var direction = increment ? 1 : -1;
 				var angle = direction * .1;
 				if (title.startsWith('move')) {
 					var distance = direction * 20;
 					if (title.endsWith('back') | button.title.endsWith('forward')) {
-					controls._controls.pan(0, distance);
-					} else { 
-					controls._controls.pan(distance, 0);
+						controls._controls.pan(0, distance);
+					} else {
+						controls._controls.pan(distance, 0);
 					}
 				} else if (title.startsWith('tilt')) {
 					controls._controls.rotateUp(angle);
 				} else if (title.startsWith('rotate')) {
 					controls._controls.rotateLeft(angle)
 				} else if (title.startsWith('zoom')) {
-					var zoomScale = controls._controls.getZoomScale();
-					console.log('zoomScale: ' + zoomScale);
 					if (increment) {
-						controls._controls.dollyOut(zoomScale);
+						controls._controls.dollyOut(controls._controls.getZoomScale());
 					} else {
-						controls._controls.dollyIn(zoomScale);
+						zoomOut();
 					}
-
-
 				}
 			});
 		} //end for loop over controls
