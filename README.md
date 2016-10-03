@@ -1,6 +1,16 @@
 # ABMVIZ
 ARC ABMVIZ HTML 5
 
+# Adding New Scenario Data
+1. Add the scenario name to the scenarios.csv definition file in the data folder
+1. Create a new folder in the data folder with the scenario name
+1. Copy in the required visualization data tables, each with the following required fields:
+  - BarChartAndMapData.csv: ZONE, COUNTY, BAR, QUANTITY  
+  - TimeUseData.csv: PERSON_TYPE, PER, ORIG_PURPOSE, QUANTITY
+  - 3DAnimatedMapData.csv: ZONE, PER, QUANTITY
+  - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
+  - RadarChartsData.csv: AXIS, CHART, QUANTITY
+
 #Data folder
 1. scenarios.csv - Defines each scenario (i.e. model run) available to the user
 2. BS10 - Example scenario data folder with its name equal to its scenarios.csv entry
@@ -33,8 +43,8 @@ ARC ABMVIZ HTML 5
 #Run demo
 1. Requires a http server such as Python's SimpleHTTPServer
 2. Run the http server from this project directory: 
-  Python 2: python -m SimpleHTTPServer
-  Python 3: python -m http.server
+  - Python 2: python -m SimpleHTTPServer
+  - Python 3: python -m http.server
 3. Go to http://localhost:8000 in your browser 
 
 #Publish site as github pages under RSG account
