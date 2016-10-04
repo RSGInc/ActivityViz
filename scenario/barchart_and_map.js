@@ -72,6 +72,8 @@ var barchart_and_map = (function () {
 		, "fillColor": bubbleColor
 		, "fillOpacity": 0.5
 	};
+			$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
+
 	//start off chain of initialization by reading in the data	
 	readInData(function () {
 		createMap(function () {

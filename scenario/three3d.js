@@ -450,8 +450,6 @@ var three3d = (function three3dFunction() {
 				breakUp = geoStatsObject.getClassEqInterval(4);
 			} else if (classification == "quartiles") {
 				breakUp = geoStatsObject.getClassQuantile(4);
-			} else if (classification == "jenks") {
-				breakUp = geoStatsObject.getClassJenks(4);
 			} else {
 				throw ("Unhandled classification: " + classification);
 			}
