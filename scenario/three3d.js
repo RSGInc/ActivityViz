@@ -27,6 +27,7 @@ var three3d = (function three3dFunction() {
 	//slider
 	var handlers = [25, 50, 75];
 
+	var drawCentroids = true;
 	var map;
 	var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
 	var currentPeriod = 19; //12 noon
@@ -72,6 +73,7 @@ var three3d = (function three3dFunction() {
 			var csv = d3.csv.parseRows(data).slice(1);
 			data = null; //allow memory to be GC'ed
 			var allData = [];
+			var zoneDatum;
 			var rolledUpMap = d3.nest().key(function (d) {
 				//convert quantity to a number
 				var quantity = d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
@@ -79,14 +81,28 @@ var three3d = (function three3dFunction() {
 				var period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
 				var zone = d[ZONE_COLUMN] = +d[ZONE_COLUMN];
 				if (zoneData[zone] == undefined) {
-					zoneData[zone] = {};
+					zoneDatum = zoneData[zone] = {
+						min: 100000000,
+						max: -100000000,
+						minPeriod: -1,
+						maxPeriod: -1,
+						periods: {},
+					};
 				}
-				zoneData[zone][period] = quantity;
+				zoneData[zone].periods[period] = quantity;
 				if (periodData[period] == undefined) {
 					periodData[period] = [] //array of all quantities during this period for use with geostats
 				}
 				if (!isNaN(quantity)) {
 					periodData[period].push(quantity);
+					if (zoneDatum.min > quantity) {
+						zoneDatum.min = quantity;
+						zoneDatum.minPeriod = period;
+					}
+					if (zoneDatum.max < quantity) {
+						zoneDatum.max = quantity;
+						zoneDatum.maxPeriod = period;
+					}
 				}
 				return zone;
 			}).sortKeys(d3.ascending).key(function (d) {
@@ -134,9 +150,13 @@ var three3d = (function three3dFunction() {
 			interactive: false,
 			output: true,
 			style: styleZoneGeoJSONLayer,
-			//			onEachFeature : function(feature, layer) {
-			//				console.log('feature')
-			//			}
+			onEachFeature: function (feature, layer) {
+				if (drawCentroids) {
+					//replace polygon with smaller rect in middle
+					var currentPolygon = layer._coordinates[0];
+
+				}
+			}, //end onEachFeature
 		});
 		map.addLayer(zoneDataLayer);
 	} //end addZoneGeoJSONToMap
@@ -144,38 +164,28 @@ var three3d = (function three3dFunction() {
 	function redrawMap() {
 		"use strict";
 		if (zoneDataLayer != undefined) {
-			//console.log('before zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
-			//zoneDataLayer.destroy();
-			//zoneDataLayer.addTo(map);
-			var oldZoneDataLayer = zoneDataLayer;
-			setTimeout(function () {
-				//console.log('before remove zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
-				map.removeLayer(oldZoneDataLayer);
-				//console.log('after remove zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
-			}, 0); //remove layer asynchronously
+			zoneDataLayer.destroy();
 			addZoneGeoJSONToMap();
-			//console.log('after addZoneGeoJSONToMap zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
-			//zoneDataLayer._processData(zoneGeoJSON);
 		}
 	} //end redrawMap
 
 	function styleZoneGeoJSONLayer(feature) {
 		"use strict";
 		var color = naColor;
-		var quantity = 0;
+		var periodQuantity = 0;
 		var featureId = feature.properties.id;
 		if (zoneData[featureId] != undefined) {
-			var zoneDataFeature = zoneData[featureId][currentPeriod];
+			var zoneDatum = zoneData[featureId];
 			//possible that even if data for zone exists, could be missing this particular period
-			if (zoneDataFeature != undefined) {
-				quantity = zoneDataFeature;
-				if (isNaN(quantity)) {
+			if (zoneDatum.periods[currentPeriod] != undefined) {
+				periodQuantity = zoneDatum.periods[currentPeriod];
+				if (isNaN(periodQuantity)) {
 					color = naColor;
-				} else if (quantity >= breakUp[3]) {
+				} else if (periodQuantity >= breakUp[3]) {
 					color = colors[3];
-				} else if (quantity >= breakUp[2]) {
+				} else if (periodQuantity >= breakUp[2]) {
 					color = colors[2];
-				} else if (quantity >= breakUp[1]) {
+				} else if (periodQuantity >= breakUp[1]) {
 					color = colors[1];
 				} else {
 					color = colors[0];
@@ -185,7 +195,7 @@ var three3d = (function three3dFunction() {
 		color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
-			height: allTimeSqrtScale(quantity) * 5000,
+			height: allTimeSqrtScale(periodQuantity) * 5000,
 			color: color,
 		};
 		return (returnStyle);
@@ -225,6 +235,26 @@ var three3d = (function three3dFunction() {
 			}
 			zoneGeoJSON = zoneTiles;
 
+			zoneGeoJSON.features.forEach(function (feature) {
+				var id = feature.properties.id;
+				var zoneDatum = zoneData[id];
+				var latLngs = feature.geometry.coordinates[0];
+				var centroid = L.latLngBounds(latLngs).getCenter();
+				var squareLength = 0.001;
+
+				//make alternate polygon so user can see just centroid square column
+				feature.perimeterCoordinates = feature.geometry.coordinates;
+				feature.centroidCoordinates = [[
+								[centroid.lat - squareLength, centroid.lng - squareLength],
+								[centroid.lat - squareLength, centroid.lng + squareLength],
+								[centroid.lat + squareLength, centroid.lng + squareLength],
+								[centroid.lat + squareLength, centroid.lng - squareLength],
+								[centroid.lat - squareLength, centroid.lng - squareLength]
+							]];
+				if (drawCentroids) {
+					feature.geometry.coordinates = feature.centroidCoordinates;
+				}
+			}); //end zoneGeoJSON forEach
 			addZoneGeoJSONToMap();
 			for (var zoomCtr = 0; zoomCtr < 50; zoomCtr++) {
 				zoomOut();
@@ -304,14 +334,14 @@ var three3d = (function three3dFunction() {
 
 	function initializeMuchOfUI() {
 		console.log("three3d initializeMuchOfUI");
-		$("#three3d-stacked").click(function () {
-			extNvd3Chart.stacked(this.checked);
-			extNvd3Chart.update();
-		});
-		$("#three3d-legend-type").click(function () {
-			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
-			extNvd3Chart.update();
-		});
+
+		$("#three3d-centroids").change(function () {
+			drawCentroids = this.checked;
+			zoneGeoJSON.features.forEach(function (feature) {
+				feature.geometry.coordinates = drawCentroids ? feature.centroidCoordinates : feature.perimeterCoordinates;
+			}); //end zoneGeoJSON forEach
+			redrawMap();
+		}); //end change handler
 
 		function updateTimeSliderTooltip(value) {
 			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
@@ -481,11 +511,8 @@ var three3d = (function three3dFunction() {
 		redrawMap();
 	}; //end updateCurrentPeriodOrClassification
 
-	function updateOutline() {
-		showOutline = ($("#three3d-stroke").is(":checked"));
-		redrawMap();
-	} //end updateOutline
-
 	//return only the parts that need to be global
-	return {};
+	return {
+		//nothing neededyet
+	};
 }()); //end encapsulating IIFE
