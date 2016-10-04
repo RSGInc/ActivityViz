@@ -31,8 +31,8 @@ var radar = (function () {
 					//})
 					.rollup(function (d) {
 						return {
-							axis: d[0][AXIS_COLUMN]
-							, value: d[0][QUANTITY_COLUMN]
+							axis: d[0][AXIS_COLUMN],
+							value: d[0][QUANTITY_COLUMN]
 						};
 					}).map(csv);
 				//get max and min values for each axis
@@ -41,11 +41,11 @@ var radar = (function () {
 					return radarAxis; //secondary group by AXIS
 				}).rollup(function (leaves) {
 					return {
-						name: leaves[0][AXIS_COLUMN]
-						, min: d3.min(leaves, function (d) {
+						name: leaves[0][AXIS_COLUMN],
+						min: d3.min(leaves, function (d) {
 							return d[QUANTITY_COLUMN];
-						})
-						, max: d3.max(leaves, function (d) {
+						}),
+						max: d3.max(leaves, function (d) {
 							return d[QUANTITY_COLUMN];
 						})
 					};
@@ -65,10 +65,10 @@ var radar = (function () {
 				Object.keys(rolledUpMap).forEach(function (chartName) {
 					var axesData = [];
 					var chartDatumObject = {
-						chartId: chartId++
-						, chartName: chartName
-						, axes: axesData
-						, sumPercentages: 0
+						chartId: chartId++,
+						chartName: chartName,
+						axes: axesData,
+						sumPercentages: 0
 					}
 					chartData.push(chartDatumObject);
 					var rolledUpChartNameMap = rolledUpMap[chartName];
@@ -80,13 +80,12 @@ var radar = (function () {
 						//if radarAxis missing from data, create it
 						if (radarAxisDataObject == undefined) {
 							radarAxisDataObject = {
-								axis: radarAxis
-								, originalValue: NaN
-								, value: 0
+								axis: radarAxis,
+								originalValue: NaN,
+								value: 0
 							};
 							console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + radarAxis);
-						}
-						else {
+						} else {
 							radarAxisDataObject.originalValue = radarAxisDataObject.value
 							radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
 						}
@@ -119,28 +118,28 @@ var radar = (function () {
 			var radarChartContainer = d3.select("#radar-chart-container");
 			//need to create columns and then fill each column with portlets
 			//tricky because (AFAIK) I need to attach the data to each column separately
-			var numColumns = 4;
+			var numColumns = 3;
 			var radarChartOptions = {
-				w: 180
-				, h: 150
-				, margin: {
-					top: 40
-					, right: 60
-					, bottom: 55
-					, left: 60
-				}
-				, tooltipFormatValue: abmviz_utilities.numberWithCommas
-				, strokeWidth: 0
-				, maxValue: 1.0
-				, levels: 3
-				, wrapWidth: 70
-				, labelFactor: 1.3
-				, roundStrokes: true
-				, strokeWidth: 0
-				, color: function () {
+				w: 180,
+				h: 150,
+				margin: {
+					top: 40,
+					right: 60,
+					bottom: 55,
+					left: 60
+				},
+				tooltipFormatValue: abmviz_utilities.numberWithCommas,
+				strokeWidth: 0,
+				maxValue: 1.0,
+				levels: 3,
+				wrapWidth: 70,
+				labelFactor: 1.3,
+				roundStrokes: true,
+				strokeWidth: 0,
+				color: function () {
 					return chartColor;
-				}
-				, tooltipFormatValue: abmviz_utilities.numberWithCommas
+				},
+				tooltipFormatValue: abmviz_utilities.numberWithCommas
 			};
 			var chartId = 1;
 			for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
@@ -166,11 +165,11 @@ var radar = (function () {
 					}); //end each svg
 				}) //end each column
 			$(function () {
-				$(".column").sortable({
-					connectWith: ".column"
-					, handle: ".radar-portlet-header"
-					, cancel: ".radar-portlet-toggle"
-					, placeholder: "radar-portlet-placeholder ui-corner-all"
+				$(".radar-column").sortable({
+					connectWith: ".radar-column",
+					handle: ".radar-portlet-header",
+					cancel: ".radar-portlet-toggle",
+					placeholder: "radar-portlet-placeholder ui-corner-all"
 				});
 				$(".radar-portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all").find(".radar-portlet-header").addClass("ui-widget-header ui-corner-all").prepend("<span class='ui-icon ui-icon-minusthick radar-portlet-toggle'></span>");
 				$(".radar-portlet-toggle").on("click", function () {
