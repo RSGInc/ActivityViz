@@ -229,21 +229,22 @@ var three3d = (function three3dFunction() {
 			controlButtons[i].addEventListener('click', function (e) {
 				var button = this;
 				var title = button.title;
-				var increment = title.endsWith('forward') || title.endsWith('right') || title.endsWith('in') || title.endsWith('down');
+				var classList = button.classList
+				var increment = classList.contains('forward') || classList.contains('right') || classList.contains('in') || classList.contains('down');
 				var direction = increment ? 1 : -1;
 				var angle = direction * .1;
-				if (title.startsWith('move')) {
+				if (classList.contains('move')) {
 					var distance = direction * 20;
-					if (title.endsWith('back') | button.title.endsWith('forward')) {
+					if (classList.contains('back') || classList.contains('forward')) {
 						controls._controls.pan(0, distance);
 					} else {
 						controls._controls.pan(distance, 0);
 					}
-				} else if (title.startsWith('tilt')) {
+				} else if (classList.contains('tilt')) {
 					controls._controls.rotateUp(angle);
-				} else if (title.startsWith('rotate')) {
+				} else if (classList.contains('rotate')) {
 					controls._controls.rotateLeft(angle)
-				} else if (title.startsWith('zoom')) {
+				} else if (classList.contains('zoom')) {
 					if (increment) {
 						controls._controls.dollyOut(controls._controls.getZoomScale());
 					} else {
