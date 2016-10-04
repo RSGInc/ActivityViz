@@ -256,14 +256,25 @@ var three3d = (function three3dFunction() {
 				}
 			}); //end zoneGeoJSON forEach
 			addZoneGeoJSONToMap();
-			for (var zoomCtr = 0; zoomCtr < 50; zoomCtr++) {
+			//don't know how to set initiali zoom or tile in vizicities so kluge away!
+			for (var zoomCtr = 0; zoomCtr < 30; zoomCtr++) {
 				zoomOut();
 			}
+			for (var tiltCtr = 0; tiltCtr < 5; tiltCtr++) {
+						tiltUp();
+			}
+	
 		}); //end getJSON of zoneTiles
 
 		function zoomOut() {
 			controls._controls.dollyIn(controls._controls.getZoomScale());
 
+		}
+
+		var defaultAngleMovement = 0.05;
+
+		function tiltUp() {
+			controls._controls.rotateUp(-defaultAngleMovement);
 		}
 		var controlButtons = document.querySelectorAll('.control button');
 		for (var i = 0; i < controlButtons.length; i++) {
@@ -273,7 +284,7 @@ var three3d = (function three3dFunction() {
 				var classList = button.classList
 				var increment = classList.contains('forward') || classList.contains('right') || classList.contains('in') || classList.contains('down');
 				var direction = increment ? 1 : -1;
-				var angle = direction * .1;
+				var angle = direction * defaultAngleMovement;
 				if (classList.contains('move')) {
 					var distance = direction * 20;
 					if (classList.contains('back') || classList.contains('forward')) {
@@ -282,6 +293,11 @@ var three3d = (function three3dFunction() {
 						controls._controls.pan(distance, 0);
 					}
 				} else if (classList.contains('tilt')) {
+					if (increment) {
+						controls._controls.rotateUp(defaultAngleMovement);
+					} else {
+						tiltUp();
+					}
 					controls._controls.rotateUp(angle);
 				} else if (classList.contains('rotate')) {
 					controls._controls.rotateLeft(angle)
@@ -342,6 +358,7 @@ var three3d = (function three3dFunction() {
 			}); //end zoneGeoJSON forEach
 			redrawMap();
 		}); //end change handler
+		$("#three3d-centroids").attr('checked', drawCentroids);
 
 		function updateTimeSliderTooltip(value) {
 			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
