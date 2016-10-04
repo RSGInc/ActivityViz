@@ -41,6 +41,7 @@ var three3d = (function three3dFunction() {
 	var currentCyclePeriodIndex = 0;
 	var cycleGoing = false;
 	var breakUp;
+	var cycleIncrement = 2;
 
 	var zoneData = {}; //map of zoneIds with secondary map for period quantities
 	var zoneDataLayer;
@@ -130,9 +131,12 @@ var three3d = (function three3dFunction() {
 
 	function addZoneGeoJSONToMap() {
 		zoneDataLayer = VIZI.geoJSONLayer(zoneGeoJSON, {
-			interactive: true,
+			interactive: false,
 			output: true,
-			style: styleZoneGeoJSONLayer
+			style: styleZoneGeoJSONLayer,
+			//			onEachFeature : function(feature, layer) {
+			//				console.log('feature')
+			//			}
 		});
 		map.addLayer(zoneDataLayer);
 	} //end addZoneGeoJSONToMap
@@ -140,11 +144,18 @@ var three3d = (function three3dFunction() {
 	function redrawMap() {
 		"use strict";
 		if (zoneDataLayer != undefined) {
-			console.log('zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
+			//console.log('before zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
 			//zoneDataLayer.destroy();
 			//zoneDataLayer.addTo(map);
-			map.removeLayer(zoneDataLayer);
+			var oldZoneDataLayer = zoneDataLayer;
+			setTimeout(function () {
+				//console.log('before remove zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
+				map.removeLayer(oldZoneDataLayer);
+				//console.log('after remove zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
+			}, 0); //remove layer asynchronously
 			addZoneGeoJSONToMap();
+			//console.log('after addZoneGeoJSONToMap zoneDataLayer._layers.length: ' + zoneDataLayer._layers.length);
+			//zoneDataLayer._processData(zoneGeoJSON);
 		}
 	} //end redrawMap
 
@@ -340,7 +351,7 @@ var three3d = (function three3dFunction() {
 			$("#three3d-stop-cycle-map").css("display", "inline");
 			$("#three3d-start-cycle-map").css("display", "none");
 			cycleGoing = true;
-			currentCyclePeriodIndex = 0;
+			currentCyclePeriodIndex = -cycleIncrement;
 			cyclePeriod();
 		});
 		$("#three3d-stop-cycle-map").click(function () {
@@ -349,17 +360,23 @@ var three3d = (function three3dFunction() {
 			$("#three3d-start-cycle-map").css("display", "inline");
 		});
 
+		var lastCycleStartTime;
+
 		function cyclePeriod() {
-			currentCyclePeriodIndex++;
-			if (currentCyclePeriodIndex >= periods.length) {
-				currentCyclePeriodIndex = 0;
+			lastCycleStartTime = new Date().getTime();
+			currentCyclePeriodIndex += cycleIncrement;
+			if (currentCyclePeriodIndex >= (periods.length - 1)) {
+				currentCyclePeriodIndex = periods.length - 1;
+				$("#three3d-stop-cycle-map").click();
 			}
 			$("#three3d-slider-time").slider({
 				value: periods[currentCyclePeriodIndex]
 			});
 			if (cycleGoing) {
 				var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
-				setTimeout(cyclePeriod, timeInterval);
+				var elapsedTimeSinceCycle = new Date().getTime() - lastCycleStartTime;
+				//console.log('elapsedTimeSinceCycle: ' + elapsedTimeSinceCycle);
+				setTimeout(cyclePeriod, Math.max(0, timeInterval - elapsedTimeSinceCycle));
 			} //end if cycleGoing
 		} //end cyclePeriod
 		$("#three3d-cycle-frequency").change(function () {
@@ -436,7 +453,7 @@ var three3d = (function three3dFunction() {
 	function updateCurrentPeriodOrClassification() {
 		"use strict";
 		$('#three3d-current-period').html(abmviz_utilities.halfHourTimePeriodToTimeString(currentPeriod));
-		console.log('updateCurrentPeriodOrClassification: #three3d-period.val()=' + currentPeriod);
+		//console.log('updateCurrentPeriodOrClassification: #three3d-period.val()=' + currentPeriod);
 		//handle the different classifications
 		var classification = $("#three3d-classification").val();
 		$("#three3d-slider").slider({
