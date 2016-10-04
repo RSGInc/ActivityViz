@@ -3,6 +3,27 @@
 <head>
 	<title>ARC ABMVIZ</title>
 	<meta charset="UTF-8">
+	<script defer src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script defer src="../bower_components/jqueryui/jquery-ui.min.js"></script>
+	<script defer src="../bower_components/spectrum/spectrum.js"></script>
+	<script defer src="../bower_components/chosen/chosen.jquery.js"></script>
+	<script defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script defer src="../bower_components/d3/d3.js"></script>
+	<script defer src="../bower_components/nvd3/build/nv.d3.js"></script>
+	<script defer src="../bower_components/underscore/underscore-min.js"></script>
+	<script defer src="../bower_components/geostats/lib/geostats.js"></script>
+	<script defer type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+	<script defer src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+	<script defer src="../vendor/three.min.js"></script>
+	<script defer src="../vendor/TweenMax.min.js"></script>
+	<script defer src="../vendor/vizicities.js"></script>
+	<script defer type="text/javascript" src="../abmviz_utilities.js"></script>
+	<script defer src="three3d.js"></script>
+	<script defer type="text/javascript" src="barchart_and_map.js"></script>
+	<script defer type="text/javascript" src="sunburst.js"></script>
+	<script defer type="text/javascript" src="timeuse.js"></script>
+	<script defer type="text/javascript" src="radar-chart-nbremer.js"></script>
+	<script defer type="text/javascript" src="radar.js"></script>
 	<link rel="shortcut icon" href="../img/arc_logo.ico">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/spectrum/spectrum.css" />
@@ -34,7 +55,7 @@
 		<div id="three3d" class="row">
 			<p class="text-center" style="font-size:2em"><strong><span class="three3d-purpose">PERSONS NOT AT HOME</span></strong> <span id="three3d-current-period"></span></p>
 			<div class="col-xs-12">
-				<div class="col-xs-8" style="margin-bottom:1em">The map displays the zonal data as choropleth polygon coloring and height.  The coloring and height are relative to the max value over all time periods.
+				<div class="col-xs-8" style="margin-bottom:1em">The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all time periods.
 					<div class="col-xs-12">
 						<div class="row control">
 							<!-- symbols defined at: https://graphemica.com/ -->
@@ -57,7 +78,6 @@
 					<div id="three3d-classification-label">Classification</div>
 					<select class="form-control" id="three3d-classification">
 							<option value="quartiles" selected="selected">Quartiles</option>
-							<option value="jenks">Natural breaks (Jenks)</option>
 							<option value="even-interval">Even interval</option>
 							<option value="custom">Custom</option>
 						</select>
@@ -402,32 +422,6 @@
 			</div>
 		</div>
 		<!-- end radar -->
-		<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-		<script src="../bower_components/jqueryui/jquery-ui.min.js"></script>
-		<script src="../bower_components/spectrum/spectrum.js"></script>
-		<script src="../bower_components/chosen/chosen.jquery.js"></script>
-		<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script src="../bower_components/d3/d3.js"></script>
-		<script src="../bower_components/nvd3/build/nv.d3.js"></script>
-		<script src="../bower_components/underscore/underscore-min.js"></script>
-		<script src="../bower_components/geostats/lib/geostats.min.js"></script>
-		<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-		<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
-		<script src="../vendor/three.min.js"></script>
-		<script src="../vendor/TweenMax.min.js"></script>
-		<script src="../vendor/vizicities.js"></script>
-		<script type="text/javascript" src="../abmviz_utilities.js"></script>
-		<script type="text/javascript">
-			//bad practice? It is not worth creating a new js script just to fill in the header
-			$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
-
-		</script>
-		<script src="three3d.js"></script>
-		<script type="text/javascript" src="barchart_and_map.js"></script>
-		<script type="text/javascript" src="sunburst.js"></script>
-		<script type="text/javascript" src="timeuse.js"></script>
-		<script type="text/javascript" src="radar-chart-nbremer.js"></script>
-		<script type="text/javascript" src="radar.js"></script>
 </body>
 <!-- end body -->
 
