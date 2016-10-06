@@ -68,11 +68,11 @@ var barchart_and_map = (function () {
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
 	var circleStyle = {
-		"stroke": false
-		, "fillColor": bubbleColor
-		, "fillOpacity": 0.5
+		"stroke": false,
+		"fillColor": bubbleColor,
+		"fillOpacity": 0.5
 	};
-			$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
+	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 
 	//start off chain of initialization by reading in the data	
 	readInData(function () {
@@ -115,8 +115,8 @@ var barchart_and_map = (function () {
 						zoneData[zoneName] = {};
 					}
 					zoneData[zoneName][modeName] = {
-						COUNTY: countyName
-						, QUANTITY: quantity
+						COUNTY: countyName,
+						QUANTITY: quantity
 					};
 					if (rawChartData[countyName] == undefined) {
 						rawChartData[countyName] = {};
@@ -129,8 +129,8 @@ var barchart_and_map = (function () {
 						//in the order they were encountered because properties are ordered
 						if (modeData[modeName] == undefined) {
 							modeData[modeName] = {
-								enabled: true
-								, serie: []
+								enabled: true,
+								serie: []
 							};
 						}
 					}
@@ -147,9 +147,9 @@ var barchart_and_map = (function () {
 			counties.forEach(function (countyName) {
 				var rawCountyObject = rawChartData[countyName];
 				var newCountyObject = {
-					groupLabel: countyName
-					, subgroups: []
-					, enabled: true
+					groupLabel: countyName,
+					subgroups: [],
+					enabled: true
 				};
 				chartData.push(newCountyObject);
 				modes.forEach(function (modeName) {
@@ -158,8 +158,8 @@ var barchart_and_map = (function () {
 						countyModeTotalQuantity = 0;
 					}
 					newCountyObject.subgroups.push({
-						subgroupLabel: modeName
-						, value: countyModeTotalQuantity
+						subgroupLabel: modeName,
+						value: countyModeTotalQuantity
 					});
 				}); //end modes foreach
 			}); //end counties forEach
@@ -196,8 +196,8 @@ var barchart_and_map = (function () {
 		modes.forEach(function (modeName, modeIndex) {
 			var subgroups = [];
 			var modeObject = {
-				key: modeName
-				, values: subgroups
+				key: modeName,
+				values: subgroups
 			};
 			hierarchicalData.push(modeObject);
 			enabledCounties.forEach(function (countyWithModesObject) {
@@ -207,8 +207,8 @@ var barchart_and_map = (function () {
 					throw ("SOMETHING IS WRONG. Mode is not as expected. Expected mode: " + modeName + ", found modeName: " + retrievedModeName);
 				}
 				var simpleCountyObject = {
-					label: countyWithModesObject.groupLabel
-					, value: simpleModeObject.value
+					label: countyWithModesObject.groupLabel,
+					value: simpleModeObject.value
 				}
 				subgroups.push(simpleCountyObject);
 			}); //end loop over chartData countyObjects
@@ -274,8 +274,7 @@ var barchart_and_map = (function () {
 				var style = {};
 				if (feature.properties.NAME == currentCounty) {
 					style.weight = 4;
-				}
-				else {
+				} else {
 					style.weight = 1;
 				}
 				return (style);
@@ -300,14 +299,14 @@ var barchart_and_map = (function () {
 						//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 						return color;
 					}).duration(250).margin({
-						left: marginLeft
-						, right: marginRight
-						, top: marginTop
-						, bottom: marginBottom
+						left: marginLeft,
+						right: marginRight,
+						top: marginTop,
+						bottom: marginBottom
 					}).id("mode-share-by-county-multiBarHorizontalChart").stacked(true).showControls(false);
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
-					nvd3Chart.yAxis.axisLabel(countyColumn);
-					nvd3Chart.xAxis.axisLabel(quantityColumn).axisLabelDistance(30);
+					nvd3Chart.yAxis.axisLabel(quantityColumn); //this is actually for xAxis since basically a sideways column chart
+					nvd3Chart.xAxis.axisLabel(countyColumn).axisLabelDistance(30); //this is actually for yAxis
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -332,8 +331,9 @@ var barchart_and_map = (function () {
 					//nvd3Chart.legend.vers('furious');
 					return nvd3Chart;
 				} //end generate
-				
-			, callback: function (newGraph) {
+
+			,
+			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
 					updateChart(function () {
@@ -354,14 +354,11 @@ var barchart_and_map = (function () {
 				}
 				if (quantity >= breakUp[3]) {
 					color = colors[3];
-				}
-				else if (quantity >= breakUp[2]) {
+				} else if (quantity >= breakUp[2]) {
 					color = colors[2];
-				}
-				else if (quantity >= breakUp[1]) {
+				} else if (quantity >= breakUp[1]) {
 					color = colors[1];
-				}
-				else {
+				} else {
 					color = colors[0];
 				}
 			} //end if we have data for this trip mode
@@ -369,24 +366,24 @@ var barchart_and_map = (function () {
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
 			//all SVG styles allowed
-			fillColor: color
-			, fillOpacity: 0.3
-			, weight: 1
-			, color: "darkGrey"
-			, strokeOpacity: 0.05
-			, stroke: showOutline
+			fillColor: color,
+			fillOpacity: 0.3,
+			weight: 1,
+			color: "darkGrey",
+			strokeOpacity: 0.05,
+			stroke: showOutline
 		};
 		return (returnStyle);
 	} //end styleZoneGeoJSONLayer function
 	function styleCountyGeoJSONLayer(feature) {
 		var returnStyle = {
 			//all SVG styles allowed
-			fill: true
-			, fillOpacity: 0.0
-			, stroke: true
-			, weight: 1
-			, strokeOpacity: 0.25
-			, color: "gray"
+			fill: true,
+			fillOpacity: 0.0,
+			stroke: true,
+			weight: 1,
+			strokeOpacity: 0.25,
+			color: "gray"
 		};
 		return (returnStyle);
 	} //end styleCountyGeoJSONLayer function
@@ -409,27 +406,26 @@ var barchart_and_map = (function () {
 				var featureZoneData = zoneData[feature.properties.id];
 				if (featureZoneData == undefined) {
 					//missing data for this zone
-				}
-				else {
+				} else {
 					feature.zoneData = featureZoneData;
 					featureZoneData.centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
 				}
 			}
 			//http://leafletjs.com/reference.html#tilelayer
 			zoneDataLayer = L.geoJson(zoneTiles, {
-				updateWhenIdle: true
-				, unloadInvisibleFiles: true
-				, reuseTiles: true
-				, opacity: 1.0
-				, style: styleZoneGeoJSONLayer
+				updateWhenIdle: true,
+				unloadInvisibleFiles: true,
+				reuseTiles: true,
+				opacity: 1.0,
+				style: styleZoneGeoJSONLayer
 			});
 			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
 			//map.addLayer(stamenTileLayer);
 			var underlyingMapLayer = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
-				updateWhenIdle: true
-				, unloadInvisibleFiles: true
-				, reuseTiles: true
-				, opacity: 1.0
+				updateWhenIdle: true,
+				unloadInvisibleFiles: true,
+				reuseTiles: true,
+				opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
 			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
@@ -440,13 +436,13 @@ var barchart_and_map = (function () {
 					//keep only counties that we have data for
 					filter: function (feature) {
 						return countiesSet.has(feature.properties.NAME);
-					}
-					, updateWhenIdle: true
-					, unloadInvisibleFiles: true
-					, reuseTiles: true
-					, opacity: 1.0
-					, style: styleCountyGeoJSONLayer
-					, onEachFeature: onEachCounty
+					},
+					updateWhenIdle: true,
+					unloadInvisibleFiles: true,
+					reuseTiles: true,
+					opacity: 1.0,
+					style: styleCountyGeoJSONLayer,
+					onEachFeature: onEachCounty
 				});
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
@@ -483,12 +479,10 @@ var barchart_and_map = (function () {
 		if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
 			//mozilla
 			css = '-moz-linear-gradient(left,' + colorStops + ')';
-		}
-		else if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent.toLowerCase().indexOf('safari') > -1) {
+		} else if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent.toLowerCase().indexOf('safari') > -1) {
 			// Safari 5.1, Chrome 10+
 			css = '-webkit-linear-gradient(left,' + colorStops + ')';
-		}
-		else {
+		} else {
 			//ie
 			css = '-ms-linear-gradient(left,' + colorStops + ')';
 		}
@@ -565,18 +559,18 @@ var barchart_and_map = (function () {
 		});
 		//value slider
 		$("#mode-share-by-county-slider").slider({
-			range: false
-			, disabled: ($("#mode-share-by-county-classification").val() != "custom")
-			, min: 0
-			, max: 100
-			, values: handlers
-			, create: function (event, ui) {
+			range: false,
+			disabled: ($("#mode-share-by-county-classification").val() != "custom"),
+			min: 0,
+			max: 100,
+			values: handlers,
+			create: function (event, ui) {
 				console.log("Slider created")
 				$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[0] + '</div></div>');
 				$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[1] + '</div></div>');
 				$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + handlers[2] + '</div></div>');
-			}
-			, slide: function (event, ui) {
+			},
+			slide: function (event, ui) {
 				var themax = $("#mode-share-by-county-slider").slider("option", "max");
 				updateColors(ui.values, themax);
 				$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
@@ -594,36 +588,36 @@ var barchart_and_map = (function () {
 			redrawMap();
 		});
 		$("#mode-share-by-county-naColor").spectrum({
-			color: naColor
-			, showInput: true
-			, className: "full-spectrum"
-			, showInitial: false
-			, showPalette: true
-			, showAlpha: true
-			, showSelectionPalette: true
-			, maxSelectionSize: 10
-			, preferredFormat: "hex"
-			, localStorageKey: "spectrum.demo"
-			, palette: palette
-			, change: function (color) {
+			color: naColor,
+			showInput: true,
+			className: "full-spectrum",
+			showInitial: false,
+			showPalette: true,
+			showAlpha: true,
+			showSelectionPalette: true,
+			maxSelectionSize: 10,
+			preferredFormat: "hex",
+			localStorageKey: "spectrum.demo",
+			palette: palette,
+			change: function (color) {
 				naColor = color;
 				redrawMap();
 				updateColors($("#mode-share-by-county-slider").slider("values"));
 			}
 		});
 		$("#mode-share-by-county-bubble-color").spectrum({
-			color: bubbleColor
-			, showInput: true
-			, className: "full-spectrum"
-			, showInitial: true
-			, showPalette: true
-			, showAlpha: true
-			, showSelectionPalette: true
-			, maxSelectionSize: 10
-			, preferredFormat: "hex"
-			, localStorageKey: "spectrum.demo"
-			, palette: palette
-			, change: function (color) {
+			color: bubbleColor,
+			showInput: true,
+			className: "full-spectrum",
+			showInitial: true,
+			showPalette: true,
+			showAlpha: true,
+			showSelectionPalette: true,
+			maxSelectionSize: 10,
+			preferredFormat: "hex",
+			localStorageKey: "spectrum.demo",
+			palette: palette,
+			change: function (color) {
 				bubbleColor = color;
 				redrawMap();
 			}
@@ -640,9 +634,9 @@ var barchart_and_map = (function () {
 		});
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ? {
-			r: parseInt(result[1], 16)
-			, g: parseInt(result[2], 16)
-			, b: parseInt(result[3], 16)
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
 		} : undefined;
 	}
 
@@ -654,8 +648,7 @@ var barchart_and_map = (function () {
 			//first time must initalize by creating and adding to map
 			circlesLayerGroup = L.layerGroup([]);
 			circlesLayerGroup.addTo(map);
-		}
-		else {
+		} else {
 			circlesLayerGroup.clearLayers();
 		}
 		if (bubblesShowing) {
@@ -694,33 +687,29 @@ var barchart_and_map = (function () {
 		//handle the different classifications
 		var classification = $("#mode-share-by-county-classification").val();
 		$("#mode-share-by-county-slider").slider({
-			range: false
-			, disabled: ($("#mode-share-by-county-classification").val() != "custom")
+			range: false,
+			disabled: ($("#mode-share-by-county-classification").val() != "custom")
 		});
 		if (classification == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
-		}
-		else {
+		} else {
 			$("#mode-share-by-county-update-map").css("display", "none");
 			if (classification == "even-interval") {
 				breakUp = serie.getClassEqInterval(4);
-			}
-			else if (classification == "quartiles") {
+			} else if (classification == "quartiles") {
 				breakUp = serie.getClassQuantile(4);
-			}
-			else if (classification == "jenks") {
+			} else if (classification == "jenks") {
 				breakUp = serie.getClassJenks(4);
-			}
-			else {
+			} else {
 				throw ("Unhandled classification: " + classification);
 			}
 			var newValues = [parseInt(breakUp[1]), parseInt(breakUp[2]), parseInt(breakUp[3])];
 			//update the slider
 			$("#mode-share-by-county-slider").slider({
-				min: breakUp[0]
-				, max: breakUp[4]
-				, values: newValues
-				, start: function (event, ui) {
+				min: breakUp[0],
+				max: breakUp[4],
+				values: newValues,
+				start: function (event, ui) {
 					$('#mode-share-by-county .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[0] + '</div></div>');
 					$('#mode-share-by-county .ui-slider-handle:eq(1)').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[1] + '</div></div>');
 					$('#mode-share-by-county .ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + newValues[2] + '</div></div>');
@@ -736,7 +725,7 @@ var barchart_and_map = (function () {
 	}
 	//return only the parts that need to be global
 	return {
-		updateOutline: updateOutline
-		, updateBubbles: updateBubbles
+		updateOutline: updateOutline,
+		updateBubbles: updateBubbles
 	};
 }()); //end encapsulating IIFE
