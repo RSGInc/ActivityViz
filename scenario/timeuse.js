@@ -12,12 +12,16 @@ var timeuse = (function () {
 	var legendTexts;
 	var legendGroups;
 	var chartData;
+	var chartStyle = 'expand';
+
+	function getChartLeftMargin() {
+		return (chartStyle == 'expand') ? 50 : 80;
+	}
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
-		w: legendBoxWidth
-		, h: 22
-		, s: 15
-		, r: 3
+		h: 22,
+		s: 15,
+		r: 3
 	};
 	var personType = "ALL";
 
@@ -49,14 +53,13 @@ var timeuse = (function () {
 							if (!requiredOrigPurposesFound.has(origPurpose)) {
 								requiredOrigPurposesFound.add(origPurpose);
 							}
-						}
-						else { //else not a required item
+						} else { //else not a required item
 							nonRequiredOrigPurposesSet.add(origPurpose);
 						}
 					} //else already in nonRequiredSet
 					return {
-						timePeriod: timePeriod
-						, quantity: +d[0][3]
+						timePeriod: timePeriod,
+						quantity: +d[0][3]
 					};
 				}).map(csv);
 				csv = null; //allow memory to be GC'ed
@@ -96,8 +99,8 @@ var timeuse = (function () {
 							//if period missing from data, create it
 							if (periodDataObject == undefined) {
 								periodDataObject = {
-									timePeriod: period
-									, quantity: 0
+									timePeriod: period,
+									quantity: 0
 								};
 								/* 								if (personTypeOrigPurposeExists) */
 								//console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
@@ -105,8 +108,8 @@ var timeuse = (function () {
 							periodDataArray.push(periodDataObject);
 						}); //end loop over periods
 						personTypeChartData.push({
-							key: origPurpose
-							, values: periodDataArray
+							key: origPurpose,
+							values: periodDataArray
 						});
 					}); //end loop over origPurposes 
 					return personTypeChartData;
@@ -147,6 +150,16 @@ var timeuse = (function () {
 				//the legend lays out differently after the first updateChart
 				//so call immediately so user will never see the initial legend layout
 				//extNvd3Chart.update();
+				extNvd3Chart.dispatch.on('stateChange', function (e, i) {
+					//see if style has change since legend margin needs to accomodate
+					var newChartStyle = e.style;
+					if (newChartStyle != chartStyle) {
+						console.log('stateChange - chart style has changed.');
+						chartStyle = newChartStyle;
+						extNvd3Chart.margin().left = getChartLeftMargin();
+						extNvd3Chart.update();
+					}
+				});
 				extNvd3Chart.legend.dispatch.on('legendClick', function (e, i) {
 					clearHighlightPoints()
 					setTimeout(function () {
@@ -178,7 +191,8 @@ var timeuse = (function () {
 			nv.addGraph({
 				generate: function () {
 					var chart = nv.models.stackedAreaChart().margin({
-							right: 200
+							right: 10,
+							left: getChartLeftMargin()
 						}).x(function (d) {
 							return d.timePeriod;
 						}) //We can modify the data accessor functions...
@@ -186,7 +200,7 @@ var timeuse = (function () {
 							return d.quantity;
 						}) //...in case your data is formatted differently.
 						.clipEdge(true).id("timeuse-stackedAreaChart").useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-						.showControls(true).style('expand'); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+						.showControls(true).style(chartStyle); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
 					//How to Remove control options from NVD3.js Stacked Area Chart
 					//http://www.bainweb.com/2015/09/how-to-remove-control-options-from.html
 					chart._options.controlOptions = ['Stacked', 'Expanded'];
@@ -194,12 +208,12 @@ var timeuse = (function () {
 					chart.xAxis.tickFormat(function (d) {
 						return abmviz_utilities.halfHourTimePeriodToTimeString(d);
 					});
-					chart.yAxis.tickFormat(d3.format(',.2f'));
+					chart.yAxis.tickFormat(d3.format('0,000'));
 					//nv.utils.windowResize(chart.update);
 					chart.legend.vers('classic');
 					return chart;
-				}
-				, callback: function (newGraph) {
+				},
+				callback: function (newGraph) {
 						console.log("timeuse nv.addGraph callback called");
 						extNvd3Chart = newGraph;
 						if (myCallback) {
@@ -216,13 +230,13 @@ var timeuse = (function () {
 			legendGroups = legend.selectAll("g").data(personTypes).enter().append("svg:g").attr("transform", function (d, i) {
 				return "translate(0," + i * (li.h + li.s) + ")";
 			});
-			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).on("mouseover", function (d, i) {
+			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", legendBoxWidth).attr("height", li.h).on("mouseover", function (d, i) {
 				personType = d;
 				clearHighlightPoints();
 				updateChart();
 				setPersonTypeClass();
 			});
-			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
+			legendTexts = legendGroups.append("svg:text").attr("x", legendBoxWidth / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d;
 			});
 
