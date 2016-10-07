@@ -14,6 +14,7 @@ var sunburst = (function () {
 	var legendGroups;
 	var nodeDataDisabled = new Set()
 	var negativePrefix = "- ";
+	var originalNodeData;
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth,
@@ -40,15 +41,16 @@ var sunburst = (function () {
 				json = buildHierarchy(csv);
 				originalNodeData = createVisualization();
 				drawLegend(originalNodeData);
-				
+
 			}); //end d3.text
 		} else {
 			//if already exists don't need to read in and parse again
-			createVisualization(json);
+			createVisualization();
 		}
 		//https://bl.ocks.org/kerryrodden/7090426
 		// Main function to draw and set up the visualization, once we have the data.
 		function createVisualization() {
+
 			// Basic setup of page elements.
 			var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
@@ -63,10 +65,12 @@ var sunburst = (function () {
 			var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container");
 			var partition = d3.layout.partition();
 
-			//set the function that the partition will  use as the quantity associated by each node.
+			//set the function that the partition will use as the quantity associated by each node.
 			//Note: this is not executed now but during the partion.nodes(json) call
 			partition.value(function (d) {
-				return d.size;
+				var isDisabled = nodeDataDisabled.has(d.uniqueId);
+				if (isDisabled) console.log(d.uniqueId + ' name: ' + d.name + ' isDisabled : ' + isDisabled);
+				return isDisabled ? 0 : d.size;
 			});
 			if (makeSunburst) {
 				var radius = Math.min(width, height) / 2;
@@ -90,22 +94,36 @@ var sunburst = (function () {
 					return (d.dx > 0.5);
 				});
 			}
+
+			//this function can be called multiple times since nodes can be disabled and the chart re-made
+			//the first time through assign base colors and don't change since wish colors assignments not to change.'
+			if (originalNodeData == undefined) {
+				//assign each node a color. Also assign each node a unique id since depth and name may not be unique
+				var c10 = d3.scale.category10();
+				//set baseColors for all the top level objects
+				var numDepth1 = 0;
+				nodeData.forEach(function (d, i) {
+					if (d.depth == 1) {
+						d.baseColor = d3.lab(c10(numDepth1));
+						numDepth1 += 1;
+						colors[d.uniqueId] = d.baseColor;
+					}
+				});
+
+			} //end if originalNodeData undefined
+
+			//each time though need to set the luminance scale for each baseColor since the total may be different
 			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
-			var c10 = d3.scale.category10();
 			maxDepth = 0;
-			//first give all nodes ids and set baseColors for all the top level objects
-			var numDepth1 = 0;
 			nodeData.forEach(function (d, i) {
-				d.uniqueId = d.depth + ' ' + i;
 				maxDepth = Math.max(d.depth, maxDepth);
 				if (d.depth == 1) {
 					d.luminance = d3.scale.sqrt().domain([0, d.value]).clamp(true).range([90, 20]);
-					d.baseColor = d3.lab(c10(numDepth1));
-					numDepth1 += 1;
 					d.baseColor.l = d.luminance(d.value);
 					colors[d.uniqueId] = d.baseColor;
 				}
 			});
+
 			//now for all lower level objects, set the color as a scaled luminance copy of the base color of the top level
 			nodeData.forEach(function (d, i) {
 				if (d.depth > 1) {
@@ -117,7 +135,7 @@ var sunburst = (function () {
 					colors[d.uniqueId] = c;
 				}
 			});
-			nodeVisuals = vis.data([json]).selectAll(".sunburst-node").data(nodeData);
+			nodeVisuals = vis.selectAll(".sunburst-node").data(nodeData);
 			if (makeSunburst) {
 				nodeVisuals = nodeVisuals.enter().append("svg:path").attr("d", d3.svg.arc().startAngle(function (d) {
 					return d.x;
@@ -150,6 +168,7 @@ var sunburst = (function () {
 			nodeVisuals.classed("sunburst-negative", function (d) {
 				return d.name.startsWith(negativePrefix);
 			});
+			return nodeData;
 		};
 
 		function showNodeExplanation(node) {
@@ -255,7 +274,15 @@ var sunburst = (function () {
 				dimAllBut(legendRects, [d]);
 				showNodeExplanation(d);
 			}).on("click", function (d, i) {
-				d.enabled = !d.enabled;
+				var currentlyDisabled = nodeDataDisabled.has(d.uniqueId);
+				var newDisableState = !currentlyDisabled;
+				if (currentlyDisabled) {
+					nodeDataDisabled.delete(d.uniqueId);
+				} else {
+					nodeDataDisabled.add(d.uniqueId);
+				}
+
+				d3.select(this).classed("disabled", newDisableState);
 				//toggle nodeData on/off
 				createVisualization();
 			});
@@ -272,8 +299,10 @@ var sunburst = (function () {
 		// root to leaf. The last column is a count of how
 		// often that sequence occurred.
 		function buildHierarchy(csv) {
+			var uniqueId = 0;
 			var root = {
 				"name": "root",
+				uniqueId: uniqueId++,
 				"children": []
 			};
 			for (var rowIndex = 0; rowIndex < csv.length; rowIndex++) {
@@ -322,7 +351,9 @@ var sunburst = (function () {
 						if (!foundChild) {
 							childNode = {
 								"name": nodeName,
-								"children": []
+								uniqueId: uniqueId++,
+								"isNegative": isNegative,
+								"children": [],
 							};
 							children.push(childNode);
 						}
@@ -331,8 +362,9 @@ var sunburst = (function () {
 						// Reached the end of the sequence; create a leaf node.
 						childNode = {
 							"name": nodeName,
+							uniqueId: uniqueId++,
+							"isNegative": isNegative,
 							"size": size,
-							"isNegative": isNegative
 						};
 						children.push(childNode);
 					}
