@@ -15,6 +15,7 @@ var sunburst = (function () {
 	var nodeDataDisabled = new Set()
 	var negativePrefix = "- ";
 	var originalNodeData;
+	var radius, x, y, svg, arc;
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth,
@@ -52,49 +53,23 @@ var sunburst = (function () {
 		function createVisualization() {
 
 			// Basic setup of page elements.
-			var sunburstBounds = d3.select("#sunburst-main").node().getBoundingClientRect();
+			var sunburstBounds = d3.select("#sunburst-chart").node().getBoundingClientRect();
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
 			// Dimensions of sunburst.
-			var makeSunburst = true;
-			var width = makeSunburst ? Math.min(750, sunburstBounds.width) : sunburstBounds.width;
+			var width = Math.min(750, sunburstBounds.width);
 			var height = width;
-			//set explanation and sidebar dimensions so that table-cell vertical align will center
-			d3.select("#sunburst-explanation").style("width", width).style("height", height);
-			d3.select("#sunburst-sidebar").style("height", height);
 			d3.select("#sunburst-chart svg").remove(); //in case window resize delete contents
-			var vis = d3.select("#sunburst-chart").append("svg:svg").attr("width", width).attr("height", height).append("svg:g").attr("id", "sunburst-container");
-			var partition = d3.layout.partition();
+			radius = Math.min(width, height) / 2;
 
-			//set the function that the partition will use as the quantity associated by each node.
-			//Note: this is not executed now but during the partion.nodes(json) call
-			partition.value(function (d) {
-				var isDisabled = nodeDataDisabled.has(d.uniqueId);
-				if (isDisabled) console.log(d.uniqueId + ' name: ' + d.name + ' isDisabled : ' + isDisabled);
-				return isDisabled ? 0 : d.size;
-			});
-			if (makeSunburst) {
-				var radius = Math.min(width, height) / 2;
-				partition.size([2 * Math.PI, radius * radius]);
-				vis.attr("transform", "translate(" + radius + "," + radius + ")")
-			} else {
-				partition.size([width, height]);
-			}
+			var partition = d3.layout.partition()
+				.value(function (d) {
+					return d.size;
+				});
+
 			var nodeData = partition.nodes(json);
-			//remove the root node since will not draw an object for that
-			var rootNode = nodeData.shift();
-			// Get total size of the tree = value of root node from partition.
-			totalSize = rootNode.value;
-			//for efficiency, remove nodes too small to see
-			if (makeSunburst) {
-				nodeData = nodeData.filter(function (d) {
-					return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
-				});
-			} else {
-				nodeData = nodeData.filter(function (d) {
-					return (d.dx > 0.5);
-				});
-			}
 
+			// Get total size of the tree = value of root node from partition.
+			totalSize = nodeData[0].value;
 			//this function can be called multiple times since nodes can be disabled and the chart re-made
 			//the first time through assign base colors and don't change since wish colors assignments not to change.'
 			if (originalNodeData == undefined) {
@@ -116,7 +91,7 @@ var sunburst = (function () {
 			//assign each node a color. Also assign each node a unique id since depth and name may not be unique
 			maxDepth = 0;
 			nodeData.forEach(function (d, i) {
-				maxDepth = Math.max(d.depth, maxDepth);
+				maxDepth = Math.max(d.depth+1, maxDepth);
 				if (d.depth == 1) {
 					d.luminance = d3.scale.sqrt().domain([0, d.value]).clamp(true).range([90, 20]);
 					d.baseColor.l = d.luminance(d.value);
@@ -135,41 +110,82 @@ var sunburst = (function () {
 					colors[d.uniqueId] = c;
 				}
 			});
-			nodeVisuals = vis.selectAll(".sunburst-node").data(nodeData);
-			if (makeSunburst) {
-				nodeVisuals = nodeVisuals.enter().append("svg:path").attr("d", d3.svg.arc().startAngle(function (d) {
-					return d.x;
-				}).endAngle(function (d) {
-					return d.x + d.dx;
-				}).padAngle(function (d) {
-					return ((maxDepth - d.depth) + 1) * 0.002;
-				}).innerRadius(function (d) {
-					return Math.sqrt(d.y);
-				}).outerRadius(function (d) {
-					return Math.sqrt(d.y + d.dy);
-				}));
-			} else {
-				//make icicleChart
-				nodeVisuals = nodeVisuals.enter().append("rect").attr("x", function (d) {
-					return d.x;
-				}).attr("y", function (d) {
-					return d.y;
-				}).attr("width", function (d) {
-					return d.dx;
-				}).attr("height", function (d) {
-					return d.dy;
+
+			var formatNumber = d3.format(",d");
+
+			x = d3.scale.linear()
+				.range([0, 2 * Math.PI]);
+
+			y = d3.scale.sqrt()
+				.range([0, radius]);
+
+			var color = d3.scale.category20c();
+
+			arc = d3.svg.arc()
+				.startAngle(function (d) {
+					return Math.max(0, Math.min(2 * Math.PI, x(d.x)));
+				})
+				.endAngle(function (d) {
+					return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx)));
+				})
+				.innerRadius(function (d) {
+					return Math.max(0, y(d.y));
+				})
+				.outerRadius(function (d) {
+					return Math.max(0, y(d.y + d.dy));
 				});
-			}
-			nodeVisuals.attr("class", "sunburst-node").attr("fill-rule", "evenodd").style("fill", function (d) {
-				return colors[d.uniqueId];
-			}).on("mouseover", mouseoverNode);
+
+			svg = d3.select("#sunburst-chart").append("svg").attr("id", "sunburst-container")
+				.attr("width", width)
+				.attr("height", height)
+				.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
+			nodeVisuals = svg.selectAll("path")
+				.data(nodeData)
+				.enter().append("path")
+				.attr("d", arc).attr("class", "sunburst-node").attr("fill-rule", "evenodd")
+				.style("fill", function (d) {
+					return d.uniqueId == 0 ? "#d3d3d3" : colors[d.uniqueId];
+				})
+				.on("click", clickOnNodeVisual).on("mouseover", mouseoverNode);
+
+			nodeVisuals.append("title")
+				.text(function (d) {
+					return d.name + "\n" + formatNumber(d.value);
+				});
+
+
 			// Add the mouseleave handler to the bounding circle.
 			d3.select("#sunburst-container").on("mouseleave", mouseleave);
 			nodeVisuals.classed("sunburst-negative", function (d) {
 				return d.name.startsWith(negativePrefix);
 			});
 			return nodeData;
-		};
+		}; //end createVisualization
+
+		function clickOnNodeVisual(d) {
+			console.log("clickOnNodeVisual depth: " + d.depth + " unique id: " + d.uniqueId + " d.name: " + d.name);
+			var sequenceArray = getDescendants(d);
+			arrangeLegendRects(sequenceArray);
+			svg.transition()
+				.duration(750)
+				.tween("scale", function () {
+					var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+						yd = d3.interpolate(y.domain(), [d.y, 1]),
+						yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+					return function (t) {
+						x.domain(xd(t));
+						y.domain(yd(t)).range(yr(t));
+					};
+				})
+				.selectAll("path")
+				.attrTween("d", function (d) {
+					return function () {
+						return arc(d);
+					};
+				});
+		}; //end clickOnNodeVisual
+
 
 		function showNodeExplanation(node) {
 			var percentage = (100 * node.value / totalSize).toPrecision(3);
@@ -185,13 +201,19 @@ var sunburst = (function () {
 			});
 		};
 
+
 		function hideNodeExplanation() {
 			d3.select("#sunburst-explanation").style("visibility", "hidden");
 		}
+
 		// Fade all but the current sequence, and show it sorted to the top of the legend.
 		function mouseoverNode(d) {
 			showNodeExplanation(d);
-			var sequenceArray = getAncestors(d);
+// 			var sequenceArray = getAncestors(d);
+// 			arrangeLegendRects(sequenceArray);
+		}; //end mouseoverNode
+
+		function arrangeLegendRects(sequenceArray) {
 			//move the legend rects of the current sequence array to the top, similar to a breadcrumb trail
 			var numSequenceMembersFound = 0;
 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
@@ -208,17 +230,20 @@ var sunburst = (function () {
 			// Fade all segments not in sequenceArray.
 			dimAllBut(nodeVisuals, sequenceArray);
 			dimAllBut(legendRects, sequenceArray);
-		}; //end mouseoverNode
+
+		}; //arrangeLegendRects
+
 		// Restore everything to full opacity when moving off the visualization.
 		function mouseleave(d) {
-			// Deactivate all segments during transition.
-			unDimClass(nodeVisuals);
-			unDimClass(legendRects);
-			legendGroups.transition().duration(500).attr("transform", function (d, i) {
-				return "translate(" + getDepthIndent(d) + "," + i * (li.h + li.s) + ")";
-			});
+// 			// Deactivate all segments during transition.
+// 			unDimClass(nodeVisuals);
+// 			unDimClass(legendRects);
+// 			legendGroups.transition().duration(500).attr("transform", function (d, i) {
+// 				return "translate(" + getDepthIndent(d) + "," + i * (li.h + li.s) + ")";
+// 			});
 			hideNodeExplanation();
 		}
+
 		// Given a node in a partition layout, return an array of all of its ancestor
 		// nodes, highest first, but excluding the root.
 		function getAncestors(node) {
@@ -227,6 +252,20 @@ var sunburst = (function () {
 			while (current.parent) {
 				path.unshift(current);
 				current = current.parent;
+			}
+			return path;
+		}
+
+
+		// Given a node in a partition layout, return an array of all of its descendant
+		// nodes, highest first, but excluding the root.
+		function getDescendants(node) {
+			var path = [node];
+			if (node.children) {
+				node.children.forEach(function (childNode) {
+					var descendants = getDescendants(childNode);
+					descendants.forEach(function(descendant) { path.push(descendant);});
+				});
 			}
 			return path;
 		}
@@ -242,7 +281,7 @@ var sunburst = (function () {
 		};
 
 		function getDepthIndent(d) {
-			return (d.depth - 1) * legendDepthIndent;
+			return d.depth * legendDepthIndent;
 		}
 
 		function dimAllBut(selection, undimmed) {
@@ -260,8 +299,8 @@ var sunburst = (function () {
 			//for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
 			var totalLegendHeight = (originalNodeData.length + 1) * (li.h + li.s);
 			var legend = d3.select("#sunburst-legend").append("svg:svg").attr("width", legendBoxWidth + ((maxDepth - 1) * legendDepthIndent)).attr("height", totalLegendHeight).on("mouseleave", function () {
-				unDimClass(nodeVisuals);
-				unDimClass(legendRects);
+// 				unDimClass(nodeVisuals);
+// 				unDimClass(legendRects);
 				d3.select("#sunburst-explanation").style("visibility", "hidden");
 			});
 			legendGroups = legend.selectAll("g").data(originalNodeData).enter().append("svg:g").attr("transform", function (d, i) {
@@ -270,30 +309,19 @@ var sunburst = (function () {
 			legendRects = legendGroups.append("svg:rect").attr("rx", li.r).attr("ry", li.r).attr("width", li.w).attr("height", li.h).style("fill", function (d) {
 				return colors[d.uniqueId];
 			}).on("mouseover", function (d, i) {
-				dimAllBut(nodeVisuals, [d]);
-				dimAllBut(legendRects, [d]);
+// 				dimAllBut(nodeVisuals, [d]);
+// 				dimAllBut(legendRects, [d]);
 				showNodeExplanation(d);
-			}).on("click", function (d, i) {
-				var currentlyDisabled = nodeDataDisabled.has(d.uniqueId);
-				var newDisableState = !currentlyDisabled;
-				if (currentlyDisabled) {
-					nodeDataDisabled.delete(d.uniqueId);
-				} else {
-					nodeDataDisabled.add(d.uniqueId);
-				}
-
-				d3.select(this).classed("disabled", newDisableState);
-				//toggle nodeData on/off
-				createVisualization();
-			});
+			}).on("click", clickOnNodeVisual);
 			legendTexts = legendGroups.append("svg:text").attr("x", li.w / 2).attr("y", li.h / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(function (d) {
 				return d.name;
-			});
+			}).on("click", clickOnNodeVisual);
 			legendRects.classed("sunburst-negative", function (d) {
 				return d.name.startsWith(negativePrefix);
 			});
 
 		}; //end drawLegend
+
 		// Take a multi-column CSV and transform it into a hierarchical structure suitable
 		// for a partition layout. The first column to the next to last column is a sequence of step names, from
 		// root to leaf. The last column is a count of how
@@ -301,7 +329,7 @@ var sunburst = (function () {
 		function buildHierarchy(csv) {
 			var uniqueId = 0;
 			var root = {
-				"name": "root",
+				"name": "ALL",
 				uniqueId: uniqueId++,
 				"children": []
 			};

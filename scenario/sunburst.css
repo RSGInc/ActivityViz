@@ -1,7 +1,7 @@
-#sunburst-main {
+#sunburst {
 	//
 	padding: 0px;
-	padding-left: 0;
+	padding-left: 10px;
 	padding-top: 0;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .sunburst-dimmed {
-	opacity: 0.3;
+	opacity: 0.5;
 }
 
 #sunburst-chart {
@@ -53,18 +53,16 @@
 }
 
 #sunburst-explanation {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	display: table;
+	//display: table;
 	color: #666;
 	z-index: -1;
 	padding-left: 0px;
 }
 
 #sunburst-explanation p {
-	display: table-cell;
-	vertical-align: middle;
+	//display: table-cell;
+	//vertical-align: bottom;
+	//horizontal-align: middle;
 	text-align: center;
 }
 
