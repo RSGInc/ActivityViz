@@ -372,23 +372,28 @@
 		<!-- end mode-share-by-county -->
 		<hr>
 		<div id="sunburst" class="row">
-		<div class="row">
-			<div id="sunburst-text-area" class="col-xs-3"> The Sunburst displays grouped data, such as trips by mode
-				<ul>
-					<li>The inner ring shows the most aggregate group</li>
-					<li>The larger the group value, the more intense the color</li>
-					<li>If included, negative values are shown in absolute terms and outlined in red</li>
-				</ul>
+			<div class="col-xs-2">
+				<div id="sunburst-legend">
+				</div>
 			</div>
-			<div id="sunburst-explanation" class="col-xs-9" style="visibility: hidden;">
-				<p><span id="sunburst-percentage"></span>
-					<br/><span id="sunburst-current-node"></span>
-					<br/><span id="sunburst-current-node-value"></span></p>
-			</div>
-			</div>
-			<div class="row">
-			<div id="sunburst-legend" class="col-xs-3"></div>
-			<div id="sunburst-chart" class="col-xs-9"> </div>
+			<div class="col-xs-10">
+				<div id="sunburst-chart" class="col-xs-9"> </div>
+				<div class="col-xs-3">
+					<div id="sunburst-text-area"> The Sunburst displays grouped data, such as trips by mode
+						<ul>
+							<li>The inner ring shows the most aggregate group</li>
+							<li>The larger the group value, the more intense the color</li>
+							<li>If included, negative values are shown in absolute terms and outlined in red</li>
+							<li>Clicking an arc or legend rect will zoom to concentrate on that region</li>
+							<li>Clicking in the middle will zoom back out one level</li>
+						</ul>
+					</div>
+					<div id="sunburst-explanation" style="visibility: hidden;">
+						<p><span id="sunburst-percentage"></span>
+							<br/><span id="sunburst-current-node"></span>
+							<br/><span id="sunburst-current-node-value"></span></p>
+					</div>
+				</div>
 			</div>
 		</div>
 		<!-- end sunburst -->
