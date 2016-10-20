@@ -388,7 +388,7 @@ var barchart_and_map = (function () {
 		return (returnStyle);
 	} //end styleCountyGeoJSONLayer function
 	function createMap(callback) {
-		map = L.map("mode-share-by-county-map").setView([33.754525, -84.384774], 9); //centered at Atlanta
+		map = L.map("mode-share-by-county-map").setView([33.754525, -84.384774], 12); //centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
 			var zoomScale = map.getZoomScale();
@@ -444,6 +444,8 @@ var barchart_and_map = (function () {
 					style: styleCountyGeoJSONLayer,
 					onEachFeature: onEachCounty
 				});
+				var allCountyBounds = countyLayer.getBounds();
+				map.fitBounds(allCountyBounds);
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
