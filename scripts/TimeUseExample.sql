@@ -62,6 +62,11 @@ INSERT INTO TIMEUSE SELECT PERSON_TYPE, PER, ORIG_PURPOSE, SUM(QUANTITY) AS QUAN
 
 DROP TABLE TIMEUSE_TEMP
 
+/* Change some purpose labels */
+UPDATE TIMEUSE SET ORIG_PURPOSE = REPLACE(ORIG_PURPOSE, 'atwork', 'work sub-tour')
+UPDATE TIMEUSE SET ORIG_PURPOSE = REPLACE(ORIG_PURPOSE, 'othmaint', 'other maintenance')
+UPDATE TIMEUSE SET ORIG_PURPOSE = REPLACE(ORIG_PURPOSE, 'othdiscr', 'other discretionary')
+
 /* Select all records from the TIMEUSE table twice (by person type and for all persons at once) 
 and return PERSON_TYPE, PER (period), ORIG_PURPOSE, and QUANTITY to populate the Time Use visual */
 SELECT UPPER(PERSON_TYPE) AS PERSON_TYPE, PER, UPPER(ORIG_PURPOSE) AS ORIG_PURPOSE, QUANTITY
