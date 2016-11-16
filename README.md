@@ -10,6 +10,7 @@ ARC ABMVIZ HTML 5
   - 3DAnimatedMapData.csv: ZONE, PER, QUANTITY
   - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
   - RadarChartsData.csv: AXIS, CHART, QUANTITY
+  - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY
 
 #Data folder
 1. scenarios.csv - Defines each scenario (i.e. model run) available to the user
@@ -21,6 +22,7 @@ ARC ABMVIZ HTML 5
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
 4. TreeMapData.csv - demo data source for the tree map visual - trips by mode groups and mode
 5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
+5. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
 
 #Scripts folder
 1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
@@ -31,6 +33,7 @@ ARC ABMVIZ HTML 5
 6. 3DAnimatedMapExample.sql - SQL script to query the ABMVIZ DB to produce the 3D animated map demo data set
 7. TreeMapExample.sql - SQL script to query the ABMVIZ DB to produce the tree map visual demo data set
 8. RadarChartsExample.sql - SQL script to query the ABMVIZ DB to produce the radar charts visual demo data set
+9. BarChartExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart visual demo data set
 
 #Exporting demo data set from SQL Server
 1. Open SQL server management studio

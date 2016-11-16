@@ -1,0 +1,23 @@
+BARGROUP,COLUMNS,QUANTITY
+Child too young for school,H,115248
+Child too young for school,M,178527
+Child too young for school,N,164712
+Full-time worker,H,255564
+Full-time worker,M,1435647
+Full-time worker,N,255002
+Non-worker,H,302034
+Non-worker,N,501068
+Part-time worker,H,53377
+Part-time worker,M,192769
+Part-time worker,N,119571
+Retired,H,179351
+Retired,N,197298
+Student of driving age,H,21605
+Student of driving age,M,172079
+Student of driving age,N,17252
+Student of non-driving age,H,62050
+Student of non-driving age,M,672433
+Student of non-driving age,N,65221
+University student,H,40348
+University student,M,126175
+University student,N,48784
