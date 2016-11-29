@@ -227,18 +227,21 @@ var grouped_barchart = (function() {
         //end nv.addGraph
     }
     ;//end createEmptyChart
+
+    //WARNING -- this canbe called more than once because of PIVOT reload kluge
     function initializeMuchOfUI() {
-        $("#grouped-barchart-stacked").click(function() {
+        $("#grouped-barchart-stacked").off().click(function() {
             extNvd3Chart.stacked(this.checked);
             extNvd3Chart.update();
         });
-        $("#grouped-barchart-pivot-axes").click(function() {
+        $("#grouped-barchart-pivot-axes").off().click(function() {
+            console.log("changing pivotData from " + pivotData + " to " + !pivotData);
             pivotData = !pivotData;
             //klugey -- destroy everything and re-create. 
             $(chartSelector).empty();
             readInData(readInDataCallback);
         });
-        $("#grouped-barchart-legend-type").click(function() {
+        $("#grouped-barchart-legend-type").off().click(function() {
             extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
             extNvd3Chart.update();
         });
