@@ -5,8 +5,9 @@ var grouped_barchart = (function () {
 	var chartData;
 	var subGroupColumn;
 	var mainGroupColumn;
-	var enabledMainGroups;
 	var quantityColumn;
+	var mainGroupSet = new Set();
+	var subGroupSet = new Set();
 	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
 	var chartSelector = "#grouped-barchart";
 	var svgChart;
@@ -45,8 +46,6 @@ var grouped_barchart = (function () {
 			mainGroupColumn = headers[0];
 			subGroupColumn = headers[1];
 			quantityColumn = headers[2];
-			var mainGroupSet = new Set();
-			var subGroupSet = new Set();
 			//note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
 			var rawChartData = d3.nest()
 				.key(function (d) {
@@ -67,8 +66,7 @@ var grouped_barchart = (function () {
 				var rawSubGroupObject = rawChartData[subGroupName];
 				var newSubGroupObject = {
 					key: subGroupName,
-					values: [],
-					enabled: true
+					values: []
 				};
 				chartData.push(newSubGroupObject);
 				mainGroupSet.forEach(function (mainGroupName) {
@@ -99,17 +97,11 @@ var grouped_barchart = (function () {
 
 	function updateChartNVD3(callback) {
 		"use strict";
-		//nvd3 expects data in the opposite hierarchy than rest of code so need to create
-		//but can also filter out counties at same time
-		//NOTE: ability to enable/disable counties  removed from UI so currently never used.
-		enabledMainGroups = chartData.filter(function (mainGroupObject) {
-			return mainGroupObject.enabled;
-		});
 		//poll every 150ms for up to two seconds waiting for chart
 		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
-			svgChart.datum(enabledMainGroups).call(extNvd3Chart);
+			svgChart.datum(chartData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
 			//first check if
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
@@ -121,11 +113,11 @@ var grouped_barchart = (function () {
 			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
 				//console.log('barsWrap mousemove');
 				var mouseY = d3.mouse(this)[1];
-				var numMainGroups = enabledMainGroups.length;
+				var numMainGroups = mainGroupSet.size;
 				var heightPerGroup = barsWrapRectHeight / numMainGroups;
 				var mainGroupIndex = Math.floor(mouseY / heightPerGroup);
-				var mainGroupObject = enabledMainGroups[mainGroupIndex];
-				var newMainGroup = mainGroupObject.groupLabel;
+				var mainGroupObject = chartData[0].values[mainGroupIndex];
+				var newMainGroup = mainGroupObject.label;
 				changeCurrentMainGroup(newMainGroup);
 			});
 			setTimeout(updateChartMouseoverRect, 1000);
@@ -193,7 +185,7 @@ var grouped_barchart = (function () {
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn);
 					//this is actually for xAxis since basically a sideways column chart
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(marginLeft-100);
+					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(marginLeft - 100);
 					//this is actually for yAxis
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
