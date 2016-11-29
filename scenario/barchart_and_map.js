@@ -29,7 +29,6 @@ var barchart_and_map = (function () {
 	var dataItems = [];
 	var currentCounty = "";
 	var modes;
-	var counties;
 	var countiesSet;
 	var enabledCounties;
 	var circlesLayerGroup;
@@ -75,7 +74,7 @@ var barchart_and_map = (function () {
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 
 	//start off chain of initialization by reading in the data	
-	readInData(function () {
+	function readInDataCallback() {
 		createMap(function () {
 			console.log("createMap callback")
 		});
@@ -84,7 +83,11 @@ var barchart_and_map = (function () {
 		updateCurrentTripModeOrClassification();
 		createEmptyChart();
 		initializeMuchOfUI();
-	}); //end call to readInData and its follwing callback
+	}; //end readInDataCallback
+
+	//start off chain of initialization by reading in the data	
+	readInData(readInDataCallback);
+
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
@@ -103,7 +106,7 @@ var barchart_and_map = (function () {
 			var rawChartData = new Map([]);
 			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
 			zoneData = {};
-			counties = [];
+			countiesSet = new Set();
 			data.forEach(function (d) {
 				var modeName = d[modeColumn];
 				var keepThisObject = modeName != "TOTAL";
@@ -120,7 +123,7 @@ var barchart_and_map = (function () {
 					};
 					if (rawChartData[countyName] == undefined) {
 						rawChartData[countyName] = {};
-						counties.push(countyName);
+						countiesSet.add(countyName);
 					}
 					if (rawChartData[countyName][modeName] == undefined) {
 						rawChartData[countyName][modeName] = 0;
@@ -139,12 +142,11 @@ var barchart_and_map = (function () {
 				} //end if keeping this object
 				return keepThisObject;
 			}); //end filtering and other data prep
-			countiesSet = new Set(counties);
 			modes = Object.keys(modeData);
 			data = null; //allow GC to reclaim memory
 			//need to run through rawChartData and put modes in order and insert ones that are missing
 			chartData = [];
-			counties.forEach(function (countyName) {
+			countiesSet.forEach(function (countyName) {
 				var rawCountyObject = rawChartData[countyName];
 				var newCountyObject = {
 					groupLabel: countyName,
@@ -162,7 +164,7 @@ var barchart_and_map = (function () {
 						value: countyModeTotalQuantity
 					});
 				}); //end modes foreach
-			}); //end counties forEach
+			}); //end countiesSet forEach
 			rawChartData = null; //allow GC to reclaim memory
 			callback();
 		}); //end d3.csv
@@ -266,7 +268,7 @@ var barchart_and_map = (function () {
 			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
 			currentCounty = newCurrentCounty;
 			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-			countyLabels.classed("mode-share-by-count-trip-mode-current-county", function (d, i) {
+			countyLabels.classed("mode-share-by-county-trip-mode-current-county", function (d, i) {
 				var setClass = d == currentCounty;
 				return setClass;
 			}); //end classed of group rect

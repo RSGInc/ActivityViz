@@ -1,0 +1,11 @@
+/* strangely the nvd3 multiBarHorizontalChart has the axis names reversed so that the yaxis is actually along bottom.
+Presumably this is because it used the smae code as the vertical chart
+*/
+
+#grouped-barchart-div .nv-x .tick text {
+	font-size: 15;
+}
+
+#grouped-barchart-div .nv-x .tick text.selected {
+	font-weight: bold;
+}
