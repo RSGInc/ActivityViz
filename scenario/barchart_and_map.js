@@ -68,7 +68,7 @@ var barchart_and_map = (function () {
 	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
 	var circleStyle = {
 		"stroke": false,
-		"fillColor": bubbleColor,
+		"fillColor": "set by updateBubbles",
 		"fillOpacity": 0.5
 	};
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
@@ -510,6 +510,21 @@ var barchart_and_map = (function () {
 			extNvd3Chart.stacked(this.checked);
 			extNvd3Chart.update();
 		});
+
+		$("#mode-share-by-county-bubbles").click(function () {
+			bubblesShowing = $("#mode-share-by-county-bubbles").is(":checked");
+
+			console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
+			console.log('$("#mode-share-by-county-bubble-size").prop("disabled"): ' + $("#mode-share-by-county-bubble-size").prop("disabled"));
+			$("#mode-share-by-county-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
+			//$("#mode-share-by-county-bubble-color").spectrum("disable", !bubblesShowing);
+			$("#mode-share-by-county-bubble-size").prop("disabled", !bubblesShowing);
+			console.log('$("#mode-share-by-county-bubble-size").prop("disabled"): ' + $("#mode-share-by-county-bubble-size").prop("disabled"));
+			updateBubbles();
+		});
+
+		$("mode-share-by-county-bubbles-size").change(updateBubbles);
+
 		$("#mode-share-by-county-legend-type").click(function () {
 			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 			extNvd3Chart.update();
@@ -620,12 +635,26 @@ var barchart_and_map = (function () {
 			maxSelectionSize: 10,
 			preferredFormat: "hex",
 			localStorageKey: "spectrum.demo",
+			clickoutFiresChange: true,
 			palette: palette,
 			change: function (color) {
-				bubbleColor = color;
-				redrawMap();
+				//BUG this gets called when user still clicking in color chooser (despite docs) See 
+				//https://github.com/bgrins/spectrum/issues/289
+				console.log("bubble-color spectrum change called with color:" + color);
+			},
+			hide: function (color) {
+				//this is called when cancel clicked or if user clicks outside the box and we want to accept the value
+				console.log("bubble-color spectrum hide called with color:" + color);
+				if (bubbleColor != color) {
+					updateBubbles();
+				}
 			}
 		});
+		$('.sp-choose')
+			.on('click', function () {
+				console.log(".sp-choose click called. Current bubbleColor: " + bubbleColor);
+				updateBubbles();
+			});
 		//initialize the map palette
 		setColorPalette(selectedColorRampIndex);
 	} //end initialize much of ui
@@ -646,8 +675,7 @@ var barchart_and_map = (function () {
 
 	function updateBubbles() {
 		"use strict";
-		bubblesShowing = $("#mode-share-by-county-bubbles").is(":checked");
-		console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
+
 		if (circlesLayerGroup == undefined) {
 			//first time must initalize by creating and adding to map
 			circlesLayerGroup = L.layerGroup([]);
@@ -656,6 +684,8 @@ var barchart_and_map = (function () {
 			circlesLayerGroup.clearLayers();
 		}
 		if (bubblesShowing) {
+			bubbleColor = $("#mode-share-by-county-bubble-color").spectrum("get");
+			circleStyle.fillColor = bubbleColor;
 			//get current map width to determine maximum bubble size
 			var mapCenter = map.getCenter();
 			var eastBound = map.getBounds().getEast();
@@ -730,6 +760,5 @@ var barchart_and_map = (function () {
 	//return only the parts that need to be global
 	return {
 		updateOutline: updateOutline,
-		updateBubbles: updateBubbles
 	};
 }()); //end encapsulating IIFE
