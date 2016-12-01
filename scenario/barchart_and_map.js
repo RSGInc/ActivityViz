@@ -3,7 +3,7 @@
 var barchart_and_map = (function () {
 	"use strict";
 	var naColor = "White";
-	var bubbleColor = "#ff7800";
+	var bubbleColor = 'rgba(255, 120, 0, 0.5)';
 	var colors = ["red", "red", "red", "red"];
 	//these will be replaced by default palette/ramp colors
 	var selectedColorRampIndex = 0;
@@ -57,7 +57,7 @@ var barchart_and_map = (function () {
 	var circleStyle = {
 		"stroke": false,
 		"fillColor": "set by updateBubbles",
-		"fillOpacity": 0.5
+		"fillOpacity": 1.0
 	};
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
@@ -543,14 +543,8 @@ var barchart_and_map = (function () {
 				updateBubbleColor();
 				updateBubbleSize();
 				circlesLayerGroup.addTo(map);
-// 				circleMarkers.forEach(function (circleMarker) {
-// 					circleMarker.addTo(map);
-// 				});
 			} else {
 				circlesLayerGroup.removeFrom(map);
-// 				circleMarkers.forEach(function (circleMarker) {
-// 					circleMarker.removeFrom(map);
-// 				});
 			}
 		});
 		$("#mode-share-by-county-bubble-size").change(updateBubbleSize);
@@ -781,7 +775,7 @@ var barchart_and_map = (function () {
 			});
 			updateColors(newValues, breakUp[4]);
 			if (bubblesShowing) {
-				 updateBubbleSize();
+				updateBubbleSize();
 			}
 		}
 		//end if !custom
