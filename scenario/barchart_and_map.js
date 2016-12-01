@@ -552,7 +552,7 @@ var barchart_and_map = (function () {
 			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
 			extNvd3Chart.update();
 		});
-		var colorRamps = d3.selectAll("#mode-share-by-county .ramp").on('click', function (d, i) {
+		var colorRamps = paletteRamps.on('click', function (d, i) {
 			setColorPalette(i);
 			updateColors($("#mode-share-by-county-slider").slider("values"));
 			//add delay to redrawMap so css has change to updates

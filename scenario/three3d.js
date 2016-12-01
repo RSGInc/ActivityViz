@@ -384,7 +384,7 @@ var three3d = (function three3dFunction() {
 				updateCurrentPeriodOrClassification();
 			}
 		});
-		var colorRamps = d3.selectAll("#three3d .ramp").on('click', function (d, i) {
+		var colorRamps = paletteRamps.on('click', function (d, i) {
 			setColorPalette(i);
 			updateColors($("#three3d-slider").slider("values"));
 			//add delay to redrawMap so css has change to updates
