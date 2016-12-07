@@ -80,11 +80,11 @@ var radar = (function () {
 						//if radarAxis missing from data, create it
 						if (radarAxisDataObject == undefined) {
 							radarAxisDataObject = {
-								axis: radarAxis,
+								axis: key,
 								originalValue: NaN,
 								value: 0
 							};
-							console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + radarAxis);
+							console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
 						} else {
 							radarAxisDataObject.originalValue = radarAxisDataObject.value
 							radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
