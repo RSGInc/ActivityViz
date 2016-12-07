@@ -1,23 +1,23 @@
 Person Group,Day Pattern,Count
-Child too young for school,H,115248
-Child too young for school,M,178527
-Child too young for school,N,164712
-Full-time worker,H,255564
-Full-time worker,M,1435647
-Full-time worker,N,255002
-Non-worker,H,302034
-Non-worker,N,501068
-Part-time worker,H,53377
-Part-time worker,M,192769
-Part-time worker,N,119571
-Retired,H,179351
-Retired,N,197298
-Student of driving age,H,21605
-Student of driving age,M,172079
-Student of driving age,N,17252
-Student of non-driving age,H,62050
-Student of non-driving age,M,672433
-Student of non-driving age,N,65221
-University student,H,40348
-University student,M,126175
-University student,N,48784
+Child too young for school,Home,115248
+Child too young for school,Mandatory,178527
+Child too young for school,Non-mandatory,164712
+Full-time worker,Home,255564
+Full-time worker,Mandatory,1435647
+Full-time worker,Non-mandatory,255002
+Non-worker,Home,302034
+Non-worker,Non-mandatory,501068
+Part-time worker,Home,53377
+Part-time worker,Mandatory,192769
+Part-time worker,Non-mandatory,119571
+Retired,Home,179351
+Retired,Non-mandatory,197298
+Student of driving age,Home,21605
+Student of driving age,Mandatory,172079
+Student of driving age,Non-mandatory,17252
+Student of non-driving age,Home,62050
+Student of non-driving age,Mandatory,672433
+Student of non-driving age,Non-mandatory,65221
+University student,Home,40348
+University student,Mandatory,126175
+University student,Non-mandatory,48784

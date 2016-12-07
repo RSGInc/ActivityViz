@@ -210,34 +210,38 @@
 		</div>
 		<!--end three3d-->
 		<hr>
-		<div id="timeuse" class="row">
+		<div id="grouped-barchart-div" class="row" style="margin-bottom:150px">
 			<p class="text-center" style="font-size:2em">
-				<span class="timeuse-maingroup">TIME USE</span>
+				<strong><span class="grouped-barchart-main-group"></span>,</strong> by <span class="grouped-barchart-sub-group"></span>
 			</p>
-			<div id="timeuse-sidebar" class="col-xs-2">
-				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of activity and the horizontal axis displays the period of the day.</div>
-				<ul>
-					<li>Select a person type below to filter the data</li>
-					<li>Click on legend symbols/labels to show or hide the purpose</li>
-					<li>Select stacked to show absolute numbers or expanded to show percents</li>
-				</ul>
-				<div id="timeuse-legend"></div>
-			</div>
-			<div id="timeuse-main" class="col-xs-10">
-				<div id="timeuse-chart">
-					<svg></svg>
+			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
+				<div class="row" style="margin-top:4px">
+					<ul>
+						<li>Click on the 'Grouped' or 'Stacked' radio buttons to change chart style</li>
+						<li>
+							Click on legend symbols/labels to show or hide the <span class="grouped-barchart-sub-group">PLACEHOLDER</span>
+						</li>
+						<li>
+							<label class="checkbox-inline"><input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
+						</li>
+						<li>
+							<label class="checkbox-inline"><input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
+						</li>
+						<li>
+							Double click on legend symbols/labels to change chart to a single <span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as <span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
+						</li>
+					</ul>
 				</div>
 			</div>
+			<div class="row" style="width:100%;height:400px">
+				<svg id="grouped-barchart"></svg>
+			</div>
 		</div>
-		<!-- end timeuse -->
+		<!-- end grouped-barchart -->
 		<hr>
 		<div id="mode-share-by-county" class="row">
 			<p class="text-center" style="font-size:2em">
-				<strong>
-            <span class="mode-share-by-county-trip-mode"></span>
-            ,
-        
-        </strong> by <span class="mode-share-by-county-area-type"></span>
+				<strong><span class="mode-share-by-county-trip-mode"></span>,</strong> by <span class="mode-share-by-county-area-type"></span>
 			</p>
 			<div class="col-xs-6 right-border" style="margin-top:4px">
 				<div class="row">
@@ -435,7 +439,31 @@
 		</div>
 		<!-- end mode-share-by-county -->
 		<hr>
+		<div id="timeuse" class="row">
+			<p class="text-center" style="font-size:2em">
+				<span class="timeuse-maingroup">TIME USE</span>
+			</p>
+			<div id="timeuse-sidebar" class="col-xs-2">
+				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of activity and the horizontal axis displays the period of the day.</div>
+				<ul>
+					<li>Select a person type below to filter the data</li>
+					<li>Click on legend symbols/labels to show or hide the purpose</li>
+					<li>Select stacked to show absolute numbers or expanded to show percents</li>
+				</ul>
+				<div id="timeuse-legend"></div>
+			</div>
+			<div id="timeuse-main" class="col-xs-10">
+				<div id="timeuse-chart">
+					<svg></svg>
+				</div>
+			</div>
+		</div>
+		<!-- end timeuse -->
+		<hr>
 		<div id="sunburst" class="row">
+			<p class="text-center" style="font-size:2em">
+				<span class="sunburst-maingroup">PLACEHOLDER</span>
+			</p>
 			<div class="col-xs-2">
 				<div id="sunburst-legend"></div>
 			</div>
@@ -444,8 +472,6 @@
 				<div class="col-xs-3">
 					<div id="sunburst-text-area">
 						The Sunburst displays grouped data, such as trips by mode
-
-
 						<ul>
 							<li>The inner ring shows the most aggregate group</li>
 							<li>The larger the group value, the more intense the color</li>
@@ -486,35 +512,6 @@
 			</div>
 		</div>
 		<!-- end radar -->
-		<hr>
-		<div id="grouped-barchart-div" class="row">
-			<p class="text-center" style="font-size:2em">
-				<strong><span class="grouped-barchart-main-group"></span>,</strong> by <span class="grouped-barchart-sub-group"></span>
-			</p>
-			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
-				<div class="row" style="margin-top:4px">
-					<ul>
-						<li>Click on the 'Grouped' or 'Stacked' radio buttons to change chart style</li>
-						<li>
-							Click on legend symbols/labels to show or hide the <span class="grouped-barchart-sub-group">PLACEHOLDER</span>
-						</li>
-						<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
-						</li>
-						<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
-						</li>
-						<li>
-							Double click on legend symbols/labels to change chart to a single <span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as <span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row" style="width:100%;height:60%;">
-				<svg id="grouped-barchart"></svg>
-			</div>
-		</div>
-		<!-- end grouped-barchart -->
 		<hr>
 </body>
 <!-- end body -->
