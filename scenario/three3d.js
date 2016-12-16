@@ -227,7 +227,7 @@ var three3d = (function three3dFunction() {
 		}).addTo(map);
 
 
-		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {

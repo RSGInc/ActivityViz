@@ -407,7 +407,7 @@ var barchart_and_map = (function () {
 			var zoomScale = map.getZoomScale();
 			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
 		});
-		$.getJSON("../scripts/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
@@ -447,7 +447,7 @@ var barchart_and_map = (function () {
 				opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../scripts/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
+			$.getJSON("../data/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
 				"use strict";
 				console.log("cb_2015_us_county_500k GEORGIA.json success");
 				//http://leafletjs.com/reference.html#tilelayer
