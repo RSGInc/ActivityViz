@@ -18,7 +18,7 @@ ARC ABMVIZ HTML 5
 3. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
 4. cb_2015_us_county_500k GEORGIA.json - Counties from [Census](https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html); converted to json with [mapshaper](http://www.mapshaper.org)
 
-#BS10 folder
+#BS10 example scenario folder
 1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone, county, and mode
 2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
@@ -41,7 +41,7 @@ ARC ABMVIZ HTML 5
 3. Set the user - [ATLANTAREGION\TAMConsult] - and schema (i.e. scenario) - BS10 - to query
 4. Execute the script
 5. Right click in the upper left corner of the results table and select Copy with Headers
-6. Paste the result in Excel and save as a CSV file into the relevant scenario folder
+6. Paste the result in Excel and save as a CSV file into the relevant data\scenario folder
 
 #Run demo
 1. Requires a http server such as Python's SimpleHTTPServer
