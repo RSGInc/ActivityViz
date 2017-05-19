@@ -26,7 +26,7 @@ ARC ABMVIZ HTML 5
 5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
 5. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
 
-# cripts folder
+# Scripts folder
 1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON
 4. BarChartAndMapExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart and map visual demo data set
 5. TimeUseExample.sql - SQL script to query the ABMVIZ DB to produce the time use visual demo data set
