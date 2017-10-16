@@ -1,0 +1,5 @@
+Scenario,Description
+BS10, - Base year 2010
+NB2040, - No-Build 2040
+RP2040, - Regional Plan 2040
+RP-NB, - Regional Plan 2040 minus No-Build 2040

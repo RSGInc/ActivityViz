@@ -26,7 +26,7 @@ var barchart_and_map = (function () {
 	var countyColumn;
 	var zoneColumn;
 	var modeColumn;
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
+	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
 	var chartSelector = "#mode-share-by-county-chart";
 	var svgChart;
 	var extNvd3Chart;
@@ -59,6 +59,11 @@ var barchart_and_map = (function () {
 		"fillColor": "set by updateBubbles",
 		"fillOpacity": 1.0
 	};
+	//config file options
+	var COUNTY_FILE="";
+	var ZONE_FILE_LOC="";
+	var CENTER_LOC = [];
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
 	function readInDataCallback() {
@@ -81,88 +86,101 @@ var barchart_and_map = (function () {
 
 	function readInData(callback) {
 		"use strict";
-		d3.csv(url, function (error, data) {
-			"use strict";
-			if (error)
-				throw error;
-			//expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
-			var headers = d3.keys(data[0]);
-			zoneColumn = headers[0];
-			countyColumn = headers[1];
-			modeColumn = headers[2];
-			quantityColumn = headers[3];
-			var rawChartData = new Map([]);
-			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
-			zoneData = {};
-			countiesSet = new Set();
-			data.forEach(function (d) {
-				var modeName = d[modeColumn];
-				var keepThisObject = modeName != "TOTAL";
-				if (keepThisObject) {
-					var zoneName = d[zoneColumn];
-					var countyName = d[countyColumn];
-					var quantity = parseInt(d[quantityColumn]);
-					if (zoneData[zoneName] == undefined) {
-						zoneData[zoneName] = {};
-					}
-					zoneData[zoneName][modeName] = {
-						COUNTY: countyName,
-						QUANTITY: quantity
-					};
-					if (rawChartData[countyName] == undefined) {
-						rawChartData[countyName] = {};
-						countiesSet.add(countyName);
-					}
-					if (rawChartData[countyName][modeName] == undefined) {
-						rawChartData[countyName][modeName] = 0;
-						//keep track of counts for each mode
-						//don't actually care about counts but this also implicitly keeps a list of all modes
-						//in the order they were encountered because properties are ordered
-						if (modeData[modeName] == undefined) {
-							modeData[modeName] = {
-								enabled: true,
-								serie: []
-							};
-						}
-					}
-					modeData[modeName].serie.push(quantity);
-					rawChartData[countyName][modeName] += quantity;
-				}
-				//end if keeping this object
-				return keepThisObject;
-			});
-			//end filtering and other data prep
-			modes = Object.keys(modeData);
-			data = null;
-			//allow GC to reclaim memory
-			//need to run through rawChartData and put modes in order and insert ones that are missing
-			chartData = [];
-			countiesSet.forEach(function (countyName) {
-				var rawCountyObject = rawChartData[countyName];
-				var newCountyObject = {
-					groupLabel: countyName,
-					subgroups: [],
-					enabled: true
-				};
-				chartData.push(newCountyObject);
-				modes.forEach(function (modeName) {
-					var countyModeTotalQuantity = rawCountyObject[modeName];
-					if (countyModeTotalQuantity == undefined) {
-						countyModeTotalQuantity = 0;
-					}
-					newCountyObject.subgroups.push({
-						subgroupLabel: modeName,
-						value: countyModeTotalQuantity
-					});
-				});
-				//end modes foreach
-			});
-			//end countiesSet forEach
-			rawChartData = null;
-			//allow GC to reclaim memory
-			callback();
-		});
-		//end d3.csv
+		if(showChartOnPage) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+                $.each(data, function (key, val) {
+                    if (key == "CountyFile")
+                        COUNTY_FILE = val;
+                    if (key == "ZoneFile")
+                        ZONE_FILE_LOC = val;
+                    if(key =="CenterMap")
+                    	CENTER_LOC = val;
+                });
+            });
+            d3.csv(url, function (error, data) {
+                "use strict";
+                if (error)
+                    throw error;
+
+                //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
+                var headers = d3.keys(data[0]);
+                zoneColumn = headers[0];
+                countyColumn = headers[1];
+                modeColumn = headers[2];
+                quantityColumn = headers[3];
+                var rawChartData = new Map([]);
+                //run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
+                zoneData = {};
+                countiesSet = new Set();
+                data.forEach(function (d) {
+                    var modeName = d[modeColumn];
+                    var keepThisObject = modeName != "TOTAL";
+                    if (keepThisObject) {
+                        var zoneName = d[zoneColumn];
+                        var countyName = d[countyColumn];
+                        var quantity = parseInt(d[quantityColumn]);
+                        if (zoneData[zoneName] == undefined) {
+                            zoneData[zoneName] = {};
+                        }
+                        zoneData[zoneName][modeName] = {
+                            COUNTY: countyName,
+                            QUANTITY: quantity
+                        };
+                        if (rawChartData[countyName] == undefined) {
+                            rawChartData[countyName] = {};
+                            countiesSet.add(countyName);
+                        }
+                        if (rawChartData[countyName][modeName] == undefined) {
+                            rawChartData[countyName][modeName] = 0;
+                            //keep track of counts for each mode
+                            //don't actually care about counts but this also implicitly keeps a list of all modes
+                            //in the order they were encountered because properties are ordered
+                            if (modeData[modeName] == undefined) {
+                                modeData[modeName] = {
+                                    enabled: true,
+                                    serie: []
+                                };
+                            }
+                        }
+                        modeData[modeName].serie.push(quantity);
+                        rawChartData[countyName][modeName] += quantity;
+                    }
+                    //end if keeping this object
+                    return keepThisObject;
+                });
+                //end filtering and other data prep
+                modes = Object.keys(modeData);
+                data = null;
+                //allow GC to reclaim memory
+                //need to run through rawChartData and put modes in order and insert ones that are missing
+                chartData = [];
+                countiesSet.forEach(function (countyName) {
+                    var rawCountyObject = rawChartData[countyName];
+                    var newCountyObject = {
+                        groupLabel: countyName,
+                        subgroups: [],
+                        enabled: true
+                    };
+                    chartData.push(newCountyObject);
+                    modes.forEach(function (modeName) {
+                        var countyModeTotalQuantity = rawCountyObject[modeName];
+                        if (countyModeTotalQuantity == undefined) {
+                            countyModeTotalQuantity = 0;
+                        }
+                        newCountyObject.subgroups.push({
+                            subgroupLabel: modeName,
+                            value: countyModeTotalQuantity
+                        });
+                    });
+                    //end modes foreach
+                });
+                //end countiesSet forEach
+                rawChartData = null;
+                //allow GC to reclaim memory
+                callback();
+            });
+            //end d3.csv
+        }
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
@@ -400,14 +418,17 @@ var barchart_and_map = (function () {
 	}
 	//end styleCountyGeoJSONLayer function
 	function createMap(callback) {
-		map = L.map("mode-share-by-county-map").setView([33.754525, -84.384774], 12);
+		//var latlngcenter = JSON.parse(CENTER_LOC);
+		//var lat=latlngcenter[0];
+		//var lng=latlngcenter[1];
+		map = L.map("mode-share-by-county-map").setView(CENTER_LOC, 12);
 		//centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
 			var zoomScale = map.getZoomScale();
 			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
 		});
-		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ZONE_FILE_LOC, function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
@@ -447,9 +468,9 @@ var barchart_and_map = (function () {
 				opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../data/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
+			$.getJSON("../data/atlanta/"+COUNTY_FILE, function (countyTiles) {
 				"use strict";
-				console.log("cb_2015_us_county_500k GEORGIA.json success");
+				console.log(COUNTY_FILE+" success");
 				//http://leafletjs.com/reference.html#tilelayer
 				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data for

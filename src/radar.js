@@ -3,190 +3,268 @@
 var radar = (function () {
 	"use strict";
 	var chartData;
-	var chartColor = "#0000FF"; //blue
+	var chartColor = d3.scale.category10();
+//"#0000FF"; //blue
 	var AXIS_COLUMN = 0;
-	var QUANTITY_COLUMN = 1;
-	var CHART_COLUMN = 2;
+	var QUANTITY_COLUMN = 2;
+	var CHART_COLUMN = 1;
 	var opacityScaleRange = [0.3, 0.9];
-
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('r') > -1;
 	function createRadar() {
-		//read in data and create radar when finished
-		if (chartData === undefined) {
-			d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
-				"use strict";
-				if (error) throw error; //expected data should have columns similar to: AXIS	QUANTITY CHART
-				var csv = d3.csv.parseRows(data).slice(1);
-				data = null; //allow memory to be GC'ed
-				var rolledUpMap = d3.nest().key(function (d) {
-						//convert quantity to a number
-						d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
-						var chartName = d[CHART_COLUMN];
-						return chartName; //group by CHART
-					}).key(function (d) {
-						var radarAxis = d[AXIS_COLUMN];
-						return radarAxis; //secondary group by AXIS
-					})
-					//.key(function (d) {
-					//return d[QUANTITY_COLUMN]; //by including quantity, eliminates array of fields in data structure.
-					//})
-					.rollup(function (d) {
-						return {
-							axis: d[0][AXIS_COLUMN],
-							value: d[0][QUANTITY_COLUMN]
-						};
-					}).map(csv);
-				//get max and min values for each axis
-				var axesInfo = d3.nest().key(function (d) {
-					var radarAxis = d[AXIS_COLUMN];
-					return radarAxis; //secondary group by AXIS
-				}).rollup(function (leaves) {
-					return {
-						name: leaves[0][AXIS_COLUMN],
-						min: d3.min(leaves, function (d) {
-							return d[QUANTITY_COLUMN];
-						}),
-						max: d3.max(leaves, function (d) {
-							return d[QUANTITY_COLUMN];
-						})
-					};
-				}).map(csv);
-				//scale each axis to range of 0 to 1 so can report as percentage across best/worst of all charts
-				Object.keys(axesInfo).forEach(function (key) {
-					var axisInfo = axesInfo[key];
-					axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
-				});
-				csv = null; //allow memory to be GC'ed
-				//convert data to format nvd3 expects it
-				//populate drop down of all person -types
-				chartData = [];
-				var minSumPercentages = 10000;
-				var maxSumPercentages = -10000;
-				var chartId = 1;
-				Object.keys(rolledUpMap).forEach(function (chartName) {
-					var axesData = [];
-					var chartDatumObject = {
-						chartId: chartId++,
-						chartName: chartName,
-						axes: axesData,
-						sumPercentages: 0
-					}
-					chartData.push(chartDatumObject);
-					var rolledUpChartNameMap = rolledUpMap[chartName];
-					var axisOpacityScale = d3.scale.linear().domain([0, 1]).range(opacityScaleRange);
-					//must make sure data has all radarAxes since wish each chart to look similar
-					Object.keys(axesInfo).forEach(function (key) {
-						var axisInfo = axesInfo[key];
-						var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
-						//if radarAxis missing from data, create it
-						if (radarAxisDataObject == undefined) {
-							radarAxisDataObject = {
-								axis: key,
-								originalValue: NaN,
-								value: 0
-							};
-							console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
-						} else {
-							radarAxisDataObject.originalValue = radarAxisDataObject.value
-							radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
-						}
-						//at this point 'value' has been overwritten by percent value and original copied to originalValue
-						radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
-						chartDatumObject.sumPercentages += radarAxisDataObject.value;
-						axesData.push(radarAxisDataObject);
-					}); //end loop over radarAxes
-					minSumPercentages = Math.min(minSumPercentages, chartDatumObject.sumPercentages);
-					maxSumPercentages = Math.max(maxSumPercentages, chartDatumObject.sumPercentages);
-					//end loop over charts
-				});
-				//now calculate color as scaled value of the max and min sumPercentages
-				var summedIdentityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
-				var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range(opacityScaleRange);
-				chartData.forEach(function (chartDatum) {
-					chartDatum.percentageBestChart = summedIdentityScale(chartDatum.sumPercentages);
-					chartDatum.scaledOpacity = summedOpacityScale(chartDatum.sumPercentages);
-				});
-				console.log('radar finished reading and processing data');
-				createCharts();
-			}); //end d3.text
-		} //end if chartData === undefined
-		else {
-			//if just a window resize, don't re-read data
-			//createEmptyChart(updateChart);
-		}
+        //read in data and create radar when finished
+        if (showChartOnPage) {
+            if (chartData === undefined) {
+                d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
+                    "use strict";
+                    if (error) throw error; //expected data should have columns similar to: AXIS CHART QUANTITY1, QUAN2, ...QUAN N
+                    var csv = d3.csv.parseRows(data).slice(1);
+                    var headers = d3.csv.parseRows(data)[0];
+                    var legendHead = headers.slice(2,headers.len);
+                    data = null; //allow memory to be GC'ed
+                    var rolledUpMaps = [];
+                    var rolledUpMap;
 
-		function createCharts() {
-			var radarChartContainer = d3.select("#radar-chart-container");
-			//need to create columns and then fill each column with portlets
-			//tricky because (AFAIK) I need to attach the data to each column separately
-			var numColumns = 3;
-			var radarChartOptions = {
-				w: 180,
-				h: 150,
-				margin: {
-					top: 40,
-					right: 60,
-					bottom: 55,
-					left: 60
-				},
-				tooltipFormatValue: abmviz_utilities.numberWithCommas,
-				strokeWidth: 0,
-				maxValue: 1.0,
-				levels: 3,
-				wrapWidth: 70,
-				labelFactor: 1.3,
-				roundStrokes: true,
-				strokeWidth: 0,
-				color: function () {
-					return chartColor;
-				},
-				tooltipFormatValue: abmviz_utilities.numberWithCommas
-			};
-			var chartId = 1;
-			for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
-				radarChartContainer.append("div").attr("class", "radar-column");
-			} //end loop over columns
-			var columns = radarChartContainer.selectAll(".radar-column");
-			columns[0].forEach(function (d, columnIndex) {
-					var everyThirdDataItem = chartData.filter(function (chartDatum, chartDatumIndex) {
-						return (chartDatumIndex % numColumns) == columnIndex;
-					});
-					var columnPortlets = d3.select(d).selectAll(".radar-portlet").data(everyThirdDataItem).enter().append("div").attr("class", "radar-portlet")
-					columnPortlets.append("div").attr("class", "radar-portlet-header").text(function (d) {
-						return d.chartName;
-					});
+                    for(var y=2; y < csv[0].length;y++) {
+                        rolledUpMap = d3.nest().key(function (d) {
+                            //convert quantity to a number
+                            var len = d.length;
+                            for (var i = 2; i < len; i++) {
+                                d[i] = +d[i];
+                            }
+                            //d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
+                            var chartName = d[CHART_COLUMN];
+                            return chartName; //group by CHART
+                        }).key(function (d) {
+                            var radarAxis = d[AXIS_COLUMN];
+                            return radarAxis; //secondary group by AXIS
+                        })
+                        //.key(function (d) {
+                        //return d[QUANTITY_COLUMN]; //by including quantity, eliminates array of fields in data structure.
+                        //})
+                            .rollup(function (d) {
+                                var vals = d[0].slice(2, d.len);
+                                return {
+                                    axis: d[0][AXIS_COLUMN],
+                                    value: d[0][y]
+                                };
+                            }).map(csv);
+                        rolledUpMaps.push(rolledUpMap);
+                    }
+                    //get max and min values for each axis
+                    var axesInfo = d3.nest().key(function (d) {
+                        var radarAxis = d[AXIS_COLUMN];
+                        return radarAxis; //secondary group by AXIS
+                    }).rollup(function (leaves) {
+                        return {
+                            name: leaves[0][AXIS_COLUMN],
+                            min: d3.min(leaves, function (d) {
+                                return Math.min.apply(null,d.slice(2,d.len));
+                            }),
+                            max: d3.max(leaves, function (d) {
+                                return Math.max.apply(null,d.slice(2,d.len));
+                            })
+                        };
+                    }).map(csv);
+                    //scale each axis to range of 0 to 1 so can report as percentage across best/worst of all charts
+                    Object.keys(axesInfo).forEach(function (key) {
+                        var axisInfo = axesInfo[key];
+                        axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
+                    });
+                    csv = null; //allow memory to be GC'ed
+                    //convert data to format nvd3 expects it
+                    //populate drop down of all person -types
+                    chartData = [];
+                    var minSumPercentages = 10000;
+                    var maxSumPercentages = -10000;
+                    var chartId = 1;
+                    var axesData=[];
+                    var chartDatumObject={};
+                    for(var c = 0; c < rolledUpMaps.length;c++){
+                        var currentrollupMap = rolledUpMaps[c];
 
-					function getChartId(d) {
-						var id = "radar-" + d.chartId;
-						return id;
-					}
-					var chartSvgs = columnPortlets.append("div").attr("class", "radar-portlet-content").attr("id", getChartId);
-					chartSvgs.each(function (d) {
-						RadarChart('#' + getChartId(d), [d], radarChartOptions);
-					}); //end each svg
-				}) //end each column
-			$(function () {
-				$(".radar-column").sortable({
-					connectWith: ".radar-column",
-					handle: ".radar-portlet-header",
-					cancel: ".radar-portlet-toggle",
-					placeholder: "radar-portlet-placeholder ui-corner-all"
-				});
-				$(".radar-portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all").find(".radar-portlet-header").addClass("ui-widget-header ui-corner-all").prepend("<span class='ui-icon ui-icon-minusthick radar-portlet-toggle'></span>");
-				$(".radar-portlet-toggle").on("click", function () {
-					var icon = $(this);
-					icon.toggleClass("ui-icon-minusthick ui-icon-plusthick");
-					icon.closest(".radar-portlet").find(".radar-portlet-content").toggle();
-				});
-			});
-			//end createCharts
-		}
-		//end createRadar
-	};
-	createRadar();
-	window.addEventListener("resize", function () {
-		console.log("Got resize event. Calling radar");
-		createRadar();
-	});
-	//return only the parts that need to be global
-	return {};
+                    Object.keys(currentrollupMap).forEach(function (chartName) {
+                         axesData = [];
+                         var existingChartId;
+                         if(chartData.map(function(e){return e.chartName;}).indexOf(chartName) >-1)
+                         {
+                             var indx = chartData.map(function(e){return e.chartName;}).indexOf(chartName) ;
+                             existingChartId = chartData[indx].chartId;
+                         }else {
+                             existingChartId = chartId++;
+                         }
+                         chartDatumObject = {
+                            chartId: existingChartId,
+                            chartName: chartName,
+                            axes: axesData,
+                             areaName: legendHead[c],
+                            sumPercentages: 0,
+                             active: true
+                        }
+                        chartData.push(chartDatumObject);
+                        var rolledUpChartNameMap = currentrollupMap[chartName];
+                        var axisOpacityScale = d3.scale.linear().domain([0, 1]).range(opacityScaleRange);
+                        //must make sure data has all radarAxes since wish each chart to look similar
+                        Object.keys(axesInfo).forEach(function (key) {
+                            var axisInfo = axesInfo[key];
+                            var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
+                            //if radarAxis missing from data, create it
+                            if (radarAxisDataObject == undefined) {
+                                radarAxisDataObject = {
+                                    axis: key,
+                                    originalValue: NaN,
+                                    value: 0
+                                };
+                                console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
+                            } else {
+                                radarAxisDataObject.originalValue = radarAxisDataObject.value
+                                radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
+                            }
+                            //at this point 'value' has been overwritten by percent value and original copied to originalValue
+                            radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
+                            chartDatumObject.sumPercentages += radarAxisDataObject.value;
+                            axesData.push(radarAxisDataObject);
+                        }); //end loop over radarAxes
+                        minSumPercentages = Math.min(minSumPercentages, chartDatumObject.sumPercentages);
+                        maxSumPercentages = Math.max(maxSumPercentages, chartDatumObject.sumPercentages);
+                        //end loop over charts
+                    });
+                      }
+                    //now calculate color as scaled value of the max and min sumPercentages
+                    var summedIdentityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range([0, 1]);
+                    var summedOpacityScale = d3.scale.linear().domain([minSumPercentages, maxSumPercentages]).range(opacityScaleRange);
+                    chartData.forEach(function (chartDatum) {
+                        chartDatum.percentageBestChart = summedIdentityScale(chartDatum.sumPercentages);
+                        chartDatum.scaledOpacity = summedOpacityScale(chartDatum.sumPercentages);
+                    });
+                    console.log('radar finished reading and processing data');
+                    createCharts();
+                }); //end d3.text
+                var labelTooltip = d3.select('#radar').append("div").attr("class", "lbltooltip").style("opacity", 0);
+            }
+            //end if chartData === undefined
+            else {
+                //if just a window resize, don't re-read data
+                //createEmptyChart(updateChart);
+            }
+        }
+            function createCharts() {
+                var radarChartContainer = d3.select("#radar-chart-container");
+                //need to create columns and then fill each column with portlets
+                //tricky because (AFAIK) I need to attach the data to each column separately
+                var heightConfig = [750,450,150,150];
+                var weightConfig = [800,500,180,155];
+                var marginTop =     [90,  50,40,40];
+                var marginBot =     [110, 65,55,55];
+                var marginLeft =    [90,  50,60,75];
+                var marginRight =   [90,  50,60,75];
+                var radarColCss = [320,624,320,320];
+                var labelFact = [1.2,1.2,1.38,1.45];
+                var numCharts = 21;
+                var numColumns = 2;
+                if(numCharts < 4){
+                    numColumns = numCharts;
+                } else{
+                    numColumns = 1;
+                }
+
+                var radarChartOptions = {
+
+                    w: weightConfig[numColumns -1],
+                    h: heightConfig[numColumns -1],
+                    margin: {
+                        top: marginTop[numColumns-1],
+                        right: marginRight[numColumns-1],
+                        bottom: marginBot[numColumns-1],
+                        left: marginLeft[numColumns-1]
+                    },
+                    legendPosition: {x:25,y:25},
+                    tooltipFormatValue: abmviz_utilities.numberWithCommas,
+                    strokeWidth: 2,
+                    maxValue: 1.0,
+                    levels: 3,
+                    wrapWidth: 70,
+                    labelFactor: labelFact[numColumns-1],
+                    roundStrokes: false,
+                   // strokeWidth: 0,
+                    color:  chartColor
+                    //,
+                   // tooltipFormatValue: abmviz_utilities.numberWithCommas
+                };
+               /* var charts = [];
+                var combinedChartData =[];
+                for(var i=0; i < chartData.length;i++){
+                    var chartsByName = chartData.filter(function (d){
+                        return d.chartName == chartData[i].chartName;
+                    });
+                    combinedChartData.push(chartsByName);
+                }
+
+                if(chartData.map(function(e){return e.chartName;}).indexOf(chartName) >-1)
+                         {
+                             var indx = chartData.map(function(e){return e.chartName;}).indexOf(chartName) ;
+                             existingChartId = chartData[indx].chartId;
+                         }else {
+                             existingChartId = chartId++;
+                         }
+                */
+
+
+
+                var chartId = 1;
+                for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
+                    radarChartContainer.append("div").attr("class", "radar-column");
+                } //end loop over columns
+                var columns = radarChartContainer.selectAll(".radar-column");
+                columns[0].forEach(function (d, columnIndex) {
+                    var everyThirdDataItem = chartData.filter(function (chartDatum, chartDatumIndex) {
+
+                        return (chartDatumIndex % numColumns) == columnIndex && chartDatumIndex == (chartDatum.chartId - 1)  ;//&& ;
+                    });
+                    var columnPortlets = d3.select(d).selectAll(".radar-portlet").data(everyThirdDataItem).enter().append("div").attr("class", "radar-portlet")
+                    columnPortlets.append("div").attr("class", "radar-portlet-header").text(function (d) {
+                        return d.chartName;
+                    });
+
+                    function getChartId(d) {
+                        var id = "radar-" + d.chartId;
+                        return id;
+                    }
+
+                    var chartSvgs = columnPortlets.append("div").attr("class", "radar-portlet-content").attr("id", getChartId);
+                    var uniqueCharts = chartSvgs.forEach(function(d) {
+
+                    });
+                    chartSvgs.each(function (d) {
+                        RadarChart('#' + getChartId(d), chartData.filter(function(chartDatum){ return chartDatum.chartId==d.chartId; }) , radarChartOptions);
+                    }); //end each svg
+                }) //end each column
+                $(function () {
+                    $(".radar-column").sortable({
+                        connectWith: ".radar-column",
+                        handle: ".radar-portlet-header",
+                        cancel: ".radar-portlet-toggle",
+                        placeholder: "radar-portlet-placeholder ui-corner-all"
+                    });
+                    $(".radar-portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all").find(".radar-portlet-header").addClass("ui-widget-header ui-corner-all").prepend("<span class='ui-icon ui-icon-minusthick radar-portlet-toggle'></span>");
+                    $(".radar-portlet-toggle").on("click", function () {
+                        var icon = $(this);
+                        icon.toggleClass("ui-icon-minusthick ui-icon-plusthick");
+                        icon.closest(".radar-portlet").find(".radar-portlet-content").toggle();
+                    });
+                });
+                //end createCharts
+                $('.radar-column').css('width',radarColCss[numColumns-1]+'px ')
+            }
+
+            //end createRadar
+        }
+        ;
+        createRadar();
+        window.addEventListener("resize", function () {
+            console.log("Got resize event. Calling radar");
+            createRadar();
+        });
+        //return only the parts that need to be global
+        return {};
+
 }()); //end encapsulating IIFEE

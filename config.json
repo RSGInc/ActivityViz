@@ -1,0 +1,14 @@
+{
+  "regions":{
+    "Atlanta Regional Commission":"atlanta",
+    "Oregon Metro":"portland"
+  },
+  "visualizations":{
+    "3DMap":true,
+    "BarMap":true,
+    "GrpBar":true,
+    "TimeUse":true,
+    "Radar":true,
+    "Sunburst":true
+  }
+}

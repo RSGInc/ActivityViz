@@ -53,13 +53,15 @@ var three3d = (function three3dFunction() {
 	var PERIOD_COLUMN = 1;
 	var QUANTITY_COLUMN = 2;
 	var geoStatsObject;
-
+	var ZONE_FILE_LOC = "";
+	var CENTER_MAP = [];
 	//start off chain of initialization by reading in the data	
 	readInData(function () {
 		"use strict";
 		createMap(function () {
 			console.log("createMap callback")
 		});
+
 		setDataSpecificDOM();
 		initializeMuchOfUI();
 		updateCurrentPeriodOrClassification();
@@ -67,7 +69,15 @@ var three3d = (function three3dFunction() {
 
 	function readInData(callback) {
 		"use strict";
-		d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"config.json",function(data){
+		$.each(data, function(key,val){
+			if(key =="ZoneFile")
+				ZONE_FILE_LOC = val;
+			if(key =="CenterMap")
+				CENTER_MAP = val;
+			});
+		});
+		d3.text("../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
 			"use strict";
 			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
 			var csv = d3.csv.parseRows(data).slice(1);
@@ -227,7 +237,7 @@ var three3d = (function three3dFunction() {
 		}).addTo(map);
 
 
-		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ZONE_FILE_LOC, function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {

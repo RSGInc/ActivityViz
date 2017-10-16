@@ -1,0 +1,45 @@
+PERSON GROUP,DAY PATTERN,Count,CHART
+Child too young for school,Home,140975,Chart1
+Child too young for school,Mandatory,248868,Chart1
+Child too young for school,Non-mandatory,213499,Chart1
+Full-time worker,Home,428557,Chart1
+Full-time worker,Mandatory,2261097,Chart1
+Full-time worker,Non-mandatory,414175,Chart1
+Non-worker,Home,316094,Chart1
+Non-worker,Non-mandatory,519547,Chart1
+Part-time worker,Home,94881,Chart1
+Part-time worker,Mandatory,372238,Chart1
+Part-time worker,Non-mandatory,225832,Chart1
+Retired,Home,585029,Chart1
+Retired,Non-mandatory,583147,Chart1
+Student of driving age,Home,24666,Chart1
+Student of driving age,Mandatory,201028,Chart1
+Student of driving age,Non-mandatory,18528,Chart1
+Student of non-driving age,Home,76780,Chart1
+Student of non-driving age,Mandatory,870662,Chart1
+Student of non-driving age,Non-mandatory,84719,Chart1
+University student,Home,47057,Chart1
+University student,Mandatory,151615,Chart1
+University student,Non-mandatory,58572,Chart1
+Child too young for school,Home,140975,Chart2
+Child too young for school,Mandatory,248868,Chart2
+Child too young for school,Non-mandatory,213499,Chart2
+Full-time worker,Home,428557,Chart2
+Full-time worker,Mandatory,2261097,Chart2
+Full-time worker,Non-mandatory,414175,Chart2
+Non-worker,Home,316094,Chart2
+Non-worker,Non-mandatory,519547,Chart2
+Part-time worker,Home,94881,Chart2
+Part-time worker,Mandatory,372238,Chart2
+Part-time worker,Non-mandatory,225832,Chart2
+Retired,Home,585029,Chart2
+Retired,Non-mandatory,583147,Chart2
+Student of driving age,Home,24666,Chart2
+Student of driving age,Mandatory,201028,Chart2
+Student of driving age,Non-mandatory,18528,Chart2
+Student of non-driving age,Home,76780,Chart2
+Student of non-driving age,Mandatory,870662,Chart2
+Student of non-driving age,Non-mandatory,84719,Chart2
+University student,Home,47057,Chart2
+University student,Mandatory,151615,Chart2
+University student,Non-mandatory,58572,Chart2

@@ -2,7 +2,7 @@
 //global object sunburst will contain functions and variables that must be accessible from elsewhere
 var sunburst = (function () {
 	"use strict";
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
+	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
 	//var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/visit-sequences.csv";
 	var legendBoxWidth = 150;
 	var legendDepthIndent = 10;

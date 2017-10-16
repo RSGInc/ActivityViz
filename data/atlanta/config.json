@@ -1,0 +1,12 @@
+{
+  "Title":"ARC ABMVIZ",
+  "CountyFile":"cb_2015_us_county_500k_GEORGIA.json",
+  "ZoneFile":"ZoneShape.GeoJSON",
+  "Icon":"arc_logo.ico",
+  "Logo":"arc_logo.png",
+  "NavbarTitle":"ABMVIZ",
+  "LinkURL":"http://www.atlantaregional.com",
+  "CenterMap": [33.754525, -84.384774]
+
+}
+

@@ -2,7 +2,7 @@
 //global object timeuse will contain functions and variables that must be accessible from elsewhere
 var timeuse = (function () {
 	"use strict";
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
+	var url = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
 	var svgSelector = "#timeuse-chart svg";
 	var svgElement = d3.select(svgSelector);
 	var extNvd3Chart;

@@ -1,0 +1,85 @@
+AXIS,CHART,2016,YEAR 2017
+Jobs Housing Balance,AEROTROPOLIS,0.066,0.05
+Jobs Housing Balance,BUCKHEAD,0.233,0.26795
+Jobs Housing Balance,CITY CENTER,0.055,0.06325
+Jobs Housing Balance,CUMBERLAND,0.271,0.31165
+Jobs Housing Balance,DORAVILLE ASSEMBLY,0.017,0.01955
+Jobs Housing Balance,EMORY,0.8,0.1
+Jobs Housing Balance,FT MCPHERSON,0.349,0.40135
+Jobs Housing Balance,FULTON INDUSTRIAL,0.114,0.1311
+Jobs Housing Balance,GWINNETT,0.353,0.40595
+Jobs Housing Balance,HARTSFIELD,0.019,0.02185
+Jobs Housing Balance,LOCKHEED/DOBBINS,0.066,0.0759
+Jobs Housing Balance,MIDTOWN,0.232,0.2668
+Jobs Housing Balance,NEWNAN,0.357,0.41055
+Jobs Housing Balance,NORTH POINT,0.161,0.18515
+Jobs Housing Balance,PEACHTREE CORNERS,0.183,0.21045
+Jobs Housing Balance,PERIMETER,0.148,0.1702
+Jobs Housing Balance,STOCKBRIDGE,1.288,1.4812
+Jobs Housing Balance,STONECREST,0.201,0.23115
+Jobs Housing Balance,TOWN CENTER,0.294,0.3381
+Jobs Housing Balance,TRIBUTARY,0.957,1.10055
+Jobs Housing Balance,WINDWARD,0.215,0.24725
+Accessible Employment,BUCKHEAD,679557,781490.55
+Accessible Employment,NEWNAN,48536,55816.4
+Accessible Employment,CUMBERLAND,616498,708972.7
+Accessible Employment,DORAVILLE ASSEMBLY,555085,638347.75
+Accessible Employment,HARTSFIELD,552604,635494.6
+Accessible Employment,EMORY,559064,642923.6
+Accessible Employment,STONECREST,100143,115164.45
+Accessible Employment,TRIBUTARY,107334,123434.1
+Accessible Employment,MIDTOWN,836388,961846.2
+Accessible Employment,NORTH POINT,333255,20000.25
+Accessible Employment,TOWN CENTER,243109,279575.35
+Accessible Employment,FULTON INDUSTRIAL,528556,607839.4
+Accessible Employment,LOCKHEED/DOBBINS,301017,346169.55
+Accessible Employment,PERIMETER,729310,838706.5
+Accessible Employment,STOCKBRIDGE,235186,270463.9
+Accessible Employment,PEACHTREE CORNERS,414699,476903.85
+Accessible Employment,AEROTROPOLIS,442377,508733.55
+Accessible Employment,WINDWARD,293626,337669.9
+Accessible Employment,FT MCPHERSON,617156,709729.4
+Accessible Employment,CITY CENTER,991471,1140191.65
+Accessible Employment,GWINNETT,266390,306348.5
+Transit Mode Share,AEROTROPOLIS,0.018,0.0207
+Transit Mode Share,BUCKHEAD,0.048,0.0552
+Transit Mode Share,CITY CENTER,0.107,0.12305
+Transit Mode Share,CUMBERLAND,0.017,0.01955
+Transit Mode Share,DORAVILLE ASSEMBLY,0.06,0.069
+Transit Mode Share,EMORY,0.135,0.15525
+Transit Mode Share,FT MCPHERSON,0.102,0.1173
+Transit Mode Share,FULTON INDUSTRIAL,0.024,0.0276
+Transit Mode Share,GWINNETT,0.014,0.0161
+Transit Mode Share,HARTSFIELD,0.044,0.0506
+Transit Mode Share,LOCKHEED/DOBBINS,0.031,0.03565
+Transit Mode Share,MIDTOWN,0.091,0.10465
+Transit Mode Share,NEWNAN,0.005,0.00575
+Transit Mode Share,NORTH POINT,0.021,0.02415
+Transit Mode Share,PEACHTREE CORNERS,0.017,0.01955
+Transit Mode Share,PERIMETER,0.03,0.0345
+Transit Mode Share,STOCKBRIDGE,0.011,0.01265
+Transit Mode Share,STONECREST,0.045,0.05175
+Transit Mode Share,TOWN CENTER,0.008,0.0092
+Transit Mode Share,TRIBUTARY,0.007,0.00805
+Transit Mode Share,WINDWARD,0.013,0.01495
+Zero Car Transit Trips Per HH,AEROTROPOLIS,0.06,0.069
+Zero Car Transit Trips Per HH,BUCKHEAD,0.259,0.29785
+Zero Car Transit Trips Per HH,CITY CENTER,2.508,2.8842
+Zero Car Transit Trips Per HH,CUMBERLAND,0.076,0.0874
+Zero Car Transit Trips Per HH,DORAVILLE ASSEMBLY,1.733,1.99295
+Zero Car Transit Trips Per HH,EMORY,3.445,3.96175
+Zero Car Transit Trips Per HH,FT MCPHERSON,0.347,0.39905
+Zero Car Transit Trips Per HH,FULTON INDUSTRIAL,0.16,0.184
+Zero Car Transit Trips Per HH,GWINNETT,0.039,0.04485
+Zero Car Transit Trips Per HH,HARTSFIELD,1.738,1.9987
+Zero Car Transit Trips Per HH,LOCKHEED/DOBBINS,0.158,0.1817
+Zero Car Transit Trips Per HH,MIDTOWN,0.465,0.53475
+Zero Car Transit Trips Per HH,NEWNAN,0.002,0.0023
+Zero Car Transit Trips Per HH,NORTH POINT,0.08,0.092
+Zero Car Transit Trips Per HH,PEACHTREE CORNERS,0.041,0.04715
+Zero Car Transit Trips Per HH,PERIMETER,0.233,0.26795
+Zero Car Transit Trips Per HH,STOCKBRIDGE,0.013,0.01495
+Zero Car Transit Trips Per HH,STONECREST,0.176,0.2024
+Zero Car Transit Trips Per HH,TOWN CENTER,0.028,0.0322
+Zero Car Transit Trips Per HH,TRIBUTARY,0.007,0.00805
+Zero Car Transit Trips Per HH,WINDWARD,0.036,0.0414
