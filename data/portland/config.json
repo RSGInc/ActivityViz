@@ -1,12 +1,12 @@
 {
-  "Title":"Metro ABMVIZ",
-  "CountyFile":"cb_2015_us_county_500k_GEORGIA.json",
-  "ZoneFile":"ZoneShape.GeoJSON",
-  "Icon":"arc_logo.ico",
-  "Logo":"arc_logo.png",
-  "NavbarTitle":"ABMVIZ",
+  "Title":"Oregon Metro MCEVIZ",
+  "CountyFile":"metro_counties.json",
+  "ZoneFile":"taz2162ll.json",
+  "Icon":"oregon-metro.png",
+  "Logo":"oregon-metro.png",
+  "NavbarTitle":"MCEVIZ",
   "LinkURL":"http://www.oregonmetro.gov/",
-  "CenterMap": [33.754525, -84.384774],
+  "CenterMap": [45.512794, -122.679565],
   "NumberColsRadar":4,
   "NumberColsGrouped":1
 }

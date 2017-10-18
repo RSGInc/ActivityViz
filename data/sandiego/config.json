@@ -1,0 +1,15 @@
+{
+  "Title":"SANDAG ABMVIZ",
+  "CountyFile":"CityShape.json",
+  "ZoneFile":"ZoneShape.GeoJSON",
+  "Icon":"logo_sandag.gif",
+  "Logo":"logo_sandag.gif",
+  "NavbarTitle":"ABMVIZ",
+  "LinkURL":"http://www.sandag.org/",
+  "CenterMap": [32.715738, -117.161083],
+  "NumberColsRadar":4,
+  "NumberColsGrouped":1
+
+
+}
+
