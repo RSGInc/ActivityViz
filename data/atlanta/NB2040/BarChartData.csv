@@ -1,23 +1,23 @@
-PERSON GROUP,DAY PATTERN,Count
-Child too young for school,Home,115248
-Child too young for school,Mandatory,178527
-Child too young for school,Non-mandatory,164712
-Full-time worker,Home,255564
-Full-time worker,Mandatory,1435647
-Full-time worker,Non-mandatory,255002
-Non-worker,Home,302034
-Non-worker,Non-mandatory,501068
-Part-time worker,Home,53377
-Part-time worker,Mandatory,192769
-Part-time worker,Non-mandatory,119571
-Retired,Home,179351
-Retired,Non-mandatory,197298
-Student of driving age,Home,21605
-Student of driving age,Mandatory,172079
-Student of driving age,Non-mandatory,17252
-Student of non-driving age,Home,62050
-Student of non-driving age,Mandatory,672433
-Student of non-driving age,Non-mandatory,65221
-University student,Home,40348
-University student,Mandatory,126175
-University student,Non-mandatory,48784
+PERSON GROUP,DAY PATTERN,Count,CHART
+Child too young for school,Home,115248,CHART1
+Child too young for school,Mandatory,178527,CHART1
+Child too young for school,Non-mandatory,164712,CHART1
+Full-time worker,Home,255564,CHART1
+Full-time worker,Mandatory,1435647,CHART1
+Full-time worker,Non-mandatory,255002,CHART1
+Non-worker,Home,302034,CHART1
+Non-worker,Non-mandatory,501068,CHART1
+Part-time worker,Home,53377,CHART1
+Part-time worker,Mandatory,192769,CHART1
+Part-time worker,Non-mandatory,119571,CHART1
+Retired,Home,179351,CHART1
+Retired,Non-mandatory,197298,CHART1
+Student of driving age,Home,21605,CHART1
+Student of driving age,Mandatory,172079,CHART1
+Student of driving age,Non-mandatory,17252,CHART1
+Student of non-driving age,Home,62050,CHART1
+Student of non-driving age,Mandatory,672433,CHART1
+Student of non-driving age,Non-mandatory,65221,CHART1
+University student,Home,40348,CHART1
+University student,Mandatory,126175,CHART1
+University student,Non-mandatory,48784,CHART1

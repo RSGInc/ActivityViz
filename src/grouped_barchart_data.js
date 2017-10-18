@@ -15,11 +15,18 @@ var barchart = (function () {
     var chartSelector = "#grouped-barchart";
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
+    //CONFIG VARIABLES
+    var numberOfCols = 1;
 var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";
         if (showChartOnPage) {
-
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+                $.each(data, function (key, val) {
+                    if (key == "NumberColsGrouped")
+                        numberOfCols = val;
+                });
+            });
             d3.csv(url, function (error, data) {
                 "use strict";
                 if (error)
@@ -27,6 +34,7 @@ var chartDataContainer=[];
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
                 var headers = d3.keys(data[0]);
                 var numCharts = headers.slice()
+                chartData = data;
                 mainGroupColumn = headers[0];
                 subGroupColumn = headers[1];
                 if (pivotData) {
@@ -102,19 +110,23 @@ var chartDataContainer=[];
         function readInDataCallback() {
 
             chartDataContainer.forEach(function (chart) {
+                var widthOfEachCol = 12 / numberOfCols;
                  d3.select('#grouped-bar-container').select("#"+chart.chartName).remove();
                 d3.select('#grouped-bar-container')
-                    .append('div').attr('id', chart.chartName).attr('class','col-xs-6').append("svg").attr("id", "grouped-barchart");
+                    .append('div').attr('id', chart.chartName).attr('class','col-xs-'+widthOfEachCol).append("svg").attr("id", "grouped-barchart");
                 //setDataSpecificDOM();
                 var chartId = "#" + chart.chartName + " svg";
                 var options = {
                     pivotData : pivotData,
                     showPercentages : showPercentages,
-                    showAsVertical : showAsVertical
+                    showAsVertical : showAsVertical,
+                    mainGrpSet : mainGroupSet,
+                    subGrpSet: subGroupSet
                 };
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
                 initializeMuchOfUI(chart);
+                setDataSpecificDOM();
             });
         }        //end readInDataCallback
 
@@ -146,10 +158,15 @@ var chartDataContainer=[];
 		});
 
 	}
+    function setDataSpecificDOM() {
+    d3.selectAll(".grouped-barchart-main-group").html(mainGroupColumn);
+    d3.selectAll(".grouped-barchart-sub-group").html(subGroupColumn);
+    d3.selectAll(".grouped-barchart-sub-group-example").html(chartData[0].key);
+}
     } //end createGrouped
     createGrouped();
     window.addEventListener("resize", function () {
-        console.log("Got resize event. Calling radar");
+        console.log("Got resize event. Calling grouped");
         createGrouped();
     });
     return {};

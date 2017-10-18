@@ -10,9 +10,16 @@ var radar = (function () {
 	var CHART_COLUMN = 1;
 	var opacityScaleRange = [0.3, 0.9];
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('r') > -1;
+	var numberOfCols = 1;
 	function createRadar() {
         //read in data and create radar when finished
         if (showChartOnPage) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+                $.each(data, function (key, val) {
+                    if (key == "NumberColsRadar")
+                        numberOfCols = val;
+                });
+            });
             if (chartData === undefined) {
                 d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
                     "use strict";
@@ -151,21 +158,19 @@ var radar = (function () {
                 var radarChartContainer = d3.select("#radar-chart-container");
                 //need to create columns and then fill each column with portlets
                 //tricky because (AFAIK) I need to attach the data to each column separately
-                var heightConfig = [750,450,150,150];
+                var heightConfig = [650,450,150,150];
                 var weightConfig = [800,500,180,155];
-                var marginTop =     [90,  50,40,40];
-                var marginBot =     [110, 65,55,55];
+                var marginTop =     [110,  50,40,40];
+                var marginBot =     [140, 65,55,55];
                 var marginLeft =    [90,  50,60,75];
                 var marginRight =   [90,  50,60,75];
                 var radarColCss = [320,624,320,320];
-                var labelFact = [1.2,1.2,1.38,1.45];
+                var labelFact = [1.25,1.2,1.38,1.45];
+                var axisLabelSizes = [14,13,12,11];
+                var circleLabelSizes = [14,13,12,11];
+                var legendFont = [18,16,14,12];
                 var numCharts = 21;
-                var numColumns = 2;
-                if(numCharts < 4){
-                    numColumns = numCharts;
-                } else{
-                    numColumns = 1;
-                }
+                var numColumns = numberOfCols;
 
                 var radarChartOptions = {
 
@@ -185,6 +190,9 @@ var radar = (function () {
                     wrapWidth: 70,
                     labelFactor: labelFact[numColumns-1],
                     roundStrokes: false,
+                    axisLabelSizes : axisLabelSizes[numColumns-1],
+                    circleLabelSizes : circleLabelSizes[numColumns-1],
+                    labelFontSize : legendFont[numColumns-1],
                    // strokeWidth: 0,
                     color:  chartColor
                     //,

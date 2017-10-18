@@ -6,6 +6,8 @@
   "Logo":"arc_logo.png",
   "NavbarTitle":"ABMVIZ",
   "LinkURL":"http://www.oregonmetro.gov/",
-  "CenterMap": [33.754525, -84.384774]
+  "CenterMap": [33.754525, -84.384774],
+  "NumberColsRadar":4,
+  "NumberColsGrouped":1
 }
 

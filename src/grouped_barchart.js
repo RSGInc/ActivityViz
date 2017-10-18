@@ -7,8 +7,8 @@ function grouped_barchart (id, data,options) {
 	var subGroupColumn;
 	var mainGroupColumn;
 	var quantityColumn;
-	var mainGroupSet;
-	var subGroupSet;
+	var mainGroupSet = options.mainGrpSet;
+	var subGroupSet = options.subGrpSet;
 	var chartSet;
 	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
 	var chartSelector = "#grouped-barchart";
@@ -28,13 +28,14 @@ function grouped_barchart (id, data,options) {
 	var pivotData = options.pivotData;
 	var showPercentages = options.showPercentages;
 	var showAsVertical = options.showAsVertical;
+
 	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
     svgChart = d3.select(id);
-    setDataSpecificDOM();
+    //setDataSpecificDOM();
 	createEmptyChart();
 	//initializeMuchOfUI();
 
@@ -43,11 +44,7 @@ function grouped_barchart (id, data,options) {
 
 
 
-	function setDataSpecificDOM() {
-		d3.selectAll(".grouped-barchart-main-group").html(mainGroupColumn);
-		d3.selectAll(".grouped-barchart-sub-group").html(subGroupColumn);
-		d3.selectAll(".grouped-barchart-sub-group-example").html(data[0].key);
-	}
+
 	//end setDataSpecificDOM
 	function updateChart(callback) {
 		"use strict";
@@ -76,7 +73,7 @@ function grouped_barchart (id, data,options) {
                     var numMainGroups = mainGroupSet.size;
                     var widthPerGroup = barsWrapRectWidth / numMainGroups;
                     var mainGroupIndex = Math.floor(mouseX / widthPerGroup);
-                    var mainGroupObject = chartData[0].values[mainGroupIndex];
+                    var mainGroupObject = data[0].values[mainGroupIndex];
                     var newMainGroup = mainGroupObject.label;
                     changeCurrentMainGroup(newMainGroup);
                 } else {
@@ -84,7 +81,7 @@ function grouped_barchart (id, data,options) {
                     var numMainGroups = mainGroupSet.size;
                     var heightPerGroup = barsWrapRectHeight / numMainGroups;
                     var mainGroupIndex = Math.floor(mouseY / heightPerGroup);
-                    var mainGroupObject = chartData[0].values[mainGroupIndex];
+                    var mainGroupObject = data[0].values[mainGroupIndex];
                     var newMainGroup = mainGroupObject.label;
                     changeCurrentMainGroup(newMainGroup);
 				}
