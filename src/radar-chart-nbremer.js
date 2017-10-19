@@ -126,21 +126,24 @@ function RadarChart(id, data, options) {
 	}).call(wrap, cfg.wrapWidth).on('mouseover',function(d,i,j){
 	    var newx = d3.event.pageX;//parseFloat(d3.select(this).attr('x')) - 10;
 	    var newy = d3.event.pageY;//parseFloat(d3.select(this).attr('y')) + 20;
-	    var text = "";
-	    data.forEach(function(d){
+	    var text = "<table><tbody>";
+	    data.forEach(function(d,idx){
 	        if(d["active"]==true){
-	        text+=  Format(d.axes[i].value)+ " ("+cfg.tooltipFormatValue(d.axes[i].originalValue)+")";
+	            //console.log(cfg.color(idx));
+	            text+= "<tr><td class='legend-color-guide'><div style='background-color:"+cfg.color(idx)+"' ></div></td>";
+	            text+= "<td class='key'>"+d.areaName +"</td><td class='value'> " + Format(d.axes[i].value)+ " ("+cfg.tooltipFormatValue(d.axes[i].originalValue)+")</td></tr>";
 	        }
         });
+	    text +="</tbody></table>";
 	    //LABELtooltip.append("text",text);
 
 	    labelTooltip.style('left', newx+"px").style('top', (newy-28)+"px")
-            .transition().duration(200).style('opacity', 1);
+            .transition().duration(0).style('opacity', 1);
 	    labelTooltip.html(text);
 	})
     .on('mouseout', function () {
             //Bring back all blobs
-            labelTooltip.transition().duration(200).style("opacity", 0);
+            labelTooltip.transition().duration(0).style("opacity", 0).style('top','0px').style('left','0px');
         });
 
 	/////////////////////////////////////////////////////////
@@ -291,7 +294,6 @@ function RadarChart(id, data, options) {
         if(data.filter(function(e){return e.active==true;}).length ==0){
             data.forEach(function(d){d.active = true;})
         }
-
 	    RadarChart("#radar-" + data[d]["chartId"],data,cfg);
 
     }

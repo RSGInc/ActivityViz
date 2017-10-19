@@ -4,9 +4,9 @@ function grouped_barchart (id, data,options) {
 	"use strict";
 	var chartDataContainer=[];
 	var chartData;
-	var subGroupColumn;
-	var mainGroupColumn;
-	var quantityColumn;
+	var subGroupColumn = options.subGrpCol;
+	var mainGroupColumn= options.mainGrpCol;
+	var quantityColumn =options.quantCol;
 	var mainGroupSet = options.mainGrpSet;
 	var subGroupSet = options.subGrpSet;
 	var chartSet;

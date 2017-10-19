@@ -214,7 +214,7 @@ var three3d = (function three3dFunction() {
 	function createMap(callback) {
 		"use strict";
 		map = VIZI.world("three3d-map");
-		map.setView([33.754525, -84.384774]); //centered at Atlanta
+		map.setView(CENTER_MAP); //centered at CENTER_MAP
 
 		var logEvents = false;
 		if (logEvents) {

@@ -1,4 +1,4 @@
-AXIS,CHART,QUANTITY,,,,
+AXIS,CHART,QUANTITY,DATA1,DATA2,DATA2,DATA3
 travel_options,lowinc,439315,,,,
 auto_ownership,lowinc,23673,,,,
 travel_time,lowinc,2228593,,,,

@@ -15,16 +15,44 @@
 #radar-chart-container .tooltip {
 	fill: #333333;
 }
+.legend-color-guide{
+	    padding: 2px 9px 2px 0;
+    vertical-align: middle;
+}
+.lbltooltip table td.legend-color-guide div {
+	vertical-align: middle;
+	width: 12px;
+	height: 12px;
+	border: 1px solid #999;
+}
+.lbltooltip h3, .nvtooltip table td.key {
+    font-weight: 400;
+}
+
+.lbltooltip table td {
+    padding: 2px 9px 2px 0;
+    vertical-align: middle;
+}
+.lbltooltip table td.value {
+    text-align: left;
+    font-weight: 700;
+}
 .lbltooltip {
-    position: absolute;  text-align: center;
-    width: 120px;
-    height: 120px;
-    padding: 2px;
-    font: 12px sans-serif;
-    background: lightsteelblue;
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
+    position: absolute;
+    color: rgba(0,0,0,1);
+    padding: 1px;
+    z-index: 10000;
+    font-family: Arial;
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: rgba(255,255,255,.8);
+    border: 1px solid rgba(0,0,0,.5);
+    border-radius: 4px;
 }
 .radar-column {
 	width: 320px;

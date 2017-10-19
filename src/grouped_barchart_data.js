@@ -49,8 +49,8 @@ var chartDataContainer=[];
                 //note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
                 var totalsForEachMainGroup = {};
                 var rawChartData = d3.nest().key(function (d) {
-                    chartSet.add(d["CHART"]);
-                    return d["CHART"];
+                    chartSet.add(d["CHART"].replace(/\s+/g, ''));
+                    return d["CHART"].replace(/\s+/g, '');
                 }).key(function (d) {
                     //change quantity to an int for convenience right off the bat
                     d[quantityColumn] = parseInt(d[quantityColumn]);
@@ -121,7 +121,10 @@ var chartDataContainer=[];
                     showPercentages : showPercentages,
                     showAsVertical : showAsVertical,
                     mainGrpSet : mainGroupSet,
-                    subGrpSet: subGroupSet
+                    subGrpSet: subGroupSet,
+                    mainGrpCol: mainGroupColumn,
+                    quantCol: quantityColumn,
+                    subGrpCol: subGroupColumn
                 };
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);

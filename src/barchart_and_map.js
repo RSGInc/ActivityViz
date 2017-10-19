@@ -468,13 +468,15 @@ var barchart_and_map = (function () {
 				opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../data/atlanta/"+COUNTY_FILE, function (countyTiles) {
+			$.getJSON("../data/"+ abmviz_utilities.GetURLParameter("region") +"/"+COUNTY_FILE, function (countyTiles) {
 				"use strict";
 				console.log(COUNTY_FILE+" success");
 				//http://leafletjs.com/reference.html#tilelayer
 				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data for
 					filter: function (feature) {
+					    console.log(feature.properties.NAME);
+					    console.log( countiesSet.has(feature.properties.NAME));
 						return countiesSet.has(feature.properties.NAME);
 					},
 					updateWhenIdle: true,
@@ -485,17 +487,18 @@ var barchart_and_map = (function () {
 					onEachFeature: onEachCounty
 				});
 				var allCountyBounds = countyLayer.getBounds();
+				console.log(allCountyBounds);
 				map.fitBounds(allCountyBounds);
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json second success");
+				console.log(COUNTY_FILE+" second success");
 			}).error(function (jqXHR, textStatus, errorThrown) {
-				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
-				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
-				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
+				console.log(COUNTY_FILE+" textStatus " + textStatus);
+				console.log(COUNTY_FILE+" errorThrown" + errorThrown);
+				console.log(COUNTY_FILE+ " responseText (incoming?)" + jqXHR.responseText);
 			}).complete(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json complete");
+				console.log(COUNTY_FILE+" complete");
 			});
 			//end geoJson of county layer
 			function onEachCounty(feature, layer) {
