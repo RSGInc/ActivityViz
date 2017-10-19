@@ -1,21 +1,56 @@
-BENEFIT,BENEFIT_GROUP,COUNT,CHART,
-travel_options,Social Goods,439315,lowinc
-auto_ownership,Economic Vitality,23673,lowinc
-travel_time,Economic Vitality,2228593,lowinc
-trk_travel_time_benefit,Economic Vitality,90893,lowinc
-travel_time_reliability,Economic Vitality,211301,lowinc
-travel_options,Social Goods,260410,minority
-auto_ownership,Economic Vitality,11425,minority
-travel_time,Economic Vitality,1905608,minority
-trk_travel_time_benefit,Economic Vitality,63195,minority
-travel_time_reliability,Economic Vitality,195713,minority
-travel_options,Social Goods,23702,LEP
-auto_ownership,Economic Vitality,1605,LEP
-travel_time,Economic Vitality,340264,LEP
-trk_travel_time_benefit,Economic Vitality,12241,LEP
-travel_time_reliability,Economic Vitality,34327,LEP
-travel_options,Social Goods,811705,age18or65
-auto_ownership,Economic Vitality,21662,age18or65
-travel_time,Economic Vitality,6284961,age18or65
-trk_travel_time_benefit,Economic Vitality,179498,age18or65
-travel_time_reliability,Economic Vitality,694512,age18or65
+BENEFIT,BENEFIT_GROUP,COUNT,CHART
+travel_options,Social Goods,439315,Low Income
+auto_ownership,Economic Vitality,23673,Low Income
+travel_time,Economic Vitality,2228593,Low Income
+trk_travel_time_benefit,Economic Vitality,90893,Low Income
+travel_time_reliability,Economic Vitality,211301,Low Income
+public_health,Social Goods,0,Low Income
+auto_operating_cost,Economic Vitality,0,Low Income
+emissions,Environmental Stewardship,0,Low Income
+noise_pollution,Environmental Stewardship,0,Low Income
+surface_water_pollution,Environmental Stewardship,0,Low Income
+safety,Social Goods,0,Low Income
+travel_options,Social Goods,260410,Minority
+auto_ownership,Economic Vitality,11425,Minority
+travel_time,Economic Vitality,1905608,Minority
+trk_travel_time_benefit,Economic Vitality,63195,Minority
+travel_time_reliability,Economic Vitality,195713,Minority
+public_health,Social Goods,0,Minority
+auto_operating_cost,Economic Vitality,0,Minority
+emissions,Environmental Stewardship,0,Minority
+noise_pollution,Environmental Stewardship,0,Minority
+surface_water_pollution,Environmental Stewardship,0,Minority
+safety,Social Goods,0,Minority
+travel_options,Social Goods,23702,Low English Proficiency
+auto_ownership,Economic Vitality,1605,Low English Proficiency
+travel_time,Economic Vitality,340264,Low English Proficiency
+trk_travel_time_benefit,Economic Vitality,12241,Low English Proficiency
+travel_time_reliability,Economic Vitality,34327,Low English Proficiency
+public_health,Social Goods,0,Low English Proficiency
+auto_operating_cost,Economic Vitality,0,Low English Proficiency
+emissions,Environmental Stewardship,0,Low English Proficiency
+noise_pollution,Environmental Stewardship,0,Low English Proficiency
+surface_water_pollution,Environmental Stewardship,0,Low English Proficiency
+safety,Social Goods,0,Low English Proficiency
+travel_options,Social Goods,811705,Child or Senior
+auto_ownership,Economic Vitality,21662,Child or Senior
+travel_time,Economic Vitality,6284961,Child or Senior
+trk_travel_time_benefit,Economic Vitality,179498,Child or Senior
+travel_time_reliability,Economic Vitality,694512,Child or Senior
+public_health,Social Goods,0,Child or Senior
+auto_operating_cost,Economic Vitality,0,Child or Senior
+emissions,Environmental Stewardship,0,Child or Senior
+noise_pollution,Environmental Stewardship,0,Child or Senior
+surface_water_pollution,Environmental Stewardship,0,Child or Senior
+safety,Social Goods,0,Child or Senior
+travel_options,Social Goods,1341830,Everyone
+auto_ownership,Economic Vitality,69831,Everyone
+travel_time,Economic Vitality,12462517,Everyone
+trk_travel_time_benefit,Economic Vitality,834686,Everyone
+travel_time_reliability,Economic Vitality,1313755,Everyone
+public_health,Social Goods,"-1,500,000",Everyone
+auto_operating_cost,Economic Vitality,"-6,887,689",Everyone
+emissions,Environmental Stewardship,"-2,181,843",Everyone
+noise_pollution,Environmental Stewardship,"-365,282",Everyone
+surface_water_pollution,Environmental Stewardship,"-398,267",Everyone
+safety,Social Goods,"809,272",Everyone
