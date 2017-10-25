@@ -48,9 +48,9 @@ auto_ownership,Economic Vitality,69831,Everyone
 travel_time,Economic Vitality,12462517,Everyone
 trk_travel_time_benefit,Economic Vitality,834686,Everyone
 travel_time_reliability,Economic Vitality,1313755,Everyone
-public_health,Social Goods,"-1,500,000",Everyone
-auto_operating_cost,Economic Vitality,"-6,887,689",Everyone
-emissions,Environmental Stewardship,"-2,181,843",Everyone
-noise_pollution,Environmental Stewardship,"-365,282",Everyone
-surface_water_pollution,Environmental Stewardship,"-398,267",Everyone
-safety,Social Goods,"809,272",Everyone
+public_health,Social Goods,-1500000,Everyone
+auto_operating_cost,Economic Vitality,-6887689,Everyone
+emissions,Environmental Stewardship,-2181843,Everyone
+noise_pollution,Environmental Stewardship,-365282,Everyone
+surface_water_pollution,Environmental Stewardship,-398267,Everyone
+safety,Social Goods,809272,Everyone
