@@ -1,15 +1,13 @@
 {
   "regions":{
-    "Atlanta Regional Commission":"atlanta",
-    "Oregon Metro":"portland",
-    "San Diego Association of Governments":"sandiego"
-  },
-  "visualizations":{
-    "3DMap":true,
-    "BarMap":true,
-    "GrpBar":true,
-    "TimeUse":true,
-    "Radar":true,
-    "Sunburst":true
+    "atlanta":{
+      "default":  false
+    },
+    "portland":{
+      "default":  true
+    },
+    "sandiego":{
+      "default":  true
+    }
   }
 }

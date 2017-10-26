@@ -65,15 +65,11 @@
 <body>
 	<div class="container-fluid">
 
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-
-
-
-
+		<nav class="navbar navbar-inverse navbar-fixed-top" style="max-height:51px;">
 
 			<div class="navbar-header">
-				<a  id="navbarlink" href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
-					<img id="logo_id" width="40" height="17" src="../data/atlanta/img/arc_logo.png">
+				<a  id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
+					<img id="logo_id" style='height:25px;'width="" height="" src="">
 				</a>
 				<a class="navbar-brand" id="title_id" href="../index.html">ABMVIZ</a>
 				<span id="scenario-header" style="font-size:2em;cursor:default" class="navbar-brand pull-right"></span>
@@ -88,14 +84,13 @@
 		<div id="three3d" class="row dynamic-content">
 			<p class="text-center" style="font-size:2em">
 				<strong>
-                        <span class="three3d-purpose">PERSONS NOT AT HOME</span>
+                        <span class="three3d-purpose"></span>
                     </strong>
 				<span id="three3d-current-period"></span>
 			</p>
 			<div class="col-xs-12" style="margin-top:1em;">
 				<div class="col-xs-8" style="margin-bottom:1em">
 					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all time periods.
-
 
 					<div class="col-xs-12">
 						<div class="row control">
@@ -161,7 +156,7 @@
 									</div>
 									<div class="ramp RedGreen">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(255,69,0)" width="15" height="15" x="0"></rect>
+                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
                                                 <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
                                                 <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
                                                 <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
@@ -219,7 +214,7 @@
 						<button id="three3d-start-cycle-map" class="btn">Cycle Through Day</button>
 						<button id="three3d-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-6" id="three3d-redraw">
 						Redraw
 
 
@@ -243,6 +238,7 @@
 
 		<div id="grouped-barchart-div" class="row dynamic-content" style="margin-bottom:150px">
 			<hr><p class="text-center" style="font-size:2em">
+
 				<strong><span class="grouped-barchart-main-group"></span>,</strong> by <span class="grouped-barchart-sub-group"></span>
 			</p>
 			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
@@ -326,11 +322,11 @@
 				</div>
 				<div class="col-xs-6" style="margin-bottom:2em;">
 					<select class="form-control" id="mode-share-by-county-classification">
-                <option value="quartiles" selected="selected">Quartiles</option>
-                <option value="jenks">Natural breaks (Jenks)</option>
-                <option value="even-interval">Even interval</option>
-                <option value="custom">Custom</option>
-            </select>
+                        <option value="quartiles" selected="selected">Quartiles</option>
+                        <option value="jenks">Natural breaks (Jenks)</option>
+                        <option value="even-interval">Even interval</option>
+                        <option value="custom">Custom</option>
+                    </select>
 				</div>
 				<div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
@@ -455,8 +451,6 @@
 					<div class="row">
 						<div class="col-xs-12" style="margin-top:1em;">
 							<br> The Map interactive features include:
-
-
 							<ul>
 								<li>Click and drag to pan the map area</li>
 								<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
@@ -586,7 +580,7 @@ $(document).ready(function() {
 		$('#grouped-barchart-div').show();
 	}
 	if (dynamicContent.indexOf('t')>-1) {
-		$('#timeuse').show();
+        $('#timeuse').show();
 	}
 	if (dynamicContent.indexOf('s')>-1) {
 		$('#sunburst').show();

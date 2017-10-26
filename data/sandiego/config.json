@@ -2,14 +2,32 @@
   "Title":"SANDAG ABMVIZ",
   "CountyFile":"CityShape.json",
   "ZoneFile":"ZoneShape.GeoJSON",
-  "Icon":"logo_sandag.gif",
+  "Icon":"",
   "Logo":"logo_sandag.gif",
   "NavbarTitle":"ABMVIZ",
   "LinkURL":"http://www.sandag.org/",
   "CenterMap": [32.715738, -117.161083],
-  "NumberColsRadar":4,
-  "NumberColsGrouped":1
 
 
+  "FrontPageTitle": "San Diego Association of Governments",
+  "visualizations":{
+    "3DMap":true,
+    "BarMap":true,
+    "GrpBar":true,
+    "TimeUse":true,
+    "Radar":true,
+    "Sunburst":true
+  },
+  "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":["Everyone"]
+  },
+  "GroupedCharts":{
+    "NumberColsGrouped":1,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":false,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":false
+  }
 }
 

@@ -1,32 +1,32 @@
 AXIS,CHART,QUANTITY,DATA1
-travel_options,Low Income,439315,
-auto_ownership,Low Income,23673,
-travel_time,Low Income,2228593,
-trk_travel_time_benefit,Low Income,90893,
-travel_time_reliability,Low Income,211301,
-travel_options,Minority,260410,
-auto_ownership,Minority,11425,
-travel_time,Minority,1905608,
-trk_travel_time_benefit,Minority,63195,
-travel_time_reliability,Minority,195713,
-travel_options,Low English Proficiency,23702,
-auto_ownership,Low English Proficiency,1605,
-travel_time,Low English Proficiency,340264,
-trk_travel_time_benefit,Low English Proficiency,12241,
-travel_time_reliability,Low English Proficiency,34327,
-travel_options,Child or Senior,811705,
-auto_ownership,Child or Senior,21662,
-travel_time,Child or Senior,6284961,
-trk_travel_time_benefit,Child or Senior,179498,
-travel_time_reliability,Child or Senior,694512,
-travel_options,Everyone,1341830,
-auto_ownership,Everyone,69831,
-travel_time,Everyone,12462517,
-trk_travel_time_benefit,Everyone,834686,
-travel_time_reliability,Everyone,1313755,
-public_health,Everyone,-1500000,
-auto_operating_cost,Everyone,-6887689,
-emissions,Everyone,-2181843,
-noise_pollution,Everyone,-365282,
-surface_water_pollution,Everyone,-398267,
-safety,Everyone,809272,
+travel options,Low Income,439315
+auto ownership,Low Income,23673
+travel time,Low Income,2228593
+trk travel time benefit,Low Income,90893
+travel time reliability,Low Income,211301
+travel options,Minority,260410
+auto ownership,Minority,11425
+travel time,Minority,1905608
+trk travel time benefit,Minority,63195
+travel time reliability,Minority,195713
+travel options,Low English Proficiency,23702
+auto ownership,Low English Proficiency,1605
+travel time,Low English Proficiency,340264
+trk travel time benefit,Low English Proficiency,12241
+travel time reliability,Low English Proficiency,34327
+travel options,Child or Senior,811705
+auto ownership,Child or Senior,21662
+travel time,Child or Senior,6284961
+trk travel time benefit,Child or Senior,179498
+travel time reliability,Child or Senior,694512
+travel options,Everyone,1341830
+auto ownership,Everyone,69831
+travel time,Everyone,12462517
+trk travel time benefit,Everyone,834686
+travel time reliability,Everyone,1313755
+public health,Everyone,-1500000
+auto operating cost,Everyone,-6887689
+emissions,Everyone,-2181843
+noise pollution,Everyone,-365282
+surface water pollution,Everyone,-398267
+safety,Everyone,809272

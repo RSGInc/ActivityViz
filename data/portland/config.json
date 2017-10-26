@@ -2,12 +2,30 @@
   "Title":"Oregon Metro MCEVIZ",
   "CountyFile":"metro_counties.json",
   "ZoneFile":"taz2162ll.json",
-  "Icon":"oregon-metro.png",
+  "Icon":"oregon-metro2.ico",
   "Logo":"oregon-metro.png",
   "NavbarTitle":"MCEVIZ",
   "LinkURL":"http://www.oregonmetro.gov/",
   "CenterMap": [45.512794, -122.679565],
-  "NumberColsRadar":4,
-  "NumberColsGrouped":1
+  "FrontPageTitle":  "Oregon Metro",
+  "visualizations":{
+    "3DMap":true,
+    "BarMap":true,
+    "GrpBar":true,
+    "TimeUse":false,
+    "Radar":true,
+    "Sunburst":false
+},
+    "RadarCharts":{
+    "NumberColsRadar":2,
+    "IndependentScale":["Everyone"]
+  },
+  "GroupedCharts":{
+    "NumberColsGrouped":1,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":false,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":true
+  }
 }
 

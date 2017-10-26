@@ -8,10 +8,11 @@ var barchart = (function () {
     var quantityColumn;
     var mainGroupSet;
     var subGroupSet;
-    var pivotData = false;
-    var showPercentages = false;
-    var showAsVertical = false;
+    var pivotData;
+    var showPercentages;
+    var showAsVertical;
     var chartSet;
+    var stackChartsByDefault;
     var chartSelector = "#grouped-barchart";
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
@@ -23,8 +24,20 @@ var chartDataContainer=[];
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
                 $.each(data, function (key, val) {
-                    if (key == "NumberColsGrouped")
-                        numberOfCols = val;
+                    if (key == "GroupedCharts")
+                        $.each(val,function(opt,value){
+                            if(opt =="NumberColsGrouped" && numberOfCols == undefined)
+                                numberOfCols = value;
+                            if(opt =="SwapLegendByDefault"&& pivotData == undefined)
+                                pivotData = value;
+                            if(opt =="ShowAsVerticalByDefault"&& showAsVertical == undefined)
+                                showAsVertical = value;
+                            if(opt =="ShowAsPercentByDefault"&& showPercentages == undefined)
+                                showPercentages = value;
+                            if(opt =="StackAllChartsByDefault"&& stackChartsByDefault == undefined)
+                                stackChartsByDefault = value;
+                        })
+
                 });
             });
             d3.csv(url, function (error, data) {
@@ -37,6 +50,15 @@ var chartDataContainer=[];
                 chartData = data;
                 mainGroupColumn = headers[0];
                 subGroupColumn = headers[1];
+                if(pivotData == undefined)
+                    pivotData = false;
+                if(showAsVertical == undefined)
+                    showAsVertical = false;
+                if(showPercentages == undefined)
+                    showPercentages = false;
+                if(stackChartsByDefault == undefined)
+                    stackChartsByDefault = false;
+
                 if (pivotData) {
                     var temp = mainGroupColumn;
                     mainGroupColumn = subGroupColumn;
@@ -111,11 +133,15 @@ var chartDataContainer=[];
 
             chartDataContainer.forEach(function (chart) {
                 var widthOfEachCol = 12 / numberOfCols;
-                 d3.select('#grouped-bar-container').select("#"+chart.chartName).remove();
+                 d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
-                    .append('div').attr('id', chart.chartName).attr('class','col-xs-'+widthOfEachCol).append("svg").attr("id", "grouped-barchart");
+                    .append('div').attr('id', chart.chartName+"_bar").attr('class','col-xs-'+widthOfEachCol).append("div").attr("class","barcharttitle").text(
+                        chart.chartName
+                );
+                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");
                 //setDataSpecificDOM();
-                var chartId = "#" + chart.chartName + " svg";
+
+                var chartId = "#" + chart.chartName+"_bar "+" svg";
                 var options = {
                     pivotData : pivotData,
                     showPercentages : showPercentages,
@@ -124,7 +150,8 @@ var chartDataContainer=[];
                     subGrpSet: subGroupSet,
                     mainGrpCol: mainGroupColumn,
                     quantCol: quantityColumn,
-                    subGrpCol: subGroupColumn
+                    subGrpCol: subGroupColumn,
+                    showAsGrped: stackChartsByDefault
                 };
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
@@ -159,6 +186,9 @@ var chartDataContainer=[];
 			$(chartSelector).empty();
 			createGrouped();
 		});
+        $("#grouped-barchart-pivot-axes").prop('checked',pivotData);
+        $("#grouped-barchart-toggle-horizontal").prop('checked',showAsVertical);
+        $("#grouped-barchart-toggle-percentage").prop('checked',showPercentages);
 
 	}
     function setDataSpecificDOM() {

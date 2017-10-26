@@ -7,9 +7,26 @@
   "NavbarTitle":"ABMVIZ",
   "LinkURL":"http://www.atlantaregional.com",
   "CenterMap": [33.754525, -84.384774],
-  "NumberColsRadar":4,
-  "NumberColsGrouped":1
-
+  "FrontPageTitle": "Atlanta Regional Commission",
+  "visualizations":{
+  "3DMap":true,
+  "BarMap":true,
+  "GrpBar":true,
+  "TimeUse":true,
+  "Radar":true,
+  "Sunburst":true
+},
+  "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":["Everyone"]
+  },
+  "GroupedCharts":{
+    "NumberColsGrouped":1,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":true,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":false
+  }
 
 }
 

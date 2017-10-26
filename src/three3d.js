@@ -43,7 +43,7 @@ var three3d = (function three3dFunction() {
 	var cycleGoing = false;
 	var breakUp;
 	var cycleIncrement = 2;
-
+	var headers = [];
 	var zoneData = {}; //map of zoneIds with secondary map for period quantities
 	var zoneDataLayer;
 	var zoneGeoJSON;
@@ -55,7 +55,9 @@ var three3d = (function three3dFunction() {
 	var geoStatsObject;
 	var ZONE_FILE_LOC = "";
 	var CENTER_MAP = [];
-	//start off chain of initialization by reading in the data	
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
+	//start off chain of initialization by reading in the data
+	if(showChartOnPage){
 	readInData(function () {
 		"use strict";
 		createMap(function () {
@@ -65,8 +67,11 @@ var three3d = (function three3dFunction() {
 		setDataSpecificDOM();
 		initializeMuchOfUI();
 		updateCurrentPeriodOrClassification();
+		if(periods.length ==1){
+			$('#three3d-start-cycle-map').click();
+		}
 	}); //end call to readInData and its follwing callback
-
+}
 	function readInData(callback) {
 		"use strict";
 		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"config.json",function(data){
@@ -81,6 +86,8 @@ var three3d = (function three3dFunction() {
 			"use strict";
 			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
 			var csv = d3.csv.parseRows(data).slice(1);
+			headers = d3.csv.parseRows(data)[0];
+			//setDataSpecificDOM();
 			data = null; //allow memory to be GC'ed
 			var allData = [];
 			var zoneDatum;
@@ -153,6 +160,15 @@ var three3d = (function three3dFunction() {
 
 	function setDataSpecificDOM() {
 		"use strict";
+		$('.three3d-purpose').text(headers[2]);
+		if(periods.length ==1){
+			$('#three3d-current-period').hide();
+			$('#three3d-slider-time').hide();
+			$('#three3d-slider').hide();
+			$('#three3d-redraw').hide();
+		} else{
+
+		}
 	} //end setDataSpecificDOM
 
 	function addZoneGeoJSONToMap() {
@@ -414,7 +430,8 @@ var three3d = (function three3dFunction() {
 		$("#three3d-stop-cycle-map").click(function () {
 			cycleGoing = false;
 			$("#three3d-stop-cycle-map").css("display", "none");
-			$("#three3d-start-cycle-map").css("display", "inline");
+			//after clicking button if there is only one period, do not reshow the cycle button
+			$("#three3d-start-cycle-map").css("display", periods.length ==1?"none":"inline");
 		});
 
 		var lastCycleStartTime;

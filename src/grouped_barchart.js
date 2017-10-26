@@ -28,6 +28,7 @@ function grouped_barchart (id, data,options) {
 	var pivotData = options.pivotData;
 	var showPercentages = options.showPercentages;
 	var showAsVertical = options.showAsVertical;
+	var showAsGrouped = options.showAsGrped;
 
 	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
@@ -150,7 +151,7 @@ function grouped_barchart (id, data,options) {
 						right: marginRight,
 						top: marginTop,
 						bottom: marginBottom
-					}).id("grouped-barchart-multiBarHorizontalChart").stacked(false).showControls(true);
+					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(true);
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-100:0);
 					//this is actually for xAxis since basically a sideways column chart
@@ -177,6 +178,7 @@ function grouped_barchart (id, data,options) {
 			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
+
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called");
 					});

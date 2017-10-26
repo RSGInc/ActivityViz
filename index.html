@@ -1,8 +1,8 @@
 <html>
 
 <head>
-	<title>ARC ABMVIZ</title>
-	<link rel="shortcut icon" href="data/atlanta/img/arc_logo.ico">
+	<title> ABMVIZ</title>
+	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -10,70 +10,80 @@
 	<script type="text/javascript">
 		$.getJSON( "config.json", function (data) {
            $.each(data, function (key, val) {
-               var count = 0;
+               var setdefault = false;
+               var regiontitle = "";
                if(key =="regions") {
                    $.each(val, function (k, v) {
-                       count += 1;
-                       if (count == 1) {
-                           $.getJSON("data/" + v + "/config.json", function (data) {
-                               var icon = data.Icon;
-                               var logo = data.Logo;
-                               var title = data.Title;
-                               var linkURL = data.LinkURL;
-                               var navbartitle = data.NavbarTitle;
-                               $("link[rel*='icon']").attr("href", "data/" + v + "/img/" + icon + "");
+                       $('#scenarios').append('<div id="' + k + '_id' + '"></div>');
+
+                       $.getJSON("data/" + k + "/config.json", function (reg) {
+                            regiontitle = reg.FrontPageTitle;
+                           if (v.default === true && setdefault == false) {
+                               setdefault = true;
+                               var icon = reg.Icon;
+                               var logo = reg.Logo;
+                               var title = reg.Title;
+                               var linkURL = reg.LinkURL;
+                               var navbartitle = reg.NavbarTitle;
+                               $("link[rel*='icon']").attr("href", "data/" + k + "/img/" + icon + "");
                                $("title").text(title);
                                $('#title_id').text(navbartitle);
                                $('#navbarlink').attr("href", linkURL);
-                               $('#logo_id').attr("src", "data/" + v + "/img/" + logo + "");
+                               $('#logo_id').attr("src", "data/" + k + "/img/" + logo + "");
+                           }
+                           $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.Logo + ""+"'/>"+ "</h4>");
+                            appendVisuals('#' + k + '_id',k,reg.visualizations);
+                           $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
+                           d3.csv("data/" + k + "/scenarios.csv", function (data) {
+                               $.each(data, function (key, value) {
+                                   $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value["Scenario"] + "&visuals='>" + value["Scenario"] + value["Description"] + "</a></li>");
+                               });
                            });
-                       }
-                       $('#scenarios').append("<h4>" + k + "</h4>");
-                       $('#scenarios').append("<ul id='" + v + "_scenarios' class='scenarios'> </ul>");
 
-                       d3.csv("data/" + v + "/scenarios.csv", function (data) {
-                           $.each(data, function (key, value) {
-                               $("#" + v + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + v + "&scenario=" + value["Scenario"] + "&visuals='>" + value["Scenario"] + value["Description"] + "</a></li>");
-                           });
                        });
                    });
-               } else if(key=="visualizations"){
-				   $.each(val, function (k, v) {
-						$('#'+k.toLowerCase()+"_id").prop("checked",v);
-                   });
-			   }
+               }
            });
         });
+       function appendVisuals (id,region,visualizations) {
+           $(id).append('<div style="margin-bottom:10px;" id="visualizations_' + region + '"></div>');
+           $("#" + 'visualizations_' + region).append('<h5>Visualizations to Display</h5>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="3dmap" id="' + region + '_3dmap_id" visual="3" type="checkbox"  value="">3D Animated Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="barmap" id="' + region + '_barmap_id" visual="b" type="checkbox"  value="">Bar Chart with Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="grpbar" id="' + region + '_grpbar_id"  visual="g" type="checkbox"  value="">Grouped Bar Chart</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="timemap" id="' + region + '_timeuse_id" visual="t" type="checkbox"   value="">Time Use Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="radar" id="' + region + '_radar_id" visual="r" type="checkbox"  value="">Radar Charts</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="sunburst" id="' + region + '_sunburst_id" visual="s" type="checkbox"   value="">Sunburst Map</label>');
 
+
+           for (var obj in visualizations) {
+               $('#' + region + '_' + obj.toLowerCase() + "_id").prop("checked", visualizations[obj]);
+           }
+       }
 	</script>
 </head>
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
-			<a id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img id="logo_id" width="40" height="17" src=""></a> <a class="navbar-brand" id="title_id" href="#">.</a> </div>
+			<a id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img id="logo_id" style='max-height:25px;' width="" height="auto" src=""></a> <a class="navbar-brand" id="title_id" href="#">.</a> </div>
 	</nav>
 	<div id="scenarios" style="margin:5em;">
-		<h3>Please select a scenario for visualization</h3>
+ <div id="novizalert" class="alert alert-danger" style="display:none">Please select at least one visualization to display</div>
+        <h3><p>Please select a scenario for visualization</p></h3>
 
+            <br/>
 	</div>
-	<div style="margin:5em;" id="visualizations">
-        <h3>Visualizations to Display</h3>
-        <div id="novizalert" class="alert alert-danger" style="display:none">Please select at least one visualization to display</div>
-        <label class="checkbox-inline"><input name="3dmap" id="3dmap_id" visual='3' type="checkbox"  value="">3D Animated Map</label>
-        <label class="checkbox-inline"><input name="barmap" id="barmap_id" visual='b' type="checkbox"  value="">Bar Chart with Map</label>
-        <label class="checkbox-inline"><input name="grpbar" id="grpbar_id"  visual='g' type="checkbox"  value="">Grouped Bar Chart</label>
-        <label class="checkbox-inline"><input name="timemap" id="timeuse_id" visual='t' type="checkbox"   value="">Time Use Map</label>
-        <label class="checkbox-inline"><input name="radar" id="radar_id" visual='r' type="checkbox"  value="">Radar Charts</label>
-        <label class="checkbox-inline"><input name="sunburst" id="sunburst_id" visual='s' type="checkbox"   value="">Sunburst Map</label>
-	</div>
+
 
 <script>
     (function() {
         $('#scenarios').on('click','a.scenariolink', function(event){
-        	var total = $('#visualizations').find('input[type=checkbox]:checked').length;
+
+            var regionDiv = $(this).parent().closest('div');
+        	var total = regionDiv.find('input[type=checkbox]:checked').length;
         	var visuals = "";
-        	$('input[type=checkbox]').each(function(event){
+        	regionDiv.find('input[type=checkbox]').each(function(event){
            		if($(this).is(':checked')){
                		visuals += $(this).attr('visual');
            		}
@@ -92,25 +102,8 @@
 
             }
         });
-
-
-    $('input[type=checkbox]').on('click',function(event){
-        //event.preventDefault();
-        var visuals = "";
-        $('input[type=checkbox]').each(function(event){
-           if($(this).is(':checked')){
-               visuals += $(this).attr('visual');
-           }
-        });
-        $("a.scenariolink").attr('href',function(i, h) {
-           // console.log(h);
-            //return jQuery.query.set("visuals",visuals);
-            h= h.slice(0,h.indexOf('&visuals'));
-            return h +  "&visuals="+visuals;
-        });
-
-    });
     })();
+
 </script>
 </body>
 

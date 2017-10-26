@@ -11,13 +11,21 @@ var radar = (function () {
 	var opacityScaleRange = [0.3, 0.9];
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('r') > -1;
 	var numberOfCols = 1;
+	var independentscale =[];
 	function createRadar() {
         //read in data and create radar when finished
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
                 $.each(data, function (key, val) {
-                    if (key == "NumberColsRadar")
-                        numberOfCols = val;
+                    if (key == "RadarCharts")
+                        $.each(val,function(opt,value){
+                            if(opt =="NumberColsRadar")
+                                numberOfCols = value;
+                            if(opt=="IndependentScale")
+                                independentscale = value;
+                        })
+
+
                 });
             });
             if (chartData === undefined) {
@@ -57,7 +65,9 @@ var radar = (function () {
                             }).map(csv);
                         rolledUpMaps.push(rolledUpMap);
                     }
-                    //get max and min values for each axis
+
+                    //get max and min values for each axis, filter out the independent scales
+
                     var axesInfo = d3.nest().key(function (d) {
                         var radarAxis = d[AXIS_COLUMN];
                         return radarAxis; //secondary group by AXIS
@@ -65,17 +75,47 @@ var radar = (function () {
                         return {
                             name: leaves[0][AXIS_COLUMN],
                             min: d3.min(leaves, function (d) {
+
                                 return Math.min.apply(null,d.slice(2,d.len));
                             }),
                             max: d3.max(leaves, function (d) {
                                 return Math.max.apply(null,d.slice(2,d.len));
                             })
                         };
-                    }).map(csv);
+                    }).map(csv.filter(function(e){return $.inArray(e[1],independentscale)==-1;}));
+
+                     var independentAxesInfo = d3.nest().key(function (d) {
+                        var radarAxis = d[AXIS_COLUMN];
+                        return radarAxis; //secondary group by AXIS
+                    }).rollup(function (leaves) {
+                        return {
+                            name: leaves[0][AXIS_COLUMN],
+                            min: d3.min(leaves, function (d) {
+
+                                return Math.min.apply(null,d.slice(2,d.len));
+                            }),
+                            max: d3.max(leaves, function (d) {
+                                return Math.max.apply(null,d.slice(2,d.len));
+                            })
+                        };
+                    }).map(csv.filter(function(e){return $.inArray(e[1],independentscale)>-1;}));
+
                     //scale each axis to range of 0 to 1 so can report as percentage across best/worst of all charts
                     Object.keys(axesInfo).forEach(function (key) {
                         var axisInfo = axesInfo[key];
                         axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
+                    });
+
+                     Object.keys(independentAxesInfo).forEach(function (key) {
+                        var axisInfo = independentAxesInfo[key];
+                            if(axisInfo.min === axisInfo.max)
+                            {
+                                axisInfo.percentageScale = d3.scale.linear().domain([0, axisInfo.max]).range([0, 1]);
+                            }
+                            else {
+                                axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
+                            }
+
                     });
                     csv = null; //allow memory to be GC'ed
                     //convert data to format nvd3 expects it
@@ -103,34 +143,63 @@ var radar = (function () {
                             chartId: existingChartId,
                             chartName: chartName,
                             axes: axesData,
-                             areaName: legendHead[c],
+                            areaName: legendHead[c],
                             sumPercentages: 0,
-                             active: true
+                            active: true
                         }
                         chartData.push(chartDatumObject);
                         var rolledUpChartNameMap = currentrollupMap[chartName];
                         var axisOpacityScale = d3.scale.linear().domain([0, 1]).range(opacityScaleRange);
-                        //must make sure data has all radarAxes since wish each chart to look similar
-                        Object.keys(axesInfo).forEach(function (key) {
-                            var axisInfo = axesInfo[key];
-                            var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
-                            //if radarAxis missing from data, create it
-                            if (radarAxisDataObject == undefined) {
-                                radarAxisDataObject = {
-                                    axis: key,
-                                    originalValue: NaN,
-                                    value: 0
-                                };
-                                console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
-                            } else {
-                                radarAxisDataObject.originalValue = radarAxisDataObject.value
-                                radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
-                            }
-                            //at this point 'value' has been overwritten by percent value and original copied to originalValue
-                            radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
-                            chartDatumObject.sumPercentages += radarAxisDataObject.value;
-                            axesData.push(radarAxisDataObject);
-                        }); //end loop over radarAxes
+                        //must make sure data has all radarAxes since wish each chart to look similar if they belong to the same scale
+                        if($.inArray(chartName,independentscale)>-1){
+                            Object.keys(independentAxesInfo).forEach(function (key) {
+                                var axisInfo = independentAxesInfo[key];
+                                var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
+                                //if radarAxis missing from data, create it
+                                if (radarAxisDataObject == undefined) {
+                                    radarAxisDataObject = {
+                                        axis: key,
+                                        originalValue: NaN,
+                                        value: 0
+                                    };
+                                    console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
+                                } else {
+                                    radarAxisDataObject.originalValue = radarAxisDataObject.value
+                                    if(axisInfo.max === axisInfo.min) {
+                                        radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
+                                    } else {
+                                        radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
+                                    }
+
+
+                                }
+                                //at this point 'value' has been overwritten by percent value and original copied to originalValue
+                                radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
+                                chartDatumObject.sumPercentages += radarAxisDataObject.value;
+                                axesData.push(radarAxisDataObject);
+                            }); //end loop over radarAxes
+                        } else {
+                            Object.keys(axesInfo).forEach(function (key) {
+                                var axisInfo = axesInfo[key];
+                                var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
+                                //if radarAxis missing from data, create it
+                                if (radarAxisDataObject == undefined) {
+                                    radarAxisDataObject = {
+                                        axis: key,
+                                        originalValue: NaN,
+                                        value: 0
+                                    };
+                                    console.log('Chart name "' + chartName + '" missing data for radarAxis: ' + key);
+                                } else {
+                                    radarAxisDataObject.originalValue = radarAxisDataObject.value
+                                    radarAxisDataObject.value = axisInfo.percentageScale(radarAxisDataObject.originalValue);
+                                }
+                                //at this point 'value' has been overwritten by percent value and original copied to originalValue
+                                radarAxisDataObject.scaledOpacity = axisOpacityScale(radarAxisDataObject.value);
+                                chartDatumObject.sumPercentages += radarAxisDataObject.value;
+                                axesData.push(radarAxisDataObject);
+                            }); //end loop over radarAxes
+                        }
                         minSumPercentages = Math.min(minSumPercentages, chartDatumObject.sumPercentages);
                         maxSumPercentages = Math.max(maxSumPercentages, chartDatumObject.sumPercentages);
                         //end loop over charts
