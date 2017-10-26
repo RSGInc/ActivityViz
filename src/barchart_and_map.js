@@ -87,7 +87,7 @@ var barchart_and_map = (function () {
 	function readInData(callback) {
 		"use strict";
 		if(showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
                 $.each(data, function (key, val) {
                     if (key == "CountyFile")
                         COUNTY_FILE = val;

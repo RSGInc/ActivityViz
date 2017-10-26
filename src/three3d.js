@@ -74,7 +74,7 @@ var three3d = (function three3dFunction() {
 }
 	function readInData(callback) {
 		"use strict";
-		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"config.json",function(data){
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"region.json",function(data){
 		$.each(data, function(key,val){
 			if(key =="ZoneFile")
 				ZONE_FILE_LOC = val;

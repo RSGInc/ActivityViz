@@ -16,7 +16,7 @@
                    $.each(val, function (k, v) {
                        $('#scenarios').append('<div id="' + k + '_id' + '"></div>');
 
-                       $.getJSON("data/" + k + "/config.json", function (reg) {
+                       $.getJSON("data/" + k + "/region.json", function (reg) {
                             regiontitle = reg.FrontPageTitle;
                            if (v.default === true && setdefault == false) {
                                setdefault = true;
@@ -31,14 +31,14 @@
                                $('#navbarlink').attr("href", linkURL);
                                $('#logo_id').attr("src", "data/" + k + "/img/" + logo + "");
                            }
-                           $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.Logo + ""+"'/>"+ "</h4>");
+                           $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.FrontPageGraphic + ""+"'/>"+ "</h4>");
                             appendVisuals('#' + k + '_id',k,reg.visualizations);
                            $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
-                           d3.csv("data/" + k + "/scenarios.csv", function (data) {
-                               $.each(data, function (key, value) {
-                                   $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value["Scenario"] + "&visuals='>" + value["Scenario"] + value["Description"] + "</a></li>");
+
+                               $.each(reg.scenarios, function (key, value) {
+                                   $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "&visuals='>" + key + value + "</a></li>");
                                });
-                           });
+
 
                        });
                    });

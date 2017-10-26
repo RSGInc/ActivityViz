@@ -15,7 +15,7 @@ var radar = (function () {
 	function createRadar() {
         //read in data and create radar when finished
         if (showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
                 $.each(data, function (key, val) {
                     if (key == "RadarCharts")
                         $.each(val,function(opt,value){
@@ -110,6 +110,7 @@ var radar = (function () {
                         var axisInfo = independentAxesInfo[key];
                             if(axisInfo.min === axisInfo.max)
                             {
+                                //if the min and max are the same, set min to 0 so the single data point shows up as 100% rather than 0%
                                 axisInfo.percentageScale = d3.scale.linear().domain([0, axisInfo.max]).range([0, 1]);
                             }
                             else {
@@ -227,14 +228,14 @@ var radar = (function () {
                 var radarChartContainer = d3.select("#radar-chart-container");
                 //need to create columns and then fill each column with portlets
                 //tricky because (AFAIK) I need to attach the data to each column separately
-                var heightConfig = [650,450,150,150];
-                var weightConfig = [800,500,180,155];
+                var heightConfig = [650,450,250,150];
+                var weightConfig = [800,500,300,155];
                 var marginTop =     [110,  50,40,40];
-                var marginBot =     [140, 65,55,55];
+                var marginBot =     [140, 65,50,55];
                 var marginLeft =    [90,  50,60,75];
                 var marginRight =   [90,  50,60,75];
-                var radarColCss = [320,624,320,320];
-                var labelFact = [1.25,1.2,1.38,1.45];
+                var radarColCss = [320,624,443,320];
+                var labelFact = [1.25,1.2,1.24,1.45];
                 var axisLabelSizes = [14,13,12,11];
                 var circleLabelSizes = [14,13,12,11];
                 var legendFont = [18,16,14,12];

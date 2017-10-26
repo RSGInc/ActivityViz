@@ -6,6 +6,7 @@ var barchart = (function () {
     var subGroupColumn;
     var mainGroupColumn;
     var quantityColumn;
+    var chartColumn;
     var mainGroupSet;
     var subGroupSet;
     var pivotData;
@@ -13,6 +14,7 @@ var barchart = (function () {
     var showAsVertical;
     var chartSet;
     var stackChartsByDefault;
+
     var chartSelector = "#grouped-barchart";
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
@@ -22,7 +24,7 @@ var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";
         if (showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "config.json", function (data) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
                 $.each(data, function (key, val) {
                     if (key == "GroupedCharts")
                         $.each(val,function(opt,value){
@@ -50,6 +52,7 @@ var chartDataContainer=[];
                 chartData = data;
                 mainGroupColumn = headers[0];
                 subGroupColumn = headers[1];
+                chartColumn = headers[3];
                 if(pivotData == undefined)
                     pivotData = false;
                 if(showAsVertical == undefined)
@@ -71,8 +74,8 @@ var chartDataContainer=[];
                 //note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
                 var totalsForEachMainGroup = {};
                 var rawChartData = d3.nest().key(function (d) {
-                    chartSet.add(d["CHART"].replace(/\s+/g, ''));
-                    return d["CHART"].replace(/\s+/g, '');
+                    chartSet.add(d[chartColumn].replace(/\s+/g, ''));
+                    return d[chartColumn].replace(/\s+/g, '');
                 }).key(function (d) {
                     //change quantity to an int for convenience right off the bat
                     d[quantityColumn] = parseInt(d[quantityColumn]);

@@ -45,25 +45,13 @@
 	<link rel="stylesheet" href="three3d.css" />
 	<link rel="stylesheet" href="radar.css" />
 	<script type="text/javascript">
-		var region = abmviz_utilities.GetURLParameter("region");
-            $.getJSON( "../data/"+region+"/config.json", function (data) {
-                var icon = data.Icon;
-                var logo = data.Logo;
-                var title = data.Title;
-                var linkURL = data.LinkURL;
-                var navbartitle = data.NavbarTitle;
-                $("link[rel*='icon']").attr("href", "../data/"+region+"/img/"+icon+"");
-                $("title").text(title);
-                 $('#title_id').text(navbartitle);
-                $('#navbarlink').attr("href",linkURL);
-                $('#logo_id').attr("src","../data/"+region+"/img/"+logo+"");
-            });
+
 	</script>
 </head>
 <!-- end head -->
 
 <body>
-	<div class="container-fluid">
+	<div class="container-fluid" id="main_div">
 
 		<nav class="navbar navbar-inverse navbar-fixed-top" style="max-height:51px;">
 
@@ -82,7 +70,7 @@
 		</nav>
 		<!-- end nav -->
 		<div id="three3d" class="row dynamic-content">
-			<p class="text-center" style="font-size:2em">
+		<hr>	<p class="text-center" style="font-size:2em">
 				<strong>
                         <span class="three3d-purpose"></span>
                     </strong>
@@ -564,15 +552,36 @@ function getParameterByName(name, url) {
 // Give the parameter a variable name
 var dynamicContent = getParameterByName('visuals');
 $(document).ready(function() {
-	// Check if the URL parameter is apples
+    var region = abmviz_utilities.GetURLParameter("region");
+            $.getJSON( "../data/"+region+"/region.json", function (data) {
+                var icon = data.Icon;
+                var logo = data.Logo;
+                var title = data.Title;
+                var linkURL = data.LinkURL;
+                var navbartitle = data.NavbarTitle;
+                $("link[rel*='icon']").attr("href", "../data/"+region+"/img/"+icon+"");
+                $("title").text(title);
+                 $('#title_id').text(navbartitle);
+                $('#navbarlink').attr("href",linkURL);
+                $('#logo_id').attr("src","../data/"+region+"/img/"+logo+"");
+
+                var ids=
+				{"3DMap":"three3d","BarMap":"mode-share-by-county","GrpBar":"grouped-barchart-div","TimeUse":"timeuse","Radar":"radar","Sunburst":"sunburst"};
+
+                $.each(data.visualizations,function(key,value){
+                    //$('#'+ids[key]).appendTo($("#main_div"));
+				})
+
+            });
+	// Check if the URL parameter is 3
 	if (dynamicContent.indexOf('3')>-1) {
 		$('#three3d').show();
 	}
-	// Check if the URL parameter is oranges
+	// Check if the URL parameter is b
 	if (dynamicContent.indexOf('b')>-1) {
 		$('#mode-share-by-county').show();
 	}
-	// Check if the URL parameter is bananas
+	// Check if the URL parameter is r
 	if (dynamicContent.indexOf('r')>-1) {
 		$('#radar').show();
 	}

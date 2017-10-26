@@ -1,23 +1,46 @@
 # ABMVIZ
-ARC ABMVIZ HTML 5
+ABMVIZ HTML 5
 
+# Adding New Region
+1. Add the region name and properties in the config.json file.
+2. Add a new region folder in the data folder. For example: The region "atlanta" should have a 
+    folder named "atlanta" in the data folder.  
+3. The first region with the property default set to true will determine which graphics are shown on the main page.
 # Adding New Scenario Data
 1. Add the scenario name to the scenarios.csv definition file in the data folder
-1. Create a new folder in the data folder with the scenario name
-1. Copy in the required visualization data tables, each with the following set of fields:
-  - BarChartAndMapData.csv: ZONE, COUNTY, BAR, QUANTITY  
-  - TimeUseData.csv: PERSON_TYPE, PER, ORIG_PURPOSE, QUANTITY
-  - 3DAnimatedMapData.csv: ZONE, PER, QUANTITY
+2. Create a new folder in the region specific folder with the scenario name
+3. Copy in the required visualization data tables, each with the following set of fields:
+  - BarChartAndMapData.csv: ZONE, COUNTY, BAR (Label for Quantity), QUANTITY  
+  - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
+  - 3DAnimatedMapData.csv: ZONE, PERIOD, QUANTITY
   - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
-  - RadarChartsData.csv: AXIS, CHART, QUANTITY
-  - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY
+  - RadarChartsData.csv: AXIS, CHART, QUANTITY 1, QUANTITY 2, ... (Where Quantity 1 is the label for the data)
+  - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
 
-# Data folder
+# Data Region folder
 1. scenarios.csv - Defines each scenario (i.e. model run) available to the user
 2. BS10 - Example scenario data folder with its name equal to its scenarios.csv entry
 3. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
 4. cb_2015_us_county_500k GEORGIA.json - Counties from [Census](https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html); converted to json with [mapshaper](http://www.mapshaper.org)
-
+5. config.json - Region specific config file:
+    - Title: Title that shows up in tab of web page
+    - CountyFile: Name of the file with the county data
+    - ZoneFile: Name of the file with the zone data
+    - NavbarTitle: Abbreviated name to appear in the navbar
+    - LinkURL: URL of the link that appears in navbar
+    - CenterMap: Lat/Lng of the center point for the maps to use Example: '[33.75424,-84.384774]'
+    - FrontPageTitle: Text to appear about region scenarions on front page
+    - visualizations: true/false flag for each visualization to set default value for visuals by region
+    - RadarCharts: Radar Chart specific properties:
+        - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
+        - IndependentScale: Names of charts to separate into second scale and collection of axes
+    - GroupedCharts: Grouped Bar Chart specific properties:
+        - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
+        - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts
+        - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
+        - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
+        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts     
+    
 # BS10 example scenario folder
 1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone, county, and mode
 2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
