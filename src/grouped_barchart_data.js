@@ -19,7 +19,7 @@ var barchart = (function () {
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
     //CONFIG VARIABLES
-    var numberOfCols = 1;
+    var numberOfCols ;
 var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";

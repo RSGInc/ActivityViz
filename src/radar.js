@@ -11,7 +11,9 @@ var radar = (function () {
 	var opacityScaleRange = [0.3, 0.9];
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('r') > -1;
 	var numberOfCols = 1;
+	var convertAxesToPercent = true;
 	var independentscale =[];
+	 var independentAxesCharts = [];
 	function createRadar() {
         //read in data and create radar when finished
         if (showChartOnPage) {
@@ -23,6 +25,8 @@ var radar = (function () {
                                 numberOfCols = value;
                             if(opt=="IndependentScale")
                                 independentscale = value;
+                            if(opt=="ConvertAxesToPercent")
+                                convertAxesToPercent = value;
                         })
 
 
@@ -84,40 +88,57 @@ var radar = (function () {
                         };
                     }).map(csv.filter(function(e){return $.inArray(e[1],independentscale)==-1;}));
 
-                     var independentAxesInfo = d3.nest().key(function (d) {
+                    var findmin = Object.keys(axesInfo).map(function(key){return axesInfo[key].min;});
+                    var overallmin = Math.min.apply(null,findmin);
+                    var findmax = Object.keys(axesInfo).map(function(key){return axesInfo[key].max;});
+                    var overallmax = Math.min.apply(null,findmax);
+
+                    independentAxesCharts = [];
+                    for(var i=0; i< independentscale.length;i++){
+                        var scale = independentscale[i];
+                        var independentAxesInfo = d3.nest().key(function (d) {
                         var radarAxis = d[AXIS_COLUMN];
                         return radarAxis; //secondary group by AXIS
                     }).rollup(function (leaves) {
                         return {
                             name: leaves[0][AXIS_COLUMN],
                             min: d3.min(leaves, function (d) {
-
                                 return Math.min.apply(null,d.slice(2,d.len));
                             }),
                             max: d3.max(leaves, function (d) {
                                 return Math.max.apply(null,d.slice(2,d.len));
                             })
                         };
-                    }).map(csv.filter(function(e){return $.inArray(e[1],independentscale)>-1;}));
+                    }).map(csv.filter(function(e){return e[1] === scale;}));
+                        independentAxesCharts.push({name:scale,axes:independentAxesInfo});
+                    }
+
+
+
 
                     //scale each axis to range of 0 to 1 so can report as percentage across best/worst of all charts
                     Object.keys(axesInfo).forEach(function (key) {
                         var axisInfo = axesInfo[key];
                         axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
+
                     });
 
-                     Object.keys(independentAxesInfo).forEach(function (key) {
-                        var axisInfo = independentAxesInfo[key];
-                            if(axisInfo.min === axisInfo.max)
-                            {
-                                //if the min and max are the same, set min to 0 so the single data point shows up as 100% rather than 0%
-                                axisInfo.percentageScale = d3.scale.linear().domain([0, axisInfo.max]).range([0, 1]);
-                            }
-                            else {
+                    independentAxesCharts.forEach(function(chart){
+
+                        Object.keys(chart.axes).forEach(function (key) {
+                       var axisInfo = chart.axes[key];
+                         if(axisInfo.min === axisInfo.max)
+                          {
+                            //if the min and max are the same, set min to 0 so the single data point shows up as 100% rather than 0%
+                            axisInfo.percentageScale = d3.scale.linear().domain([0, axisInfo.max]).range([0, 1]);
+                          }
+                          else
+                          {
                                 axisInfo.percentageScale = d3.scale.linear().domain([axisInfo.min, axisInfo.max]).range([0, 1]);
-                            }
-
+                          }
                     });
+                    })
+
                     csv = null; //allow memory to be GC'ed
                     //convert data to format nvd3 expects it
                     //populate drop down of all person -types
@@ -146,15 +167,18 @@ var radar = (function () {
                             axes: axesData,
                             areaName: legendHead[c],
                             sumPercentages: 0,
-                            active: true
+                            active: true,
+                            overallmin: overallmin,
+                            overallmax: overallmax
                         }
                         chartData.push(chartDatumObject);
                         var rolledUpChartNameMap = currentrollupMap[chartName];
                         var axisOpacityScale = d3.scale.linear().domain([0, 1]).range(opacityScaleRange);
                         //must make sure data has all radarAxes since wish each chart to look similar if they belong to the same scale
                         if($.inArray(chartName,independentscale)>-1){
-                            Object.keys(independentAxesInfo).forEach(function (key) {
-                                var axisInfo = independentAxesInfo[key];
+                            var indyChart = independentAxesCharts.filter(function(ch){ return ch.name == chartName;});
+                            Object.keys(indyChart[0].axes).forEach(function (key) {
+                                var axisInfo = indyChart[0].axes[key];
                                 var radarAxisDataObject = rolledUpChartNameMap[axisInfo.name];
                                 //if radarAxis missing from data, create it
                                 if (radarAxisDataObject == undefined) {
@@ -256,6 +280,7 @@ var radar = (function () {
                     tooltipFormatValue: abmviz_utilities.numberWithCommas,
                     strokeWidth: 2,
                     maxValue: 1.0,
+                    minValue: 0,
                     levels: 3,
                     wrapWidth: 70,
                     labelFactor: labelFact[numColumns-1],
@@ -263,31 +288,12 @@ var radar = (function () {
                     axisLabelSizes : axisLabelSizes[numColumns-1],
                     circleLabelSizes : circleLabelSizes[numColumns-1],
                     labelFontSize : legendFont[numColumns-1],
+                    convertAxesToPercent: convertAxesToPercent,
                    // strokeWidth: 0,
                     color:  chartColor
                     //,
                    // tooltipFormatValue: abmviz_utilities.numberWithCommas
                 };
-               /* var charts = [];
-                var combinedChartData =[];
-                for(var i=0; i < chartData.length;i++){
-                    var chartsByName = chartData.filter(function (d){
-                        return d.chartName == chartData[i].chartName;
-                    });
-                    combinedChartData.push(chartsByName);
-                }
-
-                if(chartData.map(function(e){return e.chartName;}).indexOf(chartName) >-1)
-                         {
-                             var indx = chartData.map(function(e){return e.chartName;}).indexOf(chartName) ;
-                             existingChartId = chartData[indx].chartId;
-                         }else {
-                             existingChartId = chartId++;
-                         }
-                */
-
-
-
                 var chartId = 1;
                 for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {
                     radarChartContainer.append("div").attr("class", "radar-column");

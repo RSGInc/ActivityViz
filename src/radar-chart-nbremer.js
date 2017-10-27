@@ -16,7 +16,7 @@ function RadarChart(id, data, options) {
 		}, //The margins of the SVG
          legendPosition: {x: 20, y: 20},
 		levels: 3, //How many levels or inner circles should there be drawn
-		maxValue: 0, //What is the value that the biggest circle will represent
+		maxValue: data[0].overallmax, //What is the value that the biggest circle will represent
 		labelFactor: 1.25, //How much farther than the radius of the outer circle should the labels be placed
 		wrapWidth: 60, //The number of pixels after which a label needs to be given a new line
 		opacityArea: 0.35, //The opacity of the area of the blob
@@ -43,12 +43,25 @@ function RadarChart(id, data, options) {
 		} //for i
 	} //if
 	//If the supplied maxValue is smaller than the actual one, replace by the max in the data
-	var maxValue = Math.max(cfg.maxValue, d3.max(data, function (i) {
+
+	var maxFromData = d3.max(data, function (i) {
 		return d3.max(i.axes.map(function (o) {
-			return o.value;
+
+			return cfg.convertAxesToPercent ?o.value:o.originalValue;
+		}))
+	});
+	var maxValue = maxFromData > 0 ?Math.max(cfg.maxValue, d3.max(data, function (i) {
+		return d3.max(i.axes.map(function (o) {
+
+			return cfg.convertAxesToPercent ?o.value:o.originalValue;
+		}))
+	})):maxFromData;
+
+	var minValue = Math.min(cfg.minValue, d3.min(data, function (i) {
+		return d3.min(i.axes.map(function (o) {
+			return cfg.convertAxesToPercent ?o.value:o.originalValue;
 		}))
 	}));
-
 		var axisName = cfg["axisName"],
 			areaName = cfg["areaName"];
 
@@ -68,10 +81,23 @@ function RadarChart(id, data, options) {
 		})), //Names of each axis
 		total = allAxis.length, //The number of different axes
 		radius = Math.min(cfg.w / 2, cfg.h / 2), //Radius of the outermost circle
-		Format = d3.format('%'), //Percentage formatting
+		Format = d3.format(cfg.convertAxesToPercent?'%':'$.0f'), //Percentage formatting
 		angleSlice = Math.PI * 2 / total; //The width in radians of each "slice"
 	//Scale for the radius
-	var rScale = d3.scale.linear().range([0, radius]).domain([0, maxValue]);
+    var rScale;
+    var allNegatives = false;
+    if(minValue < 0 && maxValue < 0)
+    {
+       var temp = maxValue;
+        maxValue = minValue;
+       minValue = temp;
+       allNegatives = true;
+       rScale = d3.scale.linear().range([0, radius]).domain([Math.min(minValue,0),maxValue ]);
+    }
+    else {
+        rScale = d3.scale.linear().range([0, radius]).domain([ Math.min(minValue,0),maxValue]);
+    }
+
 	/////////////////////////////////////////////////////////
 	//////////// Create the container SVG and g /////////////
 	/////////////////////////////////////////////////////////
@@ -131,7 +157,7 @@ function RadarChart(id, data, options) {
 	        if(d["active"]==true){
 	            //console.log(cfg.color(idx));
 	            text+= "<tr><td class='legend-color-guide'><div style='background-color:"+cfg.color(idx)+"' ></div></td>";
-	            text+= "<td class='key'>"+d.areaName +"</td><td class='value'> " + Format(d.axes[i].value)+ " ("+cfg.tooltipFormatValue(d.axes[i].originalValue)+")</td></tr>";
+	            text+= "<td class='key'>"+d.areaName +"</td><td class='value'> " + Format(cfg.convertAxesToPercent?d.axes[i].value:d.axes[i].originalValue)+ " ("+cfg.tooltipFormatValue(d.axes[i].originalValue)+")</td></tr>";
 	        }
         });
 	    text +="</tbody></table>";
@@ -154,7 +180,7 @@ function RadarChart(id, data, options) {
 	  //  console.log("Value " + rScale(d.value));
 	  //  console.log(d);
 	    //console.log(rScale(Format(d.value)));
-		return rScale(d.value);
+		return rScale(cfg.convertAxesToPercent?d.value:d.originalValue);
 	}).angle(function (d, i) {
 		return i * angleSlice;
 	});
@@ -199,9 +225,9 @@ function RadarChart(id, data, options) {
 	blobWrapper.selectAll(".radarCircle").data(function (d, i) {
 		return d.axes;
 	}).enter().append("circle").attr("class", "radarCircle").attr("r", cfg.dotRadius).attr("cx", function (d, i) {
-		return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+		return rScale(cfg.convertAxesToPercent?d.value:d.originalValue) * Math.cos(angleSlice * i - Math.PI / 2);
 	}).attr("cy", function (d, i) {
-		return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+		return rScale(cfg.convertAxesToPercent?d.value:d.originalValue) * Math.sin(angleSlice * i - Math.PI / 2);
 	}).style("fill", function (d, i, j) {
 		return data[j]["active"]==true?cfg.color(j):"none";
 	}).style("fill-opacity", function (d, i, j) {
@@ -217,14 +243,14 @@ function RadarChart(id, data, options) {
 	blobCircleWrapper.selectAll(".radarInvisibleCircle").data(function (d, i) {
 		return d.axes;
 	}).enter().append("circle").attr("class", "radarInvisibleCircle").attr("r", cfg.dotRadius * 1.5).attr("cx", function (d, i) {
-		return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+		return rScale(cfg.convertAxesToPercent?d.value:d.originalValue) * Math.cos(angleSlice * i - Math.PI / 2);
 	}).attr("cy", function (d, i) {
-		return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+		return rScale(cfg.convertAxesToPercent?d.value:d.originalValue) * Math.sin(angleSlice * i - Math.PI / 2);
 	}).style("fill", "none").style("pointer-events", "all").on("mouseover", function (d, i) {
 	    
 		newX = parseFloat(d3.select(this).attr('cx')) - 10;
 		newY = parseFloat(d3.select(this).attr('cy')) - 10;
-		tooltip.attr('x', newX).attr('y', newY).text(Format(d.value) + ' (' + cfg.tooltipFormatValue(d.originalValue) + ')').transition().duration(200).style('opacity', 1);
+		tooltip.attr('x', newX).attr('y', newY).text(Format(cfg.convertAxesToPercent?d.value:d.originalValue) + ' (' + cfg.tooltipFormatValue(d.originalValue) + ')').transition().duration(200).style('opacity', 1);
         d3.selectAll(".radarArea").transition().duration(200).style("fill-opacity", 0.1);
         var rdSelector =$(this).closest('.radarCircleWrapper').attr("radar");
 

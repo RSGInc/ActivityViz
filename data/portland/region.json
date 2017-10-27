@@ -23,10 +23,12 @@
 },
  "RadarCharts":{
     "NumberColsRadar":3,
-    "IndependentScale":["Everyone"]
+    "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
+   "ConvertAxesToPercent":false
+
   },
   "GroupedCharts":{
-    "NumberColsGrouped":1,
+    "NumberColsGrouped":2,
     "SwapLegendByDefault":true,
     "ShowAsPercentByDefault":false,
     "ShowAsVerticalByDefault":false,
