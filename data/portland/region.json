@@ -22,7 +22,7 @@
     "Sunburst":false
 },
  "RadarCharts":{
-    "NumberColsRadar":3,
+    "NumberColsRadar":4,
     "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
    "ConvertAxesToPercent":false
 
