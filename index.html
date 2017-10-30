@@ -1,31 +1,110 @@
 <html>
 
 <head>
-	<title>ARC ABMVIZ</title>
-	<link rel="shortcut icon" href="img/arc_logo.ico">
+	<title> ABMVIZ</title>
+	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/d3/d3.min.js"></script>
-	<script>
-		d3.csv("data/scenarios.csv", function (data) {
-			$.each(data, function (key, value) {
-				$("#scenarios").append("<li><a href='src/index.html?scenario=" + value["Scenario"] + "'>" + value["Scenario"] + value["Description"] + "</a></li>");
-			});
-		});
+	<script type="text/javascript">
+		$.getJSON( "config.json", function (data) {
+           $.each(data, function (key, val) {
+               var setdefault = false;
+               var regiontitle = "";
+               if(key =="regions") {
+                   $.each(val, function (k, v) {
+                       $('#scenarios').append('<div id="' + k + '_id' + '"></div>');
+
+                       $.getJSON("data/" + k + "/region.json", function (reg) {
+                            regiontitle = reg.FrontPageTitle;
+                           if (v.default === true && setdefault == false) {
+                               setdefault = true;
+                               var icon = reg.Icon;
+                               var logo = reg.Logo;
+                               var title = reg.Title;
+                               var linkURL = reg.LinkURL;
+                               var navbartitle = reg.NavbarTitle;
+                               $("link[rel*='icon']").attr("href", "data/" + k + "/img/" + icon + "");
+                               $("title").text(title);
+                               $('#title_id').text(navbartitle);
+                               $('#navbarlink').attr("href", linkURL);
+                               $('#logo_id').attr("src", "data/" + k + "/img/" + logo + "");
+                           }
+                           $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.FrontPageGraphic + ""+"'/>"+ "</h4>");
+                            appendVisuals('#' + k + '_id',k,reg.visualizations);
+                           $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
+
+                               $.each(reg.scenarios, function (key, value) {
+                                   $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "&visuals='>" + key + value + "</a></li>");
+                               });
+
+
+                       });
+                   });
+               }
+           });
+        });
+       function appendVisuals (id,region,visualizations) {
+           $(id).append('<div style="margin-bottom:10px;" id="visualizations_' + region + '"></div>');
+           $("#" + 'visualizations_' + region).append('<h5>Visualizations to Display</h5>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="3dmap" id="' + region + '_3dmap_id" visual="3" type="checkbox"  value="">3D Animated Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="barmap" id="' + region + '_barmap_id" visual="b" type="checkbox"  value="">Bar Chart with Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="grpbar" id="' + region + '_grpbar_id"  visual="g" type="checkbox"  value="">Grouped Bar Chart</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="timemap" id="' + region + '_timeuse_id" visual="t" type="checkbox"   value="">Time Use Map</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="radar" id="' + region + '_radar_id" visual="r" type="checkbox"  value="">Radar Charts</label>');
+           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="sunburst" id="' + region + '_sunburst_id" visual="s" type="checkbox"   value="">Sunburst Map</label>');
+
+
+           for (var obj in visualizations) {
+               $('#' + region + '_' + obj.toLowerCase() + "_id").prop("checked", visualizations[obj]);
+           }
+       }
 	</script>
 </head>
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
-			<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img width="40" height="17" src="img/arc_logo.png"></a> <a class="navbar-brand" href="#">ABMVIZ</a> </div>
+			<a id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img id="logo_id" style='max-height:25px;' width="" height="auto" src=""></a> <a class="navbar-brand" id="title_id" href="#">.</a> </div>
 	</nav>
-	<div style="margin:5em;">
-		<h3>Please select a scenario for visualization</h3>
-	  <ul id="scenarios"> </ul>
+	<div id="scenarios" style="margin:5em;">
+ <div id="novizalert" class="alert alert-danger" style="display:none">Please select at least one visualization to display</div>
+        <h3><p>Please select a scenario for visualization</p></h3>
+
+            <br/>
 	</div>
-	
+
+
+<script>
+    (function() {
+        $('#scenarios').on('click','a.scenariolink', function(event){
+
+            var regionDiv = $(this).parent().closest('div');
+        	var total = regionDiv.find('input[type=checkbox]:checked').length;
+        	var visuals = "";
+        	regionDiv.find('input[type=checkbox]').each(function(event){
+           		if($(this).is(':checked')){
+               		visuals += $(this).attr('visual');
+           		}
+        	});
+        	$("a.scenariolink").attr('href',function(i, h) {
+           		// console.log(h);
+				//return jQuery.query.set("visuals",visuals);
+            	h= h.slice(0,h.indexOf('&visuals'));
+            	return h +  "&visuals="+visuals;
+        	});
+            if(total ==0){
+                event.preventDefault();
+                event.stopPropagation();
+                $('#novizalert').show();
+            }else {
+
+            }
+        });
+    })();
+
+</script>
 </body>
 
 </html>
