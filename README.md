@@ -7,7 +7,7 @@ sunburst diagrams for visualizing trip mode shares, and animated bubble maps.  A
 pages which eliminates most of the administrative backend in traditional systems.  This improved deployment 
 strategy makes maintenance much easier for the modeling staff.
 
-ABMVIZ was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/)(ARC).  
+ABMVIZ was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/) (ARC).  
 
 # Adding New Region
 ABMVIZ supports configuration for multiple regions.  To setup ABMVIZ in your region, fork this repository
@@ -69,7 +69,7 @@ Each Data/Region folder needs the following:
 5. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
 
 # Example ARC Scripts Folder
-#These scripts convert the ARC model outputs to the input formats expected by the tool.  These are not used in anyway by the system.  
+These scripts convert the ARC model outputs to the input formats expected by the tool.  These are not used in anyway by the system.  
 1. convertWKTtoGEOJSON.R - R script to convert the old ABMVIZ wellknowntext format TAZ polygons to GeoJSON.  [Mapshaper](http://www.mapshaper.org) is a better alternative.
 4. BarChartAndMapExample.sql - SQL script to query the ABMVIZ DB to produce the bar chart and map visual demo data set
 5. TimeUseExample.sql - SQL script to query the ABMVIZ DB to produce the time use visual demo data set
@@ -100,7 +100,7 @@ To create the ARC demo data from SQL Server, do the following:
 1. Fork the repo to your GitHub account, for example https://github.com/atlregional
 2. Make changes, such as removing the other example regions
 3. Push the master branch to a branch called gh-pages
-4. Site address is http://<your_account>.github.io/ABMVIZ
+4. Site address is http://<your_account>.github.io/ABMVIZ, for example http://atlregional.github.io/ABMVIZ
 
 # Collborating on this Project
 1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
