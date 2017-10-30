@@ -101,3 +101,8 @@ To create the ARC demo data from SQL Server, do the following:
 2. Make changes, such as removing the other example regions
 3. Push the master branch to a branch called gh-pages
 4. Site address is http://<your_account>.github.io/ABMVIZ
+
+# Collborating on this Project
+1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
+2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
+3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
