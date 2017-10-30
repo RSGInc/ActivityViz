@@ -24,7 +24,7 @@ Each region supports data for multiple scenarios.  Do the following to add scena
 1. Add the scenario name to the scenarios.csv definition file in the region data folder
 2. Create a new folder in the region specific folder with the scenario name
 3. Copy in the data tables that supply the data for the visualizations, each with the following set of fields:
-  - BarChartAndMapData.csv: ZONE, COUNTY, <BAR LABEL>, QUANTITY  
+  - BarChartAndMapData.csv: ZONE, COUNTY, <BAR  LABEL>, QUANTITY  
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
   - 3DAnimatedMapData.csv: ZONE, PERIOD, QUANTITY
   - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
@@ -102,7 +102,7 @@ To create the ARC demo data from SQL Server, do the following:
 3. Push the master branch to a branch called gh-pages
 4. Site address is http://<your_account>.github.io/ABMVIZ, for example http://atlregional.github.io/ABMVIZ
 
-# Collborating on this Project
+# Collaborating on this Project
 1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
 2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
 3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
