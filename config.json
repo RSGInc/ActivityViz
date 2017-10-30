@@ -1,0 +1,13 @@
+{
+  "regions":{
+    "atlanta":{
+      "default":  false
+    },
+    "portland":{
+      "default":  true
+    },
+    "sandiego":{
+      "default":  true
+    }
+  }
+}
