@@ -1,7 +1,7 @@
 {
   "regions":{
     "atlanta":{
-      "default":  false
+      "default":  true
     },
     "portland":{
       "default":  true
