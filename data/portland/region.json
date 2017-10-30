@@ -1,0 +1,38 @@
+{
+  "Title":"Oregon Metro MCEVIZ",
+  "CountyFile":"metro_counties.json",
+  "ZoneFile":"taz2162ll.json",
+  "Icon":"oregon-metro2.ico",
+  "Logo":"oregon-metro.png",
+  "NavbarTitle":"MCEVIZ",
+  "LinkURL":"http://www.oregonmetro.gov/",
+  "CenterMap": [45.512794, -122.679565],
+  "FrontPageTitle":  "Oregon Metro",
+  "FrontPageGraphic":"oregon-metro_black.png",
+  "scenarios":{
+    "I205": "- I205 minus NoBuild"
+  },
+  "visualizations":{
+
+    "BarMap":true,
+    "GrpBar":true,
+    "TimeUse":false,
+    "Radar":true,
+    "3DMap":true,
+    "Sunburst":false
+},
+ "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
+   "ConvertAxesToPercent":false
+
+  },
+  "GroupedCharts":{
+    "NumberColsGrouped":2,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":false,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":true
+  }
+}
+

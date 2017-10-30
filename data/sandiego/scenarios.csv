@@ -1,0 +1,6 @@
+Scenario,Description,scenario_id
+BS2012, - Base year 2012 (default),123
+BS2015, - Base year 2015,127
+2020RC, - Revenue-Constrained Year 2020,130
+2035RC, - Revenue-Constrained Year 2035,133
+2050RC, - Revenue-Constrained Year 2050,132

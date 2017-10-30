@@ -1,0 +1,32 @@
+AXIS,CHART,2016,2017
+travel options,Low Income,439315,40259
+auto ownership,Low Income,23673,24555
+travel time,Low Income,2228593,220859
+trk travel time benefit,Low Income,90893,95855
+travel time reliability,Low Income,211301,315654
+travel options,Minority,260410,240410
+auto ownership,Minority,11425,15111
+travel time,Minority,1905608,21065412
+trk travel time benefit,Minority,63195,60169
+travel time reliability,Minority,195713,205713
+travel options,Low English Proficiency,23702,24444
+auto ownership,Low English Proficiency,1605,1800
+travel time,Low English Proficiency,340264,360000
+trk travel time benefit,Low English Proficiency,12241,10000
+travel time reliability,Low English Proficiency,34327,25000
+travel options,Child or Senior,811705,750000
+auto ownership,Child or Senior,21662,35000
+travel time,Child or Senior,6284961,7251000
+trk travel time benefit,Child or Senior,179498,180498
+travel time reliability,Child or Senior,694512,695512
+travel options,Everyone,1341830,2511236
+auto ownership,Everyone,69831,85000
+travel time,Everyone,12462517,12345678
+trk travel time benefit,Everyone,834686,750000
+travel time reliability,Everyone,1313755,1312546
+public health,Everyone,-1500000,-1300000
+auto operating cost,Everyone,-6887689,-7000000
+emissions,Everyone,-2181843,-3156451
+noise pollution,Everyone,-365282,-450258
+surface water pollution,Everyone,-398267,-300000
+safety,Everyone,809272,900000

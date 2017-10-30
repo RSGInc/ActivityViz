@@ -1,0 +1,56 @@
+BENEFIT,BENEFIT GROUP,COUNT,CHART
+travel options,Social Goods,439315,Low Income
+auto ownership,Economic Vitality,23673,Low Income
+travel time,Economic Vitality,2228593,Low Income
+trk travel time benefit,Economic Vitality,90893,Low Income
+travel time reliability,Economic Vitality,211301,Low Income
+public health,Social Goods,0,Low Income
+auto operating cost,Economic Vitality,0,Low Income
+emissions,Environmental Stewardship,0,Low Income
+noise pollution,Environmental Stewardship,0,Low Income
+surface water pollution,Environmental Stewardship,0,Low Income
+safety,Social Goods,0,Low Income
+travel options,Social Goods,260410,Minority
+auto ownership,Economic Vitality,11425,Minority
+travel time,Economic Vitality,1905608,Minority
+trk travel time benefit,Economic Vitality,63195,Minority
+travel time reliability,Economic Vitality,195713,Minority
+public health,Social Goods,0,Minority
+auto operating cost,Economic Vitality,0,Minority
+emissions,Environmental Stewardship,0,Minority
+noise pollution,Environmental Stewardship,0,Minority
+surface water pollution,Environmental Stewardship,0,Minority
+safety,Social Goods,0,Minority
+travel options,Social Goods,23702,Low English Proficiency
+auto ownership,Economic Vitality,1605,Low English Proficiency
+travel time,Economic Vitality,340264,Low English Proficiency
+trk travel time benefit,Economic Vitality,12241,Low English Proficiency
+travel time reliability,Economic Vitality,34327,Low English Proficiency
+public health,Social Goods,0,Low English Proficiency
+auto operating cost,Economic Vitality,0,Low English Proficiency
+emissions,Environmental Stewardship,0,Low English Proficiency
+noise pollution,Environmental Stewardship,0,Low English Proficiency
+surface water pollution,Environmental Stewardship,0,Low English Proficiency
+safety,Social Goods,0,Low English Proficiency
+travel options,Social Goods,811705,Child or Senior
+auto ownership,Economic Vitality,21662,Child or Senior
+travel time,Economic Vitality,6284961,Child or Senior
+trk travel time benefit,Economic Vitality,179498,Child or Senior
+travel time reliability,Economic Vitality,694512,Child or Senior
+public health,Social Goods,0,Child or Senior
+auto operating cost,Economic Vitality,0,Child or Senior
+emissions,Environmental Stewardship,0,Child or Senior
+noise pollution,Environmental Stewardship,0,Child or Senior
+surface water pollution,Environmental Stewardship,0,Child or Senior
+safety,Social Goods,0,Child or Senior
+travel options,Social Goods,1341830,Everyone
+auto ownership,Economic Vitality,69831,Everyone
+travel time,Economic Vitality,12462517,Everyone
+trk travel time benefit,Economic Vitality,834686,Everyone
+travel time reliability,Economic Vitality,1313755,Everyone
+public health,Social Goods,"-1,500,000",Everyone
+auto operating cost,Economic Vitality,"-6,887,689",Everyone
+emissions,Environmental Stewardship,"-2,181,843",Everyone
+noise pollution,Environmental Stewardship,"-365,282",Everyone
+surface water pollution,Environmental Stewardship,"-398,267",Everyone
+safety,Social Goods,"809,272",Everyone
