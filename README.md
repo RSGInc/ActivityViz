@@ -18,11 +18,10 @@ ABMVIZ HTML 5
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
 
 # Data Region folder
-1. scenarios.csv - Defines each scenario (i.e. model run) available to the user
-2. BS10 - Example scenario data folder with its name equal to its scenarios.csv entry
+2. BS10 - Example scenario data folder with its name equal to its region.json entry
 3. ZoneShape.GeoJSON - ARC TAZs geojson feature collection with the id property equal to the TAZ number
 4. cb_2015_us_county_500k GEORGIA.json - Counties from [Census](https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html); converted to json with [mapshaper](http://www.mapshaper.org)
-5. config.json - Region specific config file:
+5. region.json - Region specific config file:
     - Title: Title that shows up in tab of web page
     - CountyFile: Name of the file with the county data
     - ZoneFile: Name of the file with the zone data
@@ -30,10 +29,13 @@ ABMVIZ HTML 5
     - LinkURL: URL of the link that appears in navbar
     - CenterMap: Lat/Lng of the center point for the maps to use Example: '[33.75424,-84.384774]'
     - FrontPageTitle: Text to appear about region scenarions on front page
+    - FrontPageGraphic: Graphic to appear on front page next to title
     - visualizations: true/false flag for each visualization to set default value for visuals by region
+    - scenarios: List of scenarios and their descriptions. Example: "I205":"- I205 minus NoBuild" In this example I205 must correspond to a scenario folder within the region directory
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
-        - IndependentScale: Names of charts to separate into second scale and collection of axes
+        - IndependentScale: Names of charts to separate into separate independent scales and collection of axes
+        - ConvertAxesToPercent: true/false flag to indicate whether the values on the radar chart should be a % of max value or just the value
     - GroupedCharts: Grouped Bar Chart specific properties:
         - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
         - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts

@@ -34,6 +34,9 @@
     "ShowAsPercentByDefault":true,
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":false
+  },
+      "ThreeDMap":{
+    "ShowPeriodsAsDropdown":true
   }
 
 }

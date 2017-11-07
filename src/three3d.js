@@ -48,13 +48,14 @@ var three3d = (function three3dFunction() {
 	var zoneDataLayer;
 	var zoneGeoJSON;
 	var paletteRamps = d3.selectAll("#three3d .ramp");
-
+	var periodNames = [];
 	var ZONE_COLUMN = 0;
 	var PERIOD_COLUMN = 1;
 	var QUANTITY_COLUMN = 2;
 	var geoStatsObject;
 	var ZONE_FILE_LOC = "";
 	var CENTER_MAP = [];
+	var showPeriodsAsDropdown;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
 	//start off chain of initialization by reading in the data
 	if(showChartOnPage){
@@ -80,6 +81,11 @@ var three3d = (function three3dFunction() {
 				ZONE_FILE_LOC = val;
 			if(key =="CenterMap")
 				CENTER_MAP = val;
+			if(key=="ThreeDMap")
+				 $.each(val,function(opt,value){
+					 if(opt =="ShowPeriodsAsDropdown" )
+                        showPeriodsAsDropdown = value;
+                 })
 			});
 		});
 		d3.text("../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
@@ -132,6 +138,13 @@ var three3d = (function three3dFunction() {
 				return quantity;
 			}).map(csv);
 			periods = Object.keys(periodData);
+			$('#three3d-period').empty();
+			var selectList =
+			periods.forEach(function(d,i){
+				var perList = $('#three3d-period');
+				perList.append($("<option />").val(d).text("Period " + d));
+			})
+            $('#three3d-period').val($("#three3d-period option:first").val());
 			geoStatsObject = new geostats(allData);
 			geoStatsObject.min = function () {
 				if (this._nodata())
@@ -161,13 +174,14 @@ var three3d = (function three3dFunction() {
 	function setDataSpecificDOM() {
 		"use strict";
 		$('.three3d-purpose').text(headers[2]);
-		if(periods.length ==1){
+		if(showPeriodsAsDropdown){
 			$('#three3d-current-period').hide();
 			$('#three3d-slider-time').hide();
 			$('#three3d-slider').hide();
 			$('#three3d-redraw').hide();
+			$('#three3d-period-id').show();
 		} else{
-
+			$('#three3d-period-id').hide();
 		}
 	} //end setDataSpecificDOM
 
@@ -389,6 +403,7 @@ var three3d = (function three3dFunction() {
 		function updateTimeSliderTooltip(value) {
 			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
 			$('#three3d-slider-time .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + timeString + '</div></div>');
+
 		}
 		$("#three3d-slider-time").slider({
 			range: false,
@@ -398,6 +413,7 @@ var three3d = (function three3dFunction() {
 			value: currentPeriod,
 			create: function (e, ui) {
 				updateTimeSliderTooltip(currentPeriod);
+				//$('#three3d-period').val(currentPeriod);
 			},
 			change: function (e, ui) {
 				currentPeriod = ui.value;
@@ -431,7 +447,7 @@ var three3d = (function three3dFunction() {
 			cycleGoing = false;
 			$("#three3d-stop-cycle-map").css("display", "none");
 			//after clicking button if there is only one period, do not reshow the cycle button
-			$("#three3d-start-cycle-map").css("display", periods.length ==1?"none":"inline");
+			$("#three3d-start-cycle-map").css("display", showPeriodsAsDropdown?"none":"inline");
 		});
 
 		var lastCycleStartTime;
@@ -449,7 +465,7 @@ var three3d = (function three3dFunction() {
 			if (cycleGoing) {
 				var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
 				var elapsedTimeSinceCycle = new Date().getTime() - lastCycleStartTime;
-				//console.log('elapsedTimeSinceCycle: ' + elapsedTimeSinceCycle);
+				console.log('elapsedTimeSinceCycle: ' + elapsedTimeSinceCycle);
 				setTimeout(cyclePeriod, Math.max(0, timeInterval - elapsedTimeSinceCycle));
 			} //end if cycleGoing
 		} //end cyclePeriod
@@ -554,7 +570,10 @@ var three3d = (function three3dFunction() {
 		} //end if !custom
 		redrawMap();
 	}; //end updateCurrentPeriodOrClassification
-
+$('#three3d-period').change( function(d){
+    $('#three3d-slider-time').slider('option','value',$(this).val())
+    }
+);
 	//return only the parts that need to be global
 	return {
 		//nothing neededyet
