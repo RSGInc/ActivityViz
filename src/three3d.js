@@ -175,10 +175,12 @@ var three3d = (function three3dFunction() {
 		"use strict";
 		$('.three3d-purpose').text(headers[2]);
 		if(showPeriodsAsDropdown){
-			$('#three3d-current-period').hide();
-			$('#three3d-slider-time').hide();
-			$('#three3d-slider').hide();
-			$('#three3d-redraw').hide();
+		    if(periods.length ==1){
+                $('#three3d-current-period').hide();
+                $('#three3d-slider-time').hide();
+                $('#three3d-slider').hide();
+                $('#three3d-redraw').hide();
+			}
 			$('#three3d-period-id').show();
 		} else{
 			$('#three3d-period-id').hide();
@@ -413,7 +415,8 @@ var three3d = (function three3dFunction() {
 			value: currentPeriod,
 			create: function (e, ui) {
 				updateTimeSliderTooltip(currentPeriod);
-				//$('#three3d-period').val(currentPeriod);
+				var exists =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+				$('#three3d-period').val(exists?1:currentPeriod);
 			},
 			change: function (e, ui) {
 				currentPeriod = ui.value;
