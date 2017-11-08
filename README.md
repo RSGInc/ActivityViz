@@ -13,12 +13,14 @@ ABMVIZ was initially funded by the [Atlanta Regional Commission](https://atlanta
 ABMVIZ supports configuration for multiple regions.  To setup ABMVIZ in your region, fork this repository
 to your GitHub account and then remove the existing configured region folders in the data folder.  Next, add your
 region by doing the following:
+
 1. Add the region name and properties in the config.json file.  Delete the other existing regions if desired.
-2. Add a new region folder in the data folder. For example: The region "atlanta" should have a 
-    folder named "atlanta" in the data folder.  
-3. The first region with the property default set to true will determine which graphics are shown on the main page.
+2. Add a new region folder in the data folder. For example: The region "atlanta" should have a folder named "atlanta" in the data folder.  
+3. The first region with the property "default" set to true will determine which graphics are shown on the main page.
+
 # Adding New Scenario Data
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
+
 1. Add the scenario name to the scenarios.csv definition file in the region data folder
 2. Create a new folder in the region specific folder with the scenario name
 3. Copy in the data tables that supply the data for the visualizations, each with the following set of fields:
@@ -52,7 +54,7 @@ Each Data/Region folder needs the following:
         - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
-        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
+        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts     
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods     
 2. scenarios.csv - Defines each scenario (i.e. model run) available to the user
