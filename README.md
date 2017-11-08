@@ -55,6 +55,8 @@ Each Data/Region folder needs the following:
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
         - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts     
+    - ThreeDMap: 3d Map specific properties
+        - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods     
 2. scenarios.csv - Defines each scenario (i.e. model run) available to the user
 3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
 4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).

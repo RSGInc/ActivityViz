@@ -101,13 +101,22 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="margin-bottom:1em;font-weight:bold">
+				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-classification-label">Classification</div>
 					<select class="form-control" id="three3d-classification">
                             <option value="quartiles" selected="selected">Quartiles</option>
                             <option value="even-interval">Even interval</option>
                             <option value="custom">Custom</option>
                         </select>
+				</div><div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
+					<div id="three3d-period-id">
+					<div id="three3d-period-label">Period Selection</div>
+					<select class="form-control" id="three3d-period">
+                            <option value="quartiles" selected="selected">Quartiles</option>
+                            <option value="even-interval">Even interval</option>
+                            <option value="custom">Custom</option>
+                        </select>
+					</div>
 				</div>
 			</div>
 			<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
@@ -522,6 +531,7 @@
 					<li>The larger the area, the "better" that chart (activity center) does as compared to others</li>
 					<li>In addition to size, the intensity of the color increases with total area</li>
 					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
+                    <li>When multiple data sets are displayed, you can enable/disable one by clicking on the color box on the legend</li>
 				</ul>
 				<div id="radar-legend"></div>
 			</div>

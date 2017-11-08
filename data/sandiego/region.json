@@ -29,12 +29,16 @@
     "IndependentScale":[""],
    "ConvertAxesToPercent":true
   },
+
   "GroupedCharts":{
     "NumberColsGrouped":1,
     "SwapLegendByDefault":true,
     "ShowAsPercentByDefault":false,
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":false
+  },
+      "ThreeDMap":{
+    "ShowPeriodsAsDropdown":false
   }
 }
 
