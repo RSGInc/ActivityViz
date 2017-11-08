@@ -56,6 +56,7 @@ var three3d = (function three3dFunction() {
 	var ZONE_FILE_LOC = "";
 	var CENTER_MAP = [];
 	var showPeriodsAsDropdown;
+	var DataHasPeriods;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
 	//start off chain of initialization by reading in the data
 	if(showChartOnPage){
@@ -85,6 +86,8 @@ var three3d = (function three3dFunction() {
 				 $.each(val,function(opt,value){
 					 if(opt =="ShowPeriodsAsDropdown" )
                         showPeriodsAsDropdown = value;
+					 if(opt =="DataHasPeriods")
+					 	DataHasPeriods = value;
                  })
 			});
 		});
@@ -106,8 +109,13 @@ var three3d = (function three3dFunction() {
                 if($.inArray(periodName, periodNames) === -1) {
                     periodNames.push(periodName);
                 }
-
-				var period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
+                    var period;
+                    if(DataHasPeriods){
+                        period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
+                    }
+				    else {
+                        period = d[PERIOD_COLUMN] = $.inArray(d[PERIOD_COLUMN],periodNames)+1;
+                    }
 
 				var zone = d[ZONE_COLUMN] = +d[ZONE_COLUMN];
 				if (zoneData[zone] == undefined) {
@@ -147,11 +155,13 @@ var three3d = (function three3dFunction() {
 
 			periods = Object.keys(periodData);
 			$('#three3d-period').empty();
+
 			var selectList =
 			periodNames.forEach(function(d,i){
 				var perList = $('#three3d-period');
 				perList.append($("<option />").val(i+1).text("" + d));
 			})
+
             $('#three3d-period').val($("#three3d-period option:first").val());
 			geoStatsObject = new geostats(allData);
 			geoStatsObject.min = function () {
@@ -183,11 +193,12 @@ var three3d = (function three3dFunction() {
 		"use strict";
 		$('.three3d-purpose').text(headers[2]);
 		if(showPeriodsAsDropdown){
-		    if(periods.length ==1){
+		    if(DataHasPeriods== false){
                 $('#three3d-current-period').hide();
                 $('#three3d-slider-time').hide();
                 $('#three3d-slider').hide();
                 $('#three3d-redraw').hide();
+                $("#three3d-start-cycle-map").hide();
 			}
 			$('#three3d-period-id').show();
 		} else{
@@ -415,31 +426,36 @@ var three3d = (function three3dFunction() {
 			$('#three3d-slider-time .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + timeString + '</div></div>');
 
 		}
-        var exists =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+   var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
 		$("#three3d-slider-time").slider({
 			range: false,
 			min: 1,
 			max: periods.length,
 			step: 1,
-			value: currentPeriod,
+			value: doesntexist?1:currentPeriod,
 			create: function (e, ui) {
-				updateTimeSliderTooltip(currentPeriod);
 
-				$('#three3d-period').val(exists?1:currentPeriod);
+                var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+                updateTimeSliderTooltip(doesntexist?1:currentPeriod);
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			},
 			change: function (e, ui) {
 				currentPeriod = ui.value;
 				updateTimeSliderTooltip(currentPeriod);
 				updateCurrentPeriodOrClassification();
-				$('#three3d-period').val(exists?1:currentPeriod);
+				 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			},
 			slide: function (e, ui) {
 				currentPeriod = ui.value;
 				updateTimeSliderTooltip(currentPeriod);
 				updateCurrentPeriodOrClassification();
-				$('#three3d-period').val(exists?1:currentPeriod);
+				 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			}
 		});
+		 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+		 $('#three3d-slider-time').slider('option','value',doesntexist?1:currentPeriod);
 		var colorRamps = paletteRamps.on('click', function (d, i) {
 			setColorPalette(i);
 			updateColors($("#three3d-slider").slider("values"));
@@ -461,7 +477,7 @@ var three3d = (function three3dFunction() {
 			cycleGoing = false;
 			$("#three3d-stop-cycle-map").css("display", "none");
 			//after clicking button if there is only one period, do not reshow the cycle button
-			$("#three3d-start-cycle-map").css("display", periods.length === 1?"none":"inline");
+			$("#three3d-start-cycle-map").css("display", DataHasPeriods==false?"none":"inline");
 		});
 
 		var lastCycleStartTime;

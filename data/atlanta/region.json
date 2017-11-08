@@ -35,8 +35,9 @@
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":false
   },
-      "ThreeDMap":{
-    "ShowPeriodsAsDropdown":true
+  "ThreeDMap":{
+    "ShowPeriodsAsDropdown":false,
+    "DataHasPeriods":true
   }
 
 }
