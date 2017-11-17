@@ -77,42 +77,43 @@ var three3d = (function three3dFunction() {
 
 function getTheConfigFile(callback){
 
-	    $.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"region.json",function(data){
-		$.each(data, function(key,val){
-			if(key =="ZoneFile") {
-			  var zonefiles  = val;
-			    if(Array.isArray(zonefiles)) {
-			        $('#three3d-map').empty();
-			        var perList = $('#three3d-geography');
-			         perList.empty();
-			        var selectList =
-			        zonefiles.forEach(function(d,i){
-				        perList.append($("<option />").val(i).text(d));
-			        });
+	    $.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"region.json",function(data) {
+            var zonefiles;
+            $.each(data, function (key, val) {
+                if (key == "ZoneFile") {
+                    zonefiles = val;
 
-
-                        // $('#three3d-geography').val($("#three3d-geography option:first").val());
-
-
-                     ZONE_FILE_LOC = $('#three3d-geography option:selected').text();
-
-			   } else {
-			        ZONE_FILE_LOC = val;
-			        $('#three3d-geography-label').parent().closest('div').hide();
                 }
+                if (key == "CenterMap") {
+                    CENTER_MAP = val;
+                }
+                if (key == "ThreeDMap") {
+                    $.each(val, function (opt, value) {
+                        if (opt == "ShowPeriodsAsDropdown")
+                            showPeriodsAsDropdown = value;
+                        if (opt == "DataHasPeriods")
+                            DataHasPeriods = value;
+                        if (opt == "ZoneFile") {
+                            zonefiles = value;
+                        }
+                    })
+                }
+            });
+            if (Array.isArray(zonefiles)) {
+                $('#three3d-map').empty();
+                var perList = $('#three3d-geography');
+                perList.empty();
+                var selectList =
+                    zonefiles.forEach(function (d, i) {
+                        perList.append($("<option />").val(i).text(d));
+                    });
+                // $('#three3d-geography').val($("#three3d-geography option:first").val());
+                ZONE_FILE_LOC = $('#three3d-geography option:selected').text();
+            } else {
+                ZONE_FILE_LOC = zonefiles;
+                $('#three3d-geography-label').parent().closest('div').hide();
             }
-			if(key =="CenterMap"){
-				CENTER_MAP = val; }
-			if(key=="ThreeDMap") {
-                $.each(val, function (opt, value) {
-                    if (opt == "ShowPeriodsAsDropdown")
-                        showPeriodsAsDropdown = value;
-                    if (opt == "DataHasPeriods")
-                        DataHasPeriods = value;
-                })
-            }
-			});
-		});
+        });
 	  callback();
 }
 	function readInData(callback) {
