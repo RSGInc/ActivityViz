@@ -1,4 +1,15 @@
-BENEFIT,BENEFIT GROUP,COUNT,CHART
+BENEFIT,BENEFIT GROUP,BENEFIT VALUE ($),CHART
+travel options,Social Goods,1341830,Everyone
+auto ownership,Economic Vitality,69831,Everyone
+travel time,Economic Vitality,12462517,Everyone
+trk travel time benefit,Economic Vitality,834686,Everyone
+travel time reliability,Economic Vitality,1313755,Everyone
+public health,Social Goods,-1500000,Everyone
+auto operating cost,Economic Vitality,-6887689,Everyone
+emissions,Environmental Stewardship,-2181843,Everyone
+noise pollution,Environmental Stewardship,-365282,Everyone
+surface water pollution,Environmental Stewardship,-398267,Everyone
+safety,Social Goods,809272,Everyone
 travel options,Social Goods,439315,Low Income
 auto ownership,Economic Vitality,23673,Low Income
 travel time,Economic Vitality,2228593,Low Income
@@ -43,14 +54,3 @@ emissions,Environmental Stewardship,0,Child or Senior
 noise pollution,Environmental Stewardship,0,Child or Senior
 surface water pollution,Environmental Stewardship,0,Child or Senior
 safety,Social Goods,0,Child or Senior
-travel options,Social Goods,1341830,Everyone
-auto ownership,Economic Vitality,69831,Everyone
-travel time,Economic Vitality,12462517,Everyone
-trk travel time benefit,Economic Vitality,834686,Everyone
-travel time reliability,Economic Vitality,1313755,Everyone
-public health,Social Goods,-1500000,Everyone
-auto operating cost,Economic Vitality,-6887689,Everyone
-emissions,Environmental Stewardship,-2181843,Everyone
-noise pollution,Environmental Stewardship,-365282,Everyone
-surface water pollution,Environmental Stewardship,-398267,Everyone
-safety,Social Goods,809272,Everyone

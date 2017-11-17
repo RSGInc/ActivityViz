@@ -77,7 +77,23 @@ var barchart_and_map = (function () {
 		initializeMuchOfUI();
 	}; //end readInDataCallback
 	//start off chain of initialization by reading in the data	
-	readInData(readInDataCallback);
+
+	function getConfigSettings(callback) {
+        if (showChartOnPage) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
+                $.each(data, function (key, val) {
+                    if (key == "CountyFile")
+                        COUNTY_FILE = val;
+                    if (key == "ZoneFile")
+                        ZONE_FILE_LOC = val;
+                    if (key == "CenterMap")
+                        CENTER_LOC = val;
+                });
+            });
+            callback();
+        }
+    }
+	getConfigSettings(function(){readInData(readInDataCallback)});
 
 	function redrawMap() {
 		"use strict";
@@ -86,17 +102,7 @@ var barchart_and_map = (function () {
 
 	function readInData(callback) {
 		"use strict";
-		if(showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
-                $.each(data, function (key, val) {
-                    if (key == "CountyFile")
-                        COUNTY_FILE = val;
-                    if (key == "ZoneFile")
-                        ZONE_FILE_LOC = val;
-                    if(key =="CenterMap")
-                    	CENTER_LOC = val;
-                });
-            });
+
             d3.csv(url, function (error, data) {
                 "use strict";
                 if (error)
@@ -180,7 +186,7 @@ var barchart_and_map = (function () {
                 callback();
             });
             //end d3.csv
-        }
+
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
