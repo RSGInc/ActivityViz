@@ -23,6 +23,7 @@ var barchart = (function () {
 var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";
+        chartDataContainer=[];
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
                 $.each(data, function (key, val) {
