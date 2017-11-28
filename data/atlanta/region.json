@@ -33,10 +33,13 @@
     "SwapLegendByDefault":true,
     "ShowAsPercentByDefault":true,
     "ShowAsVerticalByDefault":false,
-    "StackAllChartsByDefault":false
+    "StackAllChartsByDefault":false,
+    "ChartWidthOverride": []
   },
-      "ThreeDMap":{
-    "ShowPeriodsAsDropdown":true
+  "ThreeDMap":{
+    "ShowPeriodsAsDropdown":false,
+    "DataHasPeriods":true,
+    "ZoneFile": []
   }
 
 }

@@ -14,7 +14,7 @@ var barchart = (function () {
     var showAsVertical;
     var chartSet;
     var stackChartsByDefault;
-
+    var ChartWidthOverride ;
     var chartSelector = "#grouped-barchart";
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
@@ -23,6 +23,7 @@ var barchart = (function () {
 var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";
+        chartDataContainer=[];
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
                 $.each(data, function (key, val) {
@@ -38,6 +39,9 @@ var chartDataContainer=[];
                                 showPercentages = value;
                             if(opt =="StackAllChartsByDefault"&& stackChartsByDefault == undefined)
                                 stackChartsByDefault = value;
+                            if (opt =="ChartWidthOverride" && ChartWidthOverride == undefined)
+                                if(value.length > 0)
+                                ChartWidthOverride = value;
                         })
 
                 });
@@ -134,8 +138,10 @@ var chartDataContainer=[];
 
         function readInDataCallback() {
 
-            chartDataContainer.forEach(function (chart) {
+            chartDataContainer.forEach(function (chart,i) {
                 var widthOfEachCol = 12 / numberOfCols;
+                if(ChartWidthOverride != undefined && ChartWidthOverride[i] != undefined)
+                    widthOfEachCol = ChartWidthOverride[i];
                  d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
                     .append('div').attr('id', chart.chartName+"_bar").attr('class','col-xs-'+widthOfEachCol).append("div").attr("class","barcharttitle").text(

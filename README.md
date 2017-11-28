@@ -44,20 +44,25 @@ Each Data/Region folder needs the following:
     - NavbarTitle: Abbreviated name to appear in the navbar
     - LinkURL: URL of the link that appears in navbar
     - CenterMap: Lat/Lng of the center point for the maps to use
+    - scenarios: Defines each scenario (i.e. model run) available to the user
     - FrontPageTitle: Text to appear about region scenarions on front page
-    - visualizations: true/false flag for each visualization to set default value for visuals by region
+    - visualizations: true/false flag for each visualization to set default value for visuals by region    
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
         - IndependentScale: Names of charts to separate into second scale and collection of axes
+        - ConvertAxesToPercent: true/false flag that will convert the radar charts to a percent of the highest value  
     - GroupedCharts: Grouped Bar Chart specific properties:
         - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
         - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
-        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts     
+        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
+        - ChartWidthOverride: array of values to allow you to individually set each chart's width     
     - ThreeDMap: 3d Map specific properties
-        - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods     
-2. scenarios.csv - Defines each scenario (i.e. model run) available to the user
+        - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
+        - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
+        - ZoneFile: an array of zone files to fill up a dropdown. Leave empty to hide the dropdown and use the zone file listed previously     
+
 3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
 4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
 5. cb_2015_us_county_500k GEORGIA.json - Example ARC counties.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
