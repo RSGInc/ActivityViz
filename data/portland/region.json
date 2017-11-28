@@ -21,8 +21,8 @@
     "Sunburst":false
 },
  "RadarCharts":{
-    "NumberColsRadar":4,
-    "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
+   "NumberColsRadar":4,
+   "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
    "ConvertAxesToPercent":false
 
   },

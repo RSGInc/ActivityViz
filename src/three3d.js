@@ -94,12 +94,13 @@ function getTheConfigFile(callback){
                         if (opt == "DataHasPeriods")
                             DataHasPeriods = value;
                         if (opt == "ZoneFile") {
+                        	if(Array.isArray(value) && value.length >0)
                             zonefiles = value;
                         }
                     })
                 }
             });
-            if (Array.isArray(zonefiles)) {
+            if (Array.isArray(zonefiles) && zonefiles.length > 0) {
                 $('#three3d-map').empty();
                 var perList = $('#three3d-geography');
                 perList.empty();

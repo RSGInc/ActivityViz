@@ -40,6 +40,7 @@ var chartDataContainer=[];
                             if(opt =="StackAllChartsByDefault"&& stackChartsByDefault == undefined)
                                 stackChartsByDefault = value;
                             if (opt =="ChartWidthOverride" && ChartWidthOverride == undefined)
+                                if(value.length > 0)
                                 ChartWidthOverride = value;
                         })
 
