@@ -32,7 +32,9 @@
     "ShowAsPercentByDefault":false,
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":true,
-    "ChartWidthOverride": [12,6,6,6,6]
+    "ChartWidthOverride": [12,6,6,6,6],
+    "IndependentScale": ["Everyone"]
+
   },
     "ThreeDMap":{
     "ShowPeriodsAsDropdown":true,

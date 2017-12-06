@@ -29,7 +29,8 @@ function grouped_barchart (id, data,options) {
 	var showPercentages = options.showPercentages;
 	var showAsVertical = options.showAsVertical;
 	var showAsGrouped = options.showAsGrped;
-
+    var maxVal = options.maxVal;
+    var minVal = options.minVal;
 	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
@@ -132,12 +133,14 @@ function grouped_barchart (id, data,options) {
 	}; //end change currentMainGroup
 	function createEmptyChart() {
 
+
 		nv.addGraph({
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
 					var nvd3Chart = showAsVertical ? nv.models.multiBarChart() : nv.models.multiBarHorizontalChart();
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+
 					nvd3Chart.x(function (d, i) {
 						return d.label
 					}).y(function (d) {
@@ -152,11 +155,16 @@ function grouped_barchart (id, data,options) {
 						top: marginTop,
 						bottom: marginBottom
 					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(true);
+
+                    if(maxVal != 0 && !showPercentages) {
+					nvd3Chart.yDomain( [minVal,maxVal]);
+                    }
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-100:0);
 					//this is actually for xAxis since basically a sideways column chart
 					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?0:marginLeft - 100);
 					//this is actually for yAxis
+
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
