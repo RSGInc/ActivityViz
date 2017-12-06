@@ -57,7 +57,7 @@ Each Data/Region folder needs the following:
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
         - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
-        - ChartWidthOverride: array of values to allow you to individually set each chart's width     
+        - ChartWidthOverride: array of values to allow you to individually set each chart's width 
         - IndependentScale: array of values to set which charts should have their own scale. When this entry is present the charts not named will share a scale
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
