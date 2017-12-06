@@ -15,11 +15,13 @@ var barchart = (function () {
     var chartSet;
     var stackChartsByDefault;
     var ChartWidthOverride ;
+    var defaultMax = 0;
     var chartSelector = "#grouped-barchart";
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
     //CONFIG VARIABLES
     var numberOfCols ;
+    var independentScale;
 var chartDataContainer=[];
     function createGrouped(callback) {
         "use strict";
@@ -31,6 +33,8 @@ var chartDataContainer=[];
                         $.each(val,function(opt,value){
                             if(opt =="NumberColsGrouped" && numberOfCols == undefined)
                                 numberOfCols = value;
+                            if(opt=="IndependentScale")
+                                independentScale = value;
                             if(opt =="SwapLegendByDefault"&& pivotData == undefined)
                                 pivotData = value;
                             if(opt =="ShowAsVerticalByDefault"&& showAsVertical == undefined)
@@ -77,6 +81,40 @@ var chartDataContainer=[];
                 chartSet = new Set();
                 //note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
                 var totalsForEachMainGroup = {};
+                var totalsForIndependentGroups = {};
+
+                var chartTotals =  d3.nest().key(function (d) {
+                    return d[chartColumn].replace(/\s+/g, '');
+                }).key(function (d) {
+
+                    //change quantity to an int for convenience right off the bat
+                    d[quantityColumn] = parseInt(d[quantityColumn]);
+                         var subGroupName =d[mainGroupColumn];
+
+                    return subGroupName;
+                }).rollup(function (objectArray) {
+                    var oneRow = objectArray[0];
+                    return { totalpos: d3.sum(objectArray, function(e) { if(e[quantityColumn] >0) return e[quantityColumn]; }),
+                                totalneg: d3.sum(objectArray, function(e) {  if(e[quantityColumn] <0) return e[quantityColumn]; }),
+                                min: d3.min(objectArray, function(e) { return e[quantityColumn]; }),
+                                max: d3.max(objectArray, function(e) { return e[quantityColumn]; })
+                            }
+                }).map(data);
+
+                var findMax = [];
+                     findMax =  Object.keys(chartTotals).map(function(key){
+                                var totalpos = Object.keys(chartTotals[key]).map(function(x){
+                                return chartTotals[key][x].totalpos;
+                            });
+                            var totalneg = Object.keys(chartTotals[key]).map(function(x){
+                                return chartTotals[key][x].totalneg;
+                            })
+                        return {
+                            chart: key,
+                            maxpos: Math.max.apply(null,totalpos),
+                            minneg: Math.min.apply(null,totalneg)
+                        } ;
+                     });
                 var rawChartData = d3.nest().key(function (d) {
                     chartSet.add(d[chartColumn].replace(/\s+/g, ''));
                     return d[chartColumn].replace(/\s+/g, '');
@@ -88,11 +126,11 @@ var chartDataContainer=[];
                     return subGroupName;
                 }).key(function (d) {
                     var mainGroupName = d[mainGroupColumn];
-                    if (!mainGroupSet.has(mainGroupName)) {
-                        mainGroupSet.add(mainGroupName);
-                        totalsForEachMainGroup[mainGroupName] = 0;
-                    }
-                    totalsForEachMainGroup[mainGroupName] += d[quantityColumn];
+                        if(!mainGroupSet.has(mainGroupName)){
+                            mainGroupSet.add(mainGroupName);
+                            totalsForEachMainGroup[mainGroupName] = 0;
+                        }
+                        totalsForEachMainGroup[mainGroupName] += d[quantityColumn];
                     return mainGroupName;
                 }).rollup(function (objectArray) {
                     var oneRow = objectArray[0];
@@ -115,17 +153,23 @@ var chartDataContainer=[];
                             if (mainGroupQuantity == undefined) {
                                 mainGroupQuantity = 0;
                             }
+
                             newSubGroupObject.values.push({
                                 label: mainGroupName,
                                 value: mainGroupQuantity,
-                                percentage: mainGroupQuantity / totalsForEachMainGroup[mainGroupName]
+                                percentage: mainGroupQuantity / totalsForEachMainGroup[mainGroupName],
+                                groupmax:  totalsForEachMainGroup[mainGroupName]
                             });
                         });
                         //end mainGroups foreach
                     });//end subGroupSet forEach
+
+
                     var completeChart = {
                         chartName: chartName,
-                        data: chartData
+                        data: chartData,
+                        maxVal: $.grep(findMax,function(e){  return e.chart === chartName })[0].maxpos,
+                        minVal: $.grep(findMax,function(e){  return e.chart === chartName })[0].minneg,
                     };
                     chartDataContainer.push(completeChart);
                 }); //end chartSet forEach
@@ -137,6 +181,18 @@ var chartDataContainer=[];
         }
 
         function readInDataCallback() {
+            var getMax = 0;
+            var getMin = 0;
+              chartDataContainer.forEach(function(chart){
+                    if($.inArray(chart.chartName,independentScale)==-1 ) {
+                        getMax = Math.max(getMax,chart.maxVal);
+                        getMin = Math.min(getMin,chart.minVal);
+                    }
+              });
+
+
+
+
 
             chartDataContainer.forEach(function (chart,i) {
                 var widthOfEachCol = 12 / numberOfCols;
@@ -160,7 +216,9 @@ var chartDataContainer=[];
                     mainGrpCol: mainGroupColumn,
                     quantCol: quantityColumn,
                     subGrpCol: subGroupColumn,
-                    showAsGrped: stackChartsByDefault
+                    showAsGrped: stackChartsByDefault,
+                    maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
+                    minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
                 };
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
@@ -178,14 +236,14 @@ var chartDataContainer=[];
 		$("#grouped-barchart-pivot-axes").off().click(function () {
 			console.log("changing pivotData from " + pivotData + " to " + !pivotData);
 			pivotData = !pivotData;
-			//klugey -- destroy everything and re-create.
+
 			$(chartSelector).empty();
 			createGrouped();
 		});
 		$("#grouped-barchart-toggle-percentage").off().click(function () {
 			console.log("changing showPercentages from " + showPercentages + " to " + !showPercentages);
 			showPercentages = !showPercentages;
-			//klugey -- destroy everything and re-create.
+
 			$(chartSelector).empty();
 			createGrouped();
 		});
