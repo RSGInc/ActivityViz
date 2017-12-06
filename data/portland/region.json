@@ -16,7 +16,7 @@
     "GrpBar":true,
     "BarMap":true,
     "TimeUse":false,
-    "Radar":true,
+    "Radar":false,
     "3DMap":true,
     "Sunburst":false
 },
@@ -32,12 +32,14 @@
     "ShowAsPercentByDefault":false,
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":true,
-    "ChartWidthOverride": [12,6,6,6,6]
+    "ChartWidthOverride": [12,6,6,6,6],
+    "IndependentScale": ["Everyone"]
+
   },
     "ThreeDMap":{
     "ShowPeriodsAsDropdown":true,
     "DataHasPeriods":false,
-    "ZoneFile": ["taz2162ll.json","taz2162ll_2.json"]
+    "ZoneFile": []
   }
 }
 
