@@ -16,7 +16,7 @@
     "GrpBar":true,
     "BarMap":true,
     "TimeUse":false,
-    "Radar":true,
+    "Radar":false,
     "3DMap":true,
     "Sunburst":false
 },
@@ -39,7 +39,7 @@
     "ThreeDMap":{
     "ShowPeriodsAsDropdown":true,
     "DataHasPeriods":false,
-    "ZoneFile": ["taz2162ll.json","taz2162ll_2.json"]
+    "ZoneFile": []
   }
 }
 
