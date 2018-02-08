@@ -54,6 +54,11 @@ var barchart_and_map = (function () {
 	var barsWrapRectId = "mode-share-by-county-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
+		var zonefilters = {} ;
+	var ZONE_FILTER_LOC="";
+	var zoneFilterData;
+	 var zonefiles;
+	 var zoneheaders=[];
 	var circleStyle = {
 		"stroke": false,
 		"fillColor": "set by updateBubbles",
@@ -77,6 +82,13 @@ var barchart_and_map = (function () {
 		initializeMuchOfUI();
 	}; //end readInDataCallback
 	//start off chain of initialization by reading in the data	
+	getConfigSettings(  function(){
+		readInFilterData(function() {
+            readInData(function () {
+                readInDataCallback();
+            })
+        })});
+
 
 	function getConfigSettings(callback) {
         if (showChartOnPage) {
@@ -88,17 +100,56 @@ var barchart_and_map = (function () {
                         ZONE_FILE_LOC = val;
                     if (key == "CenterMap")
                         CENTER_LOC = val;
+                    if (key == "GrpMap") {
+                    $.each(val, function (opt, value) {
+                        if (opt == "ZoneFilterFile") {
+                            ZONE_FILTER_LOC = value;
+                        }
+                         if (opt == "ZoneFilters") {
+                            $.each(value,function(filtercolumn,filtername){
+                                zonefilters[filtercolumn] = filtername;
+                            })
+                        }
+                    })
+                }
                 });
+                callback();
             });
-            callback();
+            ZONE_FILTER_LOC = ZONE_FILTER_LOC;
+
         }
     }
-	getConfigSettings(function(){readInData(readInDataCallback)});
 
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
 	}
+
+	function readInFilterData(callback) {
+        if (Object.keys(zonefilters).length > 1 && ZONE_FILTER_LOC != '') {
+            var zonecsv;
+            d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/"+ZONE_FILTER_LOC, function (error, filterdata) {
+                zonecsv = d3.csv.parseRows(filterdata).slice(1);
+                zoneheaders = d3.csv.parseRows(filterdata)[0];
+                zoneFilterData = d3.nest().key(function (d) {
+                    return "filters";
+                }).map(zonecsv);
+                $('#mode-share-by-county-checkboxes').append("Geography<table><tr>");
+                for (var i = 0; i < zoneheaders.length; i++) {
+                    if (zoneheaders[i] in zonefilters) {
+                        $('#mode-share-by-county-checkboxes').append('<td style="padding:3px;"><label > <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')
+                    }
+                }
+                $('#mode-share-by-county-checkboxes').append("</tr></table>");
+            });
+            callback();
+
+        } else {
+        	$('#three3d-geography-label').hide();
+            callback();
+        }
+    }
+
 
 	function readInData(callback) {
 		"use strict";
@@ -126,12 +177,24 @@ var barchart_and_map = (function () {
                         var countyName = d[countyColumn];
                         var quantity = parseInt(d[quantityColumn]);
                         if (zoneData[zoneName] == undefined) {
-                            zoneData[zoneName] = {};
+                            zoneData[zoneName] = {
+                                FILTERS:{}
+                            };
                         }
                         zoneData[zoneName][modeName] = {
                             COUNTY: countyName,
-                            QUANTITY: quantity
+                            QUANTITY: quantity,
+
                         };
+                        //zoneData[zoneName] = {
+                         //   FILTERS:{}
+                        //};
+                        if (Object.keys(zonefilters).length > 1) {
+                            for (var i in zonefilters) {
+                                zoneData[zoneName].FILTERS[i] = zoneFilterData.filters[zoneName - 1][zoneheaders.indexOf(i)];
+                            }
+                        }
+
                         if (rawChartData[countyName] == undefined) {
                             rawChartData[countyName] = {};
                             countiesSet.add(countyName);
@@ -157,6 +220,7 @@ var barchart_and_map = (function () {
                 //end filtering and other data prep
                 modes = Object.keys(modeData);
                 data = null;
+                zoneFilterData = null;
                 //allow GC to reclaim memory
                 //need to run through rawChartData and put modes in order and insert ones that are missing
                 chartData = [];
@@ -376,6 +440,7 @@ var barchart_and_map = (function () {
 	}; //end createEmptyChart
 	function styleZoneGeoJSONLayer(feature) {
 		var color = naColor;
+        var isZoneVisible = true;
 		if (feature.zoneData != undefined) {
 			var zoneDataFeature = feature.zoneData[currentTripMode];
 			//possible that even if data for zone exists, could be missing this particular trip mode
@@ -395,13 +460,21 @@ var barchart_and_map = (function () {
 				}
 			}
 			//end if we have data for this trip mode
-		}
+              var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
+            var cnttrue = 0;
+            checkedfilters.each(function () {
+                var filtername = this.attributes["colname"];
+                cnttrue += parseInt(feature.zoneData.FILTERS[filtername.value]);
+                isZoneVisible = cnttrue > 0;
+            });
+        }
+
 		//end if we have data for this zone
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
 			//all SVG styles allowed
 			fillColor: color,
-			fillOpacity: 0.3,
+			fillOpacity: isZoneVisible?0.5:0.0,
 			weight: 1,
 			color: "darkGrey",
 			strokeOpacity: 0.05,
@@ -716,6 +789,9 @@ var barchart_and_map = (function () {
 		});
 		//initialize the map palette
 		setColorPalette(selectedColorRampIndex);
+		$("#mode-share-by-county-checkboxes").change(function(){
+			redrawMap();
+		});
 	}
 	//end initialize much of ui
 	//hex to rgb for handling transparancy

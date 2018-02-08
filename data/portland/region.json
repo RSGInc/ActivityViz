@@ -10,7 +10,8 @@
   "FrontPageTitle":  "Oregon Metro",
   "FrontPageGraphic":"oregon-metro_black.png",
   "scenarios":{
-    "I205": "- I205 minus NoBuild"
+    "I205": "- I205 minus NoBuild",
+    "testdata": "Testdata"
   },
   "visualizations":{
     "GrpBar":true,
@@ -33,13 +34,28 @@
     "ShowAsVerticalByDefault":false,
     "StackAllChartsByDefault":true,
     "ChartWidthOverride": [12,6,6,6,6],
-    "IndependentScale": ["Everyone"]
+    "IndependentScale": ["Everyone","everybody","coc_ext_age18or65"]
 
+  },
+  "GrpMap":{
+    "ZoneFilterFile": "cocs.csv",
+    "ZoneFilters": {
+      "minority_zone":"Minority",
+      "lowengpro_zone": "Low English",
+      "age18or65_zone": "Age 18 or 65",
+      "lowinc_zone": "Low Income"
+      }
   },
     "ThreeDMap":{
     "ShowPeriodsAsDropdown":true,
     "DataHasPeriods":false,
-    "ZoneFile": []
-  }
+    "ZoneFilterFile": "cocs.csv",
+    "ZoneFilters": {
+      "minority_zone":"Minority",
+      "lowengpro_zone": "Low English",
+      "age18or65_zone": "Age 18 or 65",
+      "lowinc_zone": "Low Income"
+      }
+    }
 }
 
