@@ -54,11 +54,12 @@ var barchart_and_map = (function () {
 	var barsWrapRectId = "mode-share-by-county-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
-		var zonefilters = {} ;
+	var zonefilters = {} ;
+	var zonefilterlabel = "";
 	var ZONE_FILTER_LOC="";
 	var zoneFilterData;
-	 var zonefiles;
-	 var zoneheaders=[];
+	var zonefiles;
+	var zoneheaders=[];
 	var circleStyle = {
 		"stroke": false,
 		"fillColor": "set by updateBubbles",
@@ -101,10 +102,14 @@ var barchart_and_map = (function () {
                     if (key == "CenterMap")
                         CENTER_LOC = val;
                     if (key == "GrpMap") {
+
                     $.each(val, function (opt, value) {
                         if (opt == "ZoneFilterFile") {
                             ZONE_FILTER_LOC = value;
                         }
+                         if (opt =="ZoneFilterLabel") {
+                             zonefilterlabel = value;
+                         }
                          if (opt == "ZoneFilters") {
                             $.each(value,function(filtercolumn,filtername){
                                 zonefilters[filtercolumn] = filtername;
@@ -134,7 +139,7 @@ var barchart_and_map = (function () {
                 zoneFilterData = d3.nest().key(function (d) {
                     return "filters";
                 }).map(zonecsv);
-                $('#mode-share-by-county-checkboxes').append("Geography<table><tr>");
+                $('#mode-share-by-county-checkboxes').append(zonefilterlabel+"<table><tr>");
                 for (var i = 0; i < zoneheaders.length; i++) {
                     if (zoneheaders[i] in zonefilters) {
                         $('#mode-share-by-county-checkboxes').append('<td style="padding:3px;"><label > <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')

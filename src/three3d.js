@@ -60,8 +60,9 @@ var three3d = (function three3dFunction() {
 	var zonefilters = {} ;
 	var ZONE_FILTER_LOC="";
 	var zoneFilterData;
-	 var zonefiles;
-	 var zoneheaders=[];
+	var zonefiles;
+	var zoneheaders=[];
+	var zonefilterlabel = "";
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
 	//start off chain of initialization by reading in the data
 
@@ -97,6 +98,8 @@ function getTheConfigFile(callback){
                     $.each(val, function (opt, value) {
                         if (opt == "ShowPeriodsAsDropdown")
                             showPeriodsAsDropdown = value;
+                        if (opt =="ZoneFilterLabel")
+                        	zonefilterlabel = value;
                         if (opt == "DataHasPeriods")
                             DataHasPeriods = value;
                         if (opt == "ZoneFilterFile") {
@@ -123,6 +126,7 @@ function getTheConfigFile(callback){
             d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/"+ZONE_FILTER_LOC, function (error, filterdata) {
                 zonecsv = d3.csv.parseRows(filterdata).slice(1);
                 zoneheaders = d3.csv.parseRows(filterdata)[0];
+                $('#three3d-filter-label').append(zonefilterlabel);
                 zoneFilterData = d3.nest().key(function (d) {
                     return "filters";
                 }).map(zonecsv);
@@ -137,7 +141,7 @@ function getTheConfigFile(callback){
             callback();
 
         } else {
-        	$('#three3d-geography-label').hide();
+        	$('#three3d-filter-label').hide();
             callback();
         }
     }

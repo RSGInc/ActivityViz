@@ -39,6 +39,7 @@
   },
   "GrpMap":{
     "ZoneFilterFile": "cocs.csv",
+    "ZoneFilterLabel": "Communities of Concern",
     "ZoneFilters": {
       "minority_zone":"Minority",
       "lowengpro_zone": "Low English",
@@ -49,6 +50,7 @@
     "ThreeDMap":{
     "ShowPeriodsAsDropdown":true,
     "DataHasPeriods":false,
+    "ZoneFilterLabel": "Communities of Concern",
     "ZoneFilterFile": "cocs.csv",
     "ZoneFilters": {
       "minority_zone":"Minority",

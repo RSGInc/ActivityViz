@@ -63,10 +63,12 @@ Each Data/Region folder needs the following:
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
-        - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns     
+        - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
+        - ZoneFilterLabel: a label to be shown above the list of zone filters     
     - GrpMap: Barchart that also displays with a map
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
+        - ZoneFilterLabel: a label to be shown above the list of zone filters
 3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
 4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
 5. cb_2015_us_county_500k GEORGIA.json - Example ARC counties.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
