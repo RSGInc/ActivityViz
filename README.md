@@ -57,13 +57,19 @@ Each Data/Region folder needs the following:
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
         - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
-        - ChartWidthOverride: array of values to allow you to individually set each chart's width 
-        - IndependentScale: array of values to set which charts should have their own scale. When this entry is present the charts not named will share a scale
+        - ChartWidthOverride: array of values to allow you to individually set each chart's width
+        - IndependentScale: array of values to set which charts should have their own scale. When this entry is present the charts not named will share a scale     
+
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
-        - ZoneFile: an array of zone files to fill up a dropdown. Leave empty to hide the dropdown and use the zone file listed previously     
-
+        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
+        - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
+        - ZoneFilterLabel: a label to be shown above the list of zone filters     
+    - GrpMap: Barchart that also displays with a map
+        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
+        - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
+        - ZoneFilterLabel: a label to be shown above the list of zone filters
 3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
 4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
 5. cb_2015_us_county_500k GEORGIA.json - Example ARC counties.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
@@ -74,7 +80,7 @@ Each Data/Region folder needs the following:
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
 4. TreeMapData.csv - demo data source for the tree map visual - trips by mode groups and mode
 5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
-5. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
+6. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
 
 # Example ARC Scripts Folder
 These scripts convert the ARC model outputs to the input formats expected by the tool.  These are not used in anyway by the system.  
