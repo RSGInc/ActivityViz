@@ -10,8 +10,7 @@
   "FrontPageTitle":  "Oregon Metro",
   "FrontPageGraphic":"oregon-metro_black.png",
   "scenarios":{
-    "I205": "- I205 minus NoBuild",
-    "testdata": "Testdata"
+    "I205": "- I205 minus NoBuild"
   },
   "visualizations":{
     "GrpBar":true,
