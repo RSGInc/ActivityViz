@@ -1,19 +1,25 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
 //global object grouped_barchart will contain functions and variables that must be accessible from elsewhere
-var grouped_barchart = (function () {
+function grouped_barchart (id, data,options) {
 	"use strict";
+	var chartDataContainer=[];
 	var chartData;
-	var subGroupColumn;
-	var mainGroupColumn;
-	var quantityColumn;
-	var mainGroupSet;
-	var subGroupSet;
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
+	var subGroupColumn = options.subGrpCol;
+	var mainGroupColumn= options.mainGrpCol;
+	var quantityColumn =options.quantCol;
+	var mainGroupSet = options.mainGrpSet;
+	var subGroupSet = options.subGrpSet;
+	var chartSet;
+	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
 	var chartSelector = "#grouped-barchart";
 	var svgChart;
 	var extNvd3Chart;
 	var minBarWidth = 2;
 	var minBarSpacing = 1;
+	var marginTopVert = 100;
+	var marginBottomVert = 60;
+	var marginLeftVert = 150;
+	var marginRightVert = 20;
 	var marginTop = 0;
 	var marginBottom = 50;
 	var marginLeft = 250;
@@ -21,92 +27,32 @@ var grouped_barchart = (function () {
 	var barsWrap;
 	var barsWrapRect;
 	var barsWrapRectHeight;
+	var barsWrapRectWidth;
 	var currentMainGroup;
-	var pivotData = false;
-	var showPercentages = false;
+	var pivotData = options.pivotData;
+	var showPercentages = options.showPercentages;
+	var showAsVertical = options.showAsVertical;
+	var showAsGrouped = options.showAsGrped;
+    var maxVal = options.maxVal;
+    var minVal = options.minVal;
+	var ROTATELABEL = options.rotateLabel;
+	var BARSPACING = showAsGrouped ? options.barSpacing:0.2;
 	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
-	function readInDataCallback() {
-		setDataSpecificDOM();
-		svgChart = d3.select(chartSelector);
-		createEmptyChart();
-		initializeMuchOfUI();
-	}; //end readInDataCallback
-	//start off chain of initialization by reading in the data	
-	readInData(readInDataCallback);
+    svgChart = d3.select(id);
+    //setDataSpecificDOM();
+	createEmptyChart();
+	//initializeMuchOfUI();
 
-	function readInData(callback) {
-		"use strict";
-		d3.csv(url, function (error, data) {
-			"use strict";
-			if (error)
-				throw error;
-			//expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
-			var headers = d3.keys(data[0]);
-			mainGroupColumn = headers[0];
-			subGroupColumn = headers[1];
-			if (pivotData) {
-				var temp = mainGroupColumn;
-				mainGroupColumn = subGroupColumn;
-				subGroupColumn = temp;
-			}
-			quantityColumn = headers[2];
-			mainGroupSet = new Set();
-			subGroupSet = new Set();
-			//note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
-			var totalsForEachMainGroup = {};
-			var rawChartData = d3.nest().key(function (d) {
-				//change quantity to an int for convenience right off the bat
-				d[quantityColumn] = parseInt(d[quantityColumn]);
-				var subGroupName = d[subGroupColumn];
-				subGroupSet.add(subGroupName);
-				return subGroupName;
-			}).key(function (d) {
-				var mainGroupName = d[mainGroupColumn];
-				if (!mainGroupSet.has(mainGroupName)) {
-					mainGroupSet.add(mainGroupName);
-					totalsForEachMainGroup[mainGroupName] = 0;
-				}
-				totalsForEachMainGroup[mainGroupName] += d[quantityColumn];
-				return mainGroupName;
-			}).rollup(function (objectArray) {
-				var oneRow = objectArray[0];
-				return oneRow[quantityColumn];
-			}).map(data);
-			//need to run through rawChartData and put subGroups in order and insert ones that are missing
-			chartData = [];
-			subGroupSet.forEach(function (subGroupName) {
-				var rawSubGroupObject = rawChartData[subGroupName];
-				var newSubGroupObject = {
-					key: subGroupName,
-					values: []
-				};
-				chartData.push(newSubGroupObject);
-				mainGroupSet.forEach(function (mainGroupName) {
-					var mainGroupQuantity = rawSubGroupObject[mainGroupName];
-					if (mainGroupQuantity == undefined) {
-						mainGroupQuantity = 0;
-					}
-					newSubGroupObject.values.push({
-						label: mainGroupName,
-						value: mainGroupQuantity,
-						percentage: mainGroupQuantity / totalsForEachMainGroup[mainGroupName]
-					});
-				});
-				//end mainGroups foreach
-			});
-			//end subGroupSet forEach
-			callback();
-		});
-		//end d3.csv
-	}; //end readInData
-	function setDataSpecificDOM() {
-		d3.selectAll(".grouped-barchart-main-group").html(mainGroupColumn);
-		d3.selectAll(".grouped-barchart-sub-group").html(subGroupColumn);
-		d3.selectAll(".grouped-barchart-sub-group-example").html(chartData[0].key);
-	}
+
+	//start off chain of initialization by reading in the data	
+
+
+
+
 	//end setDataSpecificDOM
 	function updateChart(callback) {
 		"use strict";
@@ -119,40 +65,54 @@ var grouped_barchart = (function () {
 		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
-			svgChart.datum(chartData).call(extNvd3Chart);
+		    svgChart.datum(data).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
 			//first check if
+
+            $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate('+ROTATELABEL+'deg)');
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
 			}
 			//if first time (enter() selection) create rect
 			//nv-barsWrap nvd3-svg
-			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x",showAsVertical?0: -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
 				//console.log('barsWrap mousemove');
-				var mouseY = d3.mouse(this)[1];
-				var numMainGroups = mainGroupSet.size;
-				var heightPerGroup = barsWrapRectHeight / numMainGroups;
-				var mainGroupIndex = Math.floor(mouseY / heightPerGroup);
-				var mainGroupObject = chartData[0].values[mainGroupIndex];
-				var newMainGroup = mainGroupObject.label;
-				changeCurrentMainGroup(newMainGroup);
+                if(showAsVertical){
+                    var mouseX = d3.mouse(this)[0];
+                    var numMainGroups = mainGroupSet.size;
+                    var widthPerGroup = barsWrapRectWidth / numMainGroups;
+                    var mainGroupIndex = Math.floor(mouseX / widthPerGroup);
+                    var mainGroupObject = data[0].values[mainGroupIndex];
+                    var newMainGroup = mainGroupObject.label;
+                    changeCurrentMainGroup(newMainGroup);
+                } else {
+                    var mouseY = d3.mouse(this)[1];
+                    var numMainGroups = mainGroupSet.size;
+                    var heightPerGroup = barsWrapRectHeight / numMainGroups;
+                    var mainGroupIndex = Math.floor(mouseY / heightPerGroup);
+                    var mainGroupObject = data[0].values[mainGroupIndex];
+                    var newMainGroup = mainGroupObject.label;
+                    changeCurrentMainGroup(newMainGroup);
+				}
 			});
 			setTimeout(updateChartMouseoverRect, 1000);
 		}, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		});
 		//end call to poll
-		callback();
-	}; //end updateChartNVD3
+        callback();
+
+	} //end updateChartNVD3
 	function updateChartMouseoverRect() {
-		var innerContainer = svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+		var innerContainer = showAsVertical?svgChart.select(".nvd3.nv-wrap.nv-multiBarWithLegend"):svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
 		var innerContainerNode = innerContainer.node();
-		var tryAgain = true;
-		if (innerContainerNode != undefined) {
+		var tryAgain = false;
+		if (innerContainerNode != undefined ) {
 			var bounds = innerContainerNode.getBBox();
 			var width = bounds.width + marginLeft;
 			barsWrapRectHeight = bounds.height;
+			barsWrapRectWidth = width-marginLeft;
 			if (barsWrapRectHeight > 0) {
 				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
 				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
@@ -171,6 +131,8 @@ var grouped_barchart = (function () {
 			console.log('changing from ' + currentMainGroup + " to " + newCurrentMainGroup);
 			currentMainGroup = newCurrentMainGroup;
 			var mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick text");
+			if(showAsVertical)
+			    mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick foreignObject p");
 			mainGroupLabels.classed("selected", function (d, i) {
 				var setClass = d == currentMainGroup;
 				return setClass;
@@ -180,12 +142,23 @@ var grouped_barchart = (function () {
 		//end if mainGroup is changing
 	}; //end change currentMainGroup
 	function createEmptyChart() {
+
+
 		nv.addGraph({
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
 					var nvd3Chart = nv.models.multiBarHorizontalChart();
+					var obj = $(id+' .nv-controlsWrap .nv-legend-symbol')[0];
+					var shwBarSpace =  $(obj).css('fill-opacity') == 0;
+					if(showAsVertical)
+					   nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace?0.2:BARSPACING).staggerLabels(true);
+					else
+					    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace?0.2:BARSPACING);
+					    //xRange([0,125])
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+
+
 					nvd3Chart.x(function (d, i) {
 						return d.label
 					}).y(function (d) {
@@ -195,16 +168,40 @@ var grouped_barchart = (function () {
 						//console.log('barColor i=' + i + ' columnsColorIndex=' + columnsColorIndex + ' columns=' + d.key + ' mainGroup=' + d.label + ' count=' + d.value + ' color=' + color);
 						return color;
 					}).duration(250).margin({
-						left: marginLeft,
-						right: marginRight,
-						top: marginTop,
-						bottom: marginBottom
-					}).id("grouped-barchart-multiBarHorizontalChart").stacked(false).showControls(true);
+						left: showAsVertical?marginLeftVert:marginLeft,
+						right: showAsVertical?marginRightVert:marginRight,
+						top: showAsVertical?marginTopVert:marginTop,
+						bottom: showAsVertical?marginBottomVert:marginBottom
+					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
+
+
+                    if(maxVal != 0 && !showPercentages) {
+					nvd3Chart.yDomain( [minVal,maxVal]);
+                    }
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
-					nvd3Chart.yAxis.axisLabel(quantityColumn);
+					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-100:0);
 					//this is actually for xAxis since basically a sideways column chart
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(marginLeft - 100);
+					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?10:marginLeft - 100);
+					if(showAsVertical) {
+					nvd3Chart.xAxis.tickFormat(function(d){
+                            if (typeof this != 'undefined') {
+                                 var el = d3.select(this);
+                                 var p = d3.select(this.parentNode);
+                                 p.append("foreignObject")
+                                        .attr('x', -55)
+                                        .attr("width", 110)
+                                        .attr("height", 200)
+                                        .append("xhtml:p")
+                                        .attr('style','word-wrap: break-word; text-align:center;padding-bottom:10px;')
+                                        .html(d);
+
+                                    el.remove();
+                                    return d;
+                            }
+ 					});
+									}
 					//this is actually for yAxis
+					//nvd3Chart.legend.width(900);
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -220,12 +217,14 @@ var grouped_barchart = (function () {
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
+				nvd3Chart.legend.margin({top:10,right:0,left:-100,bottom:20});
 					return nvd3Chart;
 				} //end generate
 				,
 			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
+
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called");
 					});
@@ -235,29 +234,8 @@ var grouped_barchart = (function () {
 	}; //end createEmptyChart
 
 	//WARNING -- this canbe called more than once because of PIVOT reload kluge
-	function initializeMuchOfUI() {
-		//use off() to remove existing click handleres
-		$("#grouped-barchart-stacked").off().click(function () {
-			extNvd3Chart.stacked(this.checked);
-			extNvd3Chart.update();
-		});
-		$("#grouped-barchart-pivot-axes").off().click(function () {
-			console.log("changing pivotData from " + pivotData + " to " + !pivotData);
-			pivotData = !pivotData;
-			//klugey -- destroy everything and re-create. 
-			$(chartSelector).empty();
-			readInData(readInDataCallback);
-		});
-		$("#grouped-barchart-toggle-percentage").off().click(function () {
-			console.log("changing showPercentages from " + showPercentages + " to " + !showPercentages);
-			showPercentages = !showPercentages;
-			//klugey -- destroy everything and re-create. 
-			$(chartSelector).empty();
-			readInData(readInDataCallback);
-		});
-
-	}; //end initializeMuchOfUI
+ //end initializeMuchOfUI
 	//return only the parts that need to be global
 	return {};
-}());
-//end encapsulating IIFE
+}
+

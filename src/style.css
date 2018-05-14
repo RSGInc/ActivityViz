@@ -2,6 +2,9 @@ body {
 	padding-top: 50px;
 }
 
+.dynamic-content{
+	display:none;
+}
 
 .right-border {
 	border-right: 1px dashed #333;

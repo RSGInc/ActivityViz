@@ -1,0 +1,23 @@
+PERSON GROUP,ACTIVITY PATTERN,Count,CHART
+Full-time Worker,Home,112491,Activity Pattern
+Full-time Worker,Mandatory,982948,Activity Pattern
+Full-time Worker,Non-Mandatory,131160,Activity Pattern
+Part-time Worker,Home,40464,Activity Pattern
+Part-time Worker,Mandatory,164726,Activity Pattern
+Part-time Worker,Non-Mandatory,68964,Activity Pattern
+Non-worker,Home,105449,Activity Pattern
+Non-worker,Non-Mandatory,312700,Activity Pattern
+Retired,Home,87043,Activity Pattern
+Retired,Non-Mandatory,242759,Activity Pattern
+College Student,Home,25595,Activity Pattern
+College Student,Mandatory,167878,Activity Pattern
+College Student,Non-Mandatory,57180,Activity Pattern
+Driving Age Student,Home,6772,Activity Pattern
+Driving Age Student,Mandatory,114909,Activity Pattern
+Driving Age Student,Non-Mandatory,3756,Activity Pattern
+Non-driving Student,Home,4275,Activity Pattern
+Non-driving Student,Mandatory,395044,Activity Pattern
+Non-driving Student,Non-Mandatory,8745,Activity Pattern
+Pre-school,Home,38527,Activity Pattern
+Pre-school,Mandatory,132699,Activity Pattern
+Pre-school,Non-Mandatory,99221,Activity Pattern

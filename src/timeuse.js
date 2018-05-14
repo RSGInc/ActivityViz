@@ -2,7 +2,7 @@
 //global object timeuse will contain functions and variables that must be accessible from elsewhere
 var timeuse = (function () {
 	"use strict";
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
+	var url = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
 	var svgSelector = "#timeuse-chart svg";
 	var svgElement = d3.select(svgSelector);
 	var extNvd3Chart;
@@ -13,7 +13,7 @@ var timeuse = (function () {
 	var legendGroups;
 	var chartData;
 	var chartStyle = 'expand';
-
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('t') > -1;
 	function getChartLeftMargin() {
 		return (chartStyle == 'expand') ? 50 : 80;
 	}
@@ -38,6 +38,7 @@ var timeuse = (function () {
 				if (error) throw error; //expected data should have columns similar to: PERSON_TYPE	PER	ORIG_PURPOSE	QUANTITY
 				var csv = d3.csv.parseRows(data).slice(1);
 				data = null; //allow memory to be GC'ed
+
 				var rolledUpMap = d3.nest().key(function (d) {
 					return d[0]; //group by PERSON_TYPE
 				}).key(function (d) {
@@ -248,11 +249,15 @@ var timeuse = (function () {
 			setPersonTypeClass();
 		}; //end drawLegend
 	}; //end createTimeUse
+	if(showChartOnPage ) {//&& $('#timeuse').is(':visible')===true ){
+        $('#timeuse').show();
+        console.log($('#timeuse').is(':visible'));
 	createTimeUse();
 	window.addEventListener("resize", function () {
 		console.log("Got resize event. Calling createTimeUse");
 		createTimeUse();
 	});
+	}
 	//return only the parts that need to be global
 	return {};
 }()); //end encapsulating IIFEE

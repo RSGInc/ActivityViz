@@ -1,0 +1,47 @@
+{
+  "Title":"SANDAG ABMVIZ",
+  "CountyFile":"CityShape.json",
+  "ZoneFile":"ZoneShape.GeoJSON",
+  "Icon":"",
+  "Logo":"logo_sandag.gif",
+  "NavbarTitle":"ABMVIZ",
+  "LinkURL":"http://www.sandag.org/",
+  "CenterMap": [32.715738, -117.161083],
+  "FrontPageTitle": "San Diego Association of Governments",
+  "FrontPageGraphic":"logo_sandag.gif",
+  "scenarios":{
+    "BS2012": "- Base year 2012 (default)",
+    "BS2015": "- Base year 2015,127",
+    "2020RC": "- Revenue-Constrained Year 2020",
+    "2035RC": "- Revenue-Constrained Year 2035",
+    "2050RC": "- Revenue-Constrained Year 2050"
+  },
+  "visualizations":{
+    "3DMap":true,
+    "BarMap":true,
+    "GrpBar":true,
+    "TimeUse":true,
+    "Radar":true,
+    "Sunburst":true
+  },
+  "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":[""],
+   "ConvertAxesToPercent":true
+  },
+
+  "GroupedCharts":{
+    "NumberColsGrouped":1,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":false,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":false,
+    "ChartWidthOverride": []
+  },
+  "ThreeDMap":{
+    "ShowPeriodsAsDropdown":false,
+    "DataHasPeriods":true,
+    "ZoneFile": []
+  }
+}
+

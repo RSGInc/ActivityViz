@@ -2,7 +2,7 @@
 //global object sunburst will contain functions and variables that must be accessible from elsewhere
 var sunburst = (function () {
 	"use strict";
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
+	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
 	//var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/visit-sequences.csv";
 	var legendBoxWidth = 150;
 	var legendDepthIndent = 10;
@@ -16,6 +16,7 @@ var sunburst = (function () {
 	var negativePrefix = "- ";
 	var originalNodeData;
 	var radius, x, y, svg, arc;
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('s') > -1;
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth,
@@ -29,21 +30,29 @@ var sunburst = (function () {
 
 	function createSunburst() {
 		//read in data and create sunburst when finished
+
 		if (json === null) {
 			d3.text(url, function (error, data) {
-				"use strict";
-				if (error) throw error; //expected data should have columns similar to: MAINGROUP,SUBGROUP,QUANTITY
-				var csv = d3.csv.parseRows(data);
-				var headers = csv[0];
-				var maingroupColumn = headers[0];
-				var subgroupColumn = headers[1];
-				var quantityColumn = headers[2];
-				d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
-				json = buildHierarchy(csv);
-				originalNodeData = createVisualization();
-				drawLegend(originalNodeData);
+                "use strict";
+                if (error) {
+                    throw error; //expected data should have columns similar to: MAINGROUP,SUBGROUP,QUANTITY
+                }
+                var csv = d3.csv.parseRows(data);
+                var headers = csv[0];
+                var maingroupColumn = headers[0];
+                var subgroupColumn = headers[1];
+                var quantityColumn = headers[2];
+                d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
 
-			}); //end d3.text
+                try {
+                    json = buildHierarchy(csv);
+                    originalNodeData = createVisualization();
+                    drawLegend(originalNodeData);
+                } catch (err) {
+                    if (json === null)
+                       $('#sunburst').hide();
+                }
+            }); //end d3.text
 		} else {
 			//if already exists don't need to read in and parse again
 			createVisualization();
@@ -401,11 +410,13 @@ var sunburst = (function () {
 			return root;
 		};
 	}; //end createSunburst
+	if(showChartOnPage){
 	createSunburst();
 	window.addEventListener("resize", function () {
 		console.log("Got resize event. Calling sunburst");
 		createSunburst();
 	});
+	}
 	//return only the parts that need to be global
 	return {};
 }()); //end encapsulating IIFE

@@ -26,11 +26,11 @@ var barchart_and_map = (function () {
 	var countyColumn;
 	var zoneColumn;
 	var modeColumn;
-	var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
+	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
 	var chartSelector = "#mode-share-by-county-chart";
 	var svgChart;
 	var extNvd3Chart;
-	var minBarWidth = 2;
+	var minBarWidth = 1;
 	var minBarSpacing = 1;
 	var marginTop = 0;
 	var marginBottom = 50;
@@ -54,11 +54,24 @@ var barchart_and_map = (function () {
 	var barsWrapRectId = "mode-share-by-county-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var paletteRamps = d3.selectAll("#mode-share-by-county .ramp");
+	var zonefilters = {} ;
+	var zonefilterlabel = "";
+	var ZONE_FILTER_LOC="";
+	var zoneFilterData;
+	var zonefiles;
+	var zoneheaders=[];
 	var circleStyle = {
 		"stroke": false,
 		"fillColor": "set by updateBubbles",
 		"fillOpacity": 1.0
 	};
+	//config file options
+	var COUNTY_FILE="";
+	var ZONE_FILE_LOC="";
+	var CENTER_LOC = [];
+	var ROTATELABEL = 0;
+	var BARSPACING = 0.2;
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
 	function readInDataCallback() {
@@ -70,99 +83,192 @@ var barchart_and_map = (function () {
 		updateCurrentTripModeOrClassification();
 		createEmptyChart();
 		initializeMuchOfUI();
+
 	}; //end readInDataCallback
 	//start off chain of initialization by reading in the data	
-	readInData(readInDataCallback);
+	getConfigSettings(  function(){
+		readInFilterData(function() {
+            readInData(function () {
+                readInDataCallback();
+            })
+        })});
+
+
+	function getConfigSettings(callback) {
+        if (showChartOnPage) {
+            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
+                $.each(data, function (key, val) {
+                    if (key == "CountyFile")
+                        COUNTY_FILE = val;
+                    if (key == "ZoneFile")
+                        ZONE_FILE_LOC = val;
+                    if (key == "CenterMap")
+                        CENTER_LOC = val;
+                    if (key == "GrpMap") {
+
+                    $.each(val, function (opt, value) {
+                        if (opt == "ZoneFilterFile") {
+                            ZONE_FILTER_LOC = value;
+                        }
+                         if (opt =="ZoneFilterLabel") {
+                             zonefilterlabel = value;
+                         }
+                         if (opt == "ZoneFilters") {
+                            $.each(value,function(filtercolumn,filtername){
+                                zonefilters[filtercolumn] = filtername;
+                            })
+                        }
+                        if(opt =="RotateLabels") {
+                        	ROTATELABEL = value;
+						}
+						if(opt =="BarSpacing") {
+                            BARSPACING = value;
+                        }
+                    })
+                }
+                });
+                callback();
+            });
+            ZONE_FILTER_LOC = ZONE_FILTER_LOC;
+
+        }
+    }
 
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
 	}
 
+	function readInFilterData(callback) {
+        if (Object.keys(zonefilters).length > 1 && ZONE_FILTER_LOC != '') {
+            var zonecsv;
+            d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/"+ZONE_FILTER_LOC, function (error, filterdata) {
+                zonecsv = d3.csv.parseRows(filterdata).slice(1);
+                zoneheaders = d3.csv.parseRows(filterdata)[0];
+                zoneFilterData = d3.nest().key(function (d) {
+                    return "filters";
+                }).map(zonecsv);
+                $('#mode-share-by-county-checkboxes').append(zonefilterlabel+"<table><tr>");
+                for (var i = 0; i < zoneheaders.length; i++) {
+                    if (zoneheaders[i] in zonefilters) {
+                        $('#mode-share-by-county-checkboxes').append('<td style="padding:3px;"><label > <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')
+                    }
+                }
+                $('#mode-share-by-county-checkboxes').append("</tr></table>");
+            });
+            callback();
+
+        } else {
+        	$('#three3d-geography-label').hide();
+            callback();
+        }
+    }
+
+
 	function readInData(callback) {
 		"use strict";
-		d3.csv(url, function (error, data) {
-			"use strict";
-			if (error)
-				throw error;
-			//expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
-			var headers = d3.keys(data[0]);
-			zoneColumn = headers[0];
-			countyColumn = headers[1];
-			modeColumn = headers[2];
-			quantityColumn = headers[3];
-			var rawChartData = new Map([]);
-			//run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
-			zoneData = {};
-			countiesSet = new Set();
-			data.forEach(function (d) {
-				var modeName = d[modeColumn];
-				var keepThisObject = modeName != "TOTAL";
-				if (keepThisObject) {
-					var zoneName = d[zoneColumn];
-					var countyName = d[countyColumn];
-					var quantity = parseInt(d[quantityColumn]);
-					if (zoneData[zoneName] == undefined) {
-						zoneData[zoneName] = {};
-					}
-					zoneData[zoneName][modeName] = {
-						COUNTY: countyName,
-						QUANTITY: quantity
-					};
-					if (rawChartData[countyName] == undefined) {
-						rawChartData[countyName] = {};
-						countiesSet.add(countyName);
-					}
-					if (rawChartData[countyName][modeName] == undefined) {
-						rawChartData[countyName][modeName] = 0;
-						//keep track of counts for each mode
-						//don't actually care about counts but this also implicitly keeps a list of all modes
-						//in the order they were encountered because properties are ordered
-						if (modeData[modeName] == undefined) {
-							modeData[modeName] = {
-								enabled: true,
-								serie: []
-							};
-						}
-					}
-					modeData[modeName].serie.push(quantity);
-					rawChartData[countyName][modeName] += quantity;
-				}
-				//end if keeping this object
-				return keepThisObject;
-			});
-			//end filtering and other data prep
-			modes = Object.keys(modeData);
-			data = null;
-			//allow GC to reclaim memory
-			//need to run through rawChartData and put modes in order and insert ones that are missing
-			chartData = [];
-			countiesSet.forEach(function (countyName) {
-				var rawCountyObject = rawChartData[countyName];
-				var newCountyObject = {
-					groupLabel: countyName,
-					subgroups: [],
-					enabled: true
-				};
-				chartData.push(newCountyObject);
-				modes.forEach(function (modeName) {
-					var countyModeTotalQuantity = rawCountyObject[modeName];
-					if (countyModeTotalQuantity == undefined) {
-						countyModeTotalQuantity = 0;
-					}
-					newCountyObject.subgroups.push({
-						subgroupLabel: modeName,
-						value: countyModeTotalQuantity
-					});
-				});
-				//end modes foreach
-			});
-			//end countiesSet forEach
-			rawChartData = null;
-			//allow GC to reclaim memory
-			callback();
-		});
-		//end d3.csv
+
+            d3.csv(url, function (error, data) {
+                "use strict";
+                if (error)
+                    throw error;
+
+                //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
+                var headers = d3.keys(data[0]);
+                zoneColumn = headers[0];
+                countyColumn = headers[1];
+                modeColumn = headers[2];
+                quantityColumn = headers[3];
+                var rawChartData = new Map([]);
+                //run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
+                zoneData = {};
+                countiesSet = new Set();
+                data.forEach(function (d) {
+                    var modeName = d[modeColumn];
+                    var keepThisObject = modeName != "TOTAL";
+                    if (keepThisObject) {
+                        var zoneName = d[zoneColumn];
+                        var countyName = d[countyColumn];
+                        var quantity = parseInt(d[quantityColumn]);
+                        if(countyName !="Total") {
+                            if (zoneData[zoneName] == undefined) {
+                                zoneData[zoneName] = {
+                                    FILTERS: {}
+                                };
+                            }
+                            zoneData[zoneName][modeName] = {
+                                COUNTY: countyName,
+                                QUANTITY: quantity,
+
+                            };
+                            //zoneData[zoneName] = {
+                            //   FILTERS:{}
+                            //};
+                            if (Object.keys(zonefilters).length > 1) {
+                                for (var i in zonefilters) {
+                                    zoneData[zoneName].FILTERS[i] = zoneFilterData.filters[zoneName - 1][zoneheaders.indexOf(i)];
+                                }
+                            }
+                        }
+                        if (rawChartData[countyName] == undefined) {
+                            rawChartData[countyName] = {};
+                            countiesSet.add(countyName);
+                        }
+                        if (rawChartData[countyName][modeName] == undefined) {
+                            rawChartData[countyName][modeName] = 0;
+                            //keep track of counts for each mode
+                            //don't actually care about counts but this also implicitly keeps a list of all modes
+                            //in the order they were encountered because properties are ordered
+                            if (modeData[modeName] == undefined) {
+                                modeData[modeName] = {
+                                    enabled: true,
+                                    serie: []
+                                };
+                            }
+                        }
+                        modeData[modeName].serie.push(quantity);
+                        rawChartData[countyName][modeName] += quantity;
+                    }
+                    //end if keeping this object
+                    return keepThisObject;
+                });
+                //end filtering and other data prep
+                modes = Object.keys(modeData);
+                data = null;
+                zoneFilterData = null;
+
+                //allow GC to reclaim memory
+                //need to run through rawChartData and put modes in order and insert ones that are missing
+                chartData = [];
+                countiesSet.forEach(function (countyName) {
+                    var rawCountyObject = rawChartData[countyName];
+                    var newCountyObject = {
+                        groupLabel: countyName,
+                        subgroups: [],
+                        enabled: true
+                    };
+                    chartData.push(newCountyObject);
+
+                    modes.forEach(function (modeName) {
+                        var countyModeTotalQuantity = rawCountyObject[modeName];
+                        if (countyModeTotalQuantity == undefined) {
+                            countyModeTotalQuantity = 0;
+                        }
+                        newCountyObject.subgroups.push({
+                            subgroupLabel: modeName,
+                            value: countyModeTotalQuantity
+                        });
+                    });
+                    //end modes foreach
+                });
+
+                //end countiesSet forEach
+                rawChartData = null;
+                //allow GC to reclaim memory
+                callback();
+            });
+            //end d3.csv
+
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
@@ -175,6 +281,7 @@ var barchart_and_map = (function () {
 		// 			$("#mode-share-by-county-chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
 		// 		});
 		// 		$("#mode-share-by-county-chart-selection").chosen();
+
 	}
 	//end setDataSpecificDOM
 	function updateChart(callback) {
@@ -220,6 +327,7 @@ var barchart_and_map = (function () {
 			svgChart.datum(hierarchicalData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
 			//first check if
+            $('#mode-share-by-county .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate('+ROTATELABEL+'deg)');
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
@@ -230,7 +338,7 @@ var barchart_and_map = (function () {
 				//console.log('barsWrap mousemove');
 				var mouseY = d3.mouse(this)[1];
 				var numCounties = enabledCounties.length;
-				var heightPerGroup = barsWrapRectHeight / numCounties;
+				var heightPerGroup = (barsWrapRectHeight / numCounties);
 				var countyIndex = Math.floor(mouseY / heightPerGroup);
 				var countyObject = enabledCounties[countyIndex];
 				var newCounty = countyObject.groupLabel;
@@ -253,7 +361,7 @@ var barchart_and_map = (function () {
 			barsWrapRectHeight = bounds.height;
 			if (barsWrapRectHeight > 0) {
 				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
-				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
+				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", 20);
 				tryAgain = false;
 			}
 		}
@@ -294,8 +402,15 @@ var barchart_and_map = (function () {
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
-					var nvd3Chart = nv.models.multiBarHorizontalChart();
+					var  nvd3Chart = nv.models.multiBarHorizontalChart();
+					if($("#mode-share-by-county-stacked").is(":checked")){
+					        nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(BARSPACING);
+                    } else {
+					    nvd3Chart = nv.models.multiBarHorizontalChart();
+                    }
+
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+
 					nvd3Chart.x(function (d, i) {
 						return d.label
 					}).y(function (d) {
@@ -315,6 +430,7 @@ var barchart_and_map = (function () {
 					//this is actually for xAxis since basically a sideways column chart
 					nvd3Chart.xAxis.axisLabel(countyColumn).axisLabelDistance(30);
 					//this is actually for yAxis
+
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -343,15 +459,18 @@ var barchart_and_map = (function () {
 			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
+
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called");
 					});
 				} //end callback function
 		});
 		//end nv.addGraph
+
 	}; //end createEmptyChart
 	function styleZoneGeoJSONLayer(feature) {
 		var color = naColor;
+        var isZoneVisible = true;
 		if (feature.zoneData != undefined) {
 			var zoneDataFeature = feature.zoneData[currentTripMode];
 			//possible that even if data for zone exists, could be missing this particular trip mode
@@ -371,13 +490,21 @@ var barchart_and_map = (function () {
 				}
 			}
 			//end if we have data for this trip mode
-		}
+              var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
+            var cnttrue = 0;
+            checkedfilters.each(function () {
+                var filtername = this.attributes["colname"];
+                cnttrue += parseInt(feature.zoneData.FILTERS[filtername.value]);
+                isZoneVisible = cnttrue > 0;
+            });
+        }
+
 		//end if we have data for this zone
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 		var returnStyle = {
 			//all SVG styles allowed
 			fillColor: color,
-			fillOpacity: 0.3,
+			fillOpacity: isZoneVisible?0.5:0.0,
 			weight: 1,
 			color: "darkGrey",
 			strokeOpacity: 0.05,
@@ -400,16 +527,21 @@ var barchart_and_map = (function () {
 	}
 	//end styleCountyGeoJSONLayer function
 	function createMap(callback) {
-		map = L.map("mode-share-by-county-map").setView([33.754525, -84.384774], 12);
+		//var latlngcenter = JSON.parse(CENTER_LOC);
+		//var lat=latlngcenter[0];
+		//var lng=latlngcenter[1];
+		map = L.map("mode-share-by-county-map").setView(CENTER_LOC, 12);
 		//centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
 			var zoomScale = map.getZoomScale();
 			console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
 		});
-		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ZONE_FILE_LOC, function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
+
+
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
 				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
 			}
@@ -447,13 +579,15 @@ var barchart_and_map = (function () {
 				opacity: 1.0
 			});
 			underlyingMapLayer.addTo(map);
-			$.getJSON("../data/cb_2015_us_county_500k_GEORGIA.json", function (countyTiles) {
+			$.getJSON("../data/"+ abmviz_utilities.GetURLParameter("region") +"/"+COUNTY_FILE, function (countyTiles) {
 				"use strict";
-				console.log("cb_2015_us_county_500k GEORGIA.json success");
+				console.log(COUNTY_FILE+" success");
 				//http://leafletjs.com/reference.html#tilelayer
 				countyLayer = L.geoJson(countyTiles, {
 					//keep only counties that we have data for
 					filter: function (feature) {
+					    console.log(feature.properties.NAME);
+					    console.log( countiesSet.has(feature.properties.NAME));
 						return countiesSet.has(feature.properties.NAME);
 					},
 					updateWhenIdle: true,
@@ -464,17 +598,18 @@ var barchart_and_map = (function () {
 					onEachFeature: onEachCounty
 				});
 				var allCountyBounds = countyLayer.getBounds();
+				console.log(allCountyBounds);
 				map.fitBounds(allCountyBounds);
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json second success");
+				console.log(COUNTY_FILE+" second success");
 			}).error(function (jqXHR, textStatus, errorThrown) {
-				console.log("cb_2015_us_county_500k GEORGIA.json textStatus " + textStatus);
-				console.log("cb_2015_us_county_500k GEORGIA.json errorThrown" + errorThrown);
-				console.log("cb_2015_us_county_500k GEORGIA.json responseText (incoming?)" + jqXHR.responseText);
+				console.log(COUNTY_FILE+" textStatus " + textStatus);
+				console.log(COUNTY_FILE+" errorThrown" + errorThrown);
+				console.log(COUNTY_FILE+ " responseText (incoming?)" + jqXHR.responseText);
 			}).complete(function () {
-				console.log("cb_2015_us_county_500k GEORGIA.json complete");
+				console.log(COUNTY_FILE+" complete");
 			});
 			//end geoJson of county layer
 			function onEachCounty(feature, layer) {
@@ -529,6 +664,12 @@ var barchart_and_map = (function () {
 	function initializeMuchOfUI() {
 		$("#mode-share-by-county-stacked").click(function () {
 			extNvd3Chart.stacked(this.checked);
+			var test = extNvd3Chart.groupSpacing();
+			if(this.checked){
+			    extNvd3Chart.groupSpacing(BARSPACING);
+            } else {
+			     extNvd3Chart.groupSpacing(0.2);
+            }
 			extNvd3Chart.update();
 		});
 		$("#mode-share-by-county-bubbles").click(function () {
@@ -686,6 +827,10 @@ var barchart_and_map = (function () {
 		});
 		//initialize the map palette
 		setColorPalette(selectedColorRampIndex);
+		$("#mode-share-by-county-checkboxes").change(function(){
+			redrawMap();
+		});
+
 	}
 	//end initialize much of ui
 	//hex to rgb for handling transparancy

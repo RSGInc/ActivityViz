@@ -43,106 +43,238 @@ var three3d = (function three3dFunction() {
 	var cycleGoing = false;
 	var breakUp;
 	var cycleIncrement = 2;
-
+	var headers = [];
 	var zoneData = {}; //map of zoneIds with secondary map for period quantities
 	var zoneDataLayer;
 	var zoneGeoJSON;
 	var paletteRamps = d3.selectAll("#three3d .ramp");
-
+	var periodNames = [];
 	var ZONE_COLUMN = 0;
 	var PERIOD_COLUMN = 1;
 	var QUANTITY_COLUMN = 2;
 	var geoStatsObject;
+	var ZONE_FILE_LOC="";
+	var CENTER_MAP = [];
+	var showPeriodsAsDropdown;
+	var DataHasPeriods;
+	var zonefilters = {} ;
+	var ZONE_FILTER_LOC="";
+	var zoneFilterData;
+	var zonefiles;
+	var zoneheaders=[];
+	var zonefilterlabel = "";
+	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
+	//start off chain of initialization by reading in the data
 
-	//start off chain of initialization by reading in the data	
-	readInData(function () {
-		"use strict";
-		createMap(function () {
-			console.log("createMap callback")
-		});
-		setDataSpecificDOM();
-		initializeMuchOfUI();
-		updateCurrentPeriodOrClassification();
-	}); //end call to readInData and its follwing callback
+	getTheConfigFile(function(){
+		readInFilterData(function(){
+			readInData(function () {
+	    if(showChartOnPage) {
+            "use strict";
+            createMap(function () {
+                console.log("createMap callback")
+            });
+            setDataSpecificDOM();
+            initializeMuchOfUI();
+            updateCurrentPeriodOrClassification();
+            if (periods.length == 1) {
+                $('#three3d-start-cycle-map').click();
+            }
+        }
+	})})}); //end call to readInData and its follwing callback
+
+function getTheConfigFile(callback){
+
+	    $.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+"region.json",function(data) {
+
+            $.each(data, function (key, val) {
+                if (key == "ZoneFile") {
+                    zonefiles = val;
+                }
+                if (key == "CenterMap") {
+                    CENTER_MAP = val;
+                }
+                if (key == "ThreeDMap") {
+                    $.each(val, function (opt, value) {
+                        if (opt == "ShowPeriodsAsDropdown")
+                            showPeriodsAsDropdown = value;
+                        if (opt =="ZoneFilterLabel")
+                        	zonefilterlabel = value;
+                        if (opt == "DataHasPeriods")
+                            DataHasPeriods = value;
+                        if (opt == "ZoneFilterFile") {
+                            ZONE_FILTER_LOC = value;
+                        }
+                         if (opt == "ZoneFilters") {
+                            $.each(value,function(filtercolumn,filtername){
+                                zonefilters[filtercolumn] = filtername;
+                            })
+                        }
+                    })
+                }
+            });
+            ZONE_FILE_LOC = zonefiles;
+            ZONE_FILTER_LOC = ZONE_FILTER_LOC;
+             callback();
+        });
+
+}
+
+	function readInFilterData(callback) {
+        if (Object.keys(zonefilters).length > 1 && ZONE_FILTER_LOC != '') {
+            var zonecsv;
+            d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/"+ZONE_FILTER_LOC, function (error, filterdata) {
+                zonecsv = d3.csv.parseRows(filterdata).slice(1);
+                zoneheaders = d3.csv.parseRows(filterdata)[0];
+                $('#three3d-filter-label').append(zonefilterlabel);
+                zoneFilterData = d3.nest().key(function (d) {
+                    return "filters";
+                }).map(zonecsv);
+                 $('#three3d-filter-checkboxes').append("<ul>");
+                for (var i = 0; i < zoneheaders.length; i++) {
+                    if (zoneheaders[i] in zonefilters) {
+                        $('#three3d-filter-checkboxes').append('<li><label > <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></li>')
+                    }
+                }
+                $('#three3d-filter-checkboxes').append("</ul>");
+            });
+            callback();
+
+        } else {
+        	$('#three3d-filter-label').hide();
+            callback();
+        }
+    }
 
 	function readInData(callback) {
 		"use strict";
-		d3.text("../data/" + abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
-			"use strict";
-			if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
-			var csv = d3.csv.parseRows(data).slice(1);
-			data = null; //allow memory to be GC'ed
-			var allData = [];
-			var zoneDatum;
-			var rolledUpMap = d3.nest().key(function (d) {
-				//convert quantity to a number
-				var quantity = d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
-				//convert periods to integers by removing all non-numeric characters
-				var period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
-				var zone = d[ZONE_COLUMN] = +d[ZONE_COLUMN];
-				if (zoneData[zone] == undefined) {
-					zoneDatum = zoneData[zone] = {
-						min: 100000000,
-						max: -100000000,
-						minPeriod: -1,
-						maxPeriod: -1,
-						periods: {},
-					};
-				}
-				zoneData[zone].periods[period] = quantity;
-				if (periodData[period] == undefined) {
-					periodData[period] = [] //array of all quantities during this period for use with geostats
-				}
-				if (!isNaN(quantity)) {
-					periodData[period].push(quantity);
-					if (zoneDatum.min > quantity) {
-						zoneDatum.min = quantity;
-						zoneDatum.minPeriod = period;
-					}
-					if (zoneDatum.max < quantity) {
-						zoneDatum.max = quantity;
-						zoneDatum.maxPeriod = period;
-					}
-				}
-				return zone;
-			}).sortKeys(d3.ascending).key(function (d) {
-				return d[PERIOD_COLUMN];
-			}).sortKeys(d3.ascending).rollup(function (d) {
-				var quantity = d[0][QUANTITY_COLUMN];
-				if (!isNaN(quantity)) {
-					allData.push(quantity);
-				}
-				return quantity;
-			}).map(csv);
-			periods = Object.keys(periodData);
-			geoStatsObject = new geostats(allData);
-			geoStatsObject.min = function () {
-				if (this._nodata())
-					return;
 
-				this.stat_min = d3.min(this.serie);
+		d3.text("../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
+            var zonecsv;
+            "use strict";
+            if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
+            var csv = d3.csv.parseRows(data).slice(1);
+            headers = d3.csv.parseRows(data)[0];
+            //setDataSpecificDOM();
+            data = null; //allow memory to be GC'ed
+            var allData = [];
+            var periodNames = [];
+            zoneData = {};
+            var zoneDatum;
+            var rolledUpMap = d3.nest().key(function (d) {
+                //convert quantity to a number
+                var quantity = d[QUANTITY_COLUMN] = +d[QUANTITY_COLUMN];
+                //convert periods to integers by removing all non-numeric characters
+                var periodName = d[PERIOD_COLUMN];
+                if ($.inArray(periodName, periodNames) === -1) {
+                    periodNames.push(periodName);
+                }
+                var period;
+                if (DataHasPeriods) {
+                    period = d[PERIOD_COLUMN] = parseInt(d[PERIOD_COLUMN].replace(/\D/g, ''));
+                }
+                else {
+                    period = d[PERIOD_COLUMN] = $.inArray(d[PERIOD_COLUMN], periodNames) + 1;
+                }
 
-				return this.stat_min;
-			};
+                var zone = d[ZONE_COLUMN] = +d[ZONE_COLUMN];
+                if (zoneData[zone] == undefined) {
+                    zoneDatum = zoneData[zone] = {
+                        min: 100000000,
+                        max: -100000000,
+                        minPeriod: -1,
+                        maxPeriod: -1,
+                        periods: {},
+                        filters: {}
+                    };
+                }
+                zoneData[zone].periods[period] = quantity;
+                if (Object.keys(zonefilters).length > 1) {
+                    for (var i in zonefilters) {
 
-			geoStatsObject.max = function () {
-				if (this._nodata())
-					return;
+                        zoneData[zone].filters[i] = zoneFilterData.filters[zone - 1][zoneheaders.indexOf(i)];
+                    }
+                }
 
-				this.stat_max = d3.max(this.serie);
+                if (periodData[period] == undefined) {
+                    periodData[period] = [] //array of all quantities during this period for use with geostats
+                }
+                if (!isNaN(quantity)) {
+                    periodData[period].push(quantity);
+                    if (zoneDatum.min > quantity) {
+                        zoneDatum.min = quantity;
+                        zoneDatum.minPeriod = period;
+                    }
+                    if (zoneDatum.max < quantity) {
+                        zoneDatum.max = quantity;
+                        zoneDatum.maxPeriod = period;
+                    }
+                }
+                return zone;
+            }).sortKeys(d3.ascending).key(function (d) {
+                return d[PERIOD_COLUMN];
+            }).sortKeys(d3.ascending).rollup(function (d) {
+                var quantity = d[0][QUANTITY_COLUMN];
+                if (!isNaN(quantity)) {
+                    allData.push(quantity);
+                }
+                return quantity;
+            }).map(csv);
 
-				return this.stat_max;
-			};
+            periods = Object.keys(periodData);
+            $('#three3d-period').empty();
 
-			var minMaxRange = [geoStatsObject.min(), geoStatsObject.max()];
-			allTimeLinearScale = d3.scale.linear().domain(minMaxRange).range([0, 1]);
-			allTimeSqrtScale = d3.scale.sqrt().domain(minMaxRange).range([0, 1]);
-			callback();
-		}); //end d3.text
+            var selectList =
+                periodNames.forEach(function (d, i) {
+                    var perList = $('#three3d-period');
+                    perList.append($("<option />").val(i + 1).text("" + d));
+                })
+
+            $('#three3d-period').val($("#three3d-period option:first").val());
+            geoStatsObject = new geostats(allData);
+            geoStatsObject.min = function () {
+                if (this._nodata())
+                    return;
+
+                this.stat_min = d3.min(this.serie);
+
+                return this.stat_min;
+            };
+
+            geoStatsObject.max = function () {
+                if (this._nodata())
+                    return;
+
+                this.stat_max = d3.max(this.serie);
+
+                return this.stat_max;
+            };
+
+            var minMaxRange = [geoStatsObject.min(), geoStatsObject.max()];
+            allTimeLinearScale = d3.scale.linear().domain(minMaxRange).range([0, 1]);
+            allTimeSqrtScale = d3.scale.sqrt().domain(minMaxRange).range([0, 1]);
+            zoneFilterData = null;
+            callback();
+
+
+        }); //end d3.text
 	}; //end readInData 
 
 	function setDataSpecificDOM() {
 		"use strict";
+		$('.three3d-purpose').text(headers[2]);
+		if(showPeriodsAsDropdown){
+		    if(DataHasPeriods== false){
+                $('#three3d-current-period').hide();
+                $('#three3d-slider-time').hide();
+                $('#three3d-slider').hide();
+                $('#three3d-redraw').hide();
+                $("#three3d-start-cycle-map").hide();
+			}
+			$('#three3d-period-id').show();
+		} else{
+			$('#three3d-period-id').hide();
+		}
 	} //end setDataSpecificDOM
 
 	function addZoneGeoJSONToMap() {
@@ -150,6 +282,23 @@ var three3d = (function three3dFunction() {
 			interactive: false,
 			output: true,
 			style: styleZoneGeoJSONLayer,
+			filter: function(feature,layer) {
+
+
+                var isZoneVisible = true;
+                var checkedfilters = $('#three3d-filter-checkboxes input[type=checkbox]:checked');
+                var cnttrue = 0;
+                var featureId = feature.properties.id;
+                var zoneDatum = zoneData[featureId];
+                if (zoneDatum != undefined) {
+                    checkedfilters.each(function () {
+                        var filtername = this.attributes["colname"];
+                        cnttrue += parseInt(zoneDatum.filters[filtername.value]);
+                        isZoneVisible = cnttrue > 0;
+                    });
+                }
+                   return isZoneVisible;
+            },
 			onEachFeature: function (feature, layer) {
 				if (drawCentroids) {
 					//replace polygon with smaller rect in middle
@@ -158,6 +307,7 @@ var three3d = (function three3dFunction() {
 				}
 			}, //end onEachFeature
 		});
+		//console.log(zoneDataLayer )
 		map.addLayer(zoneDataLayer);
 	} //end addZoneGeoJSONToMap
 
@@ -174,6 +324,7 @@ var three3d = (function three3dFunction() {
 		var color = naColor;
 		var periodQuantity = 0;
 		var featureId = feature.properties.id;
+
 		if (zoneData[featureId] != undefined) {
 			var zoneDatum = zoneData[featureId];
 			//possible that even if data for zone exists, could be missing this particular period
@@ -194,17 +345,25 @@ var three3d = (function three3dFunction() {
 		} //end if we have data for this zone
 		color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
+
+
+
 		var returnStyle = {
 			height: allTimeSqrtScale(periodQuantity) * 5000,
 			color: color,
+			//transparent: !isZoneVisible,
+			//opacity: isZoneVisible?1.0:0.4
 		};
+
 		return (returnStyle);
 	} //end styleZoneGeoJSONLayer function
 
 	function createMap(callback) {
 		"use strict";
+		$('#three3d-map').empty();
+
 		map = VIZI.world("three3d-map");
-		map.setView([33.754525, -84.384774]); //centered at Atlanta
+		map.setView(CENTER_MAP); //centered at CENTER_MAP
 
 		var logEvents = false;
 		if (logEvents) {
@@ -227,7 +386,7 @@ var three3d = (function three3dFunction() {
 		}).addTo(map);
 
 
-		$.getJSON("../data/ZoneShape.GeoJSON", function (zoneTiles) {
+		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ZONE_FILE_LOC, function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
@@ -350,7 +509,9 @@ var three3d = (function three3dFunction() {
 
 	function initializeMuchOfUI() {
 		console.log("three3d initializeMuchOfUI");
-
+		$("#three3d-filter-checkboxes").change(function(){
+			redrawMap();
+		});
 		$("#three3d-centroids").change(function () {
 			drawCentroids = this.checked;
 			zoneGeoJSON.features.forEach(function (feature) {
@@ -363,27 +524,38 @@ var three3d = (function three3dFunction() {
 		function updateTimeSliderTooltip(value) {
 			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
 			$('#three3d-slider-time .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + timeString + '</div></div>');
+
 		}
+        var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
 		$("#three3d-slider-time").slider({
 			range: false,
 			min: 1,
 			max: periods.length,
 			step: 1,
-			value: currentPeriod,
+			value: doesntexist?1:currentPeriod,
 			create: function (e, ui) {
-				updateTimeSliderTooltip(currentPeriod);
+
+                var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+                updateTimeSliderTooltip(doesntexist?1:currentPeriod);
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			},
 			change: function (e, ui) {
 				currentPeriod = ui.value;
 				updateTimeSliderTooltip(currentPeriod);
 				updateCurrentPeriodOrClassification();
+				 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			},
 			slide: function (e, ui) {
 				currentPeriod = ui.value;
 				updateTimeSliderTooltip(currentPeriod);
 				updateCurrentPeriodOrClassification();
+				 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+				$('#three3d-period').val(doesntexist?1:currentPeriod);
 			}
 		});
+		 var doesntexist =  $('#three3d-period-id option[value='+currentPeriod+']').val()===undefined;
+		 $('#three3d-slider-time').slider('option','value',doesntexist?1:currentPeriod);
 		var colorRamps = paletteRamps.on('click', function (d, i) {
 			setColorPalette(i);
 			updateColors($("#three3d-slider").slider("values"));
@@ -404,7 +576,8 @@ var three3d = (function three3dFunction() {
 		$("#three3d-stop-cycle-map").click(function () {
 			cycleGoing = false;
 			$("#three3d-stop-cycle-map").css("display", "none");
-			$("#three3d-start-cycle-map").css("display", "inline");
+			//after clicking button if there is only one period, do not reshow the cycle button
+			$("#three3d-start-cycle-map").css("display", DataHasPeriods==false?"none":"inline");
 		});
 
 		var lastCycleStartTime;
@@ -422,7 +595,7 @@ var three3d = (function three3dFunction() {
 			if (cycleGoing) {
 				var timeInterval = parseInt($("#three3d-cycle-frequency").val()) * 1000;
 				var elapsedTimeSinceCycle = new Date().getTime() - lastCycleStartTime;
-				//console.log('elapsedTimeSinceCycle: ' + elapsedTimeSinceCycle);
+				console.log('elapsedTimeSinceCycle: ' + elapsedTimeSinceCycle);
 				setTimeout(cyclePeriod, Math.max(0, timeInterval - elapsedTimeSinceCycle));
 			} //end if cycleGoing
 		} //end cyclePeriod
@@ -507,6 +680,7 @@ var three3d = (function three3dFunction() {
 			range: false,
 			disabled: ($("#three3d-classification").val() != "custom")
 		});
+
 		if (classification == "custom") {
 			$("#three3d-update-map").css("display", "inline");
 		} else {
@@ -527,6 +701,24 @@ var three3d = (function three3dFunction() {
 		} //end if !custom
 		redrawMap();
 	}; //end updateCurrentPeriodOrClassification
+$('#three3d-period').change( function(d){
+    $('#three3d-slider-time').slider('option','value',$(this).val())
+    }
+);
+$('#three3d-geography').change( function(d){
+
+
+            "use strict";
+            ZONE_FILE_LOC = $('#three3d-geography option:selected').text();
+            redrawMap();
+            setDataSpecificDOM();
+            initializeMuchOfUI();
+            updateCurrentPeriodOrClassification();
+            if (periods.length == 1) {
+                $('#three3d-start-cycle-map').click();
+            }
+        });
+
 
 	//return only the parts that need to be global
 	return {

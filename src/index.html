@@ -1,14 +1,15 @@
 <html>
 
 <head>
-	<title>ARC ABMVIZ</title>
+	<title></title>
 	<meta charset="UTF-8">
-	<script defer src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 	<script defer src="../bower_components/jqueryui/jquery-ui.min.js"></script>
 	<script defer src="../bower_components/spectrum/spectrum.js"></script>
 	<script defer src="../bower_components/chosen/chosen.jquery.js"></script>
 	<script defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script defer src="../bower_components/d3/d3.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
 	<script defer src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script defer src="../bower_components/underscore/underscore-min.js"></script>
 	<script defer src="../bower_components/geostats/lib/geostats.js"></script>
@@ -17,7 +18,8 @@
 	<script defer src="../vendor/three.min.js"></script>
 	<script defer src="../vendor/TweenMax.min.js"></script>
 	<script defer src="../vendor/vizicities.js"></script>
-	<script defer type="text/javascript" src="../abmviz_utilities.js"></script>
+	<script type="text/javascript" src="../abmviz_utilities.js"></script>
+    <script defer type="text/javascript" src="grouped_barchart_data.js"></script>
 	<script defer type="text/javascript" src="grouped_barchart.js"></script>
 	<script defer type="text/javascript" src="barchart_and_map.js"></script>
 
@@ -26,7 +28,7 @@
 	<script defer type="text/javascript" src="timeuse.js"></script>
 	<script defer type="text/javascript" src="radar-chart-nbremer.js"></script>
 	<script defer type="text/javascript" src="radar.js"></script>
-	<link rel="shortcut icon" href="../img/arc_logo.ico">
+	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/spectrum/spectrum.css" />
 	<link rel="stylesheet" href="../bower_components/jqueryui/themes/base/jquery-ui.min.css" />
@@ -42,17 +44,22 @@
 	<link rel="stylesheet" href="timeuse.css" />
 	<link rel="stylesheet" href="three3d.css" />
 	<link rel="stylesheet" href="radar.css" />
+	<script type="text/javascript">
+
+	</script>
 </head>
 <!-- end head -->
 
 <body>
-	<div class="container-fluid">
-		<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid" id="main_div">
+
+		<nav class="navbar navbar-inverse navbar-fixed-top" style="max-height:51px;">
+
 			<div class="navbar-header">
-				<a href="http://www.atlantaregional.com" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
-					<img width="40" height="17" src="../img/arc_logo.png">
+				<a  id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
+					<img id="logo_id" style='height:25px;'width="" height="" src="">
 				</a>
-				<a class="navbar-brand" href="../index.html">ABMVIZ</a>
+				<a class="navbar-brand" id="title_id" href="../index.html">ABMVIZ</a>
 				<span id="scenario-header" style="font-size:2em;cursor:default" class="navbar-brand pull-right"></span>
 			</div>
 			<ul class="nav navbar-nav navbar-right" style="margin-right:1em;">
@@ -62,17 +69,16 @@
 			</ul>
 		</nav>
 		<!-- end nav -->
-		<div id="three3d" class="row">
-			<p class="text-center" style="font-size:2em">
+		<div id="three3d" class="row dynamic-content">
+		<hr>	<p class="text-center" style="font-size:2em">
 				<strong>
-                        <span class="three3d-purpose">PERSONS NOT AT HOME</span>
+                        <span class="three3d-purpose"></span>
                     </strong>
 				<span id="three3d-current-period"></span>
 			</p>
 			<div class="col-xs-12" style="margin-top:1em;">
-				<div class="col-xs-8" style="margin-bottom:1em">
+				<div class="col-xs-6" style="margin-bottom:1em">
 					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all time periods.
-
 
 					<div class="col-xs-12">
 						<div class="row control">
@@ -92,16 +98,29 @@
                                     <input type="checkbox" id="three3d-centroids">Centroids
 								</input>
                                 </label>
+
 						</div>
 					</div>
 				</div>
-				<div class="col-xs-4" style="margin-bottom:1em;font-weight:bold">
+				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-classification-label">Classification</div>
 					<select class="form-control" id="three3d-classification">
                             <option value="quartiles" selected="selected">Quartiles</option>
                             <option value="even-interval">Even interval</option>
                             <option value="custom">Custom</option>
                         </select>
+				</div>
+                <div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
+					<div id="three3d-filter-label"></div>
+					<div id="three3d-filter-checkboxes"></div>
+				</div>
+                <div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
+					<div id="three3d-period-id">
+					<div id="three3d-period-label">Data Selection</div>
+					<select class="form-control" id="three3d-period">
+
+                        </select>
+					</div>
 				</div>
 			</div>
 			<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
@@ -134,6 +153,14 @@
                                                 <rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
                                                 <rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
                                                 <rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
+                                            </svg>
+									</div>
+									<div class="ramp RedGreen">
+										<svg width="60" height="15">
+                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
+                                                <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
+                                                <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
+                                                <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
                                             </svg>
 									</div>
 								</div>
@@ -188,7 +215,7 @@
 						<button id="three3d-start-cycle-map" class="btn">Cycle Through Day</button>
 						<button id="three3d-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-6" id="three3d-redraw">
 						Redraw
 
 
@@ -209,9 +236,10 @@
 			</div>
 		</div>
 		<!--end three3d-->
-		<hr>
-		<div id="grouped-barchart-div" class="row" style="margin-bottom:150px">
-			<p class="text-center" style="font-size:2em">
+
+		<div id="grouped-barchart-div" class="row dynamic-content" style="margin-bottom:100px">
+			<hr><p class="text-center" style="font-size:2em">
+
 				<strong><span class="grouped-barchart-main-group"></span>,</strong> by <span class="grouped-barchart-sub-group"></span>
 			</p>
 			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
@@ -228,19 +256,27 @@
 							<label class="checkbox-inline"><input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
 						</li>
 						<li>
+							<label class="checkbox-inline"><input id="grouped-barchart-toggle-horizontal" type="checkbox">Show as Vertical?</label>
+						</li>
+											<li>
+							<label class="checkbox-inline"><input id="grouped-barchart-toggle-stacked" type="checkbox">Show as Stacked?</label>
+						</li>
+						<li>
 							Double click on legend symbols/labels to change chart to a single <span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as <span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="row" style="width:100%;height:400px">
-				<svg id="grouped-barchart"></svg>
+                <div id="grouped-barmain">
+                    <div id="grouped-bar-container"></div>
+                </div>
 			</div>
 		</div>
 		<!-- end grouped-barchart -->
-		<hr>
-		<div id="mode-share-by-county" class="row">
-			<p class="text-center" style="font-size:2em">
+
+		<div id="mode-share-by-county" class="row dynamic-content">
+			<hr><p class="text-center" style="font-size:2em">
 				<strong><span class="mode-share-by-county-trip-mode"></span>,</strong> by <span class="mode-share-by-county-area-type"></span>
 			</p>
 			<div class="col-xs-6 right-border" style="margin-top:4px">
@@ -267,7 +303,7 @@
 						<div class="col-xs-2">
 							<label>
                         <input type="checkbox" checked id="mode-share-by-county-stacked"/>Stacked
-                    
+
                     </label>
 							<!-- <label><input type="checkbox" checked id="mode-share-by-county-legend-type" />Classic Legend/label>-->
 						</div>
@@ -288,14 +324,18 @@
 				<div class="col-xs-6">
 					<select class="form-control" id="mode-share-by-county-current-trip-mode"></select>
 				</div>
+
 				<div class="col-xs-6" style="margin-bottom:2em;">
 					<select class="form-control" id="mode-share-by-county-classification">
-                <option value="quartiles" selected="selected">Quartiles</option>
-                <option value="jenks">Natural breaks (Jenks)</option>
-                <option value="even-interval">Even interval</option>
-                <option value="custom">Custom</option>
-            </select>
+                        <option value="quartiles" selected="selected">Quartiles</option>
+                        <option value="jenks">Natural breaks (Jenks)</option>
+                        <option value="even-interval">Even interval</option>
+                        <option value="custom">Custom</option>
+                    </select>
 				</div>
+                <div class ='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
+
+                </div>
 				<div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
 					<table width="100%">
@@ -328,6 +368,14 @@
                                         <rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
                                     </svg>
 										</div>
+										<div class="ramp RedGreen">
+										<svg width="60" height="15">
+                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
+                                                <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
+                                                <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
+                                                <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
+                                            </svg>
+									</div>
 									</div>
 								</div>
 							</td>
@@ -419,8 +467,6 @@
 					<div class="row">
 						<div class="col-xs-12" style="margin-top:1em;">
 							<br> The Map interactive features include:
-
-
 							<ul>
 								<li>Click and drag to pan the map area</li>
 								<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
@@ -438,9 +484,9 @@
 			</div>
 		</div>
 		<!-- end mode-share-by-county -->
-		<hr>
-		<div id="timeuse" class="row">
-			<p class="text-center" style="font-size:2em">
+
+		<div id="timeuse" class="row dynamic-content">
+			<hr><p class="text-center" style="font-size:2em">
 				<span class="timeuse-maingroup">TIME USE</span>
 			</p>
 			<div id="timeuse-sidebar" class="col-xs-2">
@@ -459,9 +505,9 @@
 			</div>
 		</div>
 		<!-- end timeuse -->
-		<hr>
-		<div id="sunburst" class="row">
-			<p class="text-center" style="font-size:2em">
+
+		<div id="sunburst" class="row dynamic-content">
+			<hr><p class="text-center" style="font-size:2em">
 				<span class="sunburst-maingroup">PLACEHOLDER</span>
 			</p>
 			<div class="col-xs-2">
@@ -493,9 +539,9 @@
 			</div>
 		</div>
 		<!-- end sunburst -->
-		<hr>
-		<div id="radar" class="row">
-			<p class="text-center" style="font-size:2em">
+
+		<div id="radar" class="row dynamic-content">
+			<hr><p class="text-center" style="font-size:2em">
 				<span class="radar-maingroup">RADAR CHARTS</span>
 			</p>
 			<div id="radar-sidebar" class="col-xs-2">
@@ -504,6 +550,7 @@
 					<li>The larger the area, the "better" that chart (activity center) does as compared to others</li>
 					<li>In addition to size, the intensity of the color increases with total area</li>
 					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
+                    <li>When multiple data sets are displayed, you can enable/disable one by clicking on the color box on the legend</li>
 				</ul>
 				<div id="radar-legend"></div>
 			</div>
@@ -512,8 +559,82 @@
 			</div>
 		</div>
 		<!-- end radar -->
-		<hr>
+    </div>
 </body>
 <!-- end body -->
 
 </html>
+
+
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+<script type="text/javascript">
+	// Parse the URL parameter
+    var visualizations;
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+// Give the parameter a variable name
+var dynamicContent = getParameterByName('visuals');
+$(document).ready(function() {
+
+	// Check if the URL parameter is 3
+	if (dynamicContent.indexOf('3')>-1) {
+		$('#three3d').show();
+	}
+	// Check if the URL parameter is b
+	if (dynamicContent.indexOf('b')>-1) {
+		$('#mode-share-by-county').show();
+	}
+	// Check if the URL parameter is r
+	if (dynamicContent.indexOf('r')>-1) {
+		$('#radar').show();
+	}
+	if (dynamicContent.indexOf('g')>-1) {
+		$('#grouped-barchart-div').show();
+	}
+	if (dynamicContent.indexOf('t')>-1) {
+        $('#timeuse').show();
+	}
+	if (dynamicContent.indexOf('s')>-1) {
+		$('#sunburst').show();
+	}
+	// Check if the URL parmeter is empty or not defined, display default content
+	else {
+		$('#default-content').show();
+	}
+});
+</script>
+
+<script defer type="text/javascript">
+     var region = abmviz_utilities.GetURLParameter("region");
+            $.getJSON( "../data/"+region+"/region.json", function (data) {
+                var icon = data.Icon;
+                var logo = data.Logo;
+                var title = data.Title;
+                var linkURL = data.LinkURL;
+                var navbartitle = data.NavbarTitle;
+                $("link[rel*='icon']").attr("href", "../data/"+region+"/img/"+icon+"");
+                $("title").text(title);
+                 $('#title_id').text(navbartitle);
+                $('#navbarlink').attr("href",linkURL);
+                $('#logo_id').attr("src","../data/"+region+"/img/"+logo+"");
+
+        $.each(data.colorRamps,function(key,value){
+            if(value ==false)
+                $('.'+[key]).remove();
+        });
+        var ids=
+				{"3DMap":"three3d","BarMap":"mode-share-by-county","GrpBar":"grouped-barchart-div","TimeUse":"timeuse","Radar":"radar","Sunburst":"sunburst"};
+
+       $.each(data.visualizations,function(key,value){
+                    $('#'+ids[key]).appendTo($("#main_div"));
+				})
+            });
+
+</script>

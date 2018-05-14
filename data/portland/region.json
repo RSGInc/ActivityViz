@@ -1,0 +1,72 @@
+{
+  "Title":"Oregon Metro MCEVIZ",
+  "CountyFile":"metro_counties.json",
+  "ZoneFile": "taz2162ll.json",
+  "Icon":"oregon-metro2.ico",
+  "Logo":"oregon-metro.png",
+  "NavbarTitle":"MCEVIZ",
+  "LinkURL":"http://www.oregonmetro.gov/",
+  "CenterMap": [45.512794, -122.679565],
+  "FrontPageTitle": "Oregon Metro",
+  "FrontPageGraphic":"oregon-metro_black.png",
+  "scenarios":{
+    "I205": "- I205 minus NoBuild"
+  },
+  "visualizations":{
+    "GrpBar":true,
+    "BarMap": true,
+    "TimeUse":false,
+    "Radar":false,
+    "3DMap":true,
+    "Sunburst":false
+  },
+  "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":["Everyone Negative Benefits","Everyone Positive Benefits"],
+    "ConvertAxesToPercent":false
+  },
+  "GroupedCharts": {
+    "BarSpacing":"0.7",
+    "RotateLabels":"0",
+    "NumberColsGrouped":2,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":false,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":true,
+    "ChartWidthOverride": [12,6,6,6,6],
+    "IndependentScale": ["Everyone","everybody","coc_ext_age18or65"]
+  },
+  "GrpMap": {
+    "BarSpacing": "0.6",
+    "RotateLabels": "0",
+    "ZoneFilterFile": "cocs.csv",
+    "ZoneFilterLabel": "Communities of Concern",
+    "ZoneFilters": {
+      "minority_zone": "Minority",
+      "lowengpro_zone": "Low English",
+      "age18or65_zone": "Age 18 or 65",
+      "lowinc_zone": "Low Income"
+    }
+  },
+  "colorRamps":{
+    "Reds":false,
+    "RedGreen":true,
+    "Greens":false,
+    "Greys":false,
+    "Oranges":false,
+    "Blues":false,
+    "Purples":false
+  },
+  "ThreeDMap":{
+    "ShowPeriodsAsDropdown":true,
+    "DataHasPeriods":false,
+    "ZoneFilterLabel": "Communities of Concern",
+    "ZoneFilterFile": "cocs.csv",
+    "ZoneFilters": {
+      "minority_zone":"Minority",
+      "lowengpro_zone": "Low English",
+      "age18or65_zone": "Age 18 or 65",
+      "lowinc_zone": "Low Income"
+    }
+  }
+}
