@@ -61,6 +61,7 @@ Each Data/Region folder needs the following:
         - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
         - ChartWidthOverride: array of values to allow you to individually set each chart's width
         - IndependentScale: array of values to set which charts should have their own scale. When this entry is present the charts not named will share a scale     
+
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
