@@ -16,6 +16,10 @@ function grouped_barchart (id, data,options) {
 	var extNvd3Chart;
 	var minBarWidth = 2;
 	var minBarSpacing = 1;
+	var marginTopVert = 100;
+	var marginBottomVert = 60;
+	var marginLeftVert = 150;
+	var marginRightVert = 20;
 	var marginTop = 0;
 	var marginBottom = 50;
 	var marginLeft = 250;
@@ -31,6 +35,8 @@ function grouped_barchart (id, data,options) {
 	var showAsGrouped = options.showAsGrped;
     var maxVal = options.maxVal;
     var minVal = options.minVal;
+	var ROTATELABEL = options.rotateLabel;
+	var BARSPACING = showAsGrouped ? options.barSpacing:0.2;
 	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
@@ -62,6 +68,8 @@ function grouped_barchart (id, data,options) {
 		    svgChart.datum(data).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
 			//first check if
+
+            $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate('+ROTATELABEL+'deg)');
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
@@ -123,6 +131,8 @@ function grouped_barchart (id, data,options) {
 			console.log('changing from ' + currentMainGroup + " to " + newCurrentMainGroup);
 			currentMainGroup = newCurrentMainGroup;
 			var mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick text");
+			if(showAsVertical)
+			    mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick foreignObject p");
 			mainGroupLabels.classed("selected", function (d, i) {
 				var setClass = d == currentMainGroup;
 				return setClass;
@@ -138,8 +148,16 @@ function grouped_barchart (id, data,options) {
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
-					var nvd3Chart = showAsVertical ? nv.models.multiBarChart() : nv.models.multiBarHorizontalChart();
+					var nvd3Chart = nv.models.multiBarHorizontalChart();
+					var obj = $(id+' .nv-controlsWrap .nv-legend-symbol')[0];
+					var shwBarSpace =  $(obj).css('fill-opacity') == 0;
+					if(showAsVertical)
+					   nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace?0.2:BARSPACING).staggerLabels(true);
+					else
+					    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace?0.2:BARSPACING);
+					    //xRange([0,125])
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+
 
 					nvd3Chart.x(function (d, i) {
 						return d.label
@@ -150,11 +168,12 @@ function grouped_barchart (id, data,options) {
 						//console.log('barColor i=' + i + ' columnsColorIndex=' + columnsColorIndex + ' columns=' + d.key + ' mainGroup=' + d.label + ' count=' + d.value + ' color=' + color);
 						return color;
 					}).duration(250).margin({
-						left: marginLeft,
-						right: marginRight,
-						top: marginTop,
-						bottom: marginBottom
-					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(true);
+						left: showAsVertical?marginLeftVert:marginLeft,
+						right: showAsVertical?marginRightVert:marginRight,
+						top: showAsVertical?marginTopVert:marginTop,
+						bottom: showAsVertical?marginBottomVert:marginBottom
+					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
+
 
                     if(maxVal != 0 && !showPercentages) {
 					nvd3Chart.yDomain( [minVal,maxVal]);
@@ -162,9 +181,27 @@ function grouped_barchart (id, data,options) {
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-100:0);
 					//this is actually for xAxis since basically a sideways column chart
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?0:marginLeft - 100);
-					//this is actually for yAxis
+					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?10:marginLeft - 100);
+					if(showAsVertical) {
+					nvd3Chart.xAxis.tickFormat(function(d){
+                            if (typeof this != 'undefined') {
+                                 var el = d3.select(this);
+                                 var p = d3.select(this.parentNode);
+                                 p.append("foreignObject")
+                                        .attr('x', -55)
+                                        .attr("width", 110)
+                                        .attr("height", 200)
+                                        .append("xhtml:p")
+                                        .attr('style','word-wrap: break-word; text-align:center;padding-bottom:10px;')
+                                        .html(d);
 
+                                    el.remove();
+                                    return d;
+                            }
+ 					});
+									}
+					//this is actually for yAxis
+					//nvd3Chart.legend.width(900);
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -180,6 +217,7 @@ function grouped_barchart (id, data,options) {
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
+				nvd3Chart.legend.margin({top:10,right:0,left:-100,bottom:20});
 					return nvd3Chart;
 				} //end generate
 				,
