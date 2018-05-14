@@ -52,6 +52,8 @@ Each Data/Region folder needs the following:
         - IndependentScale: Names of charts to separate into second scale and collection of axes
         - ConvertAxesToPercent: true/false flag that will convert the radar charts to a percent of the highest value  
     - GroupedCharts: Grouped Bar Chart specific properties:
+        - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
+        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis for the non-vertical chart.  Default is 0 can go from -90 to 90. 
         - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
         - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts
         - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
@@ -66,6 +68,8 @@ Each Data/Region folder needs the following:
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters     
     - GrpMap: Barchart that also displays with a map
+        - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
+        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.        
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
