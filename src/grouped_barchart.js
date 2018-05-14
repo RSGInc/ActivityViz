@@ -17,7 +17,7 @@ function grouped_barchart (id, data,options) {
 	var minBarWidth = 2;
 	var minBarSpacing = 1;
 	var marginTopVert = 100;
-	var marginBottomVert = 60;
+	var marginBottomVert = 100;
 	var marginLeftVert = 150;
 	var marginRightVert = 20;
 	var marginTop = 0;
@@ -179,10 +179,11 @@ function grouped_barchart (id, data,options) {
 					nvd3Chart.yDomain( [minVal,maxVal]);
                     }
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
-					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-100:0);
+					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-200:0);
 					//this is actually for xAxis since basically a sideways column chart
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?10:marginLeft - 100);
+					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?50:marginLeft - 100);
 					if(showAsVertical) {
+
 					nvd3Chart.xAxis.tickFormat(function(d){
                             if (typeof this != 'undefined') {
                                  var el = d3.select(this);
@@ -217,7 +218,7 @@ function grouped_barchart (id, data,options) {
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
-				nvd3Chart.legend.margin({top:10,right:0,left:-100,bottom:20});
+				nvd3Chart.legend.margin({top:10,right:0,left:-50,bottom:20});
 					return nvd3Chart;
 				} //end generate
 				,
@@ -238,4 +239,3 @@ function grouped_barchart (id, data,options) {
 	//return only the parts that need to be global
 	return {};
 }
-
