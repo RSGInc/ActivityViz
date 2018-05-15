@@ -229,6 +229,7 @@ var chartDataContainer=[];
                     showAsGrped: !showAsStacked,
                     rotateLabel: ROTATELABEL,
                     barSpacing: BARSPACING,
+                    chartWidth: widthOfEachCol,
                     maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
                     minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
                 };
