@@ -14,3 +14,7 @@ Presumably this is because it used the smae code as the vertical chart
 	text-align:center;
 	font-size: 1.1em;
 }
+
+.nvd3 rect[height="1"] {
+  display: none !important;
+}

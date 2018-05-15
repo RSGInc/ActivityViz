@@ -44,8 +44,10 @@ var chartDataContainer=[];
                                 showAsVertical = value;
                             if (opt == "ShowAsPercentByDefault" && showPercentages == undefined)
                                 showPercentages = value;
-                            if (opt == "StackAllChartsByDefault" && stackChartsByDefault == undefined)
+                            if (opt == "StackAllChartsByDefault" && stackChartsByDefault == undefined) {
                                 stackChartsByDefault = value;
+                                showAsStacked = value;
+                            }
                             if (opt == "ChartWidthOverride" && ChartWidthOverride == undefined)
                                 if (value.length > 0)
                                     ChartWidthOverride = value;
@@ -210,10 +212,10 @@ var chartDataContainer=[];
                     widthOfEachCol = ChartWidthOverride[i];
                  d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
-                    .append('div').attr('id', chart.chartName+"_bar").attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
+                    .append('div').attr('id', chart.chartName+"_bar").style('min-height','500px').attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
                         chart.chartName
                 );
-                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");
+                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");//.style('height','400px');
                 //setDataSpecificDOM();
 
                 var chartId = "#" + chart.chartName+"_bar "+" svg";
@@ -226,7 +228,7 @@ var chartDataContainer=[];
                     mainGrpCol: mainGroupColumn,
                     quantCol: quantityColumn,
                     subGrpCol: subGroupColumn,
-                    showAsGrped: !showAsStacked,
+                    showAsGrped: showAsStacked,
                     rotateLabel: ROTATELABEL,
                     barSpacing: BARSPACING,
                     chartWidth: widthOfEachCol,
@@ -236,6 +238,7 @@ var chartDataContainer=[];
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
                 initializeMuchOfUI(chart);
+
                 setDataSpecificDOM();
             });
         }        //end readInDataCallback

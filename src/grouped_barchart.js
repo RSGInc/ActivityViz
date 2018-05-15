@@ -17,7 +17,7 @@ function grouped_barchart (id, data,options) {
 	var minBarWidth = 2;
 	var minBarSpacing = 1;
 	var marginTopVert = 100;
-	var marginBottomVert = 100;
+	var marginBottomVert = 190;
 	var marginLeftVert = 150;
 	var marginRightVert = 20;
 	var marginTop = 0;
@@ -45,13 +45,17 @@ function grouped_barchart (id, data,options) {
 	//start off chain of initialization by reading in the data	
     svgChart = d3.select(id);
     //setDataSpecificDOM();
-	createEmptyChart();
+	createEmptyChart(runAfterChartCreated);
 	//initializeMuchOfUI();
 
 
 	//start off chain of initialization by reading in the data	
 
-
+function runAfterChartCreated(){
+    if($("#grouped-barchart-toggle-horizontal").prop('checked')) {
+                $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate(-90deg)').css('text-anchor','end').attr('y','-7');
+                }
+}
 
 
 	//end setDataSpecificDOM
@@ -70,7 +74,6 @@ function grouped_barchart (id, data,options) {
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
 			//first check if
 
-            $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate('+ROTATELABEL+'deg)');
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
@@ -87,6 +90,7 @@ function grouped_barchart (id, data,options) {
                     var mainGroupObject = data[0].values[mainGroupIndex];
                     var newMainGroup = mainGroupObject.label;
                     changeCurrentMainGroup(newMainGroup);
+
                 } else {
                     var mouseY = d3.mouse(this)[1];
                     var numMainGroups = mainGroupSet.size;
@@ -119,6 +123,7 @@ function grouped_barchart (id, data,options) {
 				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
 				tryAgain = false;
 			}
+runAfterChartCreated();
 		}
 		//end if innerContainerNode exists
 		if (tryAgain) {
@@ -142,7 +147,7 @@ function grouped_barchart (id, data,options) {
 		}
 		//end if mainGroup is changing
 	}; //end change currentMainGroup
-	function createEmptyChart() {
+	function createEmptyChart(callback) {
 
 
 		nv.addGraph({
@@ -153,9 +158,9 @@ function grouped_barchart (id, data,options) {
 					var obj = $(id+' .nv-controlsWrap .nv-legend-symbol')[0];
 					var shwBarSpace =  $(obj).css('fill-opacity') == 0;
 					if(showAsVertical)
-					   nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace?0.2:BARSPACING).staggerLabels(true);
+					   nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace?0.2:BARSPACING).staggerLabels(false);
 					else
-					    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace?0.2:BARSPACING);
+					    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace?0.2:BARSPACING).height(400);
 					    //xRange([0,125])
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 
@@ -179,42 +184,20 @@ function grouped_barchart (id, data,options) {
                     if(maxVal != 0 && !showPercentages) {
 					nvd3Chart.yDomain( [minVal,maxVal]);
                     }
-					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
+					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.0f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-200:0);
 					//this is actually for xAxis since basically a sideways column chart
-
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?10:marginLeft - 100);
+                //if(showAsVertical)
+                   // nvd3Chart.rotateLabels(-90);
+					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?125:marginLeft - 100);
 
 		if(showAsVertical ) {
-            var width = 110;
-            var xloc = -55;
-            var fontsize = 15;
-            if (chartWidth == 6 && mainGroupSet.size > 3) {
-                width = 61;
-                xloc = -35;
-                fontsize = 11;
-            }
-            nvd3Chart.xAxis.tickFormat(function (d) {
-
-                if (typeof this != 'undefined') {
-                    var el = d3.select(this);
-                    var p = d3.select(this.parentNode);
-                    p.append("foreignObject")
-                        .attr('x', xloc)
-                        .attr("width", width)
-                        .attr("height", 200)
-                        .append("xhtml:p")
-                        .attr('style', 'word-wrap: break-word; text-align:center;padding-bottom:10px;text-anchor:middle;font-size:' + fontsize + 'px;')
-                        .html(d);
-
-                    el.remove();
-                    return d;
-                }
-            });
+            nvd3Chart.reduceXTicks(false);
 
         }
+
 					//this is actually for yAxis
-					//nvd3Chart.legend.width(900);
+					nvd3Chart.legend.width(900);
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -230,7 +213,7 @@ function grouped_barchart (id, data,options) {
 					});
 					//furious has colored boxes with checkmarks
 					//nvd3Chart.legend.vers('furious');
-				nvd3Chart.legend.margin({top:10,right:0,left:-50,bottom:20});
+				nvd3Chart.legend.margin({top:10,right:0,left:-75,bottom:20});
 					return nvd3Chart;
 				} //end generate
 				,
@@ -239,15 +222,19 @@ function grouped_barchart (id, data,options) {
 					extNvd3Chart = newGraph;
 
 					updateChart(function () {
-						console.log("updateChart callback during after the nvd3 callback called");
+						console.log("updateChart callback during after the nvd3 callback called")
 					});
 				} //end callback function
 		});
 		//end nv.addGraph
+
 	}; //end createEmptyChart
 
 	//WARNING -- this canbe called more than once because of PIVOT reload kluge
  //end initializeMuchOfUI
 	//return only the parts that need to be global
 	return {};
+
 }
+
+
