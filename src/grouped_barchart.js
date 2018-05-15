@@ -182,42 +182,37 @@ function grouped_barchart (id, data,options) {
 					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-200:0);
 					//this is actually for xAxis since basically a sideways column chart
-<<<<<<< HEAD
+
 					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?10:marginLeft - 100);
 
-					if(showAsVertical ) {
-					    var width = 110;
-					    var xloc = -55;
-					    var fontsize = 15;
-					    if(chartWidth==6 && mainGroupSet.size > 3) {
-                             width = 61;
-                             xloc = -35;
-                             fontsize = 11;
-                        }
-                        nvd3Chart.xAxis.tickFormat(function (d) {
-=======
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?50:marginLeft - 100);
-					if(showAsVertical) {
+		if(showAsVertical ) {
+            var width = 110;
+            var xloc = -55;
+            var fontsize = 15;
+            if (chartWidth == 6 && mainGroupSet.size > 3) {
+                width = 61;
+                xloc = -35;
+                fontsize = 11;
+            }
+            nvd3Chart.xAxis.tickFormat(function (d) {
 
-					nvd3Chart.xAxis.tickFormat(function(d){
->>>>>>> 7da727cd1e25f1dd1effda11c33e1369c0c53f9d
-                            if (typeof this != 'undefined') {
-                                var el = d3.select(this);
-                                var p = d3.select(this.parentNode);
-                                p.append("foreignObject")
-                                    .attr('x', xloc)
-                                    .attr("width", width)
-                                    .attr("height", 200)
-                                    .append("xhtml:p")
-                                    .attr('style', 'word-wrap: break-word; text-align:center;padding-bottom:10px;text-anchor:middle;font-size:'+fontsize+'px;')
-                                    .html(d);
+                if (typeof this != 'undefined') {
+                    var el = d3.select(this);
+                    var p = d3.select(this.parentNode);
+                    p.append("foreignObject")
+                        .attr('x', xloc)
+                        .attr("width", width)
+                        .attr("height", 200)
+                        .append("xhtml:p")
+                        .attr('style', 'word-wrap: break-word; text-align:center;padding-bottom:10px;text-anchor:middle;font-size:' + fontsize + 'px;')
+                        .html(d);
 
-                                el.remove();
-                                return d;
-                            }
-                        });
+                    el.remove();
+                    return d;
+                }
+            });
 
-                    }
+        }
 					//this is actually for yAxis
 					//nvd3Chart.legend.width(900);
 					nv.utils.windowResize(function () {
