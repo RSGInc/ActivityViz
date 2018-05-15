@@ -210,10 +210,10 @@ var chartDataContainer=[];
                     widthOfEachCol = ChartWidthOverride[i];
                  d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
-                    .append('div').attr('id', chart.chartName+"_bar").attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
+                    .append('div').attr('id', chart.chartName+"_bar").style('min-height','500px').attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
                         chart.chartName
                 );
-                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");
+                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");//.style('height','400px');
                 //setDataSpecificDOM();
 
                 var chartId = "#" + chart.chartName+"_bar "+" svg";
@@ -236,6 +236,7 @@ var chartDataContainer=[];
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
                 initializeMuchOfUI(chart);
+
                 setDataSpecificDOM();
             });
         }        //end readInDataCallback
@@ -283,6 +284,7 @@ var chartDataContainer=[];
     d3.selectAll(".grouped-barchart-main-group").html(mainGroupColumn);
     d3.selectAll(".grouped-barchart-sub-group").html(subGroupColumn);
     d3.selectAll(".grouped-barchart-sub-group-example").html(chartData[0].key);
+
 }
     } //end createGrouped
     createGrouped();
