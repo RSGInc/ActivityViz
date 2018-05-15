@@ -30,7 +30,7 @@ var barchart_and_map = (function () {
 	var chartSelector = "#mode-share-by-county-chart";
 	var svgChart;
 	var extNvd3Chart;
-	var minBarWidth = 2;
+	var minBarWidth = 1;
 	var minBarSpacing = 1;
 	var marginTop = 0;
 	var marginBottom = 50;
@@ -69,6 +69,8 @@ var barchart_and_map = (function () {
 	var COUNTY_FILE="";
 	var ZONE_FILE_LOC="";
 	var CENTER_LOC = [];
+	var ROTATELABEL = 0;
+	var BARSPACING = 0.2;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
@@ -81,6 +83,7 @@ var barchart_and_map = (function () {
 		updateCurrentTripModeOrClassification();
 		createEmptyChart();
 		initializeMuchOfUI();
+
 	}; //end readInDataCallback
 	//start off chain of initialization by reading in the data	
 	getConfigSettings(  function(){
@@ -114,6 +117,12 @@ var barchart_and_map = (function () {
                             $.each(value,function(filtercolumn,filtername){
                                 zonefilters[filtercolumn] = filtername;
                             })
+                        }
+                        if(opt =="RotateLabels") {
+                        	ROTATELABEL = value;
+						}
+						if(opt =="BarSpacing") {
+                            BARSPACING = value;
                         }
                     })
                 }
@@ -181,25 +190,26 @@ var barchart_and_map = (function () {
                         var zoneName = d[zoneColumn];
                         var countyName = d[countyColumn];
                         var quantity = parseInt(d[quantityColumn]);
-                        if (zoneData[zoneName] == undefined) {
-                            zoneData[zoneName] = {
-                                FILTERS:{}
-                            };
-                        }
-                        zoneData[zoneName][modeName] = {
-                            COUNTY: countyName,
-                            QUANTITY: quantity,
+                        if(countyName !="Total") {
+                            if (zoneData[zoneName] == undefined) {
+                                zoneData[zoneName] = {
+                                    FILTERS: {}
+                                };
+                            }
+                            zoneData[zoneName][modeName] = {
+                                COUNTY: countyName,
+                                QUANTITY: quantity,
 
-                        };
-                        //zoneData[zoneName] = {
-                         //   FILTERS:{}
-                        //};
-                        if (Object.keys(zonefilters).length > 1) {
-                            for (var i in zonefilters) {
-                                zoneData[zoneName].FILTERS[i] = zoneFilterData.filters[zoneName - 1][zoneheaders.indexOf(i)];
+                            };
+                            //zoneData[zoneName] = {
+                            //   FILTERS:{}
+                            //};
+                            if (Object.keys(zonefilters).length > 1) {
+                                for (var i in zonefilters) {
+                                    zoneData[zoneName].FILTERS[i] = zoneFilterData.filters[zoneName - 1][zoneheaders.indexOf(i)];
+                                }
                             }
                         }
-
                         if (rawChartData[countyName] == undefined) {
                             rawChartData[countyName] = {};
                             countiesSet.add(countyName);
@@ -226,6 +236,7 @@ var barchart_and_map = (function () {
                 modes = Object.keys(modeData);
                 data = null;
                 zoneFilterData = null;
+
                 //allow GC to reclaim memory
                 //need to run through rawChartData and put modes in order and insert ones that are missing
                 chartData = [];
@@ -237,6 +248,7 @@ var barchart_and_map = (function () {
                         enabled: true
                     };
                     chartData.push(newCountyObject);
+
                     modes.forEach(function (modeName) {
                         var countyModeTotalQuantity = rawCountyObject[modeName];
                         if (countyModeTotalQuantity == undefined) {
@@ -249,6 +261,7 @@ var barchart_and_map = (function () {
                     });
                     //end modes foreach
                 });
+
                 //end countiesSet forEach
                 rawChartData = null;
                 //allow GC to reclaim memory
@@ -268,6 +281,7 @@ var barchart_and_map = (function () {
 		// 			$("#mode-share-by-county-chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
 		// 		});
 		// 		$("#mode-share-by-county-chart-selection").chosen();
+
 	}
 	//end setDataSpecificDOM
 	function updateChart(callback) {
@@ -313,6 +327,7 @@ var barchart_and_map = (function () {
 			svgChart.datum(hierarchicalData).call(extNvd3Chart);
 			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
 			//first check if
+            $('#mode-share-by-county .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate('+ROTATELABEL+'deg)');
 			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
 			if (barsWrap[0].length == 0) {
 				throw ("did not find expected part of chart")
@@ -323,7 +338,7 @@ var barchart_and_map = (function () {
 				//console.log('barsWrap mousemove');
 				var mouseY = d3.mouse(this)[1];
 				var numCounties = enabledCounties.length;
-				var heightPerGroup = barsWrapRectHeight / numCounties;
+				var heightPerGroup = (barsWrapRectHeight / numCounties);
 				var countyIndex = Math.floor(mouseY / heightPerGroup);
 				var countyObject = enabledCounties[countyIndex];
 				var newCounty = countyObject.groupLabel;
@@ -346,7 +361,7 @@ var barchart_and_map = (function () {
 			barsWrapRectHeight = bounds.height;
 			if (barsWrapRectHeight > 0) {
 				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
-				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", barsWrapRectHeight);
+				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", 20);
 				tryAgain = false;
 			}
 		}
@@ -387,8 +402,15 @@ var barchart_and_map = (function () {
 			generate: function chartGenerator() {
 					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
 					var colorScale = d3.scale.category20();
-					var nvd3Chart = nv.models.multiBarHorizontalChart();
+					var  nvd3Chart = nv.models.multiBarHorizontalChart();
+					if($("#mode-share-by-county-stacked").is(":checked")){
+					        nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(BARSPACING);
+                    } else {
+					    nvd3Chart = nv.models.multiBarHorizontalChart();
+                    }
+
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+
 					nvd3Chart.x(function (d, i) {
 						return d.label
 					}).y(function (d) {
@@ -408,6 +430,7 @@ var barchart_and_map = (function () {
 					//this is actually for xAxis since basically a sideways column chart
 					nvd3Chart.xAxis.axisLabel(countyColumn).axisLabelDistance(30);
 					//this is actually for yAxis
+
 					nv.utils.windowResize(function () {
 						//reset marginTop in case legend has gotten less tall
 						nvd3Chart.margin({
@@ -436,12 +459,14 @@ var barchart_and_map = (function () {
 			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
+
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called");
 					});
 				} //end callback function
 		});
 		//end nv.addGraph
+
 	}; //end createEmptyChart
 	function styleZoneGeoJSONLayer(feature) {
 		var color = naColor;
@@ -515,6 +540,8 @@ var barchart_and_map = (function () {
 		$.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ZONE_FILE_LOC, function (zoneTiles) {
 			"use strict";
 			//there should be at least as many zones as the number we have data for.
+
+
 			if (zoneTiles.features.length < Object.keys(zoneData).length) {
 				throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
 			}
@@ -637,6 +664,12 @@ var barchart_and_map = (function () {
 	function initializeMuchOfUI() {
 		$("#mode-share-by-county-stacked").click(function () {
 			extNvd3Chart.stacked(this.checked);
+			var test = extNvd3Chart.groupSpacing();
+			if(this.checked){
+			    extNvd3Chart.groupSpacing(BARSPACING);
+            } else {
+			     extNvd3Chart.groupSpacing(0.2);
+            }
 			extNvd3Chart.update();
 		});
 		$("#mode-share-by-county-bubbles").click(function () {
@@ -797,6 +830,7 @@ var barchart_and_map = (function () {
 		$("#mode-share-by-county-checkboxes").change(function(){
 			redrawMap();
 		});
+
 	}
 	//end initialize much of ui
 	//hex to rgb for handling transparancy
