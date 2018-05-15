@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="341c539d-bbdc-4f96-b376-dae5b739e9e8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" afterPath="$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/portland/region.json" afterPath="$PROJECT_DIR$/data/portland/region.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/grouped_barchart.js" afterPath="$PROJECT_DIR$/src/grouped_barchart.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/grouped_barchart_data.js" afterPath="$PROJECT_DIR$/src/grouped_barchart_data.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,19 +13,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4352">
-              <caret line="256" column="29" lean-forward="false" selection-start-line="256" selection-start-column="29" selection-end-line="256" selection-end-column="29" />
-              <folding>
-                <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="grouped_barchart_data.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/grouped_barchart_data.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -96,11 +78,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="grouped_barchart.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="grouped_barchart.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/grouped_barchart.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="306">
               <caret line="190" column="61" lean-forward="false" selection-start-line="190" selection-start-column="61" selection-end-line="190" selection-end-column="61" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BarChartAndMapData.csv" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="816">
+              <caret line="21470" column="16" lean-forward="false" selection-start-line="21470" selection-start-column="16" selection-end-line="21470" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -111,7 +103,17 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="680">
               <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
-              <folding />
+              <folding>
+                <marker date="1526392559846" expanded="true" signature="0:2458" ph="{&quot;Title&quot;: &quot;Oregon Metro MCEVIZ&quot;...}" />
+                <marker date="1526392559846" expanded="true" signature="947:1458" ph="{&quot;BarSpacing&quot;: &quot;0.7&quot;...}" />
+                <marker date="1526392559846" expanded="true" signature="1237:1327" ph="[...]" />
+                <marker date="1526392559846" expanded="true" signature="1358:1452" ph="[...]" />
+                <marker date="1526392559846" expanded="true" signature="1475:1845" ph="{&quot;BarSpacing&quot;: &quot;0.6&quot;...}" />
+                <marker date="1526392559846" expanded="true" signature="1653:1839" ph="{&quot;minority_zone&quot;: &quot;Minority&quot;...}" />
+                <marker date="1526392559846" expanded="true" signature="1866:2052" ph="{&quot;Reds&quot;: false...}" />
+                <marker date="1526392559846" expanded="true" signature="2072:2456" ph="{&quot;ShowPeriodsAsDropdown&quot;: true...}" />
+                <marker date="1526392559846" expanded="true" signature="2264:2450" ph="{&quot;minority_zone&quot;: &quot;Minority&quot;...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -210,7 +212,6 @@
         <option value="$PROJECT_DIR$/data/portland/I205/BarChartData.csv" />
         <option value="$PROJECT_DIR$/src/three3d.js" />
         <option value="$PROJECT_DIR$/src/barchart_and_map.js" />
-        <option value="$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" />
         <option value="$PROJECT_DIR$/data/portland/I305test/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/grouped_barchart.css" />
@@ -218,6 +219,7 @@
         <option value="$PROJECT_DIR$/data/portland/region.json" />
         <option value="$PROJECT_DIR$/src/grouped_barchart_data.js" />
         <option value="$PROJECT_DIR$/src/grouped_barchart.js" />
+        <option value="$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" />
       </list>
     </option>
   </component>
@@ -227,7 +229,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
@@ -273,7 +275,7 @@
               <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
               <item name="portland" type="462c0819:PsiDirectoryNode" />
-              <item name="I305test" type="462c0819:PsiDirectoryNode" />
+              <item name="I205" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
@@ -346,7 +348,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -682,13 +684,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="23580" column="20" lean-forward="true" selection-start-line="23580" selection-start-column="20" selection-end-line="23580" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4352">
@@ -762,7 +757,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="680">
           <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
-          <folding />
+          <folding>
+            <marker date="1526392559846" expanded="true" signature="0:2458" ph="{&quot;Title&quot;: &quot;Oregon Metro MCEVIZ&quot;...}" />
+            <marker date="1526392559846" expanded="true" signature="947:1458" ph="{&quot;BarSpacing&quot;: &quot;0.7&quot;...}" />
+            <marker date="1526392559846" expanded="true" signature="1237:1327" ph="[...]" />
+            <marker date="1526392559846" expanded="true" signature="1358:1452" ph="[...]" />
+            <marker date="1526392559846" expanded="true" signature="1475:1845" ph="{&quot;BarSpacing&quot;: &quot;0.6&quot;...}" />
+            <marker date="1526392559846" expanded="true" signature="1653:1839" ph="{&quot;minority_zone&quot;: &quot;Minority&quot;...}" />
+            <marker date="1526392559846" expanded="true" signature="1866:2052" ph="{&quot;Reds&quot;: false...}" />
+            <marker date="1526392559846" expanded="true" signature="2072:2456" ph="{&quot;ShowPeriodsAsDropdown&quot;: true...}" />
+            <marker date="1526392559846" expanded="true" signature="2264:2450" ph="{&quot;minority_zone&quot;: &quot;Minority&quot;...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -776,8 +781,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/grouped_barchart.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
+        <state relative-caret-position="306">
           <caret line="190" column="61" lean-forward="false" selection-start-line="190" selection-start-column="61" selection-end-line="190" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="21470" column="16" lean-forward="false" selection-start-line="21470" selection-start-column="16" selection-end-line="21470" selection-end-column="16" />
           <folding />
         </state>
       </provider>
