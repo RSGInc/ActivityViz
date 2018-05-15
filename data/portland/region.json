@@ -36,9 +36,9 @@
         "BarSpacing": "0.7", 
         "RotateLabels": "0", 
         "NumberColsGrouped": 2, 
-        "SwapLegendByDefault": true,
+        "SwapLegendByDefault": false,
         "ShowAsPercentByDefault": false, 
-        "ShowAsVerticalByDefault": false,
+        "ShowAsVerticalByDefault": true,
         "StackAllChartsByDefault": true, 
         "ChartWidthOverride": [
             12, 
