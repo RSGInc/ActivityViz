@@ -18,3 +18,7 @@ Presumably this is because it used the smae code as the vertical chart
 .nvd3 rect[height="1"] {
   display: none !important;
 }
+
+.nvd3 rect[width="1"] {
+  display: none !important;
+}
