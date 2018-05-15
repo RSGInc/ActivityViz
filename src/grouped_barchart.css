@@ -2,15 +2,23 @@
 Presumably this is because it used the smae code as the vertical chart
 */
 
-#grouped-barchart-div .nv-x .tick text {
+#grouped-barchart-div .nv-x .tick text,#grouped-barchart-div .nv-x .tick foreignObject p {
 	font-size: 15;
 }
 
-#grouped-barchart-div .nv-x .tick text.selected {
+#grouped-barchart-div .nv-x .tick text.selected, #grouped-barchart-div .nv-x .tick foreignObject p.selected {
 	font-weight: bold;
 }
 
 .barcharttitle{
 	text-align:center;
 	font-size: 1.1em;
+}
+
+.nvd3 rect[height="1"] {
+  display: none !important;
+}
+
+.nvd3 rect[width="1"] {
+  display: none !important;
 }
