@@ -44,8 +44,10 @@ var chartDataContainer=[];
                                 showAsVertical = value;
                             if (opt == "ShowAsPercentByDefault" && showPercentages == undefined)
                                 showPercentages = value;
-                            if (opt == "StackAllChartsByDefault" && stackChartsByDefault == undefined)
+                            if (opt == "StackAllChartsByDefault" && stackChartsByDefault == undefined) {
                                 stackChartsByDefault = value;
+                                showAsStacked = value;
+                            }
                             if (opt == "ChartWidthOverride" && ChartWidthOverride == undefined)
                                 if (value.length > 0)
                                     ChartWidthOverride = value;
@@ -226,7 +228,7 @@ var chartDataContainer=[];
                     mainGrpCol: mainGroupColumn,
                     quantCol: quantityColumn,
                     subGrpCol: subGroupColumn,
-                    showAsGrped: !showAsStacked,
+                    showAsGrped: showAsStacked,
                     rotateLabel: ROTATELABEL,
                     barSpacing: BARSPACING,
                     chartWidth: widthOfEachCol,
@@ -284,7 +286,6 @@ var chartDataContainer=[];
     d3.selectAll(".grouped-barchart-main-group").html(mainGroupColumn);
     d3.selectAll(".grouped-barchart-sub-group").html(subGroupColumn);
     d3.selectAll(".grouped-barchart-sub-group-example").html(chartData[0].key);
-
 }
     } //end createGrouped
     createGrouped();
