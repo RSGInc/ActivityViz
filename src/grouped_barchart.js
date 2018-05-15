@@ -213,6 +213,7 @@ function grouped_barchart (id, data,options) {
             });
 
         }
+
 					//this is actually for yAxis
 					//nvd3Chart.legend.width(900);
 					nv.utils.windowResize(function () {
@@ -250,4 +251,7 @@ function grouped_barchart (id, data,options) {
  //end initializeMuchOfUI
 	//return only the parts that need to be global
 	return {};
+
 }
+
+
