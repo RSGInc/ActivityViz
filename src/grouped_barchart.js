@@ -52,8 +52,9 @@ function grouped_barchart (id, data,options) {
 	//start off chain of initialization by reading in the data	
 
 function runAfterChartCreated(){
-    if(showAsVertical)
+    if($("#grouped-barchart-toggle-horizontal").prop('checked')) {
                 $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate(-90deg)').css('text-anchor','end').attr('y','-7');
+                }
 }
 
 
