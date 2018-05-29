@@ -28,6 +28,7 @@ var three3d = (function three3dFunction() {
 	var handlers = [25, 50, 75];
 
 	var drawCentroids = true;
+	var showControls = true;
 	var map;
 	var periodData = {}; //map of periods with array of all zone quantities - does not need zone ids since used for geostats
 	var currentPeriod = 19; //12 noon
@@ -265,6 +266,8 @@ function getTheConfigFile(callback){
 		$('.three3d-purpose').text(headers[2]);
 		if(showPeriodsAsDropdown){
 		    if(DataHasPeriods== false){
+		        $('#three3d-classification-label').hide();
+		        $('#three3d-classification').hide();
                 $('#three3d-current-period').hide();
                 $('#three3d-slider-time').hide();
                 $('#three3d-slider').hide();
@@ -381,6 +384,7 @@ function getTheConfigFile(callback){
 		}
 
 		var controls = VIZI.Controls.orbit().addTo(map);
+
 		VIZI.imageTileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
 			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
 		}).addTo(map);
@@ -519,8 +523,15 @@ function getTheConfigFile(callback){
 			}); //end zoneGeoJSON forEach
 			redrawMap();
 		}); //end change handler
+        $("#three3d-controls").change(function (){
+            showControls = this.checked;
+            if(showControls)
+                $('.control button').show();
+            else
+                $('.control button').hide();
+        });
 		$("#three3d-centroids").attr('checked', drawCentroids);
-
+		$("#three3d-controls").attr('checked',showControls);
 		function updateTimeSliderTooltip(value) {
 			var timeString = abmviz_utilities.halfHourTimePeriodToTimeString(value);
 			$('#three3d-slider-time .ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + timeString + '</div></div>');

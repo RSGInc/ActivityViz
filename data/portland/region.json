@@ -14,7 +14,6 @@
     "FrontPageGraphic": "oregon-metro_black.png", 
     "scenarios": {
         "I205": "- I205 minus NoBuild"
-
     }, 
     "visualizations": {
         "GrpBar": true, 
@@ -33,11 +32,11 @@
         "ConvertAxesToPercent": false
     }, 
     "GroupedCharts": {
-        "BarSpacing": "0.7", 
+        "BarSpacing": "0.2", 
         "RotateLabels": "0", 
         "NumberColsGrouped": 2, 
         "SwapLegendByDefault": false,
-        "ShowAsPercentByDefault": false, 
+        "ShowAsPercentByDefault": "N/A", 
         "ShowAsVerticalByDefault": true,
         "StackAllChartsByDefault": true, 
         "ChartWidthOverride": [
@@ -46,18 +45,14 @@
             6, 
             6, 
             6
-        ], 
-        "IndependentScale": [
-            "Everyone", 
-            "everybody", 
-            "coc_ext_age18or65"
         ]
     }, 
     "GrpMap": {
         "BarSpacing": "0.6", 
         "RotateLabels": "0", 
         "ZoneFilterFile": "cocs.csv", 
-        "ZoneFilterLabel": "Communities of Concern", 
+        "ZoneFilterLabel": "Historically Marginalized Communities", 
+        "CycleMapTools": false, 
         "ZoneFilters": {
             "minority_zone": "Minority", 
             "lowengpro_zone": "Low English", 
@@ -77,7 +72,7 @@
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 
         "DataHasPeriods": false, 
-        "ZoneFilterLabel": "Communities of Concern", 
+        "ZoneFilterLabel": "Historically Marginalized Communities", 
         "ZoneFilterFile": "cocs.csv", 
         "ZoneFilters": {
             "minority_zone": "Minority", 

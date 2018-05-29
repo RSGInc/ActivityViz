@@ -38,15 +38,42 @@ var chartDataContainer=[];
                                 numberOfCols = value;
                             if (opt == "IndependentScale")
                                 independentScale = value;
-                            if (opt == "SwapLegendByDefault" && pivotData == undefined)
-                                pivotData = value;
-                            if (opt == "ShowAsVerticalByDefault" && showAsVertical == undefined)
-                                showAsVertical = value;
-                            if (opt == "ShowAsPercentByDefault" && showPercentages == undefined)
-                                showPercentages = value;
+                            if (opt == "SwapLegendByDefault" && pivotData == undefined) {
+                                if (value == "N/A") {
+                                    pivotData = false;
+                                    $("#grouped-barchart-pivot-axes").closest('li').hide();
+                                }
+                                else
+                                    pivotData = value;
+                            }
+                            if (opt == "ShowAsVerticalByDefault" && showAsVertical == undefined) {
+                                if (value == "N/A") {
+                                    showAsVertical = false;
+                                    $("#grouped-barchart-toggle-horizontal").closest('li').hide();
+                                }
+                                else
+                                    showAsVertical = value;
+                            }
+                            if (opt == "ShowAsPercentByDefault" && showPercentages == undefined) {
+                                if (value == "N/A") {
+                                    showPercentages = false;
+                                    $("#grouped-barchart-toggle-percentage").closest('li').hide();
+                                }
+                                else
+                                    showPercentages = value;
+
+                            }
                             if (opt == "StackAllChartsByDefault" && stackChartsByDefault == undefined) {
-                                stackChartsByDefault = value;
-                                showAsStacked = value;
+                                 if (value == "N/A") {
+                                     stackChartsByDefault = false;
+                                     showAsStacked = false;
+                                     $("#grouped-barchart-toggle-stacked").closest('li').hide();
+                                 }
+                                 else {
+                                      stackChartsByDefault = value;
+                                     showAsStacked = value;
+                                 }
+
                             }
                             if (opt == "ChartWidthOverride" && ChartWidthOverride == undefined)
                                 if (value.length > 0)
@@ -213,8 +240,7 @@ var chartDataContainer=[];
                  d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
                     .append('div').attr('id', chart.chartName+"_bar").style('min-height','500px').attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
-                        chart.chartName
-                );
+                       );
                 d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");//.style('height','400px');
                 //setDataSpecificDOM();
 
@@ -231,9 +257,9 @@ var chartDataContainer=[];
                     showAsGrped: showAsStacked,
                     rotateLabel: ROTATELABEL,
                     barSpacing: BARSPACING,
-                    chartWidth: widthOfEachCol,
-                    maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
-                    minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
+                    chartWidth: widthOfEachCol//,
+                    //maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
+                   // minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
                 };
                 grouped_barchart(chartId, chart.data,options);
                 //createEmptyChart(chart);
