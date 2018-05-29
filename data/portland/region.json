@@ -13,9 +13,7 @@
     "FrontPageTitle": "Oregon Metro", 
     "FrontPageGraphic": "oregon-metro_black.png", 
     "scenarios": {
-        "I205": "- I205 minus NoBuild", 
-        "I205Test": "- I205Test", 
-        "I305test": "- I305test"
+        "I205": "- I205 minus NoBuild"
     }, 
     "visualizations": {
         "GrpBar": true, 
@@ -37,9 +35,9 @@
         "BarSpacing": "0.2", 
         "RotateLabels": "0", 
         "NumberColsGrouped": 2, 
-        "SwapLegendByDefault": true, 
+        "SwapLegendByDefault": false,
         "ShowAsPercentByDefault": "N/A", 
-        "ShowAsVerticalByDefault": true, 
+        "ShowAsVerticalByDefault": true,
         "StackAllChartsByDefault": true, 
         "ChartWidthOverride": [
             12, 
