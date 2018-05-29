@@ -71,6 +71,7 @@ var barchart_and_map = (function () {
 	var CENTER_LOC = [];
 	var ROTATELABEL = 0;
 	var BARSPACING = 0.2;
+	var showCycleTools = true;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
@@ -123,6 +124,9 @@ var barchart_and_map = (function () {
 						}
 						if(opt =="BarSpacing") {
                             BARSPACING = value;
+                        }
+						if(opt =="CycleMapTools") {
+                            showCycleTools = value;
                         }
                     })
                 }
@@ -530,7 +534,9 @@ var barchart_and_map = (function () {
 		//var latlngcenter = JSON.parse(CENTER_LOC);
 		//var lat=latlngcenter[0];
 		//var lng=latlngcenter[1];
-		map = L.map("mode-share-by-county-map").setView(CENTER_LOC, 12);
+		map = L.map("mode-share-by-county-map",{
+			minZoom: 7
+		}).setView(CENTER_LOC, 12);
 		//centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
@@ -600,6 +606,7 @@ var barchart_and_map = (function () {
 				var allCountyBounds = countyLayer.getBounds();
 				console.log(allCountyBounds);
 				map.fitBounds(allCountyBounds);
+				map.setMaxBounds(allCountyBounds);
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 			}).success(function () {
@@ -688,6 +695,11 @@ var barchart_and_map = (function () {
 				circlesLayerGroup.removeFrom(map);
 			}
 		});
+		if(showCycleTools == false) {
+		    $('#mode-share-by-county-slider').hide();
+		    $('#mode-share-by-county-start-cycle-map').hide();
+		    $('#mode-share-by-county-cycle-frequency').closest('div').hide();
+        }
 		$("#mode-share-by-county-bubble-size").change(updateBubbleSize);
 		$("#mode-share-by-county-legend-type").click(function () {
 			extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
