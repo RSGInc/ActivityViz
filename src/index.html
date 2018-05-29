@@ -78,9 +78,17 @@
 			</p>
 			<div class="col-xs-12" style="margin-top:1em;">
 				<div class="col-xs-6" style="margin-bottom:1em">
-					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all time periods.
+					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all periods.
 
 					<div class="col-xs-12">
+                        <label>
+                                    <input type="checkbox" id="three3d-controls">Controls
+								</input>
+                                </label>
+                        				<label style="padding-left:10px;">
+                                    <input type="checkbox" id="three3d-centroids">Centroids
+								</input>
+                                </label>
 						<div class="row control">
 							<!-- symbols defined at: https://graphemica.com/ -->
 							<button class="move left" title="move left">&larr;</button>
@@ -94,10 +102,7 @@
 							<button class="rotate right" title="rotate right">&#8634;</button> &nbsp;&nbsp;&nbsp;
 							<button class="zoom in" title="zoom in">&#9547;</button>
 							<button class="zoom out" title="zoom out">&#9473;</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>
-                                    <input type="checkbox" id="three3d-centroids">Centroids
-								</input>
-                                </label>
+
 
 						</div>
 					</div>
@@ -245,7 +250,7 @@
 			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
 				<div class="row" style="margin-top:4px">
 					<ul>
-						<li>Click on the 'Grouped' or 'Stacked' radio buttons to change chart style</li>
+
 						<li>
 							Click on legend symbols/labels to show or hide the <span class="grouped-barchart-sub-group">PLACEHOLDER</span>
 						</li>
