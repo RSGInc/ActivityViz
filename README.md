@@ -55,12 +55,11 @@ Each Data/Region folder needs the following:
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis for the non-vertical chart.  Default is 0 can go from -90 to 90. 
         - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
-        - SwapLegendByDefault: true/false flag that swaps the bar and legend by default for all grouped charts
-        - ShowAsPercentByDefault: true/false flag that shows data as a percentage by default for all grouped charts
-        - ShowAsVerticalByDefault: true/false flag that shows the bar chart as vertical rather than horizontal by default for all charts
-        - StackAllChartsByDefault: true/false flag that shows all data as stacked rather than grouped by default for all charts
-        - ChartWidthOverride: array of values to allow you to individually set each chart's width
-        - IndependentScale: array of values to set which charts should have their own scale. When this entry is present the charts not named will share a scale     
+        - SwapLegendByDefault: (true/false or "N/A" to hide) flag that swaps the bar and legend by default for all grouped charts
+        - ShowAsPercentByDefault: (true/false or "N/A" to hide) flag that shows data as a percentage by default for all grouped charts
+        - ShowAsVerticalByDefault: (true/false or "N/A" to hide) flag that shows the bar chart as vertical rather than horizontal by default for all charts
+        - StackAllChartsByDefault: (true/false or "N/A" to hide) flag that shows all data as stacked rather than grouped by default for all charts
+        - ChartWidthOverride: array of values to allow you to individually set each chart's width             
 
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
@@ -74,6 +73,7 @@ Each Data/Region folder needs the following:
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
+        - CycleMapTools: true/false flag to hide or show the cycle map tools
 3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
 4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
 5. cb_2015_us_county_500k GEORGIA.json - Example ARC counties.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).

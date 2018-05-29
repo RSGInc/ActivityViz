@@ -51,10 +51,11 @@ function grouped_barchart (id, data,options) {
 
 	//start off chain of initialization by reading in the data	
 
-function runAfterChartCreated(){
-    if($("#grouped-barchart-toggle-horizontal").prop('checked')) {
-                $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform','rotate(-90deg)').css('text-anchor','end').attr('y','-7');
-                }
+function runAfterChartCreated() {
+    if ($("#grouped-barchart-toggle-horizontal").prop('checked')) {
+        $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
+    }
+
 }
 
 
@@ -152,74 +153,80 @@ runAfterChartCreated();
 
 		nv.addGraph({
 			generate: function chartGenerator() {
-					//console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
-					var colorScale = d3.scale.category20();
-					var nvd3Chart = nv.models.multiBarHorizontalChart();
-					var obj = $(id+' .nv-controlsWrap .nv-legend-symbol')[0];
-					var shwBarSpace =  $(obj).css('fill-opacity') == 0;
-					if(showAsVertical)
-					   nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace?0.2:BARSPACING).staggerLabels(false);
-					else
-					    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace?0.2:BARSPACING).height(400);
-					    //xRange([0,125])
-					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
+                //console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
+                var colorScale = d3.scale.category20();
+                var nvd3Chart = nv.models.multiBarHorizontalChart();
+                var obj = $(id + ' .nv-controlsWrap .nv-legend-symbol')[0];
+                var shwBarSpace = $(obj).css('fill-opacity') == 0;
+                if (showAsVertical)
+                    nvd3Chart = nv.models.multiBarChart().groupSpacing(shwBarSpace ? 0.2 : BARSPACING).staggerLabels(false);
+                else
+                    nvd3Chart = nv.models.multiBarHorizontalChart().groupSpacing(shwBarSpace ? 0.2 : BARSPACING).height(400);
+                //xRange([0,125])
+                //console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 
 
-					nvd3Chart.x(function (d, i) {
-						return d.label
-					}).y(function (d) {
-						return showPercentages ? d.percentage : d.value;
-					}).color(function (d, i) {
-						var color = colorScale(i);
-						//console.log('barColor i=' + i + ' columnsColorIndex=' + columnsColorIndex + ' columns=' + d.key + ' mainGroup=' + d.label + ' count=' + d.value + ' color=' + color);
-						return color;
-					}).duration(250).margin({
-						left: showAsVertical?marginLeftVert:marginLeft,
-						right: showAsVertical?marginRightVert:marginRight,
-						top: showAsVertical?marginTopVert:marginTop,
-						bottom: showAsVertical?marginBottomVert:marginBottom
-					}).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
+                nvd3Chart.x(function (d, i) {
+                    return d.label
+                }).y(function (d) {
+                    return showPercentages ? d.percentage : d.value;
+                }).color(function (d, i) {
+                    var color = colorScale(i);
+                    //console.log('barColor i=' + i + ' columnsColorIndex=' + columnsColorIndex + ' columns=' + d.key + ' mainGroup=' + d.label + ' count=' + d.value + ' color=' + color);
+                    return color;
+                }).duration(0).margin({
+                    left: showAsVertical ? marginLeftVert : marginLeft,
+                    right: showAsVertical ? marginRightVert : marginRight,
+                    top: showAsVertical ? marginTopVert : marginTop,
+                    bottom: showAsVertical ? marginBottomVert : marginBottom
+                }).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
 
 
-                    if(maxVal != 0 && !showPercentages) {
-					nvd3Chart.yDomain( [minVal,maxVal]);
-                    }
-					nvd3Chart.yAxis.tickFormat(showPercentages	 ?  d3.format('.0%') : d3.format(',.0f'));
-					nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical?marginLeft-200:0);
-					//this is actually for xAxis since basically a sideways column chart
+               // if (maxVal != 0 && !showPercentages) {
+                 //   nvd3Chart.yDomain([minVal, maxVal]);
+                //}
+                nvd3Chart.yAxis.tickFormat(showPercentages ? d3.format('.0%') : d3.format(',.0f'));
+                nvd3Chart.yAxis.axisLabel(quantityColumn).axisLabelDistance(showAsVertical ? marginLeft - 200 : 0);
+                //this is actually for xAxis since basically a sideways column chart
                 //if(showAsVertical)
-                   // nvd3Chart.rotateLabels(-90);
-					nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical?125:marginLeft - 100);
+                // nvd3Chart.rotateLabels(-90);
+                nvd3Chart.xAxis.axisLabel(mainGroupColumn).axisLabelDistance(showAsVertical ? 125 : marginLeft - 100);
 
-		if(showAsVertical ) {
-            nvd3Chart.reduceXTicks(false);
+                if (showAsVertical) {
+                    nvd3Chart.reduceXTicks(false);
+                }					//this is actually for yAxis
+                nvd3Chart.legend.width(900);
+                nv.utils.windowResize(function () {
+                    //reset marginTop in case legend has gotten less tall
+                    nvd3Chart.margin({
+                        top: marginTop
+                    });
+                    updateChart(function () {
+                        console.log('updateChart callback after windowResize');
+                    });
+                });
 
-        }
+                nvd3Chart.multibar.dispatch.on("elementMouseover", function (d, i) {
+                    var mainGroupUnderMouse = d.value;
+                    changeCurrentMainGroup(mainGroupUnderMouse);
+                });
+                //furious has colored boxes with checkmarks
+                //nvd3Chart.legend.vers('furious');
+                nvd3Chart.legend.margin({top: 10, right: 0, left: -75, bottom: 20});
 
-					//this is actually for yAxis
-					nvd3Chart.legend.width(900);
-					nv.utils.windowResize(function () {
-						//reset marginTop in case legend has gotten less tall
-						nvd3Chart.margin({
-							top: marginTop
-						});
-						updateChart(function () {
-							console.log('updateChart callback after windowResize');
-						});
-					});
-					nvd3Chart.multibar.dispatch.on("elementMouseover", function (d, i) {
-						var mainGroupUnderMouse = d.value;
-						changeCurrentMainGroup(mainGroupUnderMouse);
-					});
-					//furious has colored boxes with checkmarks
-					//nvd3Chart.legend.vers('furious');
-				nvd3Chart.legend.margin({top:10,right:0,left:-75,bottom:20});
-					return nvd3Chart;
-				} //end generate
+               // nvd3Chart.xAxis.rotateLabels(-90);
+
+                return nvd3Chart;
+            } //end generate
 				,
 			callback: function (newGraph) {
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
+                    extNvd3Chart.dispatch.on("renderEnd", function (d, j) {
+                    if ($("#grouped-barchart-toggle-horizontal").prop('checked')) {
+                        $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
+                    }
+                });
 
 					updateChart(function () {
 						console.log("updateChart callback during after the nvd3 callback called")
