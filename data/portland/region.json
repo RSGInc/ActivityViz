@@ -38,7 +38,7 @@
         "SwapLegendByDefault": false,
         "ShowAsPercentByDefault": "N/A", 
         "ShowAsVerticalByDefault": true,
-        "StackAllChartsByDefault": true, 
+        "StackAllChartsByDefault": false, 
         "ChartWidthOverride": [
             12, 
             6, 
