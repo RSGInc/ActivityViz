@@ -9,7 +9,7 @@
     "sandiego":{
       "default":  false
     },
-    "sacremento":{
+    "sacramento":{
       "default":  true
     }
   }

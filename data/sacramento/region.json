@@ -1,5 +1,5 @@
 {
-  "Title":"SACOG DaySim ABMVIZ",
+  "Title":"SACOG ABMVIZ",
   "CountyFile":"sacog_counties.json",
   "ZoneFile":"sacogll.json",
   "Icon":"sacog.ico",
