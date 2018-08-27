@@ -1,9 +1,10 @@
 # ABMVIZ
-ABMVIZ is an interactive travel demand model output visualization tool.  It is built with JavaScript 
-and HTML5 technologies and works with both trip-based and activity-based model data.  The dashboard features several 
-innovative interactive and customizable visualizations for exploring model scenario results, such as 3D maps of 
+ABMVIZ is an interactive travel data visualization tool.  It is built with JavaScript 
+and HTML5 technologies and works with various types of travel data - household travel surveys, trip-based
+model outputs, activity-based model outputs, disaggregate passive data, etc.  The dashboard features several 
+interactive and customizable visualizations for exploring data, such as 3D maps of 
 trips in time and space, time use by person type and activity, radar charts for performance measure analysis, 
-sunburst diagrams for visualizing trip mode shares, and animated bubble maps.  ABMVIZ is published using GitHub 
+sunburst diagrams for visualizing mode shares, and animated bubble maps.  ABMVIZ is published using GitHub 
 pages which eliminates most of the administrative backend in traditional systems.  This improved deployment 
 strategy makes maintenance much easier for the modeling staff.
 
@@ -21,9 +22,8 @@ region by doing the following:
 # Adding New Scenario Data
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
 
-1. Add the scenario name to the scenarios.csv definition file in the region data folder
-2. Create a new folder in the region specific folder with the scenario name
-3. Copy in the data tables that supply the data for the visualizations, each with the following set of fields:
+1. Create a new folder in the region specific folder with the scenario name
+2. Copy in the data tables that supply the data for the visualizations, each with the following set of fields:
   - BarChartAndMapData.csv: ZONE, COUNTY, <BAR  LABEL>, QUANTITY  
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
   - 3DAnimatedMapData.csv: ZONE, PERIOD, QUANTITY
@@ -32,8 +32,10 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
 
 Note that all the data tables are not required and each data table is used to populate a specific visual.  Take 
-a look at the example region data tables to see how each visual is constructed based on the data.  Most of the 
-visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  
+a look at the example data tables to see how each visual is constructed based on the data.  Most of the 
+visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  The
+PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the 
+next day.  The TimeUse purposes must be ALLCAPS and must include atleast HOME, WORK, SCHOOL.
 
 # Data/Region Folder
 Each Data/Region folder needs the following:
@@ -41,12 +43,14 @@ Each Data/Region folder needs the following:
     - Title: Title that shows up in tab of web page
     - CountyFile: Name of the file with the county data
     - ZoneFile: Name of the file with the zone data
+    - Icon: ico format agency logo image file stored in the img folder (use an online converter from png if needed)
+    - Logo: png format agency logo image file stored in the img folder 
     - NavbarTitle: Abbreviated name to appear in the navbar
     - LinkURL: URL of the link that appears in navbar
-    - CenterMap: Lat/Lng of the center point for the maps to use
-    - scenarios: Defines each scenario (i.e. model run) available to the user
+    - CenterMap: Lat/Lng in decimal degree of the center point for the maps to use
     - FrontPageTitle: Text to appear about region scenarions on front page
     - visualizations: true/false flag for each visualization to set default value for visuals by region    
+    - scenarios: Defines each scenario (i.e. model run) available to the user
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
         - IndependentScale: Names of charts to separate into second scale and collection of axes
@@ -59,8 +63,7 @@ Each Data/Region folder needs the following:
         - ShowAsPercentByDefault: (true/false or "N/A" to hide) flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: (true/false or "N/A" to hide) flag that shows the bar chart as vertical rather than horizontal by default for all charts
         - StackAllChartsByDefault: (true/false or "N/A" to hide) flag that shows all data as stacked rather than grouped by default for all charts
-        - ChartWidthOverride: array of values to allow you to individually set each chart's width             
-
+        - ChartWidthOverride: array of values to allow you to individually set each chart's width
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
@@ -69,23 +72,22 @@ Each Data/Region folder needs the following:
         - ZoneFilterLabel: a label to be shown above the list of zone filters     
     - GrpMap: Barchart that also displays with a map
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
-        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.        
+        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CycleMapTools: true/false flag to hide or show the cycle map tools
-3. BS10 - Example ARC scenario data folder with its name equal to its scenarios.csv entry
-4. ZoneShape.GeoJSON - Example ARC TAZs geojson feature collection with the id property equal to the TAZ number.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
-5. cb_2015_us_county_500k GEORGIA.json - Example ARC counties.  The shapefile was converted to geojson with [mapshaper](http://www.mapshaper.org).
-    
-# BS10 Example Scenario Folder
+3. Data Folder - Scenario data folder with its name equal to its scenario entry
+4. ZoneShape.GeoJSON - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
+5. cb_2015_us_county_500k GEORGIA.json - County polygons with the *Name* property equal to the county name.
+
+# Example Scenario Folder
 1. BarChartAndMapData.csv - demo data source for the bar chart and map visual - trips by origin zone, county, and mode
 2. TimeUseData.csv - demo data source for the time use visual - persons by type, hour of the day, activity purpose
 3. 3DAnimatedMapData.csv - demo data source for the 3D animated map visual - persons not at home by zone, hour of the day
 4. TreeMapData.csv - demo data source for the tree map visual - trips by mode groups and mode
 5. RadarChartsData.csv - demo data source for the radar charts visual - four summaries, jobs housing balance, accessible employment, transit mode share, and zero car transit trips per household
 6. BarChartData.csv - demo data source for the bar chart visual - activity patterns by person type
-
 
 # How to Run the Website Locally
 1. Run the Python http server from this project directory via the following command:

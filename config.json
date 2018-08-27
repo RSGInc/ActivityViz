@@ -1,12 +1,15 @@
 {
   "regions":{
     "atlanta":{
-      "default":  true
+      "default":  false
     },
     "portland":{
-      "default":  true
+      "default":  false
     },
     "sandiego":{
+      "default":  false
+    },
+    "sacremento":{
       "default":  true
     }
   }
