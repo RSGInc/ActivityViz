@@ -3,7 +3,7 @@
   "CountyFile":"sacog_counties.json",
   "ZoneFile":"sacogll.json",
   "Icon":"sacog.ico",
-  "Logo":"sacog.png",
+  "Logo":"SACOG.png",
   "NavbarTitle":"ABMVIZ",
   "LinkURL":"https://www.sacog.org/",
   "CenterMap": [38.57576, -121.47885],  
