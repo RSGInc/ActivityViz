@@ -31,11 +31,12 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - RadarChartsData.csv: AXIS, CHART, <QUANTITY 1 LABEL>, <QUANTITY 2 LABEL>, ...
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
 
-Note that all the data tables are not required and each data table is used to populate a specific visual.  Take 
+Notes: 
+  - All data tables are not required and each data table is used to populate a specific visual.  Take 
 a look at the example data tables to see how each visual is constructed based on the data.  Most of the 
-visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  The
-PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the 
-next day.  The TimeUse purposes must be ALLCAPS and must include atleast HOME, WORK, SCHOOL.
+visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  
+  - The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the next day.  
+  - The TimeUse purposes must be ALLCAPS and must include atleast HOME, WORK, SCHOOL.  TimeUse must also include an ALL person types.
 
 # Data/Region Folder
 Each Data/Region folder needs the following:

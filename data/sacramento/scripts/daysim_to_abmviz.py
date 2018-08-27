@@ -62,14 +62,14 @@ trips['hhcounty'] = counties.loc[trips['hhtaz']]['COUNTY'].tolist()
 # code DaySim mode person type, mode, purpose labels, and times
 
 persontype_codes_to_labels =	{
-  1: "full time worker",
-  2: "part time worker",
-  3: "non worker age 65 plus",
-  4: "other non working adult",
-  5: "university student",
-  6: "child age 16 plus",
-  7: "child age 5 to 15",
-  8: "child age 0 to 4",
+  1: "FULL TIME WORKER",
+  2: "PART TIME WORKER",
+  3: "NON WORKER AGE 65 PLUS",
+  4: "OTHER NON WORKING ADULT",
+  5: "UNIVERSITY STUDENT",
+  6: "CHILD AGE 16 PLUS",
+  7: "CHILD AGE 5 TO 15",
+  8: "CHILD AGE 0 TO 4",
 }
 
 mode_codes_to_labels =	{
@@ -208,7 +208,7 @@ barchart.to_csv(barchart_filename, index=False)
 
 timeuse = in_period_table_period_field[['ptype','period','purpose','expfac']].groupby(['ptype','period','purpose']).sum().reset_index()
 timeuse_all = in_period_table_period_field[['period','purpose','expfac']].groupby(['period','purpose']).sum().reset_index()
-timeuse_all['ptype'] = "all"
+timeuse_all['ptype'] = "ALL"
 timeuse_all = timeuse_all[["ptype","period","purpose","expfac"]]
 timeuse = timeuse.append(timeuse_all, ignore_index=True)
 timeuse['purpose'] = map(lambda x: purpose_codes_to_labels[x], timeuse['purpose'])
