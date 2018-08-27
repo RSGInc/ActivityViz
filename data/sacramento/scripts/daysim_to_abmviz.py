@@ -12,18 +12,20 @@ import numpy as np
 # inputs
 
 # model
-trips_filename = '_trip.tsv'
-households_filename = '_household.tsv'
-persons_filename = '_person.tsv'
-person_days_filename = '_person_day.tsv'
-sep= "\t"
+#trips_filename = '_trip.tsv'
+#households_filename = '_household.tsv'
+#persons_filename = '_person.tsv'
+#person_days_filename = '_person_day.tsv'
+#sep= "\t"
+#convert_times_to_minpastmid = False
 
 # survey
-#trips_filename = 'sacog_tripx.dat'
-#households_filename = 'sacog_hhrecx.dat'
-#persons_filename = 'sacog_precx.dat'
-#person_days_filename = 'sacog_pdayx.dat'
-#sep= " "
+trips_filename = 'sacog_tripx.dat'
+households_filename = 'sacog_hhrecx.dat'
+persons_filename = 'sacog_precx.dat'
+person_days_filename = 'sacog_pdayx.dat'
+sep= " "
+convert_times_to_minpastmid = True
 
 counties_filename = 'SACOG_counties.csv'
 
@@ -120,6 +122,10 @@ trips['mode_label'] = map(lambda x: mode_codes_to_labels[x], trips['mode'])
 trips['mode_nest_label'] = map(lambda x: mode_codes_to_nest_labels[x], trips['mode'])
 
 times = pd.Series(range(180, 1440 + 180 + 1, 30)) #from 3am to 3am
+if convert_times_to_minpastmid: #for the survey
+  trips['arrtm'] = trips['arrtm'] / 100 * 60 + trips['arrtm'] % 100
+  trips['endacttm'] = trips['endacttm'] / 100 * 60 + trips['endacttm'] % 100
+
 trips['arrtm'][trips['arrtm'] < 180] = trips['arrtm'][trips['arrtm'] < 180] + 1440
 trips['endacttm'][trips['endacttm'] < 180] = trips['endacttm'][trips['endacttm'] < 180] + 1440
 
