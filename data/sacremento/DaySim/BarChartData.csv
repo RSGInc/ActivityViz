@@ -1,0 +1,23 @@
+PERSON GROUP,DAY PATTERN,Count,CHART
+child age 0 to 4,Home All Day,37690,Day Pattern
+child age 16 plus,Home All Day,5850,Day Pattern
+child age 5 to 15,Home All Day,36760,Day Pattern
+full time worker,Home All Day,60400,Day Pattern
+non worker age 65 plus,Home All Day,64900,Day Pattern
+other non working adult,Home All Day,90980,Day Pattern
+part time worker,Home All Day,16440,Day Pattern
+university student,Home All Day,22330,Day Pattern
+child age 0 to 4,Other Travel,93100,Day Pattern
+child age 16 plus,Other Travel,34740,Day Pattern
+child age 5 to 15,Other Travel,125730,Day Pattern
+full time worker,Other Travel,234610,Day Pattern
+non worker age 65 plus,Other Travel,159390,Day Pattern
+other non working adult,Other Travel,264760,Day Pattern
+part time worker,Other Travel,52980,Day Pattern
+university student,Other Travel,85710,Day Pattern
+child age 0 to 4,Work and/or School Travel,19010,Day Pattern
+child age 16 plus,Work and/or School Travel,40060,Day Pattern
+child age 5 to 15,Work and/or School Travel,192870,Day Pattern
+full time worker,Work and/or School Travel,413230,Day Pattern
+part time worker,Work and/or School Travel,43240,Day Pattern
+university student,Work and/or School Travel,119150,Day Pattern
