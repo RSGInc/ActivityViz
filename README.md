@@ -1,4 +1,4 @@
-# ABMVIZ
+# ABMVIZ 
 ABMVIZ is an interactive travel data visualization tool.  It is built with JavaScript 
 and HTML5 technologies and works with various types of travel data - household travel surveys, trip-based
 model outputs, activity-based model outputs, disaggregate passive data, etc.  The dashboard features several 
