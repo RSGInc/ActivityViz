@@ -4,10 +4,13 @@
       "default":  true
     },
     "portland":{
-      "default":  true
+      "default":  false
     },
     "sandiego":{
-      "default":  true
+      "default":  false
+    },
+    "sacramento":{
+      "default":  false
     }
   }
 }
