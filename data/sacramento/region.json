@@ -8,7 +8,7 @@
   "LinkURL":"https://www.sacog.org/",
   "CenterMap": [38.57576, -121.47885],  
   "FrontPageTitle": "Sacramento Area Council of Governments",
-  "FrontPageGraphic": "sacog.png",
+  "FrontPageGraphic": "sacog-logo.png",
   "scenarios":{
     "DaySim": "- Model Run",
     "Survey": "- Survey Data"
