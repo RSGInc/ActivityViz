@@ -297,9 +297,14 @@ var chord = (function() {
             }
 
             function groupTip(d) {
-                var p = d3.format(",.2r"), q = d3.format(",.2r")
+                var p = d3.format(".2%"), q = d3.format(",.2r")
+                var value = d.gvalue;
+                if(showWholePercent){
+                    value = p(value/wholeDataTotal)
+                }
+              
                 return ""
-                    + indexByName[d.gname].name + " : " + d.gvalue + "<br/>";
+                    + indexByName[d.gname].name + " : " + value + "<br/>";
             }
 
             function mouseover(d, i) {
