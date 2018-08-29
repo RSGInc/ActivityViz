@@ -31,7 +31,7 @@ var timeuse = (function () {
 			d3.text(url, function (error, data) {
 				"use strict";
 				var periods = new Set();
-				var requiredOrigPurposesArray = ["HOME", "UNIVERSITY", "SCHOOL", "WORK"];
+				var requiredOrigPurposesArray = ["HOME", "SCHOOL", "WORK"];
 				var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
 				var requiredOrigPurposesFound = new Set();
 				var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
@@ -67,10 +67,10 @@ var timeuse = (function () {
 				//cannot simply use nest.entries because there may be missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
 				//rolledUpData = makeNest.entries(csv);
 				//var reorderedArray = [];
-				//re-order so the starts with WORK, SCHOOL, UNIVERSITY and ends with HOME
-				abmviz_utilities.assert(requiredOrigPurposesSet.size == requiredOrigPurposesFound.size, "ORIG_PURPOSE must contain WORK, SCHOOL, UNIVERSITY, and HOME but only found these ones: " + Array.from(requiredOrigPurposesFound));
+				//re-order so the starts with WORK, SCHOOL and ends with HOME
+				abmviz_utilities.assert(requiredOrigPurposesSet.size == requiredOrigPurposesFound.size, "ORIG_PURPOSE must contain WORK, SCHOOL, and HOME but only found these ones: " + Array.from(requiredOrigPurposesFound));
 				var origPurposesArray = Array.from(requiredOrigPurposesArray);
-				//insert non-reqired items between UNIVERSITY and HOME
+				//insert non-reqired items between SCHOOL and HOME
 				abmviz_utilities.insertArrayAt(origPurposesArray, 1, Array.from(nonRequiredOrigPurposesSet));
 				var personTypes = Object.keys(rolledUpMap);
 				//convert data to format nvd3 expects it
