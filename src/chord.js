@@ -45,12 +45,12 @@ var chord = (function() {
     var zoneDataLayer;
     var destZoneDataLayer;
     var countyLayer;
-    var fill = d3.scale.category20b();
+    var fill = d3.scale.category20();
     var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('c') > -1;
     var circlesLayerGroup;
     var formatPercent = d3.format(".1%");
     var showGrpPercent = false;
-    var showWholePercent = false;
+    var showWholePercent = true;
     var wholeDataTotal = 0;
     function getConfigSettings(callback) {
         if (showChartOnPage) {
@@ -164,7 +164,7 @@ var chord = (function() {
             wholeDataTotal = 0;
             data.forEach(function (d) {
                 if (!(d[mainGroupColumnName] in indexByName)) {
-                    nameByIndex[n] = {name: d[mainGroupColumnName].replace(/\./g, " "), index: n, grptotal: Number.parseFloat(d[quantityColumn])};
+                    nameByIndex[n] = {name: d[mainGroupColumnName].replace(/\./g, " "), col:d[mainGroupColumnName],index: n, grptotal: Number.parseFloat(d[quantityColumn])};
 
                     indexByName[d[mainGroupColumnName]] = {
                         index: n++,
@@ -272,45 +272,49 @@ var chord = (function() {
 
             function chordTip(d,i) {
                 var otherdist = indexByName[d.sname];
-                if(currentDistrict != indexByName[d.tname]) {
-                    changeCurrentDistrict(indexByName[d.sname].name, indexByName[d.tname].name);
+                if(currentDistrict != d.tname) {
+                    changeCurrentDistrict(d.sname, d.tname);
                 }
                 else {
-                    changeCurrentDistrict(indexByName[d.tname].name, indexByName[d.sname].name);
+                    changeCurrentDistrict(d.tname, d.sname);
                 }
-                var p = d3.format(".2%"), q = d3.format(",.2r")
+                var p = d3.format(".2%"), q = d3.format(",.0f")
                 var sourceVal = d.svalue;
                 var targetVal = d.tvalue;
                 if(showWholePercent){
                     sourceVal = p(sourceVal/wholeDataTotal);
                     targetVal = p(targetVal/wholeDataTotal);
+                    return ""
+                    + indexByName[d.sname].name + " → " + indexByName[d.tname].name
+                    + ": " + q(d.svalue) + " (" + sourceVal +  ")<br/>"
+                    + indexByName[d.tname].name + " → " + indexByName[d.sname].name
+                     + ": " + q(d.tvalue) + " (" + targetVal +  ")<br/>"
                 }
-                else if(showGrpPercent){
-                    sourceVal = p(sourceVal/indexByName[d.sname].grptotal);
-                    targetVal = p(targetVal/indexByName[d.sname].grptotal);
-                }
+                else {
                 return ""
                     + indexByName[d.sname].name + " → " + indexByName[d.tname].name
                     + ": " + sourceVal + "<br/>"
                     + indexByName[d.tname].name + " → " + indexByName[d.sname].name
                     + ": " + targetVal + "<br/>";
+                }
             }
 
             function groupTip(d) {
-                var p = d3.format(".2%"), q = d3.format(",.2r")
+                var p = d3.format(".2%"), q = d3.format(",.0f")
                 var value = d.gvalue;
                 if(showWholePercent){
-                    value = p(value/wholeDataTotal)
+                     return ""
+                    + indexByName[d.gname].name + " : " + q(value) + " ("+p(value/wholeDataTotal)+") <br/>";
+                } else {
+                    return ""
+                    + indexByName[d.gname].name + " : " + q(value) + "<br/>";
                 }
-              
-                return ""
-                    + indexByName[d.gname].name + " : " + value + "<br/>";
             }
 
             function mouseover(d, i) {
 
-                var name = nameByIndex[i];
-                console.log("source" + nameByIndex[i]);
+                var name = nameByIndex[i].col;
+                console.log("source" + nameByIndex[i].col);
                 d3.select("#chord-tooltip")
                     .style("visibility", "visible")
                     .html(groupTip(rdr(d)))
@@ -325,7 +329,7 @@ var chord = (function() {
                         }
                     })
                 if (nameByIndex != undefined) {
-                    changeCurrentDistrict(nameByIndex[i].name);
+                    changeCurrentDistrict(nameByIndex[i].col);
                 }
                 chordPaths.classed("faded", function (p) {
                     //console.log("source" + nameByIndex[p.source.index]);
