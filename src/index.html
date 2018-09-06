@@ -9,7 +9,7 @@
 	<script defer src="../bower_components/chosen/chosen.jquery.js"></script>
 	<script defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script defer src="../bower_components/d3/d3.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
 	<script defer src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script defer src="../bower_components/underscore/underscore-min.js"></script>
 	<script defer src="../bower_components/geostats/lib/geostats.js"></script>
@@ -19,9 +19,11 @@
 	<script defer src="../vendor/TweenMax.min.js"></script>
 	<script defer src="../vendor/vizicities.js"></script>
 	<script type="text/javascript" src="../abmviz_utilities.js"></script>
-    <script defer type="text/javascript" src="grouped_barchart_data.js"></script>
+	<script defer type="text/javascript" src="grouped_barchart_data.js"></script>
 	<script defer type="text/javascript" src="grouped_barchart.js"></script>
 	<script defer type="text/javascript" src="barchart_and_map.js"></script>
+	<script defer type="text/javascript" src="chord.js"></script>
+	<script defer type="text/javascript" src="mapper.js"></script>
 
 	<script defer src="three3d.js"></script>
 	<script defer type="text/javascript" src="sunburst.js"></script>
@@ -44,6 +46,7 @@
 	<link rel="stylesheet" href="timeuse.css" />
 	<link rel="stylesheet" href="three3d.css" />
 	<link rel="stylesheet" href="radar.css" />
+	<link rel="stylesheet" href="chord.css" />
 	<script type="text/javascript">
 
 	</script>
@@ -56,8 +59,8 @@
 		<nav class="navbar navbar-inverse navbar-fixed-top" style="max-height:51px;">
 
 			<div class="navbar-header">
-				<a  id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
-					<img id="logo_id" style='height:25px;'width="" height="" src="">
+				<a id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left">
+					<img id="logo_id" style='height:25px;' width="" height="" src="">
 				</a>
 				<a class="navbar-brand" id="title_id" href="../index.html">ABMVIZ</a>
 				<span id="scenario-header" style="font-size:2em;cursor:default" class="navbar-brand pull-right"></span>
@@ -70,25 +73,27 @@
 		</nav>
 		<!-- end nav -->
 		<div id="three3d" class="row dynamic-content">
-		<hr>	<p class="text-center" style="font-size:2em">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 				<strong>
-                        <span class="three3d-purpose"></span>
-                    </strong>
+					<span class="three3d-purpose"></span>
+				</strong>
 				<span id="three3d-current-period"></span>
 			</p>
 			<div class="col-xs-12" style="margin-top:1em;">
 				<div class="col-xs-6" style="margin-bottom:1em">
-					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max value over all periods.
+					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max
+					value over all periods.
 
 					<div class="col-xs-12">
-                        <label>
-                                    <input type="checkbox" id="three3d-controls">Controls
-								</input>
-                                </label>
-                        				<label style="padding-left:10px;">
-                                    <input type="checkbox" id="three3d-centroids">Centroids
-								</input>
-                                </label>
+						<label>
+							<input type="checkbox" id="three3d-controls">Controls
+							</input>
+						</label>
+						<label style="padding-left:10px;">
+							<input type="checkbox" id="three3d-centroids">Centroids
+							</input>
+						</label>
 						<div class="row control">
 							<!-- symbols defined at: https://graphemica.com/ -->
 							<button class="move left" title="move left">&larr;</button>
@@ -110,21 +115,21 @@
 				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-classification-label">Classification</div>
 					<select class="form-control" id="three3d-classification">
-                            <option value="quartiles" selected="selected">Quartiles</option>
-                            <option value="even-interval">Even interval</option>
-                            <option value="custom">Custom</option>
-                        </select>
+						<option value="quartiles" selected="selected">Quartiles</option>
+						<option value="even-interval">Even interval</option>
+						<option value="custom">Custom</option>
+					</select>
 				</div>
-                <div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
+				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-filter-label"></div>
 					<div id="three3d-filter-checkboxes"></div>
 				</div>
-                <div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
+				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
 					<div id="three3d-period-id">
-					<div id="three3d-period-label">Data Selection</div>
-					<select class="form-control" id="three3d-period">
+						<div id="three3d-period-label">Data Selection</div>
+						<select class="form-control" id="three3d-period">
 
-                        </select>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -138,35 +143,35 @@
 								<div class="row">
 									<div class="ramp Blues">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 									<div class="ramp Greens">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 									<div class="ramp Greys">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 									<div class="ramp RedGreen">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 								</div>
 							</div>
@@ -178,27 +183,27 @@
 								<div class="col-xs-10">
 									<div class="ramp Oranges">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 									<div class="ramp Purples">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 									<div class="ramp Reds">
 										<svg width="60" height="15">
-                                                <rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-                                            </svg>
+											<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
+											<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
+											<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
+											<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
+										</svg>
 									</div>
 								</div>
 							</div>
@@ -225,17 +230,17 @@
 
 
 						<select id="three3d-cycle-frequency" class="form-control form-control-inline">
-                <option value="1">every 1 sec</option>
-                <option value="2">every 2 sec</option>
-                <option value="3">every 3 sec</option>
-                <option value="4">every 4 sec</option>
-                <option value="5">every 5 sec</option>
-                <option value="6">every 6 sec</option>
-                <option value="7">every 7 sec</option>
-                <option value="8">every 8 sec</option>
-                <option value="9">every 9 sec</option>
-                <option value="10">every 10 sec</option>
-            </select>
+							<option value="1">every 1 sec</option>
+							<option value="2">every 2 sec</option>
+							<option value="3">every 3 sec</option>
+							<option value="4">every 4 sec</option>
+							<option value="5">every 5 sec</option>
+							<option value="6">every 6 sec</option>
+							<option value="7">every 7 sec</option>
+							<option value="8">every 8 sec</option>
+							<option value="9">every 9 sec</option>
+							<option value="10">every 10 sec</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -243,73 +248,92 @@
 		<!--end three3d-->
 
 		<div id="grouped-barchart-div" class="row dynamic-content" style="margin-bottom:100px">
-			<hr><p class="text-center" style="font-size:2em">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 
-				<strong><span class="grouped-barchart-main-group"></span>,</strong> by <span class="grouped-barchart-sub-group"></span>
+				<strong>
+					<span class="grouped-barchart-main-group"></span>,</strong> by
+				<span class="grouped-barchart-sub-group"></span>
 			</p>
-			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a <span class="grouped-barchart-main-group"></span> and each bar corresponding to a <span class="grouped-barchart-sub-group"></span> pivoted field
+			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a
+				<span class="grouped-barchart-main-group"></span> and each bar corresponding to a
+				<span class="grouped-barchart-sub-group"></span> pivoted field
 				<div class="row" style="margin-top:4px">
 					<ul>
 
 						<li>
-							Click on legend symbols/labels to show or hide the <span class="grouped-barchart-sub-group">PLACEHOLDER</span>
+							Click on legend symbols/labels to show or hide the
+							<span class="grouped-barchart-sub-group">PLACEHOLDER</span>
 						</li>
 						<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
+							<label class="checkbox-inline">
+								<input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
 						</li>
 						<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
+							<label class="checkbox-inline">
+								<input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
 						</li>
 						<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-toggle-horizontal" type="checkbox">Show as Vertical?</label>
-						</li>
-											<li>
-							<label class="checkbox-inline"><input id="grouped-barchart-toggle-stacked" type="checkbox">Show as Stacked?</label>
+							<label class="checkbox-inline">
+								<input id="grouped-barchart-toggle-horizontal" type="checkbox">Show as Vertical?</label>
 						</li>
 						<li>
-							Double click on legend symbols/labels to change chart to a single <span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as <span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
+							<label class="checkbox-inline">
+								<input id="grouped-barchart-toggle-stacked" type="checkbox">Show as Stacked?</label>
+						</li>
+						<li>
+							Double click on legend symbols/labels to change chart to a single
+							<span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as
+							<span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="row" style="width:100%;height:400px">
-                <div id="grouped-barmain">
-                    <div id="grouped-bar-container"></div>
-                </div>
+				<div id="grouped-barmain">
+					<div id="grouped-bar-container"></div>
+				</div>
 			</div>
 		</div>
 		<!-- end grouped-barchart -->
 
 		<div id="mode-share-by-county" class="row dynamic-content">
-			<hr><p class="text-center" style="font-size:2em">
-				<strong><span class="mode-share-by-county-trip-mode"></span>,</strong> by <span class="mode-share-by-county-area-type"></span>
+			<hr>
+			<p class="text-center" style="font-size:2em">
+				<strong>
+					<span class="mode-share-by-county-trip-mode"></span>,</strong> by
+				<span class="mode-share-by-county-area-type"></span>
 			</p>
 			<div class="col-xs-6 right-border" style="margin-top:4px">
 				<div class="row">
-					The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar corresponding to a Quantity, such as trips by mode.
-
+					The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar
+					corresponding to a Quantity, such as trips by mode.
 
 					<div class="row" style="margin-top:4px">
 						<div class="col-xs-10">
 							<ul>
 								<li>Click on the 'Stacked' checkbox at the end of this line to change chart style &rarr;</li>
 								<li>
-									Click anywhere on a row to highlight the <span class="mode-share-by-county-area-type">PLACEHOLDER</span> area on the map
+									Click anywhere on a row to highlight the
+									<span class="mode-share-by-county-area-type">PLACEHOLDER</span> area on the map
 
 								</li>
 								<li>
-									Click on legend symbols/labels to show or hide the <span class="mode-share-by-county-trip-mode">PLACEHOLDER</span>
+									Click on legend symbols/labels to show or hide the
+									<span class="mode-share-by-county-trip-mode">PLACEHOLDER</span>
 								</li>
 								<li>
-									Double click on legend symbols/labels to change map and charts to a single <span class="mode-share-by-county-trip-mode">PLACEHOLDER</span> such as <span class="mode-share-by-county-trip-mode-example">PLACEHOLDER</span>
+									Double click on legend symbols/labels to change map and charts to a single
+									<span class="mode-share-by-county-trip-mode">PLACEHOLDER</span> such as
+									<span class="mode-share-by-county-trip-mode-example">PLACEHOLDER</span>
 								</li>
 							</ul>
 						</div>
 						<div class="col-xs-2">
 							<label>
-                        <input type="checkbox" checked id="mode-share-by-county-stacked"/>Stacked
+								<input type="checkbox" checked id="mode-share-by-county-stacked" />Stacked
 
-                    </label>
+							</label>
 							<!-- <label><input type="checkbox" checked id="mode-share-by-county-legend-type" />Classic Legend/label>-->
 						</div>
 					</div>
@@ -319,7 +343,8 @@
 				</div>
 			</div>
 			<div class="col-xs-6">
-				<div class="col-xs-12">The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles. </div>
+				<div class="col-xs-12">The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles.
+					</div>
 				<div class="col-xs-6">
 					<div class="mode-share-by-county-trip-mode" style="font-weight:bold"></div>
 				</div>
@@ -332,15 +357,15 @@
 
 				<div class="col-xs-6" style="margin-bottom:2em;">
 					<select class="form-control" id="mode-share-by-county-classification">
-                        <option value="quartiles" selected="selected">Quartiles</option>
-                        <option value="jenks">Natural breaks (Jenks)</option>
-                        <option value="even-interval">Even interval</option>
-                        <option value="custom">Custom</option>
-                    </select>
+						<option value="quartiles" selected="selected">Quartiles</option>
+						<option value="jenks">Natural breaks (Jenks)</option>
+						<option value="even-interval">Even interval</option>
+						<option value="custom">Custom</option>
+					</select>
 				</div>
-                <div class ='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
+				<div class='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
 
-                </div>
+				</div>
 				<div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
 					<table width="100%">
@@ -351,36 +376,36 @@
 									<div class="row">
 										<div class="ramp Blues">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 										<div class="ramp Greens">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 										<div class="ramp Greys">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 										<div class="ramp RedGreen">
-										<svg width="60" height="15">
-                                                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-                                                <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-                                                <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-                                                <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-                                            </svg>
-									</div>
+											<svg width="60" height="15">
+												<rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
+											</svg>
+										</div>
 									</div>
 								</div>
 							</td>
@@ -391,27 +416,27 @@
 									<div class="col-xs-10">
 										<div class="ramp Oranges">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 										<div class="ramp Purples">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 										<div class="ramp Reds">
 											<svg width="60" height="15">
-                                        <rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-                                        <rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-                                        <rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-                                        <rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-                                    </svg>
+												<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
+												<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
+												<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
+												<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
+											</svg>
 										</div>
 									</div>
 								</div>
@@ -425,16 +450,16 @@
 
 
 					<select id="mode-share-by-county-bubble-size" disabled>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option selected>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-            </select>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option selected>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+						<option>9</option>
+					</select>
 					<input type="checkbox" id="mode-share-by-county-stroke" onclick="barchart_and_map.updateOutline()" /> Outline
 
 
@@ -456,17 +481,17 @@
 
 
 							<select id="mode-share-by-county-cycle-frequency" class="form-control form-control-inline">
-                        <option value="1">every 1 sec</option>
-                        <option value="2">every 2 sec</option>
-                        <option value="3">every 3 sec</option>
-                        <option value="4">every 4 sec</option>
-                        <option value="5">every 5 sec</option>
-                        <option value="6">every 6 sec</option>
-                        <option value="7">every 7 sec</option>
-                        <option value="8">every 8 sec</option>
-                        <option value="9">every 9 sec</option>
-                        <option value="10">every 10 sec</option>
-                    </select>
+								<option value="1">every 1 sec</option>
+								<option value="2">every 2 sec</option>
+								<option value="3">every 3 sec</option>
+								<option value="4">every 4 sec</option>
+								<option value="5">every 5 sec</option>
+								<option value="6">every 6 sec</option>
+								<option value="7">every 7 sec</option>
+								<option value="8">every 8 sec</option>
+								<option value="9">every 9 sec</option>
+								<option value="10">every 10 sec</option>
+							</select>
 						</div>
 					</div>
 					<div class="row">
@@ -491,11 +516,13 @@
 		<!-- end mode-share-by-county -->
 
 		<div id="timeuse" class="row dynamic-content">
-			<hr><p class="text-center" style="font-size:2em">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 				<span class="timeuse-maingroup">TIME USE</span>
 			</p>
 			<div id="timeuse-sidebar" class="col-xs-2">
-				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of activity and the horizontal axis displays the period of the day.</div>
+				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of
+					activity and the horizontal axis displays the period of the day.</div>
 				<ul>
 					<li>Select a person type below to filter the data</li>
 					<li>Click on legend symbols/labels to show or hide the purpose</li>
@@ -512,7 +539,8 @@
 		<!-- end timeuse -->
 
 		<div id="sunburst" class="row dynamic-content">
-			<hr><p class="text-center" style="font-size:2em">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 				<span class="sunburst-maingroup">PLACEHOLDER</span>
 			</p>
 			<div class="col-xs-2">
@@ -544,18 +572,57 @@
 			</div>
 		</div>
 		<!-- end sunburst -->
+		<!-- begin chord -->
+		<div id="chord" class="row dynamic-content">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 
+				<strong>
+					<span class="chord-chart-maingroup"></span>,</strong> by
+				Origins and Destinations
+			</p>
+			<div class="col-xs-6 right-border">
+				<div id="chord-tooltip" class="">
+
+				</div>
+				<div id="chord-main">
+					<div id="chord-dropdown-div" class="col-xs-5">
+						<div id="chord-data-label">Select Data Set</div>
+						<select class="form-control" id="chord-data-select">
+
+						</select>
+					</div>
+
+					<div id="chord-chart-container"></div>
+				</div>
+			</div>
+			<div class="col-xs-6 ">
+				<p>Origin Destination Groups</p>
+
+				<div class="col-xs-12" id="chord-by-district-map" style="width: 100%;height:75%;"></div>
+				<div class="col-xs-6" style="margin-top:1em;text-align:right">
+
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- end chord -->
 		<div id="radar" class="row dynamic-content">
-			<hr><p class="text-center" style="font-size:2em">
+			<hr>
+			<p class="text-center" style="font-size:2em">
 				<span class="radar-maingroup">RADAR CHARTS</span>
 			</p>
 			<div id="radar-sidebar" class="col-xs-2">
-				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, an activity center's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium transit. </div>
+				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, an activity
+					center's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium
+					transit. </div>
 				<ul>
 					<li>The larger the area, the "better" that chart (activity center) does as compared to others</li>
 					<li>In addition to size, the intensity of the color increases with total area</li>
 					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
-                    <li>When multiple data sets are displayed, you can enable/disable one by clicking on the color box on the legend</li>
+					<li>When multiple data sets are displayed, you can enable/disable one by clicking on the color box on the legend</li>
 				</ul>
 				<div id="radar-legend"></div>
 			</div>
@@ -564,7 +631,7 @@
 			</div>
 		</div>
 		<!-- end radar -->
-    </div>
+	</div>
 </body>
 <!-- end body -->
 
@@ -574,72 +641,75 @@
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script type="text/javascript">
 	// Parse the URL parameter
-    var visualizations;
-function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-// Give the parameter a variable name
-var dynamicContent = getParameterByName('visuals');
-$(document).ready(function() {
+	var visualizations;
+	function getParameterByName(name, url) {
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+	// Give the parameter a variable name
+	var dynamicContent = getParameterByName('visuals');
+	$(document).ready(function () {
 
-	// Check if the URL parameter is 3
-	if (dynamicContent.indexOf('3')>-1) {
-		$('#three3d').show();
-	}
-	// Check if the URL parameter is b
-	if (dynamicContent.indexOf('b')>-1) {
-		$('#mode-share-by-county').show();
-	}
-	// Check if the URL parameter is r
-	if (dynamicContent.indexOf('r')>-1) {
-		$('#radar').show();
-	}
-	if (dynamicContent.indexOf('g')>-1) {
-		$('#grouped-barchart-div').show();
-	}
-	if (dynamicContent.indexOf('t')>-1) {
-        $('#timeuse').show();
-	}
-	if (dynamicContent.indexOf('s')>-1) {
-		$('#sunburst').show();
-	}
-	// Check if the URL parmeter is empty or not defined, display default content
-	else {
-		$('#default-content').show();
-	}
-});
+		// Check if the URL parameter is 3
+		if (dynamicContent.indexOf('3') > -1) {
+			$('#three3d').show();
+		}
+		// Check if the URL parameter is b
+		if (dynamicContent.indexOf('b') > -1) {
+			$('#mode-share-by-county').show();
+		}
+		// Check if the URL parameter is r
+		if (dynamicContent.indexOf('r') > -1) {
+			$('#radar').show();
+		}
+		if (dynamicContent.indexOf('g') > -1) {
+			$('#grouped-barchart-div').show();
+		}
+		if (dynamicContent.indexOf('t') > -1) {
+			$('#timeuse').show();
+		}
+		if (dynamicContent.indexOf('s') > -1) {
+			$('#sunburst').show();
+		}
+		if (dynamicContent.indexOf('c') > -1) {
+			$('#chord').show();
+		}
+		// Check if the URL parmeter is empty or not defined, display default content
+		else {
+			$('#default-content').show();
+		}
+	});
 </script>
 
 <script defer type="text/javascript">
-     var region = abmviz_utilities.GetURLParameter("region");
-            $.getJSON( "../data/"+region+"/region.json", function (data) {
-                var icon = data.Icon;
-                var logo = data.Logo;
-                var title = data.Title;
-                var linkURL = data.LinkURL;
-                var navbartitle = data.NavbarTitle;
-                $("link[rel*='icon']").attr("href", "../data/"+region+"/img/"+icon+"");
-                $("title").text(title);
-                 $('#title_id').text(navbartitle);
-                $('#navbarlink').attr("href",linkURL);
-                $('#logo_id').attr("src","../data/"+region+"/img/"+logo+"");
+	var region = abmviz_utilities.GetURLParameter("region");
+	$.getJSON("../data/" + region + "/region.json", function (data) {
+		var icon = data.Icon;
+		var logo = data.Logo;
+		var title = data.Title;
+		var linkURL = data.LinkURL;
+		var navbartitle = data.NavbarTitle;
+		$("link[rel*='icon']").attr("href", "../data/" + region + "/img/" + icon + "");
+		$("title").text(title);
+		$('#title_id').text(navbartitle);
+		$('#navbarlink').attr("href", linkURL);
+		$('#logo_id').attr("src", "../data/" + region + "/img/" + logo + "");
 
-        $.each(data.colorRamps,function(key,value){
-            if(value ==false)
-                $('.'+[key]).remove();
-        });
-        var ids=
-				{"3DMap":"three3d","BarMap":"mode-share-by-county","GrpBar":"grouped-barchart-div","TimeUse":"timeuse","Radar":"radar","Sunburst":"sunburst"};
+		$.each(data.colorRamps, function (key, value) {
+			if (value == false)
+				$('.' + [key]).remove();
+		});
+		var ids =
+			{ "3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst" };
 
-       $.each(data.visualizations,function(key,value){
-                    $('#'+ids[key]).appendTo($("#main_div"));
-				})
-            });
+		$.each(data.visualizations, function (key, value) {
+			$('#' + ids[key]).appendTo($("#main_div"));
+		})
+	});
 
 </script>

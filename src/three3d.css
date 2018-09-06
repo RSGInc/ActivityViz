@@ -16,6 +16,10 @@
     fill: #333333;
 }
 
+#three3d-filter-checkboxes label {
+    font-weight:100;
+    font-size:14px;
+}
 .control {
     /*
     position: absolute;

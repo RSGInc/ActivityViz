@@ -21,7 +21,8 @@
         "TimeUse": false, 
         "Radar": false, 
         "3DMap": true, 
-        "Sunburst": false
+        "Sunburst": false,
+        "Chord": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -68,7 +69,11 @@
         "Oranges": false, 
         "Blues": false, 
         "Purples": false
-    }, 
+    },
+    "Chord": {
+        "ZoneFilterFile": "cocs.csv",
+        "LabelSize": "14"
+    },
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 
         "DataHasPeriods": false, 

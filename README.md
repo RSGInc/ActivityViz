@@ -18,6 +18,7 @@ region by doing the following:
 1. Add the region name and properties in the config.json file.  Delete the other existing regions if desired.
 2. Add a new region folder in the data folder. For example: The region "atlanta" should have a folder named "atlanta" in the data folder.  
 3. The first region with the property "default" set to true will determine which graphics are shown on the main page.
+4. Copy existing region.json file into the region folder.
 
 # Adding New Scenario Data
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
@@ -30,6 +31,7 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
   - RadarChartsData.csv: AXIS, CHART, <QUANTITY 1 LABEL>, <QUANTITY 2 LABEL>, ...
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
+  - ChordData.csv: FROM, TO, <QUANTITY 1 LABEL>, <QUANTITY 2 LABEL>, ... 
 
 Notes: 
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
@@ -78,6 +80,9 @@ Each Data/Region folder needs the following:
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CycleMapTools: true/false flag to hide or show the cycle map tools
+    - Chord: Chord chart that also displays with a map
+        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
+        - LabelSize: the font size in pixels "10" is the default if not specified. 
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. ZoneShape.GeoJSON - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. cb_2015_us_county_500k GEORGIA.json - County polygons with the *Name* property equal to the county name.
