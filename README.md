@@ -82,6 +82,7 @@ Each Data/Region folder needs the following:
         - CycleMapTools: true/false flag to hide or show the cycle map tools
     - Chord: Chord chart that also displays with a map
         - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
+        - LabelSize: the font size in pixels "10" is the default if not specified. 
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. ZoneShape.GeoJSON - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. cb_2015_us_county_500k GEORGIA.json - County polygons with the *Name* property equal to the county name.
