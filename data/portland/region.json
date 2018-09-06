@@ -71,7 +71,8 @@
         "Purples": false
     },
     "Chord": {
-        "ZoneFilterFile": "cocs.csv"
+        "ZoneFilterFile": "cocs.csv",
+        "LabelSize": "14"
     },
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 
