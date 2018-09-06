@@ -555,7 +555,7 @@ var barchart_and_map = (function () {
 			//create circle markers for each zone centroid
 			for (var i = 0; i < zoneTiles.features.length; i++) {
 				var feature = zoneTiles.features[i];
-				var featureZoneData = zoneData[feature.properties.id];
+				var featureZoneData = zoneData[feature.properties.id-1];
 				if (featureZoneData == undefined) { //missing data for this zone
 				} else {
 					//WARNING: center coordinates seem to have lat and lng reversed!
