@@ -152,10 +152,10 @@ var barchart_and_map = (function () {
                 zoneFilterData = d3.nest().key(function (d) {
                     return "filters";
                 }).map(zonecsv);
-                $('#mode-share-by-county-checkboxes').append(zonefilterlabel+"<table><tr>");
+                $('#mode-share-by-county-checkboxes').append(zonefilterlabel+"<table ><tr>");
                 for (var i = 0; i < zoneheaders.length; i++) {
                     if (zoneheaders[i] in zonefilters) {
-                        $('#mode-share-by-county-checkboxes').append('<td style="padding:3px;"><label > <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')
+                        $('#mode-share-by-county-checkboxes table tr').append('<td style="padding:3px;"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')
                     }
                 }
                 $('#mode-share-by-county-checkboxes').append("</tr></table>");
@@ -555,7 +555,7 @@ var barchart_and_map = (function () {
 			//create circle markers for each zone centroid
 			for (var i = 0; i < zoneTiles.features.length; i++) {
 				var feature = zoneTiles.features[i];
-				var featureZoneData = zoneData[feature.properties.id];
+				var featureZoneData = zoneData[feature.properties.id-1];
 				if (featureZoneData == undefined) { //missing data for this zone
 				} else {
 					//WARNING: center coordinates seem to have lat and lng reversed!
