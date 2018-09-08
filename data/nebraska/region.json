@@ -2,7 +2,7 @@
   "Title":"Nebraska ATRI VIZ",
   "CountyFile":"ZoneShape.json",
   "ZoneFile":"ZoneShape.json",
-  "Icon":"",
+  "Icon":"RSG.ico",
   "Logo":"ndot_logo_black.png",
   "NavbarTitle":"ATRIVIZ",
   "LinkURL":"https://dot.nebraska.gov",

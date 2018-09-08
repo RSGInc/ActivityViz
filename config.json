@@ -2,9 +2,6 @@
   "regions":{
     "nebraska":{
       "default":  true
-    },
-    "temp":{
-      "default":  false
     }
   }
 }
