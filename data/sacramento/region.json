@@ -19,7 +19,8 @@
   "GrpBar":true,
   "TimeUse":true,
   "Radar":true,
-  "Sunburst":true
+  "Sunburst":true,
+  "Chord": true
 },
   "RadarCharts":{
     "NumberColsRadar":4,
@@ -38,7 +39,10 @@
     "ShowPeriodsAsDropdown":false,
     "DataHasPeriods":true,
     "ZoneFile": []
-  }
-
+  },
+  "Chord": {
+    "ZoneFilterFile": "districts.csv",
+    "LabelSize": "14"
+    }
 }
 
