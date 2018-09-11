@@ -70,18 +70,18 @@ Each Data/Region folder needs the following:
     - ThreeDMap: 3d Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
-        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
+        - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters     
     - GrpMap: Barchart that also displays with a map
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
-        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed
+        - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CycleMapTools: true/false flag to hide or show the cycle map tools
     - Chord: Chord chart that also displays with a map
-        - ZoneFilterFile: takes a csv file that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
+        - ZoneFilterFile: takes a csv file with the first column named ID for zone ID and that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
         - LabelSize: the font size in pixels "10" is the default if not specified. 
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. ZoneShape.GeoJSON - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
