@@ -159,7 +159,7 @@ var chord = (function() {
             data.forEach(function (d) {
                 if (!(d[mainGroupColumnName] in indexByName)) {
                     nameByIndex[n] = {
-                        name: d[mainGroupColumnName].replace(/\./g, " "),
+                        name: d[mainGroupColumnName],
                         col: d[mainGroupColumnName],
                         index: n,
                         grptotal: Number.parseFloat(d[quantityColumn])
@@ -167,7 +167,7 @@ var chord = (function() {
 
                     indexByName[d[mainGroupColumnName]] = {
                         index: n++,
-                        name: d[mainGroupColumnName].replace(/\./g, " "),
+                        name: d[mainGroupColumnName],
                         grptotal: Number.parseFloat(d[quantityColumn])
                     };
 
@@ -242,6 +242,8 @@ var chord = (function() {
                 });
   // Remove the labels that don't fit. :(
   groupText.filter(function(d, i) {
+      var check= groupPath[0][i];
+      console.log("Group name:" + groupPath[0][i].nextSibling.innerHTML + " length:" + indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal );
       return (indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal / wholeDataTotal *100) < 1.5 })
       .remove();
 
