@@ -3,7 +3,7 @@
 # Ben Stabler, ben.stabler@rsginc.com, 07/31/18
 # model test folder - C:\projects\development\sacog_daysim_test\daysim\sacog_regress_output
 # survey test folder - C:\projects\sacog\daysim_survey_files
-  
+
 import pandas as pd
 import numpy as np
 
@@ -12,12 +12,12 @@ import numpy as np
 # inputs
 
 # model
-#trips_filename = '_trip.tsv'
-#households_filename = '_household.tsv'
-#persons_filename = '_person.tsv'
-#person_days_filename = '_person_day.tsv'
-#sep= "\t"
-#convert_times_to_minpastmid = False
+trips_filename = '_trip.tsv'
+households_filename = '_household.tsv'
+persons_filename = '_person.tsv'
+person_days_filename = '_person_day.tsv'
+sep= "\t"
+convert_times_to_minpastmid = False
 
 # survey
 trips_filename = 'sacog_tripx.dat'
@@ -28,6 +28,7 @@ sep= " "
 convert_times_to_minpastmid = True
 
 counties_filename = 'SACOG_counties.csv'
+chord_districts_filename = 'districts.csv'
 
 # outputs
 animatedmap_filename = '3DAnimatedMapData.csv'
@@ -36,6 +37,7 @@ barchart_filename = 'BarChartData.csv'
 timeuse_filename = 'TimeUseData.csv'
 treemap_filename = 'TreeMapData.csv'
 radarchart_filename = 'RadarChartsData.csv'
+chorddata_filename = 'ChordData.csv'
 
 # get input data and do some joins
 trips = pd.read_csv(trips_filename, sep=sep)
@@ -43,6 +45,7 @@ households = pd.read_csv(households_filename, sep=sep)
 persons = pd.read_csv(persons_filename, sep=sep)
 person_days = pd.read_csv(person_days_filename, sep=sep)
 counties = pd.read_csv(counties_filename)
+districts = pd.read_csv(chord_districts_filename)
 
 persons['uniq-id'] = persons['hhno'] * 100 + persons['pno']
 trips['uniq-id'] = trips['hhno'] * 100 + trips['pno']
@@ -52,12 +55,16 @@ households = households.set_index("hhno", drop=False)
 persons = persons.set_index("uniq-id", drop=False)
 person_days = person_days.set_index("uniq-id", drop=False)
 counties = counties.set_index("TAZ", drop=False)
+districts = districts.set_index("ZONE", drop=False)
 
 persons['hhtaz'] = households.loc[persons['hhno']]['hhtaz'].tolist()
 households['hhcounty'] = counties.loc[households['hhtaz']]['COUNTY'].tolist()
+households['hhdistrict'] = districts.loc[households['hhtaz']]['DISTRICT'].tolist()
 persons['hhcounty'] = households.loc[persons['hhno']]['hhcounty'].tolist()
+persons['hhdistrict'] = households.loc[persons['hhno']]['hhdistrict'].tolist()
 trips['hhtaz'] = households.loc[trips['hhno']]['hhtaz'].tolist()
 trips['hhcounty'] = counties.loc[trips['hhtaz']]['COUNTY'].tolist()
+trips['hhdistrict'] = counties.loc[trips['hhtaz']]['DISTRICT'].tolist()
 
 ################################################################################
 
@@ -275,3 +282,15 @@ auto_mode_share = auto_mode_share[["AXIS","CHART","QUANTITY"]]
 
 radarchart = person_travel_times.append(auto_vmt, ignore_index=True).append(person_workdist, ignore_index=True).append(auto_mode_share, ignore_index=True)
 radarchart.to_csv(radarchart_filename, index=False)
+
+# create chord data file
+
+trips['odistrict'] = districts.loc[trips['otaz']]['DISTRICT'].tolist()
+trips['ddistrict'] = districts.loc[trips['dtaz']]['DISTRICT'].tolist()
+chorddata = trips[['odistrict','ddistrict','mode_label','trexpfac']].groupby(['odistrict','ddistrict','mode_label']).sum().reset_index()
+chorddata_total = trips[['odistrict','ddistrict','trexpfac']].groupby(['odistrict','ddistrict']).sum().reset_index()
+chorddata_total["mode_label"] = 'TOTAL'
+chorddata = chorddata.append(chorddata_total, ignore_index=True)
+chorddata.columns = ["FROM","TRIP MODE","TO","TRIPS"]
+chorddata = pd.pivot_table(chorddata, values="TRIPS", index=["FROM","TO"], columns="TRIP MODE", aggfunc=np.sum, fill_value=0).reset_index()
+chorddata.to_csv(chorddata_filename, index=False)
