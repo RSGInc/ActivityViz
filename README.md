@@ -11,7 +11,7 @@ strategy makes maintenance much easier for the modeling staff.
 ActivityViz was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/) (ARC).  
 
 # Adding a New Region
-ActivityViz supports configuration for multiple regions.  To setup ActivityVIZ in your region, fork this repository
+ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region, fork this repository
 to your GitHub account and then remove the existing configured region folders in the data folder.  Next, add your
 region by doing the following:
 
