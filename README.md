@@ -10,7 +10,12 @@ strategy makes maintenance much easier for the modeling staff.
 
 ActivityViz was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/) (ARC).  
 
-# Adding a New Region
+## Collaborating on this Project
+1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
+2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
+3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
+
+# Adding a New Region or New Scenario Data
 ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region, fork this repository
 to your GitHub account and then remove the existing configured region folders in the data folder.  Next, add your
 region by doing the following:
@@ -20,7 +25,7 @@ region by doing the following:
 3. The first region with the property "default" set to true will determine which graphics are shown on the main page.
 4. Copy existing region.json file into the region folder.
 
-# Adding New Scenario Data
+## Adding New Scenario Data
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
 
 1. Create a new folder in the region specific folder with the scenario name
@@ -104,8 +109,3 @@ Each Data/Region folder needs the following:
 2. Make changes, such as removing the other example regions
 3. Push the master branch to a branch called gh-pages
 4. Site address is http://<your_account>.github.io/ABMVIZ, for example http://atlregional.github.io/ABMVIZ
-
-# Collaborating on this Project
-1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
-2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
-3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
