@@ -1,5 +1,5 @@
 # ActivityViz 
-ActivityViz is an interactive travel data visualization tool.  It is built with JavaScript 
+ActivityViz is an interactive travel and activity data visualization tool.  It is built with JavaScript 
 and HTML technologies and works with various types of travel and activity data - household travel surveys, trip-based
 model outputs, activity-based model outputs, disaggregate passive data, etc.  The dashboard features several 
 interactive and customizable visualizations for exploring data, such as 3D maps of 
