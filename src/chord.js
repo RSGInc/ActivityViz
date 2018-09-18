@@ -33,6 +33,7 @@ var chord = (function() {
     };
     var indexByName = {};
     var nameByIndex = {};
+    var legendHeadersShowHide = {};
     var zoneData;
     var circleMarkers;
 //config file options
@@ -112,20 +113,17 @@ var chord = (function() {
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
             var quantities = headers.slice(2);
-            if ($('#chord-data-select option').length == 0) {
-                quantities.forEach(function (e) {
-                    $('#chord-data-select').append($("<option></option>").attr("value", e).text(e));
-                });
-                $('.chord-chart-maingroup').text($('#chord-data-select').val());
+            var legendHead = headers.slice(2, headers.len);
+            if (_.size(legendHeadersShowHide) == 0) {
+                for (var i = 0; i < legendHead.length; i++) {
+                    legendHeadersShowHide[legendHead[i]] = true;
+                }
             }
+            $('.chord-chart-maingroup').text("PURPOSE");
 
-            $('#chord-data-select').on('change', function (d) {
-                $('.chord-chart-maingroup').text($('#chord-data-select').val());
-                createChord();
-            });
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
-            quantityColumn = $('#chord-data-select').val();
+            quantityColumn = 3;
 
             indexByName = {};
             nameByIndex = {};
@@ -144,6 +142,8 @@ var chord = (function() {
                 .outerRadius(innerRadius + 20);
             var windwidth = $('#chord-chart-container').width();
             d3.select('#chord-chart-container').select("svg").remove();
+            d3.select('#chord-dropdown-div').select("svg").remove();
+
             var svg = d3.select("#chord-chart-container").append("svg:svg")
                 .attr("width", windwidth - 20)
                 .attr("height", height)
@@ -156,7 +156,16 @@ var chord = (function() {
                 .attr("r", r0 + 20);
             var n = 0;
             wholeDataTotal = 0;
+
             data.forEach(function (d) {
+                 var total = 0;
+                 for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
+                    if (legendHeadersShowHide[legendHead[i]]) {
+                        var value = Number.parseFloat(d[legendHead[i]]);
+                        total += value;
+                    }
+                }
+                d.Total = (Number.parseFloat(total));
                 if (!(d[mainGroupColumnName] in indexByName)) {
                     nameByIndex[n] = {
                         name: d[mainGroupColumnName],
@@ -175,7 +184,7 @@ var chord = (function() {
                     indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(d[quantityColumn]);
                     nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(d[quantityColumn]);
                 }
-                wholeDataTotal += Number.parseFloat(d[quantityColumn]);
+                wholeDataTotal += total;
             });
             //initialize matrix
             for (var i = 0; i < _.size(indexByName); i++) {
@@ -189,9 +198,10 @@ var chord = (function() {
             data.forEach(function (d) {
                 var mainGrp = d[mainGroupColumnName];
                 var subGrp = d[subGroupColumnName];
-                var value = d[quantityColumn];
 
-                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = (Number.parseFloat(value));
+
+
+                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total                ;
             });
             var matrixmap = chordMpr(data);
             matrixmap.addValuesToMap("FROM")
@@ -199,9 +209,11 @@ var chord = (function() {
                     return (row.FROM === a.name && row.TO === b.name)
                 }).setAccessor(function (recs, a, b) {
                 if (!recs[0]) return 0;
-                return +recs[0].count;
+                return recs[0].Total;
             });
-
+            function value() {
+                console.log();
+            }
             var rdr = chordRdr(matrixmap.getMatrix(), matrixmap.getMap());
             chord.matrix(datamatrix);
 
@@ -214,7 +226,7 @@ var chord = (function() {
                     d3.select('#chord-tooltip').style("visibility", "hidden")
                 });
 
-         var groupPath =   g.append("path")
+            var groupPath = g.append("path")
                 .style("fill", function (d) {
                     return fill(d.index);
                 })
@@ -223,7 +235,7 @@ var chord = (function() {
                 })
                 .attr("d", arc);
 
-         var groupText=   g.append("text")
+            var groupText = g.append("text")
                 .each(function (d) {
                     d.angle = (d.startAngle + d.endAngle) / 2;
                 })
@@ -240,12 +252,13 @@ var chord = (function() {
                 .text(function (d) {
                     return nameByIndex[d.index].name;
                 });
-  // Remove the labels that don't fit. :(
-  groupText.filter(function(d, i) {
-      var check= groupPath[0][i];
-      console.log("Group name:" + groupPath[0][i].nextSibling.innerHTML + " length:" + indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal );
-      return (indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal / wholeDataTotal *100) < 1.5 })
-      .remove();
+            // Remove the labels that don't fit. :(
+            groupText.filter(function (d, i) {
+                var check = groupPath[0][i];
+                console.log("Group name:" + groupPath[0][i].nextSibling.innerHTML + " length:" + indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal);
+                return (indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal / wholeDataTotal * 100) < 1.5
+            })
+                .remove();
 
             //svg.selectAll('.group text').call(wrap,120);
             var chordPaths = svg.selectAll(".chord")
@@ -346,8 +359,62 @@ var chord = (function() {
             }
 
             data = null;
+
+
+            var container = d3.select("#chord-dropdown-div").append("svg")
+                .attr("width", 500).attr("height", 75).style('padding-top', "10px");
+            var dataL = 0;
+            var offset = 100;
+            var newdataL = 0;
+            var legendfill = d3.scale.category20();
+            var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
+                .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
+                    return "translate(2," + i * 20 + ")";
+                });
+      var circles =       legendOrdinal.append("circle")
+                .attr("cx", 10)
+                .attr("cy", 5)
+                .attr("r", 5)
+                .style("stroke", "black")
+                .style("fill", function (d, i) {
+                    return legendHeadersShowHide[d]?"black":"white";
+                });
+            var texts = legendOrdinal.append('text')
+                .attr("x", 20)
+                .attr("y", 10)
+                //.attr("dy", ".35em")
+                .text(function (d, i) {
+                    return d
+                })
+                .attr("class", "textselected")
+                .style("text-anchor", "start")
+                .style("font-size", 15)
+circles.on("click",function(d){
+    showHideBlobs(d);
+})
+            texts.on("click", function (d) {
+                showHideBlobs(d);
+            })
         });   //end d3.csv
 
+        function showHideBlobs(d) {
+            legendHeadersShowHide[d] = !legendHeadersShowHide[d];
+            var result= true;
+            for(var i in legendHeadersShowHide){
+                if(legendHeadersShowHide[i]===true) {
+                    result = false;
+                    break;
+                }
+            }
+            //if all the values are false (set to hidden) show them all, we don't want empty space.
+            if(result==true) {
+               for(var i in legendHeadersShowHide){
+                    legendHeadersShowHide[i] = true;
+                }
+            }
+           createChord();
+
+        }
     }
 
     function readInFilterData(callback) {
