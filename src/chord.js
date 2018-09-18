@@ -360,18 +360,27 @@ var chord = (function() {
 
             data = null;
 
-
+              var size = _.size(legendHeadersShowHide);
+                    var columns = Math.sqrt(size);
+                    var lines = Number.parseInt(Math.ceil(size/columns));
+                    var legheight = 25 * lines;
             var container = d3.select("#chord-dropdown-div").append("svg")
-                .attr("width", 500).attr("height", 75).style('padding-top', "10px");
+
+                .attr("width", 800).attr("height", legheight).style('padding-top', "10px");
             var dataL = 0;
             var offset = 100;
             var newdataL = 0;
+
             var legendfill = d3.scale.category20();
+            var xOff, yOff;
             var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                 .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
-                    return "translate(2," + i * 20 + ")";
+
+                    xOff = (i % 4) * (800/4)
+                    yOff = Math.floor(i / 4) * 20
+                    return "translate(" + xOff + "," + yOff + ")"
                 });
-      var circles =       legendOrdinal.append("circle")
+      var circles =  legendOrdinal.append("circle")
                 .attr("cx", 10)
                 .attr("cy", 5)
                 .attr("r", 5)
