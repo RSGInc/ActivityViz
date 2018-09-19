@@ -36,6 +36,7 @@ var chord = (function() {
     var legendHeadersShowHide = {};
     var zoneData;
     var circleMarkers;
+    var legendRows = 4;
 //config file options
     var COUNTY_FILE = "";
     var ZONE_FILE_LOC = "";
@@ -52,6 +53,7 @@ var chord = (function() {
     var showGrpPercent = false;
     var showWholePercent = true;
     var wholeDataTotal = 0;
+
     function getConfigSettings(callback) {
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
@@ -71,6 +73,9 @@ var chord = (function() {
                             if (opt == "LabelSize") {
                                 labelSize = value;
                             }
+                            if (opt == "LegendRows") {
+                                legendRows = value;
+                            }
                         })
                     }
                 });
@@ -78,13 +83,13 @@ var chord = (function() {
             });
             ZONE_FILTER_LOC = ZONE_FILTER_LOC;
             $("#chord-grouppercent").off().click(function () {
-			showGrpPercent = !showGrpPercent;
-			createChord();
-		});
-		$("#chord-wholepercent").off().click(function () {
-			showWholePercent = !showWholePercent;
-			createChord();
-		});
+                showGrpPercent = !showGrpPercent;
+                createChord();
+            });
+            $("#chord-wholepercent").off().click(function () {
+                showWholePercent = !showWholePercent;
+                createChord();
+            });
         }
     }
 
@@ -158,11 +163,13 @@ var chord = (function() {
             wholeDataTotal = 0;
 
             data.forEach(function (d) {
-                 var total = 0;
-                 for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
+                var total = 0;
+                var grpTotal = 0;
+                for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
                     if (legendHeadersShowHide[legendHead[i]]) {
                         var value = Number.parseFloat(d[legendHead[i]]);
                         total += value;
+                        grpTotal += value;
                     }
                 }
                 d.Total = (Number.parseFloat(total));
@@ -171,18 +178,18 @@ var chord = (function() {
                         name: d[mainGroupColumnName],
                         col: d[mainGroupColumnName],
                         index: n,
-                        grptotal: Number.parseFloat(d[quantityColumn])
+                        grptotal: Number.parseFloat(total)
                     };
 
                     indexByName[d[mainGroupColumnName]] = {
                         index: n++,
                         name: d[mainGroupColumnName],
-                        grptotal: Number.parseFloat(d[quantityColumn])
+                        grptotal: Number.parseFloat(total)
                     };
 
                 } else {
-                    indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(d[quantityColumn]);
-                    nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(d[quantityColumn]);
+                    indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(total);
+                    nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(total);
                 }
                 wholeDataTotal += total;
             });
@@ -200,8 +207,7 @@ var chord = (function() {
                 var subGrp = d[subGroupColumnName];
 
 
-
-                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total                ;
+                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total;
             });
             var matrixmap = chordMpr(data);
             matrixmap.addValuesToMap("FROM")
@@ -211,9 +217,11 @@ var chord = (function() {
                 if (!recs[0]) return 0;
                 return recs[0].Total;
             });
+
             function value() {
                 console.log();
             }
+
             var rdr = chordRdr(matrixmap.getMatrix(), matrixmap.getMap());
             chord.matrix(datamatrix);
 
@@ -360,10 +368,10 @@ var chord = (function() {
 
             data = null;
 
-              var size = _.size(legendHeadersShowHide);
-                    var columns = Math.sqrt(size);
-                    var lines = Number.parseInt(Math.ceil(size/columns));
-                    var legheight = 25 * lines;
+            var size = _.size(legendHeadersShowHide);
+            var columns = Math.sqrt(size);
+            var lines = Number.parseInt(Math.ceil(size / columns));
+            var legheight = 25 * lines;
             var container = d3.select("#chord-dropdown-div").append("svg")
 
                 .attr("width", 800).attr("height", legheight).style('padding-top', "10px");
@@ -376,17 +384,17 @@ var chord = (function() {
             var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                 .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
 
-                    xOff = (i % 4) * (800/4)
-                    yOff = Math.floor(i / 4) * 20
+                    xOff = (i % legendRows) * (800 / legendRows)
+                    yOff = Math.floor(i / legendRows) * 20
                     return "translate(" + xOff + "," + yOff + ")"
                 });
-      var circles =  legendOrdinal.append("circle")
+            var circles = legendOrdinal.append("circle")
                 .attr("cx", 10)
                 .attr("cy", 5)
                 .attr("r", 5)
                 .style("stroke", "black")
                 .style("fill", function (d, i) {
-                    return legendHeadersShowHide[d]?"black":"white";
+                    return legendHeadersShowHide[d] ? "black" : "white";
                 });
             var texts = legendOrdinal.append('text')
                 .attr("x", 20)
@@ -398,9 +406,9 @@ var chord = (function() {
                 .attr("class", "textselected")
                 .style("text-anchor", "start")
                 .style("font-size", 15)
-circles.on("click",function(d){
-    showHideBlobs(d);
-})
+            circles.on("click", function (d) {
+                showHideBlobs(d);
+            })
             texts.on("click", function (d) {
                 showHideBlobs(d);
             })
@@ -408,20 +416,20 @@ circles.on("click",function(d){
 
         function showHideBlobs(d) {
             legendHeadersShowHide[d] = !legendHeadersShowHide[d];
-            var result= true;
-            for(var i in legendHeadersShowHide){
-                if(legendHeadersShowHide[i]===true) {
+            var result = true;
+            for (var i in legendHeadersShowHide) {
+                if (legendHeadersShowHide[i] === true) {
                     result = false;
                     break;
                 }
             }
             //if all the values are false (set to hidden) show them all, we don't want empty space.
-            if(result==true) {
-               for(var i in legendHeadersShowHide){
+            if (result == true) {
+                for (var i in legendHeadersShowHide) {
                     legendHeadersShowHide[i] = true;
                 }
             }
-           createChord();
+            createChord();
 
         }
     }
@@ -436,7 +444,7 @@ circles.on("click",function(d){
                     ;
                     zoneFilterData = d3.nest().key(function (d) {
 
-                            return "filters";
+                        return "filters";
                     }).map(filterdata);
                     callback();
                 });
@@ -534,11 +542,11 @@ circles.on("click",function(d){
         return (returnStyle);
     }
 
-    function changeCurrentDistrict(newCurrentDistrict,destinationDistrict) {
+    function changeCurrentDistrict(newCurrentDistrict, destinationDistrict) {
         if (currentDistrict != newCurrentDistrict) {
             console.log('changing from ' + currentDistrict + " to " + newCurrentDistrict);
             currentDistrict = newCurrentDistrict;
-            if(destinationDistrict!=null) {
+            if (destinationDistrict != null) {
                 currentDestDistrict = destinationDistrict;
             }
             else {
@@ -548,7 +556,7 @@ circles.on("click",function(d){
             setTimeout(redrawMap, CSS_UPDATE_PAUSE);
         }
         else {
-            if(destinationDistrict != currentDestDistrict){
+            if (destinationDistrict != currentDestDistrict) {
                 currentDestDistrict = destinationDistrict;
             }
             setTimeout(redrawMap, CSS_UPDATE_PAUSE);
@@ -582,7 +590,9 @@ circles.on("click",function(d){
             "use strict";
             //there should be at least as many zones as the number we have data for.
 
-            var zoneData = zoneFilterData.filters.filter(function(el){ return el.ID <= zoneTiles.features.length;});
+            var zoneData = zoneFilterData.filters.filter(function (el) {
+                return el.ID <= zoneTiles.features.length;
+            });
 
 
             if (zoneTiles.features.length < Object.keys(zoneData).length) {
@@ -592,9 +602,11 @@ circles.on("click",function(d){
             //create circle markers for each zone centroid
             for (var i = 0; i < zoneTiles.features.length; i++) {
                 var feature = zoneTiles.features[i];
-                var zoneFiltered = zoneData.filter(function(d){ return d.ID == feature.properties.id;  });
+                var zoneFiltered = zoneData.filter(function (d) {
+                    return d.ID == feature.properties.id;
+                });
                 var featureZoneData = undefined;
-                if(zoneFiltered.length > 0){
+                if (zoneFiltered.length > 0) {
                     featureZoneData = zoneFiltered[0];
                 }
 
@@ -619,14 +631,14 @@ circles.on("click",function(d){
                 opacity: 1.0,
                 style: styleZoneGeoJSONLayer
             });
-            if(currentDestDistrict != null) {
-            destZoneDataLayer = L.geoJson(zoneTiles, {
-                                updateWhenIdle: true,
-                unloadInvisibleFiles: true,
-                reuseTiles: true,
-                opacity: 1.0,
-                style: styleDestZoneGeoJSONLayer
-            });
+            if (currentDestDistrict != null) {
+                destZoneDataLayer = L.geoJson(zoneTiles, {
+                    updateWhenIdle: true,
+                    unloadInvisibleFiles: true,
+                    reuseTiles: true,
+                    opacity: 1.0,
+                    style: styleDestZoneGeoJSONLayer
+                });
             }
             //var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
             //map.addLayer(stamenTileLayer);
@@ -661,7 +673,7 @@ circles.on("click",function(d){
                 //		console.log(allCountyBounds);
                 map.fitBounds(allCountyBounds);
                 map.setMaxBounds(allCountyBounds);
-                if(destZoneDataLayer !=null){
+                if (destZoneDataLayer != null) {
                     destZoneDataLayer.addTo(map);
                 }
                 else {
