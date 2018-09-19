@@ -73,7 +73,8 @@
     "Chord": {
         "ZoneFilterFile": "cocs.csv",
         "LabelSize": "14",
-        "LegendRows": 4
+        "LegendRows": 4,
+        "LegendText": "PURPOSE"
     },
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 

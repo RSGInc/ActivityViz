@@ -89,6 +89,7 @@ Each Data/Region folder needs the following:
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID and that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
         - LabelSize: the font size in pixels "10" is the default if not specified. 
         - LegendRows: the number of data points per row to be shown in the legend default is 4
+        - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
