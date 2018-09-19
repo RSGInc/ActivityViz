@@ -53,6 +53,7 @@ var chord = (function() {
     var showGrpPercent = false;
     var showWholePercent = true;
     var wholeDataTotal = 0;
+    var legendText = "Legend";
 
     function getConfigSettings(callback) {
         if (showChartOnPage) {
@@ -75,6 +76,9 @@ var chord = (function() {
                             }
                             if (opt == "LegendRows") {
                                 legendRows = value;
+                            }
+                            if(opt == "LegendText") {
+                                legendText = value;
                             }
                         })
                     }
@@ -124,7 +128,7 @@ var chord = (function() {
                     legendHeadersShowHide[legendHead[i]] = true;
                 }
             }
-            $('.chord-chart-maingroup').text("PURPOSE");
+            $('.chord-chart-maingroup').text(legendText);
 
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
