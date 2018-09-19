@@ -65,7 +65,7 @@ var sunburst = (function () {
 			var sunburstBounds = d3.select("#sunburst-chart").node().getBoundingClientRect();
 			//Sequences sunburst https://bl.ocks.org/kerryrodden/7090426
 			// Dimensions of sunburst.
-			var width = Math.min(750, sunburstBounds.width);
+			var width = Math.min(600, sunburstBounds.width);
 			var height = width;
 			d3.select("#sunburst-chart svg").remove(); //in case window resize delete contents
 			radius = Math.min(width, height) / 2;
