@@ -21,7 +21,8 @@
         "TimeUse": false, 
         "Radar": false, 
         "3DMap": true, 
-        "Sunburst": false
+        "Sunburst": false,
+        "Chord": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -35,9 +36,9 @@
         "BarSpacing": "0.2", 
         "RotateLabels": "0", 
         "NumberColsGrouped": 2, 
-        "SwapLegendByDefault": false,
+        "SwapLegendByDefault": false, 
         "ShowAsPercentByDefault": "N/A", 
-        "ShowAsVerticalByDefault": true,
+        "ShowAsVerticalByDefault": true, 
         "StackAllChartsByDefault": false, 
         "ChartWidthOverride": [
             12, 
@@ -68,7 +69,13 @@
         "Oranges": false, 
         "Blues": false, 
         "Purples": false
-    }, 
+    },
+    "Chord": {
+        "ZoneFilterFile": "cocs.csv",
+        "LabelSize": "14",
+        "LegendRows": 4,
+        "LegendText": "TRIPS"
+    },
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 
         "DataHasPeriods": false, 
