@@ -67,7 +67,7 @@
         "Greens": false, 
         "Greys": false, 
         "Oranges": false, 
-        "Blues": false, 
+        "Blues": true, 
         "Purples": false
     },
     "Chord": {
