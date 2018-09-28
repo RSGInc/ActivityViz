@@ -42,7 +42,8 @@
   },
   "Chord": {
     "ZoneFilterFile": "districts.csv",
-    "LabelSize": "14"
+    "LabelSize": "14",
+    "LegendText": "TRIPS"
     }
 }
 
