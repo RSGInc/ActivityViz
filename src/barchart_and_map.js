@@ -892,7 +892,7 @@ var barchart_and_map = (function () {
 			var sqrtRadius = 0;
 			var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
             var cnttrue = 0;
-            var isZoneVisible = false;
+            var isZoneVisible = true;
             checkedfilters.each(function () {
                 var filtername = this.attributes["colname"];
                 cnttrue += parseInt(zoneData.FILTERS[filtername.value]);
