@@ -1,0 +1,85 @@
+AXIS,CHART,QUANTITY
+Jobs Housing Balance,AEROTROPOLIS,0.066
+Jobs Housing Balance,BUCKHEAD,0.233
+Jobs Housing Balance,CITY CENTER,0.055
+Jobs Housing Balance,CUMBERLAND,0.271
+Jobs Housing Balance,DORAVILLE ASSEMBLY,0.017
+Jobs Housing Balance,EMORY,0.03
+Jobs Housing Balance,FT MCPHERSON,0.349
+Jobs Housing Balance,FULTON INDUSTRIAL,0.114
+Jobs Housing Balance,GWINNETT,0.353
+Jobs Housing Balance,HARTSFIELD,0.019
+Jobs Housing Balance,LOCKHEED/DOBBINS,0.066
+Jobs Housing Balance,MIDTOWN,0.232
+Jobs Housing Balance,NEWNAN,0.357
+Jobs Housing Balance,NORTH POINT,0.161
+Jobs Housing Balance,PEACHTREE CORNERS,0.183
+Jobs Housing Balance,PERIMETER,0.148
+Jobs Housing Balance,STOCKBRIDGE,1.288
+Jobs Housing Balance,STONECREST,0.201
+Jobs Housing Balance,TOWN CENTER,0.294
+Jobs Housing Balance,TRIBUTARY,0.957
+Jobs Housing Balance,WINDWARD,0.215
+Accessible Employment,BUCKHEAD,679557
+Accessible Employment,NEWNAN,48536
+Accessible Employment,CUMBERLAND,616498
+Accessible Employment,DORAVILLE ASSEMBLY,555085
+Accessible Employment,HARTSFIELD,552604
+Accessible Employment,EMORY,559064
+Accessible Employment,STONECREST,100143
+Accessible Employment,TRIBUTARY,107334
+Accessible Employment,MIDTOWN,836388
+Accessible Employment,NORTH POINT,333255
+Accessible Employment,TOWN CENTER,243109
+Accessible Employment,FULTON INDUSTRIAL,528556
+Accessible Employment,LOCKHEED/DOBBINS,301017
+Accessible Employment,PERIMETER,729310
+Accessible Employment,STOCKBRIDGE,235186
+Accessible Employment,PEACHTREE CORNERS,414699
+Accessible Employment,AEROTROPOLIS,442377
+Accessible Employment,WINDWARD,293626
+Accessible Employment,FT MCPHERSON,617156
+Accessible Employment,CITY CENTER,991471
+Accessible Employment,GWINNETT,266390
+Transit Mode Share,AEROTROPOLIS,0.018
+Transit Mode Share,BUCKHEAD,0.048
+Transit Mode Share,CITY CENTER,0.107
+Transit Mode Share,CUMBERLAND,0.017
+Transit Mode Share,DORAVILLE ASSEMBLY,0.06
+Transit Mode Share,EMORY,0.135
+Transit Mode Share,FT MCPHERSON,0.102
+Transit Mode Share,FULTON INDUSTRIAL,0.024
+Transit Mode Share,GWINNETT,0.014
+Transit Mode Share,HARTSFIELD,0.044
+Transit Mode Share,LOCKHEED/DOBBINS,0.031
+Transit Mode Share,MIDTOWN,0.091
+Transit Mode Share,NEWNAN,0.005
+Transit Mode Share,NORTH POINT,0.021
+Transit Mode Share,PEACHTREE CORNERS,0.017
+Transit Mode Share,PERIMETER,0.03
+Transit Mode Share,STOCKBRIDGE,0.011
+Transit Mode Share,STONECREST,0.045
+Transit Mode Share,TOWN CENTER,0.008
+Transit Mode Share,TRIBUTARY,0.007
+Transit Mode Share,WINDWARD,0.013
+Zero Car Transit Trips Per HH,AEROTROPOLIS,0.06
+Zero Car Transit Trips Per HH,BUCKHEAD,0.259
+Zero Car Transit Trips Per HH,CITY CENTER,2.508
+Zero Car Transit Trips Per HH,CUMBERLAND,0.076
+Zero Car Transit Trips Per HH,DORAVILLE ASSEMBLY,1.733
+Zero Car Transit Trips Per HH,EMORY,3.445
+Zero Car Transit Trips Per HH,FT MCPHERSON,0.347
+Zero Car Transit Trips Per HH,FULTON INDUSTRIAL,0.16
+Zero Car Transit Trips Per HH,GWINNETT,0.039
+Zero Car Transit Trips Per HH,HARTSFIELD,1.738
+Zero Car Transit Trips Per HH,LOCKHEED/DOBBINS,0.158
+Zero Car Transit Trips Per HH,MIDTOWN,0.465
+Zero Car Transit Trips Per HH,NEWNAN,0.002
+Zero Car Transit Trips Per HH,NORTH POINT,0.08
+Zero Car Transit Trips Per HH,PEACHTREE CORNERS,0.041
+Zero Car Transit Trips Per HH,PERIMETER,0.233
+Zero Car Transit Trips Per HH,STOCKBRIDGE,0.013
+Zero Car Transit Trips Per HH,STONECREST,0.176
+Zero Car Transit Trips Per HH,TOWN CENTER,0.028
+Zero Car Transit Trips Per HH,TRIBUTARY,0.007
+Zero Car Transit Trips Per HH,WINDWARD,0.036
