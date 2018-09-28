@@ -53,7 +53,7 @@
         "RotateLabels": "0", 
         "ZoneFilterFile": "cocs.csv", 
         "ZoneFilterLabel": "Historically Marginalized Communities", 
-        "CycleMapTools": false, 
+        "CycleMapTools": false,
         "ZoneFilters": {
             "minority_zone": "Minority", 
             "lowengpro_zone": "Low English", 
