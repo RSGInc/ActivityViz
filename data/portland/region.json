@@ -74,7 +74,7 @@
         "ZoneFilterFile": "cocs.csv",
         "LabelSize": "14",
         "LegendRows": 4,
-        "LegendText": "PURPOSE"
+        "LegendText": "TRIPS"
     },
     "ThreeDMap": {
         "ShowPeriodsAsDropdown": true, 
