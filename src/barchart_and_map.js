@@ -141,6 +141,7 @@ var barchart_and_map = (function () {
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
+		updateBubbleSize();
 	}
 
 	function readInFilterData(callback) {
@@ -476,25 +477,25 @@ var barchart_and_map = (function () {
 		var color = naColor;
         var isZoneVisible = true;
 		if (feature.zoneData != undefined) {
-			var zoneDataFeature = feature.zoneData[currentTripMode];
-			//possible that even if data for zone exists, could be missing this particular trip mode
-			if (zoneDataFeature != undefined) {
-				var quantity = zoneDataFeature.QUANTITY;
-				if (zoneDataFeature.QUANTITY == undefined) {
-					throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
-				}
-				if (quantity >= breakUp[3]) {
-					color = colors[3];
-				} else if (quantity >= breakUp[2]) {
-					color = colors[2];
-				} else if (quantity >= breakUp[1]) {
-					color = colors[1];
-				} else {
-					color = colors[0];
-				}
-			}
-			//end if we have data for this trip mode
-              var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
+            var zoneDataFeature = feature.zoneData[currentTripMode];
+            //possible that even if data for zone exists, could be missing this particular trip mode
+            if (zoneDataFeature != undefined) {
+                var quantity = zoneDataFeature.QUANTITY;
+                if (zoneDataFeature.QUANTITY == undefined) {
+                    throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
+                }
+                if (quantity >= breakUp[3]) {
+                    color = colors[3];
+                } else if (quantity >= breakUp[2]) {
+                    color = colors[2];
+                } else if (quantity >= breakUp[1]) {
+                    color = colors[1];
+                } else {
+                    color = colors[0];
+                }
+            }
+            //end if we have data for this trip mode
+            var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
             var cnttrue = 0;
             checkedfilters.each(function () {
                 var filtername = this.attributes["colname"];
@@ -555,7 +556,8 @@ var barchart_and_map = (function () {
 			//create circle markers for each zone centroid
 			for (var i = 0; i < zoneTiles.features.length; i++) {
 				var feature = zoneTiles.features[i];
-				var featureZoneData = zoneData[feature.properties.id-1];
+				var featureZoneData = zoneData[feature.properties.id];
+
 				if (featureZoneData == undefined) { //missing data for this zone
 				} else {
 					//WARNING: center coordinates seem to have lat and lng reversed!
@@ -567,6 +569,8 @@ var barchart_and_map = (function () {
 					circleMarkers.push(circleMarker);
 				}
 			}
+
+
 			circlesLayerGroup = L.layerGroup(circleMarkers);
 			//http://leafletjs.com/reference.html#tilelayer
 			zoneDataLayer = L.geoJson(zoneTiles, {
@@ -691,8 +695,10 @@ var barchart_and_map = (function () {
 				updateBubbleColor();
 				updateBubbleSize();
 				circlesLayerGroup.addTo(map);
+				zoneDataLayer.removeFrom(map);
 			} else {
 				circlesLayerGroup.removeFrom(map);
+				zoneDataLayer.addTo(map);
 			}
 		});
 		if(showCycleTools == false) {
@@ -714,7 +720,12 @@ var barchart_and_map = (function () {
 		//end on click for ramp/palette
 		if ($("#mode-share-by-county-classification").val() == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
-		}; //Logic for cycling through the maps
+			$('#mode-share-by-county-slider').show();
+		};
+		if($("#mode-share-by-county-classification").val() != "custom" && showCycleTools ==false) {
+			$('#mode-share-by-county-slider').hide();
+		}
+		//Logic for cycling through the maps
 		$("#mode-share-by-county-start-cycle-map").click(function () {
 			$("#mode-share-by-county-stop-cycle-map").css("display", "inline");
 			$("#mode-share-by-county-start-cycle-map").css("display", "none");
@@ -884,7 +895,15 @@ var barchart_and_map = (function () {
 			var zoneData = circleMarker.zoneData;
 			var zoneTripData = zoneData[currentTripMode];
 			var sqrtRadius = 0;
-			if (zoneTripData != undefined) {
+			var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
+            var cnttrue = 0;
+            var isZoneVisible = true;
+            checkedfilters.each(function () {
+                var filtername = this.attributes["colname"];
+                cnttrue += parseInt(zoneData.FILTERS[filtername.value]);
+                isZoneVisible = cnttrue > 0;
+            });
+			if (zoneTripData != undefined && isZoneVisible) {
 				var quantity = zoneTripData.QUANTITY;
 				var sqrtRadius = scaleSqrt(quantity);
 			}
@@ -907,8 +926,12 @@ var barchart_and_map = (function () {
 		});
 		if (classification == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
+			$('#mode-share-by-county-slider').show();
 		} else {
 			$("#mode-share-by-county-update-map").css("display", "none");
+			if(showCycleTools==false && classification != "custom"){
+					$('#mode-share-by-county-slider').hide();
+			}
 			if (classification == "even-interval") {
 				breakUp = serie.getClassEqInterval(4);
 			} else if (classification == "quartiles") {

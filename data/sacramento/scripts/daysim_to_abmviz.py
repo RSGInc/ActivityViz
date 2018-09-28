@@ -37,7 +37,7 @@ barchart_filename = 'BarChartData.csv'
 timeuse_filename = 'TimeUseData.csv'
 treemap_filename = 'TreeMapData.csv'
 radarchart_filename = 'RadarChartsData.csv'
-chorddata_filename = 'ChordData.csv'
+chorddata_filename = 'ChordData_old.csv'
 
 # get input data and do some joins
 trips = pd.read_csv(trips_filename, sep=sep)
