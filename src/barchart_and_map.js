@@ -720,7 +720,12 @@ var barchart_and_map = (function () {
 		//end on click for ramp/palette
 		if ($("#mode-share-by-county-classification").val() == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
-		}; //Logic for cycling through the maps
+			$('#mode-share-by-county-slider').show();
+		};
+		if($("#mode-share-by-county-classification").val() != "custom" && showCycleTools ==false) {
+			$('#mode-share-by-county-slider').hide();
+		}
+		//Logic for cycling through the maps
 		$("#mode-share-by-county-start-cycle-map").click(function () {
 			$("#mode-share-by-county-stop-cycle-map").css("display", "inline");
 			$("#mode-share-by-county-start-cycle-map").css("display", "none");
@@ -921,8 +926,12 @@ var barchart_and_map = (function () {
 		});
 		if (classification == "custom") {
 			$("#mode-share-by-county-update-map").css("display", "inline");
+			$('#mode-share-by-county-slider').show();
 		} else {
 			$("#mode-share-by-county-update-map").css("display", "none");
+			if(showCycleTools==false && classification != "custom"){
+					$('#mode-share-by-county-slider').hide();
+			}
 			if (classification == "even-interval") {
 				breakUp = serie.getClassEqInterval(4);
 			} else if (classification == "quartiles") {
