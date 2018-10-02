@@ -1,0 +1,77 @@
+AXIS,CHART,QUANTITY
+Jobs Housing Balance,San Diego           ,0.61867
+Jobs Housing Balance,La Mesa             ,1.164757
+Jobs Housing Balance,El Cajon            ,0.8736373
+Jobs Housing Balance,Unincorporated      ,1.1040675
+Jobs Housing Balance,Encinitas           ,0.942504
+Jobs Housing Balance,Lemon Grove         ,1.2889453
+Jobs Housing Balance,San Marcos          ,0.7309544
+Jobs Housing Balance,Vista               ,0.8169107
+Jobs Housing Balance,Chula Vista         ,1.1503272
+Jobs Housing Balance,Imperial Beach      ,2.572395
+Jobs Housing Balance,Carlsbad            ,0.618757
+Jobs Housing Balance,Solana Beach        ,0.7748435
+Jobs Housing Balance,National City       ,0.5808612
+Jobs Housing Balance,Santee              ,1.3882144
+Jobs Housing Balance,Del Mar             ,0.4478434
+Jobs Housing Balance,Escondido           ,0.9629243
+Jobs Housing Balance,Oceanside           ,1.5730277
+Jobs Housing Balance,Poway               ,0.6105792
+Jobs Housing Balance,Coronado            ,0.332364
+Accessible Employment,Carlsbad            ,140717.6595
+Accessible Employment,Chula Vista         ,243063.3879
+Accessible Employment,Coronado            ,456049.9202
+Accessible Employment,Del Mar             ,446602.0634
+Accessible Employment,El Cajon            ,380327.2902
+Accessible Employment,Encinitas           ,404421.2571
+Accessible Employment,Escondido           ,162656.6271
+Accessible Employment,Imperial Beach      ,201638.1444
+Accessible Employment,La Mesa             ,329553.4665
+Accessible Employment,Lemon Grove         ,150903.5745
+Accessible Employment,National City       ,541839.398
+Accessible Employment,Oceanside           ,150011.6164
+Accessible Employment,Poway               ,153932.8009
+Accessible Employment,San Diego           ,798698.6034
+Accessible Employment,San Marcos          ,183493.8607
+Accessible Employment,Santee              ,177777.9122
+Accessible Employment,Solana Beach        ,244118.3582
+Accessible Employment,Unincorporated      ,105641.5654
+Accessible Employment,Vista               ,121436.2399
+Transit Mode Share,San Diego           ,0.0275755
+Transit Mode Share,La Mesa             ,0.0202438
+Transit Mode Share,El Cajon            ,0.0233723
+Transit Mode Share,Unincorporated      ,0.0109598
+Transit Mode Share,Encinitas           ,0.0085643
+Transit Mode Share,Lemon Grove         ,0.0242155
+Transit Mode Share,San Marcos          ,0.0209786
+Transit Mode Share,Vista               ,0.0188784
+Transit Mode Share,Solana Beach        ,0.0084979
+Transit Mode Share,Carlsbad            ,0.0091541
+Transit Mode Share,Imperial Beach      ,0.0345318
+Transit Mode Share,Chula Vista         ,0.0236227
+Transit Mode Share,Del Mar             ,0.006534
+Transit Mode Share,Escondido           ,0.014394
+Transit Mode Share,Oceanside           ,0.0169336
+Transit Mode Share,Poway               ,0.0067408
+Transit Mode Share,Coronado            ,0.018706
+Transit Mode Share,National City       ,0.0288081
+Transit Mode Share,Santee              ,0.0120995
+Zero Car Transit Trips Per HH,La Mesa             ,0.5796489
+Zero Car Transit Trips Per HH,El Cajon            ,0.6576305
+Zero Car Transit Trips Per HH,Unincorporated      ,0.4514786
+Zero Car Transit Trips Per HH,Imperial Beach      ,0.7419087
+Zero Car Transit Trips Per HH,Carlsbad            ,0.4610312
+Zero Car Transit Trips Per HH,Chula Vista         ,0.7107518
+Zero Car Transit Trips Per HH,Solana Beach        ,0.4820144
+Zero Car Transit Trips Per HH,Encinitas           ,0.2262658
+Zero Car Transit Trips Per HH,Lemon Grove         ,0.8457944
+Zero Car Transit Trips Per HH,San Diego           ,0.8075008
+Zero Car Transit Trips Per HH,San Marcos          ,0.4577227
+Zero Car Transit Trips Per HH,Vista               ,0.4901961
+Zero Car Transit Trips Per HH,Oceanside           ,0.6206257
+Zero Car Transit Trips Per HH,Poway               ,0.2513369
+Zero Car Transit Trips Per HH,National City       ,0.8798354
+Zero Car Transit Trips Per HH,Santee              ,0.3216266
+Zero Car Transit Trips Per HH,Coronado            ,0.7072243
+Zero Car Transit Trips Per HH,Del Mar             ,0.1298701
+Zero Car Transit Trips Per HH,Escondido           ,0.446545

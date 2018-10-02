@@ -33,8 +33,10 @@ var chord = (function() {
     };
     var indexByName = {};
     var nameByIndex = {};
+    var legendHeadersShowHide = {};
     var zoneData;
     var circleMarkers;
+    var legendRows = 4;
 //config file options
     var COUNTY_FILE = "";
     var ZONE_FILE_LOC = "";
@@ -51,6 +53,8 @@ var chord = (function() {
     var showGrpPercent = false;
     var showWholePercent = true;
     var wholeDataTotal = 0;
+    var legendText = "Legend";
+
     function getConfigSettings(callback) {
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
@@ -70,6 +74,12 @@ var chord = (function() {
                             if (opt == "LabelSize") {
                                 labelSize = value;
                             }
+                            if (opt == "LegendRows") {
+                                legendRows = value;
+                            }
+                            if(opt == "LegendText") {
+                                legendText = value;
+                            }
                         })
                     }
                 });
@@ -77,13 +87,13 @@ var chord = (function() {
             });
             ZONE_FILTER_LOC = ZONE_FILTER_LOC;
             $("#chord-grouppercent").off().click(function () {
-			showGrpPercent = !showGrpPercent;
-			createChord();
-		});
-		$("#chord-wholepercent").off().click(function () {
-			showWholePercent = !showWholePercent;
-			createChord();
-		});
+                showGrpPercent = !showGrpPercent;
+                createChord();
+            });
+            $("#chord-wholepercent").off().click(function () {
+                showWholePercent = !showWholePercent;
+                createChord();
+            });
         }
     }
 
@@ -112,20 +122,17 @@ var chord = (function() {
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
             var quantities = headers.slice(2);
-            if ($('#chord-data-select option').length == 0) {
-                quantities.forEach(function (e) {
-                    $('#chord-data-select').append($("<option></option>").attr("value", e).text(e));
-                });
-                $('.chord-chart-maingroup').text($('#chord-data-select').val());
+            var legendHead = headers.slice(2, headers.len);
+            if (_.size(legendHeadersShowHide) == 0) {
+                for (var i = 0; i < legendHead.length; i++) {
+                    legendHeadersShowHide[legendHead[i]] = true;
+                }
             }
+            $('.chord-chart-maingroup').text(legendText);
 
-            $('#chord-data-select').on('change', function (d) {
-                $('.chord-chart-maingroup').text($('#chord-data-select').val());
-                createChord();
-            });
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
-            quantityColumn = $('#chord-data-select').val();
+            quantityColumn = 3;
 
             indexByName = {};
             nameByIndex = {};
@@ -144,11 +151,13 @@ var chord = (function() {
                 .outerRadius(innerRadius + 20);
             var windwidth = $('#chord-chart-container').width();
             d3.select('#chord-chart-container').select("svg").remove();
+            d3.select('#chord-dropdown-div').select("svg").remove();
+
             var svg = d3.select("#chord-chart-container").append("svg:svg")
                 .attr("width", windwidth - 20)
                 .attr("height", height)
-                .style("padding-left","3%")
-                .style("padding-right","5%")
+                .style("padding-left", "3%")
+                .style("padding-right", "5%")
                 .append("svg:g")
                 .attr("id", "circle")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -156,21 +165,37 @@ var chord = (function() {
                 .attr("r", r0 + 20);
             var n = 0;
             wholeDataTotal = 0;
+
             data.forEach(function (d) {
+                var total = 0;
+                var grpTotal = 0;
+                for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
+                    if (legendHeadersShowHide[legendHead[i]]) {
+                        var value = Number.parseFloat(d[legendHead[i]]);
+                        total += value;
+                        grpTotal += value;
+                    }
+                }
+                d.Total = (Number.parseFloat(total));
                 if (!(d[mainGroupColumnName] in indexByName)) {
-                    nameByIndex[n] = {name: d[mainGroupColumnName].replace(/\./g, " "), col:d[mainGroupColumnName],index: n, grptotal: Number.parseFloat(d[quantityColumn])};
+                    nameByIndex[n] = {
+                        name: d[mainGroupColumnName],
+                        col: d[mainGroupColumnName],
+                        index: n,
+                        grptotal: Number.parseFloat(total)
+                    };
 
                     indexByName[d[mainGroupColumnName]] = {
                         index: n++,
-                        name: d[mainGroupColumnName].replace(/\./g, " "),
-                        grptotal: Number.parseFloat(d[quantityColumn])
+                        name: d[mainGroupColumnName],
+                        grptotal: Number.parseFloat(total)
                     };
 
                 } else {
-                    indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(d[quantityColumn]);
-                    nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(d[quantityColumn]);
+                    indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(total);
+                    nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(total);
                 }
-                wholeDataTotal+=  Number.parseFloat(d[quantityColumn]);
+                wholeDataTotal += total;
             });
             //initialize matrix
             for (var i = 0; i < _.size(indexByName); i++) {
@@ -184,9 +209,9 @@ var chord = (function() {
             data.forEach(function (d) {
                 var mainGrp = d[mainGroupColumnName];
                 var subGrp = d[subGroupColumnName];
-                var value = d[quantityColumn];
-                //console.log(indexByName[mainGrp].index);
-                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = (Number.parseFloat(value));
+
+
+                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total;
             });
             var matrixmap = chordMpr(data);
             matrixmap.addValuesToMap("FROM")
@@ -194,8 +219,12 @@ var chord = (function() {
                     return (row.FROM === a.name && row.TO === b.name)
                 }).setAccessor(function (recs, a, b) {
                 if (!recs[0]) return 0;
-                return +recs[0].count;
+                return recs[0].Total;
             });
+
+            function value() {
+                console.log();
+            }
 
             var rdr = chordRdr(matrixmap.getMatrix(), matrixmap.getMap());
             chord.matrix(datamatrix);
@@ -209,7 +238,7 @@ var chord = (function() {
                     d3.select('#chord-tooltip').style("visibility", "hidden")
                 });
 
-            g.append("path")
+            var groupPath = g.append("path")
                 .style("fill", function (d) {
                     return fill(d.index);
                 })
@@ -218,7 +247,7 @@ var chord = (function() {
                 })
                 .attr("d", arc);
 
-            g.append("text")
+            var groupText = g.append("text")
                 .each(function (d) {
                     d.angle = (d.startAngle + d.endAngle) / 2;
                 })
@@ -231,10 +260,18 @@ var chord = (function() {
                 .style("text-anchor", function (d) {
                     return d.angle > Math.PI ? "end" : null;
                 })
-                .style("font-size", labelSize+"px")
+                .style("font-size", labelSize + "px")
                 .text(function (d) {
                     return nameByIndex[d.index].name;
                 });
+            // Remove the labels that don't fit. :(
+            groupText.filter(function (d, i) {
+                var check = groupPath[0][i];
+                console.log("Group name:" + groupPath[0][i].nextSibling.innerHTML + " length:" + indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal);
+                return (indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal / wholeDataTotal * 100) < 1.5
+            })
+                .remove();
+
             //svg.selectAll('.group text').call(wrap,120);
             var chordPaths = svg.selectAll(".chord")
                 .data(chord.chords)
@@ -254,10 +291,10 @@ var chord = (function() {
                             return (d3.event.pageY - 100) + "px"
                         })
                         .style("left", function () {
-                            if(d3.event.pageX +100 > 500){
-                                return  500+"px";
+                            if (d3.event.pageX + 100 > 500) {
+                                return 500 + "px";
                             }
-                            return (d3.event.pageX +100) + "px";
+                            return (d3.event.pageX + 100) + "px";
                         })
 
                 })
@@ -265,9 +302,9 @@ var chord = (function() {
                     d3.select("#chord-tooltip").style("visibility", "hidden")
                 });
 
-            function chordTip(d,i) {
+            function chordTip(d, i) {
                 var otherdist = indexByName[d.sname];
-                if(currentDistrict != d.tname) {
+                if (currentDistrict != d.tname) {
                     changeCurrentDistrict(d.sname, d.tname);
                 }
                 else {
@@ -276,38 +313,37 @@ var chord = (function() {
                 var p = d3.format(".2%"), q = d3.format(",.0f")
                 var sourceVal = d.svalue;
                 var targetVal = d.tvalue;
-                if(showWholePercent){
-                    sourceVal = p(sourceVal/wholeDataTotal);
-                    targetVal = p(targetVal/wholeDataTotal);
+                if (showWholePercent) {
+                    sourceVal = p(sourceVal / wholeDataTotal);
+                    targetVal = p(targetVal / wholeDataTotal);
                     return ""
-                    + indexByName[d.sname].name + " → " + indexByName[d.tname].name
-                    + ": " + q(d.svalue) + " (" + sourceVal +  ")<br/>"
-                    + indexByName[d.tname].name + " → " + indexByName[d.sname].name
-                     + ": " + q(d.tvalue) + " (" + targetVal +  ")<br/>"
+                        + indexByName[d.sname].name + " → " + indexByName[d.tname].name
+                        + ": " + q(d.svalue) + " (" + sourceVal + ")<br/>"
+                        + indexByName[d.tname].name + " → " + indexByName[d.sname].name
+                        + ": " + q(d.tvalue) + " (" + targetVal + ")<br/>"
                 }
                 else {
-                return ""
-                    + indexByName[d.sname].name + " → " + indexByName[d.tname].name
-                    + ": " + sourceVal + "<br/>"
-                    + indexByName[d.tname].name + " → " + indexByName[d.sname].name
-                    + ": " + targetVal + "<br/>";
+                    return ""
+                        + indexByName[d.sname].name + " → " + indexByName[d.tname].name
+                        + ": " + sourceVal + "<br/>"
+                        + indexByName[d.tname].name + " → " + indexByName[d.sname].name
+                        + ": " + targetVal + "<br/>";
                 }
             }
 
             function groupTip(d) {
                 var p = d3.format(".2%"), q = d3.format(",.0f")
                 var value = d.gvalue;
-                if(showWholePercent){
-                     return ""
-                    + indexByName[d.gname].name + " : " + q(value) + " ("+p(value/wholeDataTotal)+") <br/>";
+                if (showWholePercent) {
+                    return ""
+                        + indexByName[d.gname].name + " : " + q(value) + " (" + p(value / wholeDataTotal) + ") <br/>";
                 } else {
                     return ""
-                    + indexByName[d.gname].name + " : " + q(value) + "<br/>";
+                        + indexByName[d.gname].name + " : " + q(value) + "<br/>";
                 }
             }
 
             function mouseover(d, i) {
-
                 var name = nameByIndex[i].col;
                 console.log("source" + nameByIndex[i].col);
                 d3.select("#chord-tooltip")
@@ -317,7 +353,7 @@ var chord = (function() {
                         return (d3.event.pageY - 80) + "px"
                     })
                     .style("left", function () {
-                        if((d3.event.pageX - 50) > 0 ||(d3.event.pageX - 50) > 600 ) {
+                        if ((d3.event.pageX - 50) > 0 || (d3.event.pageX - 50) > 600) {
                             return (d3.event.pageX - 50) + "px";
                         } else {
                             return 0 + "px";
@@ -336,9 +372,70 @@ var chord = (function() {
 
             data = null;
 
+            var size = _.size(legendHeadersShowHide);
+            var columns = Math.sqrt(size);
+            var lines = Number.parseInt(Math.ceil(size / columns));
+            var legheight = 25 * lines;
+            var container = d3.select("#chord-dropdown-div").append("svg")
 
+                .attr("width", 800).attr("height", legheight).style('padding-top', "10px");
+            var dataL = 0;
+            var offset = 100;
+            var newdataL = 0;
+
+            var legendfill = d3.scale.category20();
+            var xOff, yOff;
+            var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
+                .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
+
+                    xOff = (i % legendRows) * (800 / legendRows)
+                    yOff = Math.floor(i / legendRows) * 20
+                    return "translate(" + xOff + "," + yOff + ")"
+                });
+            var circles = legendOrdinal.append("circle")
+                .attr("cx", 10)
+                .attr("cy", 5)
+                .attr("r", 5)
+                .style("stroke", "black")
+                .style("fill", function (d, i) {
+                    return legendHeadersShowHide[d] ? "black" : "white";
+                });
+            var texts = legendOrdinal.append('text')
+                .attr("x", 20)
+                .attr("y", 10)
+                //.attr("dy", ".35em")
+                .text(function (d, i) {
+                    return d
+                })
+                .attr("class", "textselected")
+                .style("text-anchor", "start")
+                .style("font-size", 15)
+            circles.on("click", function (d) {
+                showHideBlobs(d);
+            })
+            texts.on("click", function (d) {
+                showHideBlobs(d);
+            })
         });   //end d3.csv
 
+        function showHideBlobs(d) {
+            legendHeadersShowHide[d] = !legendHeadersShowHide[d];
+            var result = true;
+            for (var i in legendHeadersShowHide) {
+                if (legendHeadersShowHide[i] === true) {
+                    result = false;
+                    break;
+                }
+            }
+            //if all the values are false (set to hidden) show them all, we don't want empty space.
+            if (result == true) {
+                for (var i in legendHeadersShowHide) {
+                    legendHeadersShowHide[i] = true;
+                }
+            }
+            createChord();
+
+        }
     }
 
     function readInFilterData(callback) {
@@ -350,8 +447,8 @@ var chord = (function() {
                     zoneheaders = d3.keys(filterdata[0]);
                     ;
                     zoneFilterData = d3.nest().key(function (d) {
-                        if (d.County != "" && d.County != "0")
-                            return "filters";
+
+                        return "filters";
                     }).map(filterdata);
                     callback();
                 });
@@ -377,7 +474,7 @@ var chord = (function() {
                 if (zoneDataFeature == undefined) {
                     throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
                 }
-                var findDistrict = currentDistrict.replace(/\s/g, ".");
+                var findDistrict = currentDistrict;//.replace(/\s/g, ".");
                 var district = indexByName[findDistrict];
                 color = fill(indexByName[findDistrict].index);
 
@@ -411,7 +508,7 @@ var chord = (function() {
                 if (zoneDataFeature == undefined) {
                     throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
                 }
-                var findDistrict = currentDestDistrict.replace(/\s/g, ".");
+                var findDistrict = currentDestDistrict;//.replace(/\s/g, ".");
                 var district = indexByName[findDistrict];
                 color = fill(indexByName[findDistrict].index);
 
@@ -449,11 +546,11 @@ var chord = (function() {
         return (returnStyle);
     }
 
-    function changeCurrentDistrict(newCurrentDistrict,destinationDistrict) {
+    function changeCurrentDistrict(newCurrentDistrict, destinationDistrict) {
         if (currentDistrict != newCurrentDistrict) {
             console.log('changing from ' + currentDistrict + " to " + newCurrentDistrict);
             currentDistrict = newCurrentDistrict;
-            if(destinationDistrict!=null) {
+            if (destinationDistrict != null) {
                 currentDestDistrict = destinationDistrict;
             }
             else {
@@ -463,7 +560,7 @@ var chord = (function() {
             setTimeout(redrawMap, CSS_UPDATE_PAUSE);
         }
         else {
-            if(destinationDistrict != currentDestDistrict){
+            if (destinationDistrict != currentDestDistrict) {
                 currentDestDistrict = destinationDistrict;
             }
             setTimeout(redrawMap, CSS_UPDATE_PAUSE);
@@ -491,22 +588,17 @@ var chord = (function() {
             console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
         });
         countiesSet = new Set();
-        zoneFilterData.filters.forEach(function (d) {
 
-            if (d["County"] != "0" && d["County"] != "") {
-                var countyName = d["County"];
-                if (!countiesSet.has(countyName))
-                    countiesSet.add(countyName);
-            }
-            var zoneName = d[0];
-
-        });
 
         $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + ZONE_FILE_LOC, function (zoneTiles) {
             "use strict";
             //there should be at least as many zones as the number we have data for.
 
-            var zoneData = zoneFilterData.filters;
+            var zoneData = zoneFilterData.filters.filter(function (el) {
+                return el.ID <= zoneTiles.features.length;
+            });
+
+
             if (zoneTiles.features.length < Object.keys(zoneData).length) {
                 throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
             }
@@ -514,7 +606,15 @@ var chord = (function() {
             //create circle markers for each zone centroid
             for (var i = 0; i < zoneTiles.features.length; i++) {
                 var feature = zoneTiles.features[i];
-                var featureZoneData = zoneData[feature.properties.id-1];
+                var zoneFiltered = zoneData.filter(function (d) {
+                    return d.ID == feature.properties.id;
+                });
+                var featureZoneData = undefined;
+                if (zoneFiltered.length > 0) {
+                    featureZoneData = zoneFiltered[0];
+                }
+
+
                 if (featureZoneData == undefined) { //missing data for this zone
                 } else {
                     //WARNING: center coordinates seem to have lat and lng reversed!
@@ -535,14 +635,14 @@ var chord = (function() {
                 opacity: 1.0,
                 style: styleZoneGeoJSONLayer
             });
-            if(currentDestDistrict != null) {
-            destZoneDataLayer = L.geoJson(zoneTiles, {
-                                updateWhenIdle: true,
-                unloadInvisibleFiles: true,
-                reuseTiles: true,
-                opacity: 1.0,
-                style: styleDestZoneGeoJSONLayer
-            });
+            if (currentDestDistrict != null) {
+                destZoneDataLayer = L.geoJson(zoneTiles, {
+                    updateWhenIdle: true,
+                    unloadInvisibleFiles: true,
+                    reuseTiles: true,
+                    opacity: 1.0,
+                    style: styleDestZoneGeoJSONLayer
+                });
             }
             //var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
             //map.addLayer(stamenTileLayer);
@@ -564,7 +664,7 @@ var chord = (function() {
                     filter: function (feature) {
                         console.log(feature.properties.NAME);
                         //  console.log( countiesSet.has(feature.properties.NAME));
-                        return countiesSet.has(feature.properties.NAME);
+                        return true;
                     },
                     updateWhenIdle: true,
                     unloadInvisibleFiles: true,
@@ -577,7 +677,7 @@ var chord = (function() {
                 //		console.log(allCountyBounds);
                 map.fitBounds(allCountyBounds);
                 map.setMaxBounds(allCountyBounds);
-                if(destZoneDataLayer !=null){
+                if (destZoneDataLayer != null) {
                     destZoneDataLayer.addTo(map);
                 }
                 else {

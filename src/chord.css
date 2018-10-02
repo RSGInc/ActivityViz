@@ -17,6 +17,9 @@
     font: 10px sans-serif;
 }
 
+.chordLegend circle, .chordLegend text {
+    cursor: pointer;
+}
  #chord-tooltip {
         color: white;
         opacity: .9;
