@@ -1,0 +1,15 @@
+district,District.1,District.2,District.3,District.4,District.5,District.6,District.7,District.8,Iowa,South.Dakota,Wyoming,Colorado,Kansas,Missouri
+District.1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+District.2,0,1,0,0,0,0,0,0,0,0,0,0,0,0
+District.3,0,0,1,0,0,0,0,0,0,0,0,0,0,0
+District.4,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+District.5,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+District.6,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+District.7,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+District.8,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+Iowa,0,0,0,0,0,0,0,0,1,0,0,0,0,0
+South.Dakota,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+Wyoming,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+Colorado,0,0,0,0,0,0,0,0,0,0,0,1,0,0
+Kansas,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+Missouri,0,0,0,0,0,0,0,0,0,0,0,0,0,1
