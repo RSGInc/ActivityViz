@@ -41,7 +41,7 @@
   },
   "Chord": {
     "ZoneFilterFile": "cocs.csv",
-    "LabelSize": "14"
+    "LabelSize": "14",
     "LegendText": "Truck Flows"
     }
 }
