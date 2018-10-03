@@ -11,6 +11,9 @@
     },
     "sacramento":{
       "default":  false
+    },
+	"nebraska":{
+      "default":  false
     }
   }
 }
