@@ -9,6 +9,7 @@
 	<script defer src="../bower_components/chosen/chosen.jquery.js"></script>
 	<script defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script defer src="../bower_components/d3/d3.js"></script>
+    <script defer src="../bower_components/d3/d3-tip.js"></script>
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
 	<script defer src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script defer src="../bower_components/underscore/underscore-min.js"></script>
@@ -30,6 +31,7 @@
 	<script defer type="text/javascript" src="timeuse.js"></script>
 	<script defer type="text/javascript" src="radar-chart-nbremer.js"></script>
 	<script defer type="text/javascript" src="radar.js"></script>
+    <script defer type="text/javascript" src="scatter.js"></script>
 	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/spectrum/spectrum.css" />
@@ -47,6 +49,7 @@
 	<link rel="stylesheet" href="three3d.css" />
 	<link rel="stylesheet" href="radar.css" />
 	<link rel="stylesheet" href="chord.css" />
+    <link rel="stylesheet" href="scatter.css" />
 	<script type="text/javascript">
 
 	</script>
@@ -634,6 +637,22 @@
 			</div>
 		</div>
 		<!-- end radar -->
+        <div id="scatter" class="row dynamic-content">
+			<hr>
+			<p class="text-center" style="font-size:2em">
+
+				<strong><span class="scatter-chart-yaxis-title"></span></strong> /
+				<strong><span class="scatter-chart-xaxis-title"></span></strong>
+			</p>
+			<div class="col-xs-12 right-border">
+				<div id="scatter-tooltip" class="">
+				</div>
+				<div id="scatter-main">
+
+					<div id="scatter-chart-container"></div>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 <!-- end body -->
@@ -682,6 +701,9 @@
 		if (dynamicContent.indexOf('c') > -1) {
 			$('#chord').show();
 		}
+		if (dynamicContent.indexOf('a') > -1) {
+			$('#scatter').show();
+		}
 		// Check if the URL parmeter is empty or not defined, display default content
 		else {
 			$('#default-content').show();
@@ -708,7 +730,7 @@
 				$('.' + [key]).remove();
 		});
 		var ids =
-			{ "3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst" };
+			{ "3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Scatter":"scatter" };
 
 		$.each(data.visualizations, function (key, value) {
 			$('#' + ids[key]).appendTo($("#main_div"));

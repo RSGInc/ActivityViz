@@ -22,7 +22,8 @@
         "Radar": false, 
         "3DMap": true, 
         "Sunburst": false,
-        "Chord": true
+        "Chord": true,
+        "Scatter": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -69,6 +70,9 @@
         "Oranges": false, 
         "Blues": false, 
         "Purples": false
+    },
+    "Scatter":{
+
     },
     "Chord": {
         "ZoneFilterFile": "cocs.csv",
