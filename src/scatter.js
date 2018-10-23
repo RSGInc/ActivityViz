@@ -64,8 +64,8 @@ var scatter = (function() {
     };
 
     function createPlot() {
-        var margin = {top: 20, right: 210, bottom: 50, left: 70},
-            outerWidth = 1050, outerHeight = 500,
+        var margin = {top: 20, right: 210, bottom: 50, left: 100},
+            outerWidth = 1200, outerHeight = 600,
             width = outerWidth - margin.left - margin.right,
             height = outerHeight - margin.top - margin.bottom;
 
@@ -91,14 +91,16 @@ var scatter = (function() {
                 return d[yAxisColumn];
             });
 
+        var chartMin = d3.min([yMin,xMin]);
+        var chartMax = d3.max([yMax,xMax]);
 
         var x = d3.scale.linear()
             .range([0, width]).nice();
 
         var y = d3.scale.linear()
             .range([height, 0]).nice();
-        x.domain([xMin - 10, xMax + 1]);
-        y.domain([yMin - 10, yMax + 1]);
+        x.domain([chartMin - 10, chartMax + 1]);
+        y.domain([chartMin - 10, chartMax + 1]);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -142,7 +144,7 @@ var scatter = (function() {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var lineData = [{"x": 70, "y": 70}, {"x": 160, "y": 160}, {"x": 200, "y": 200}];
+        var lineData = [{"x": chartMin, "y": chartMin}, {"x": chartMax, "y": chartMax}];
 
         var lineFunction = d3.svg.line()
             .x(function (d) {
@@ -172,6 +174,7 @@ var scatter = (function() {
             .attr("x", width)
             .attr("y", margin.bottom - 10)
             .style("text-anchor", "end")
+            .style("font-size","110%")
             .text(xAxisColumn);
 
         svg.append("g")
@@ -183,6 +186,7 @@ var scatter = (function() {
             .attr("y", -margin.left + 10)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
+            .style("font-size","110%")
             .text(yAxisColumn);
 
         var objects = svg.append("svg")
@@ -224,7 +228,7 @@ var scatter = (function() {
             .enter().append("g")
             .classed("legend", true)
             .attr("transform", function (d, i) {
-                return "translate(0," + i * 20 + ")";
+                return "translate(10," + i * 20 + ")";
             });
 
         legend.append("circle")

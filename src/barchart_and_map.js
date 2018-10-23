@@ -141,7 +141,9 @@ var barchart_and_map = (function () {
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
-		updateBubbleSize();
+		if (bubblesShowing) {
+				updateBubbleSize();
+			}
 	}
 
 	function readInFilterData(callback) {
@@ -398,7 +400,7 @@ var barchart_and_map = (function () {
 			});
 			//end setStyle function
 			//add delay to redrawMap so that text has chance to bold
-			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+			//setTimeout(redrawMap, CSS_UPDATE_PAUSE);
 		}
 		//end if county is changing
 	}; //end change currentCounty
