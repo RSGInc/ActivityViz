@@ -57,6 +57,6 @@ fill: transparent;
 
 .regression {
 		  stroke-width: 2px;
-		  stroke: black;
+		  stroke: lightgrey;
 		  stroke-dasharray: 10,5;
 		}

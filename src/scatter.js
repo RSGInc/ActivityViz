@@ -65,7 +65,7 @@ var scatter = (function() {
 
     function createPlot() {
         var margin = {top: 20, right: 210, bottom: 50, left: 100},
-            outerWidth = 1200, outerHeight = 600,
+            outerWidth = 980, outerHeight = 740,
             width = outerWidth - margin.left - margin.right,
             height = outerHeight - margin.top - margin.bottom;
 

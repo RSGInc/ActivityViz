@@ -307,11 +307,13 @@ function getTheConfigFile(callback){
 					//replace polygon with smaller rect in middle
 					var currentPolygon = layer._coordinates[0];
 
+
 				}
 			}, //end onEachFeature
 		});
 		//console.log(zoneDataLayer )
 		map.addLayer(zoneDataLayer);
+
 	} //end addZoneGeoJSONToMap
 
 	function redrawMap() {
@@ -349,13 +351,13 @@ function getTheConfigFile(callback){
 		color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 
-
+        var slider = document.getElementById("opacityRange");
 
 		var returnStyle = {
 			height: allTimeSqrtScale(periodQuantity) * 5000,
 			color: color,
-			//transparent: !isZoneVisible,
-			//opacity: isZoneVisible?1.0:0.4
+			transparent: true,
+			opacity: slider.value/100
 		};
 
 		return (returnStyle);
@@ -590,6 +592,14 @@ function getTheConfigFile(callback){
 			//after clicking button if there is only one period, do not reshow the cycle button
 			$("#three3d-start-cycle-map").css("display", DataHasPeriods==false?"none":"inline");
 		});
+
+		var slider = document.getElementById("opacityRange");
+		var output = document.getElementById("opacityval");
+		output.innerHTML = slider.value;
+		slider.oninput = function(){
+			output.innerHTML = this.value;
+			 setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		};
 
 		var lastCycleStartTime;
 
