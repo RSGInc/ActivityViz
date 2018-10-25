@@ -60,6 +60,7 @@ Each Data/Region folder needs the following:
     - FrontPageTitle: Text to appear about region scenarions on front page
     - visualizations: true/false flag for each visualization to set default value for visuals by region    
     - scenarios: Defines each scenario (i.e. model run) available to the user
+    - TabbedCharts: true/false flag to show charts with tabs or in single page
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
         - IndependentScale: Names of charts to separate into second scale and collection of axes
