@@ -20,18 +20,16 @@
 	<script defer src="../vendor/TweenMax.min.js"></script>
 	<script defer src="../vendor/vizicities.js"></script>
 	<script type="text/javascript" src="../abmviz_utilities.js"></script>
-	<script defer type="text/javascript" src="grouped_barchart_data.js"></script>
+
 	<script defer type="text/javascript" src="grouped_barchart.js"></script>
-	<script defer type="text/javascript" src="barchart_and_map.js"></script>
-	<script defer type="text/javascript" src="chord.js"></script>
+
+
 	<script defer type="text/javascript" src="mapper.js"></script>
 
-	<script defer src="three3d.js"></script>
-	<script defer type="text/javascript" src="sunburst.js"></script>
-	<script defer type="text/javascript" src="timeuse.js"></script>
+
+
 	<script defer type="text/javascript" src="radar-chart-nbremer.js"></script>
-	<script defer type="text/javascript" src="radar.js"></script>
-    <script defer type="text/javascript" src="scatter.js"></script>
+
 	<link rel="shortcut icon" href="">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../bower_components/spectrum/spectrum.css" />
@@ -58,7 +56,7 @@
 
 <body>
 	<div class="container-fluid" id="main_div">
-
+<br>
 		<nav class="navbar navbar-inverse navbar-fixed-top" style="max-height:51px;">
 
 			<div class="navbar-header">
@@ -75,8 +73,27 @@
 			</ul>
 		</nav>
 		<!-- end nav -->
+
+
+<div id="thenavbar">
+		<ul class="nav nav-tabs" role="tablist" id="the_tabs" style="display:inline-block">
+			<li id="nav0" role="presentation"><a href="#three3d_tab"   role="tab" data-toggle="tab" style="display:none">3D Map</a></li>
+			<li id="nav1"  role="presentation"><a href="#grouped_tab"      role="tab" data-toggle="tab" style="display:none">BarChart</a></li>
+			<li id="nav2"  role="presentation"><a href="#barchartmap_tab"      role="tab" data-toggle="tab" style="display:none">BarChart and Map</a></li>
+			<li id="nav3"  role="presentation"><a href="#timeuse_tab" role="tab" data-toggle="tab" style="display:none">TimeUse</a></li>
+			<li id="nav4"  role="presentation"><a href="#chord_tab"   role="tab" data-toggle="tab" style="display:none">Chord</a></li>
+			<li id="nav5"  role="presentation"><a href="#radar_tab"   role="tab" data-toggle="tab" style="display:none">Radar</a></li>
+			<li id="nav6"  role="presentation"><a href="#sunburst_tab"   role="tab" data-toggle="tab" style="display:none">Sunburst</a></li>
+            <li id="nav7"  role="presentation"><a href="#scatter_tab"   role="tab" data-toggle="tab" style="display:none">Scatter</a></li>
+            <button id="leftnavbtn"><span class="glyphicon glyphicon-chevron-left" style="font-size:25px"></span></button>
+            <button id="rightnavbtn"><span class="glyphicon glyphicon-chevron-right" style="font-size:25px"></span></button>
+		</ul>
+    </div>
+
+        <div class="tab-content">
+       <div role="tabpanel" class="tab-pane" id="three3d_tab">
 		<div id="three3d" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 				<strong>
 					<span class="three3d-purpose"></span>
@@ -137,7 +154,7 @@
 				</div>
 			</div>
 			<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
-			<div class="col-xs-6" style="margin-top:1em;text-align:right">
+			<div class="col-xs-4" style="margin-top:1em;text-align:right">
 				<table width="100%">
 					<tr>
 						<td rowspan="2">Palette:</td>
@@ -213,6 +230,12 @@
 						</td>
 					</tr>
 				</table>
+
+			</div>
+			<div class="col-xs-2" style="margin-top:1em;text-align:left">
+
+				<input type="range" class="slider" value="100" id="opacityRange" min="1" max="100"/>
+                <p>	Opacity: <span id="opacityval"></span></p>
 			</div>
 			<div class="col-xs-6" style="margin-top:1em;text-align:right">
 				<input type="text" id="three3d-naColor" />N/A
@@ -248,10 +271,11 @@
 				</div>
 			</div>
 		</div>
+       </div>
 		<!--end three3d-->
-
+<div role="tabpanel" class="tab-pane" id="grouped_tab">
 		<div id="grouped-barchart-div" class="row dynamic-content" style="margin-bottom:100px">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 
 				<strong>
@@ -290,6 +314,7 @@
 							<span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
 						</li>
 					</ul>
+
 				</div>
 			</div>
 			<div class="row" style="width:100%;height:400px">
@@ -299,9 +324,10 @@
 			</div>
 		</div>
 		<!-- end grouped-barchart -->
-
+</div>
+                            <div role="tabpanel" class="tab-pane" id="barchartmap_tab">
 		<div id="mode-share-by-county" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 				<strong>
 					<span class="mode-share-by-county-trip-mode"></span>,</strong> by
@@ -448,6 +474,7 @@
 					</table>
 				</div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
+                    <input type="checkbox" id="mode-share-by-county-zones" checked/> Zones
 					<input type="checkbox" id="mode-share-by-county-bubbles" /> Bubbles
 					<input type="text" id="mode-share-by-county-bubble-color" disabled/> Size:
 
@@ -522,10 +549,11 @@
 				</div>
 			</div>
 		</div>
+                            </div>
 		<!-- end mode-share-by-county -->
-
+<div role="tabpanel" class="tab-pane" id="timeuse_tab">
 		<div id="timeuse" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 				<span class="timeuse-maingroup">TIME USE</span>
 			</p>
@@ -546,9 +574,10 @@
 			</div>
 		</div>
 		<!-- end timeuse -->
-
+</div>
+<div role="tabpanel" class="tab-pane" id="sunburst_tab">
 		<div id="sunburst" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 				<span class="sunburst-maingroup">PLACEHOLDER</span>
 			</p>
@@ -580,10 +609,12 @@
 				</div>
 			</div>
 		</div>
+</div>
 		<!-- end sunburst -->
 		<!-- begin chord -->
+                            <div role="tabpanel" class="tab-pane" id="chord_tab">
 		<div id="chord" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 
 				<strong>
@@ -613,10 +644,11 @@
 			</div>
 		</div>
 
-
+                            </div>
 		<!-- end chord -->
+                            <div role="tabpanel" class="tab-pane" id="radar_tab">
 		<div id="radar" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 				<span class="radar-maingroup">RADAR CHARTS</span>
 			</p>
@@ -636,9 +668,11 @@
 				<div id="radar-chart-container"></div>
 			</div>
 		</div>
+                            </div>
 		<!-- end radar -->
+	<div role="tabpanel" class="tab-pane" id="scatter_tab">
         <div id="scatter" class="row dynamic-content">
-			<hr>
+
 			<p class="text-center" style="font-size:2em">
 
 				<strong><span class="scatter-chart-yaxis-title"></span></strong> /
@@ -653,7 +687,10 @@
 				</div>
 			</div>
 		</div>
-	</div>
+    </div>
+        </div>
+        </div>
+
 </body>
 <!-- end body -->
 
@@ -680,45 +717,69 @@
 		// Check if the URL parameter is 3
 		if (dynamicContent.indexOf('3') > -1) {
 			$('#three3d').show();
+			$('a[href="#three3d_tab"]').show();
 		}
 		// Check if the URL parameter is b
 		if (dynamicContent.indexOf('b') > -1) {
 			$('#mode-share-by-county').show();
+			$('a[href="#barchartmap_tab"]').show();
+
 		}
 		// Check if the URL parameter is r
 		if (dynamicContent.indexOf('r') > -1) {
 			$('#radar').show();
+			$('a[href="#radar_tab"]').show();
 		}
 		if (dynamicContent.indexOf('g') > -1) {
 			$('#grouped-barchart-div').show();
+			$('a[href="#grouped_tab"]').show();
 		}
 		if (dynamicContent.indexOf('t') > -1) {
 			$('#timeuse').show();
+			$('a[href="#timeuse_tab"]').show();
 		}
 		if (dynamicContent.indexOf('s') > -1) {
 			$('#sunburst').show();
+			$('a[href="#sunburst_tab"]').show();
 		}
 		if (dynamicContent.indexOf('c') > -1) {
 			$('#chord').show();
+			$('a[href="#chord_tab"]').show();
 		}
 		if (dynamicContent.indexOf('a') > -1) {
 			$('#scatter').show();
+			$('a[href="#scatter_tab"]').show();
 		}
 		// Check if the URL parmeter is empty or not defined, display default content
 		else {
-			$('#default-content').show();
-		}
+            $('#default-content').show();
+        }
+
 	});
 </script>
 
 <script defer type="text/javascript">
 	var region = abmviz_utilities.GetURLParameter("region");
+	$.ajaxSetup({
+  cache: true
+});
+	var loadedScripts = {
+	    "three3d":false,
+        "grouped":false,
+        "barchart":false,
+        "timeuse":false,
+        "chord":false,
+        "radar":false,
+        "sunburst":false,
+        "scatter": false,
+    };
 	$.getJSON("../data/" + region + "/region.json", function (data) {
 		var icon = data.Icon;
 		var logo = data.Logo;
 		var title = data.Title;
 		var linkURL = data.LinkURL;
 		var navbartitle = data.NavbarTitle;
+		var tabbedCharts = data.TabbedCharts;
 		$("link[rel*='icon']").attr("href", "../data/" + region + "/img/" + icon + "");
 		$("title").text(title);
 		$('#title_id').text(navbartitle);
@@ -730,11 +791,113 @@
 				$('.' + [key]).remove();
 		});
 		var ids =
-			{ "3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Scatter":"scatter" };
+			{"3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter" };
+		var jsFiles =
+			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter"	};
+		var tablinks =
+            {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab"	};
+	if(tabbedCharts == undefined || tabbedCharts==false) {
+	    $('#the_tabs').hide();
+        $.each(data.visualizations, function (key, value) {
+            $('#' + ids[key]).appendTo($("#main_div"));
+            $('#'+ids[key]).prepend("<hr>");
+            $.getScript(jsFiles[key]+".js");
+        });
+    } else {
+	    var navIdx =0;
+	    var elementStore = new Array();
 
-		$.each(data.visualizations, function (key, value) {
-			$('#' + ids[key]).appendTo($("#main_div"));
-		})
+	    $.each(data.visualizations, function (key, value) {
+	        var currEl = $('a[href="#'+tablinks[key]+'"]').closest('li');
+	       $('#the_tabs').append(currEl);
+	    });
+	    var shownTabs = $('li[role="presentation"]').children(":visible");
+		if(shownTabs.length>0)
+		    shownTabs[0].click();
+    }
 	});
+		$('a[href="#three3d_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["three3d"] ==false){
+                $.getScript("three3d.js").done(function(scripts,textStatus){
+                    loadedScripts["three3d"] = true;
+                });
+            }
+        });
+		$('a[href="#grouped_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["grouped"] ==false){
+                $.getScript("grouped_barchart_data.js").done(function(scripts,textStatus){
+                    loadedScripts["grouped"] = true;
+                });
+            }
+        });
+        $('a[href="#barchartmap_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["barchart"] ==false){
+                $.getScript("barchart_and_map.js").done(function(scripts,textStatus){
+                    loadedScripts["barchart"] = true;
+                });
+            }
+        });
+		$('a[href="#timeuse_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["timeuse"] ==false){
+                $.getScript("timeuse.js").done(function(scripts,textStatus){
+                    loadedScripts["timeuse"] = true;
+                });
+            }
+        });
+		$('a[href="#chord_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["chord"] ==false){
+                $.getScript("chord.js").done(function(scripts,textStatus){
+                    loadedScripts["chord"] = true;
+                });
+            }
+        });
+		$('a[href="#radar_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["radar"] ==false){
+                $.getScript("radar.js").done(function(scripts,textStatus){
+                    loadedScripts["radar"] = true;
+                });
+            }
+        });
+        $('a[href="#sunburst_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["sunburst"] ==false){
+                $.getScript("sunburst.js").done(function(scripts,textStatus){
+                    loadedScripts["sunburst"] = true;
+                });
+            }
+        });
+         $('a[href="#scatter_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["scatter"] ==false){
+                $.getScript("scatter.js").done(function(scripts,textStatus){
+                    loadedScripts["scatter"] = true;
+                });
+            }
+        });
 
+         $('#leftnavbtn').click(function(d) {
+             var shownTabs = $('li[role="presentation"]').children(":visible");
+             var i = 0;
+             var activeIdx = 0;
+             $.each(shownTabs, function (d) {
+                 if ($(this).closest('li').hasClass('active')) {
+                     activeIdx = i;
+                 }
+                 i++;
+             });
+             var nextIdx = activeIdx - 1 < 0 ? shownTabs.length - 1 : activeIdx - 1;
+             shownTabs[nextIdx].click();
+         });
+          $('#rightnavbtn').click(function(d) {
+              var shownTabs = $('li[role="presentation"]').children(":visible");
+              var i = 0;
+              var activeIdx = 0;
+              $.each(shownTabs, function (d) {
+                  if ($(this).closest('li').hasClass('active')) {
+                      activeIdx = i;
+                      return;
+                  }
+                  i++;
+              });
+              var nextIdx = activeIdx + 1 >= shownTabs.length ? 0 : activeIdx + 1;
+              shownTabs[nextIdx].click();
+          });
 </script>

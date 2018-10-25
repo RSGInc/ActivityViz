@@ -5,7 +5,8 @@
     "Icon": "oregon-metro2.ico", 
     "Logo": "oregon-metro.png", 
     "NavbarTitle": "MCEVIZ", 
-    "LinkURL": "http://www.oregonmetro.gov/", 
+    "LinkURL": "http://www.oregonmetro.gov/",
+    "TabbedCharts": true,
     "CenterMap": [
         45.512794, 
         -122.679565
