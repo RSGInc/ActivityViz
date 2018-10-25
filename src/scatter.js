@@ -64,8 +64,8 @@ var scatter = (function() {
     };
 
     function createPlot() {
-        var margin = {top: 20, right: 210, bottom: 50, left: 100},
-            outerWidth = 980, outerHeight = 740,
+        var margin = {top: 20, right: 200, bottom: 120, left: 190},
+            outerWidth = 970, outerHeight = 720,
             width = outerWidth - margin.left - margin.right,
             height = outerHeight - margin.top - margin.bottom;
 
@@ -79,14 +79,14 @@ var scatter = (function() {
 
         var xMax = d3.max(chartData, function (d) {
                 return d[xAxisColumn];
-            }) * 1.05,
+            }) * 1.10,
             xMin = d3.min(chartData, function (d) {
                 return d[xAxisColumn];
             }),
 
             yMax = d3.max(chartData, function (d) {
                 return d[yAxisColumn];
-            }) * 1.05,
+            }) * 1.10,
             yMin = d3.min(chartData, function (d) {
                 return d[yAxisColumn];
             });
@@ -99,8 +99,8 @@ var scatter = (function() {
 
         var y = d3.scale.linear()
             .range([height, 0]).nice();
-        x.domain([chartMin - 10, chartMax + 1]);
-        y.domain([chartMin - 10, chartMax + 1]);
+        x.domain([chartMin - (chartMin *0.10), chartMax ]);
+        y.domain([chartMin - (chartMin *0.10), chartMax ]);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -171,11 +171,13 @@ var scatter = (function() {
             .call(xAxis)
             .append("text")
             .classed("label", true)
-            .attr("x", width)
+            .attr("x", (width+margin.left)/2)
             .attr("y", margin.bottom - 10)
             .style("text-anchor", "end")
             .style("font-size","110%")
             .text(xAxisColumn);
+
+
 
         svg.append("g")
             .classed("y axis", true)
@@ -185,30 +187,20 @@ var scatter = (function() {
             .attr("transform", "rotate(-90)")
             .attr("y", -margin.left + 10)
             .attr("dy", ".71em")
-            .style("text-anchor", "end")
+            .attr("x", -((height)/2)+margin.top)
+            .style("text-anchor", "middle")
             .style("font-size","110%")
             .text(yAxisColumn);
+
+        svg.selectAll("g.x g.tick text").attr("transform","rotate(45)").style("text-anchor","start")
+         .attr("y", -2)
+    .attr("x", 9);
 
         var objects = svg.append("svg")
             .classed("objects", true)
             .attr("width", width)
             .attr("height", height);
-        /*
-                objects.append("svg:line")
-                    .classed("axisLine hAxisLine", true)
-                    .attr("x1", 0)
-                    .attr("y1", 0)
-                    .attr("x2", width)
-                    .attr("y2", 0)
-                    .attr("transform", "translate(0," + height + ")");
 
-                objects.append("svg:line")
-                    .classed("axisLine vAxisLine", true)
-                    .attr("x1", 0)
-                    .attr("y1", 0)
-                    .attr("x2", 0)
-                    .attr("y2", height);
-        */
         objects.selectAll(".dot")
             .data(chartData)
             .enter().append("circle")
