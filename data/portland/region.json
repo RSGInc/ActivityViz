@@ -5,7 +5,8 @@
     "Icon": "oregon-metro2.ico", 
     "Logo": "oregon-metro.png", 
     "NavbarTitle": "MCEVIZ", 
-    "LinkURL": "http://www.oregonmetro.gov/", 
+    "LinkURL": "http://www.oregonmetro.gov/",
+    "TabbedCharts": true,
     "CenterMap": [
         45.512794, 
         -122.679565
@@ -22,7 +23,8 @@
         "Radar": false, 
         "3DMap": true, 
         "Sunburst": false,
-        "Chord": true
+        "Chord": true,
+        "Scatter": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -69,6 +71,9 @@
         "Oranges": false, 
         "Blues": false, 
         "Purples": false
+    },
+    "Scatter":{
+
     },
     "Chord": {
         "ZoneFilterFile": "cocs.csv",
