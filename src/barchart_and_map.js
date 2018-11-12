@@ -44,6 +44,7 @@ var barchart_and_map = (function () {
 	var breakUp;
 	var currentTripMode;
 	var bubblesShowing = false;
+	var zonesShowing = true;
 	var showOutline = false;
 	var maxFeature;
 	var zoneDataLayer;
@@ -141,7 +142,9 @@ var barchart_and_map = (function () {
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
-		updateBubbleSize();
+		if (bubblesShowing) {
+				updateBubbleSize();
+			}
 	}
 
 	function readInFilterData(callback) {
@@ -398,7 +401,7 @@ var barchart_and_map = (function () {
 			});
 			//end setStyle function
 			//add delay to redrawMap so that text has chance to bold
-			setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+			//setTimeout(redrawMap, CSS_UPDATE_PAUSE);
 		}
 		//end if county is changing
 	}; //end change currentCounty
@@ -683,8 +686,17 @@ var barchart_and_map = (function () {
             }
 			extNvd3Chart.update();
 		});
+
+		$("#mode-share-by-county-zones").click(function () {
+			updateMapUI();
+		});
 		$("#mode-share-by-county-bubbles").click(function () {
+			updateMapUI();
+		});
+
+		function updateMapUI() {
 			bubblesShowing = $("#mode-share-by-county-bubbles").is(":checked");
+			zonesShowing =  $("#mode-share-by-county-zones").is(":checked");
 			console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
 			console.log('$("#mode-share-by-county-bubble-size").prop("disabled"): ' + $("#mode-share-by-county-bubble-size").prop("disabled"));
 			$("#mode-share-by-county-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
@@ -695,12 +707,16 @@ var barchart_and_map = (function () {
 				updateBubbleColor();
 				updateBubbleSize();
 				circlesLayerGroup.addTo(map);
-				zoneDataLayer.removeFrom(map);
+
 			} else {
 				circlesLayerGroup.removeFrom(map);
-				zoneDataLayer.addTo(map);
 			}
-		});
+			if(zonesShowing){
+				zoneDataLayer.addTo(map);
+			} else {
+				zoneDataLayer.removeFrom(map);
+			}
+		}
 		if(showCycleTools == false) {
 		    $('#mode-share-by-county-slider').hide();
 		    $('#mode-share-by-county-start-cycle-map').hide();

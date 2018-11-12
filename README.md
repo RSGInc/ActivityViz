@@ -37,6 +37,7 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - RadarChartsData.csv: AXIS, CHART, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ...
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
   - ChordData.csv: FROM, TO, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ... 
+  - Scatter.csv: LABEL, XAXIS, YAXIS, SIZE (YAXIS/XAXIS)
 
 Notes: 
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
@@ -59,6 +60,7 @@ Each Data/Region folder needs the following:
     - FrontPageTitle: Text to appear about region scenarions on front page
     - visualizations: true/false flag for each visualization to set default value for visuals by region    
     - scenarios: Defines each scenario (i.e. model run) available to the user
+    - TabbedCharts: true/false flag to show charts with tabs or in single page
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
         - IndependentScale: Names of charts to separate into second scale and collection of axes
@@ -90,6 +92,7 @@ Each Data/Region folder needs the following:
         - LabelSize: the font size in pixels "10" is the default if not specified. 
         - LegendRows: the number of data points per row to be shown in the legend default is 4
         - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
+    - Scatter: Scatter chart that also shows a 45 degree regression line
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
