@@ -6,6 +6,7 @@
   "Logo":"ndot_logo_black.png",
   "NavbarTitle":"ATRIVIZ",
   "LinkURL":"https://dot.nebraska.gov",
+  "TabbedCharts":false,
   "CenterMap": [41.460011, -99.791661],
   "FrontPageTitle": "NE DOT",
   "FrontPageGraphic": "ndot_logo_white.png",

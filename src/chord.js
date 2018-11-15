@@ -136,11 +136,12 @@ var chord = (function() {
 
             indexByName = {};
             nameByIndex = {};
-            var outerRadius = width / 2,
+            var outerRadius = $('#chord-chart-container').width() / 2,
                 innerRadius = outerRadius - 130;
+            height =$('#chord-chart-container').width();
+            width= $('#chord-chart-container').width();
 
-
-            var r1 = height / 2, r0 = r1 - 110;
+            var r1 = height / 2, r0 = r1/2;
             var chord = d3.layout.chord()
                 .padding(.02)
                 .sortSubgroups(d3.descending)
@@ -288,11 +289,14 @@ var chord = (function() {
                         .style("visibility", "visible")
                         .html(chordTip(rdr(d)))
                         .style("top", function () {
+                            if(d3.event.pageY > height) {
+                                return (height/2)+"px";
+                            }
                             return (d3.event.pageY - 100) + "px"
                         })
                         .style("left", function () {
-                            if (d3.event.pageX + 100 > 500) {
-                                return 500 + "px";
+                            if (d3.event.pageX + 100 > width/2) {
+                                return width/2 + "px";
                             }
                             return (d3.event.pageX + 100) + "px";
                         })
@@ -350,10 +354,13 @@ var chord = (function() {
                     .style("visibility", "visible")
                     .html(groupTip(rdr(d)))
                     .style("top", function () {
+                        if(d3.event.pageY > height){
+                            return height/2+"px";
+                        }
                         return (d3.event.pageY - 80) + "px"
                     })
                     .style("left", function () {
-                        if ((d3.event.pageX - 50) > 0 || (d3.event.pageX - 50) > 600) {
+                        if ((d3.event.pageX - 50) > 0 || (d3.event.pageX - 50) > width) {
                             return (d3.event.pageX - 50) + "px";
                         } else {
                             return 0 + "px";
@@ -373,12 +380,12 @@ var chord = (function() {
             data = null;
 
             var size = _.size(legendHeadersShowHide);
-            var columns = Math.sqrt(size);
+            var columns = width/165;
             var lines = Number.parseInt(Math.ceil(size / columns));
             var legheight = 25 * lines;
             var container = d3.select("#chord-dropdown-div").append("svg")
 
-                .attr("width", 800).attr("height", legheight).style('padding-top', "10px");
+                .attr("width", width).attr("height", legheight).style('padding-top', "10px");
             var dataL = 0;
             var offset = 100;
             var newdataL = 0;
@@ -387,8 +394,10 @@ var chord = (function() {
             var xOff, yOff;
             var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                 .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
+                    var calcX  = (i% legendRows) * (width / columns);
 
-                    xOff = (i % legendRows) * (800 / legendRows)
+                    xOff = (i % legendRows) * (width / columns)
+
                     yOff = Math.floor(i / legendRows) * 20
                     return "translate(" + xOff + "," + yOff + ")"
                 });
@@ -712,4 +721,8 @@ var chord = (function() {
         callback();
     }; //end createMap
     //createChord();
+    window.addEventListener("resize", function () {
+		console.log("Got resize event. Calling createTimeUse");
+		createChord();
+	});
 }()); //end encapsulating IIFE
