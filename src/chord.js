@@ -157,8 +157,8 @@ var chord = (function() {
             var svg = d3.select("#chord-chart-container").append("svg:svg")
                 .attr("width", windwidth - 20)
                 .attr("height", height)
-                .style("padding-left", "3%")
-                .style("padding-right", "5%")
+                .style("padding-left", "1%")
+                .style("padding-right", "3%")
                 .append("svg:g")
                 .attr("id", "circle")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -382,7 +382,7 @@ var chord = (function() {
             var size = _.size(legendHeadersShowHide);
             var columns = width/165;
             var lines = Number.parseInt(Math.ceil(size / columns));
-            var legheight = 25 * lines;
+            var legheight = 30 * lines;
             var container = d3.select("#chord-dropdown-div").append("svg")
 
                 .attr("width", width).attr("height", legheight).style('padding-top', "10px");
@@ -403,7 +403,7 @@ var chord = (function() {
                 });
             var circles = legendOrdinal.append("circle")
                 .attr("cx", 10)
-                .attr("cy", 5)
+                .attr("cy", 7)
                 .attr("r", 5)
                 .style("stroke", "black")
                 .style("fill", function (d, i) {
@@ -411,7 +411,7 @@ var chord = (function() {
                 });
             var texts = legendOrdinal.append('text')
                 .attr("x", 20)
-                .attr("y", 10)
+                .attr("y", 12)
                 //.attr("dy", ".35em")
                 .text(function (d, i) {
                     return d

@@ -303,8 +303,9 @@ var barchart_and_map = (function () {
 		//but can also filter out counties at same time
 		//NOTE: ability to enable/disable counties  removed from UI so currently never used.
 		enabledCounties = chartData.filter(function (countyObject) {
-			return countyObject.enabled;
-		})
+			return countyObject.enabled
+		});
+
 		var hierarchicalData = [];
 		modes.forEach(function (modeName, modeIndex) {
 			var subgroups = [];
@@ -360,24 +361,27 @@ var barchart_and_map = (function () {
 		callback();
 	}; //end updateChartNVD3
 	function updateChartMouseoverRect() {
-		var innerContainer = svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
-		var innerContainerNode = innerContainer.node();
-		var tryAgain = true;
-		if (innerContainerNode != undefined) {
-			var bounds = innerContainerNode.getBBox();
-			var width = bounds.width + marginLeft;
-			barsWrapRectHeight = bounds.height;
-			if (barsWrapRectHeight > 0) {
-				console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
-				barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", 20);
-				tryAgain = false;
-			}
-		}
-		//end if innerContainerNode exists
-		if (tryAgain) {
-			console.log('updateChartMouseoverRect called but innerContainerNode is null so will try again shortly');
-			setTimeout(updateChartMouseoverRect, 500);
-		}
+		var shownTabs = $('li[role="presentation"]').children(":visible");
+		if(shownTabs.length ==0 || ($('li[role="presentation"]').children(":visible").length >1 && $("#thenavbar li.active").text() ==="BarChart and Map"))  {
+            var innerContainer = svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
+            var innerContainerNode = innerContainer.node();
+            var tryAgain = true;
+            if (innerContainerNode != undefined) {
+                var bounds = innerContainerNode.getBBox();
+                var width = bounds.width + marginLeft;
+                barsWrapRectHeight = bounds.height;
+                if (barsWrapRectHeight > 0) {
+                    console.log("barsWrap setting  width=" + width + ", height=" + barsWrapRectHeight);
+                    barsWrap.select(barsWrapRectSelector).attr("width", width).attr("height", 20);
+                    tryAgain = false;
+                }
+            }
+            //end if innerContainerNode exists
+            if (tryAgain) {
+                console.log('updateChartMouseoverRect called but innerContainerNode is null so will try again shortly');
+                setTimeout(updateChartMouseoverRect, 500);
+            }
+        }
 	}
 	//end updateChartMouseoverRect
 	function changeCurrentCounty(newCurrentCounty) {
