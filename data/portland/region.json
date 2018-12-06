@@ -57,10 +57,7 @@
         "ZoneFilterLabel": "Historically Marginalized Communities", 
         "CycleMapTools": false,
         "ZoneFilters": {
-            "minority_zone": "Minority", 
-            "lowengpro_zone": "Low English", 
-            "age18or65_zone": "Age 18 or 65", 
-            "lowinc_zone": "Low Income"
+
         }
     }, 
     "colorRamps": {

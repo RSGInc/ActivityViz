@@ -374,17 +374,25 @@
 			<div class="col-xs-6">
 				<div class="col-xs-12">The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles.
 					</div>
-				<div class="col-xs-6">
-					<div class="mode-share-by-county-trip-mode" style="font-weight:bold"></div>
+				<div class="col-xs-12">
+				<div class="col-xs-4">
+					<div class="mode-share-by-county-trip-mode-zones" style="font-weight:bold"></div>
 				</div>
-				<div class="col-xs-6" style="margin-bottom:.1em;font-weight:bold">
+				<div class="col-xs-4">
+					<div class="mode-share-by-county-trip-mode-bubbles" style="font-weight:bold"></div>
+				</div>
+				<div class="col-xs-4" style="margin-bottom:.1em;font-weight:bold">
 					<div id="mode-share-by-county-classification-label">Classification</div>
 				</div>
-				<div class="col-xs-6">
-					<select class="form-control" id="mode-share-by-county-current-trip-mode"></select>
+					</div>
+				<div class="col-xs-12">
+				<div class="col-xs-4">
+					<select class="form-control" id="mode-share-by-county-current-trip-mode-zones"></select>
 				</div>
-
-				<div class="col-xs-6" style="margin-bottom:2em;">
+				<div class="col-xs-4">
+					<select class="form-control" id="mode-share-by-county-current-trip-mode-bubbles"></select>
+				</div>
+				<div class="col-xs-4" style="margin-bottom:2em;">
 					<select class="form-control" id="mode-share-by-county-classification">
 						<option value="quartiles" selected="selected">Quartiles</option>
 						<option value="jenks">Natural breaks (Jenks)</option>
@@ -392,6 +400,7 @@
 						<option value="custom">Custom</option>
 					</select>
 				</div>
+					</div>
 				<div class='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
 
 				</div>
