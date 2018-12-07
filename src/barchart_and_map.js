@@ -286,9 +286,9 @@ var barchart_and_map = (function () {
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
-		d3.selectAll(".mode-share-by-county-trip-mode-zones").html(modeColumn+ "-Zones");
+		d3.selectAll(".mode-share-by-county-trip-mode-zones").html("Zones");
 		d3.selectAll(".mode-share-by-county-trip-mode").html(modeColumn);
-		d3.selectAll(".mode-share-by-county-trip-mode-bubbles").html(modeColumn+ "-Bubbles");
+		d3.selectAll(".mode-share-by-county-trip-mode-bubbles").html("Bubbles");
 		d3.selectAll(".mode-share-by-county-trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
 			$("#mode-share-by-county-current-trip-mode-zones").append("<option>" + modeName + "</option>");
