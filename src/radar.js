@@ -39,6 +39,10 @@ var radar = (function () {
                     var csv = d3.csv.parseRows(data).slice(1);
                     var headers = d3.csv.parseRows(data)[0];
                     var legendHead = headers.slice(2,headers.len);
+                    if(legendHead.length ==0){
+                        $('#radar').html("An error occurred loading the data");
+                        return;
+                    }
                     data = null; //allow memory to be GC'ed
                     var rolledUpMaps = [];
                     var rolledUpMap;

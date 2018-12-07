@@ -186,6 +186,11 @@ var barchart_and_map = (function () {
                 var headers = d3.keys(data[0]);
                 zoneColumn = headers[0];
                 countyColumn = headers[1];
+                if(countyColumn==undefined)
+				{
+				$('#mode-share-by-county').html("<p>An error occurred loading the data</p>");
+				return;
+				}
                 modeColumn = headers[2];
                 quantityColumn = headers[3];
                 var rawChartData = new Map([]);

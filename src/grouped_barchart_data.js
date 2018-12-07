@@ -91,7 +91,10 @@ var chartDataContainer=[];
             d3.csv(url, function (error, data) {
                 "use strict";
                 if (error)
+                {
+                    $('#grouped-barchart-div').html("An error has occured loading the data");
                     throw error;
+                    }
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
                 var headers = d3.keys(data[0]);
                 var numCharts = headers.slice()
@@ -121,6 +124,10 @@ var chartDataContainer=[];
                 //note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
                 var totalsForEachMainGroup = {};
                 var totalsForIndependentGroups = {};
+                if(subGroupColumn == undefined) {
+                      $('#grouped-barchart-div').text("An error has occurred loading the data");
+                      return;
+                }
 
                 var chartTotals =  d3.nest().key(function (d) {
                     return d[chartColumn].replace(/\s+/g, '');
