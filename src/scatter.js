@@ -48,7 +48,6 @@ var scatter = (function() {
                 throw error;
             }
 
-
             //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
             var headers = d3.keys(data[0]);
             labelColumn = headers[0];
