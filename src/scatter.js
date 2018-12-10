@@ -43,9 +43,12 @@ var scatter = (function() {
 
         d3.csv(url, function (error, data) {
             "use strict";
-            if (error)
+            if (error) {
+                $('#scatter').html("An error occurred while loading the data");
+                
                 throw error;
-
+                return;
+            }
             //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
             var headers = d3.keys(data[0]);
             labelColumn = headers[0];
