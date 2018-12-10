@@ -117,7 +117,12 @@ var chord = (function() {
         //read in data and create chord when finished
 
         d3.csv(url, function (error, data) {
+
             "use strict";
+             if (error) {
+               $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                throw error;
+            }
             var headers = d3.keys(data[0]);
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
@@ -133,7 +138,7 @@ var chord = (function() {
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
             if(subGroupColumnName == undefined){
-                $('#chord').html("An error occurred while loading the data.");
+                $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
                 return;
             }
             quantityColumn = 3;

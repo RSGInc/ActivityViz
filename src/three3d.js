@@ -153,11 +153,14 @@ function getTheConfigFile(callback){
 		d3.text("../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
             var zonecsv;
             "use strict";
-            if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
+            if (error) {
+               $('#three3d').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the 3D Map data.</span></h3></div>");
+                throw error;
+            }
             var csv = d3.csv.parseRows(data).slice(1);
             headers = d3.csv.parseRows(data)[0];
             if(headers[1]==undefined){
-            	$('#three3d').html("An error occurred loading data");
+            	$('#three3d').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the 3D Map data.</span></h3></div>");
             	return;
 			}
             //setDataSpecificDOM();

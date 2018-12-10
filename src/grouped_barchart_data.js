@@ -90,11 +90,10 @@ var chartDataContainer=[];
             });
             d3.csv(url, function (error, data) {
                 "use strict";
-                if (error)
-                {
-                    $('#grouped-barchart-div').html("An error has occured loading the data");
+				if (error) {
+                    $('#grouped-barchart-div').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the grouped bar chart data.</span></h3></div>");
                     throw error;
-                    }
+                }
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
                 var headers = d3.keys(data[0]);
                 var numCharts = headers.slice()
@@ -125,7 +124,7 @@ var chartDataContainer=[];
                 var totalsForEachMainGroup = {};
                 var totalsForIndependentGroups = {};
                 if(subGroupColumn == undefined) {
-                      $('#grouped-barchart-div').text("An error has occurred loading the data");
+                      $('#grouped-barchart-div').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the grouped bar chart data.</span></h3></div>");
                       return;
                 }
 

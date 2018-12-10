@@ -179,16 +179,17 @@ var barchart_and_map = (function () {
 
             d3.csv(url, function (error, data) {
                 "use strict";
-                if (error)
-                    throw error;
-
+            if (error) {
+               $('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+                throw error;
+            }
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
                 var headers = d3.keys(data[0]);
                 zoneColumn = headers[0];
                 countyColumn = headers[1];
                 if(countyColumn==undefined)
 				{
-				$('#mode-share-by-county').html("<p>An error occurred loading the data</p>");
+				$('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
 				return;
 				}
                 modeColumn = headers[2];
