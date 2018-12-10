@@ -44,11 +44,10 @@ var scatter = (function() {
         d3.csv(url, function (error, data) {
             "use strict";
             if (error) {
-                $('#scatter').html("An error occurred while loading the data");
-                
+               $('#scatter').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the scatter data.</span></h3></div>");
                 throw error;
-                return;
             }
+
             //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
             var headers = d3.keys(data[0]);
             labelColumn = headers[0];
@@ -56,7 +55,7 @@ var scatter = (function() {
             yAxisColumn = headers[2];
             sizeColumn = headers[3];
             if(yAxisColumn==undefined){
-                $('#scatter').html("An error occurred while loading the data");
+                $('#scatter').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the scatter data.</span></h3></div>");
                 return;
             }
             data.forEach(function (d) {

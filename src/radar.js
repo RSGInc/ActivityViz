@@ -35,12 +35,15 @@ var radar = (function () {
             if (chartData === undefined) {
                 d3.text("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv", function (error, data) {
                     "use strict";
-                    if (error) throw error; //expected data should have columns similar to: AXIS CHART QUANTITY1, QUAN2, ...QUAN N
+				if (error) {
+                    $('#radar').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the radar data.</span></h3></div>");
+                    throw error;
+                }
                     var csv = d3.csv.parseRows(data).slice(1);
                     var headers = d3.csv.parseRows(data)[0];
                     var legendHead = headers.slice(2,headers.len);
-                    if(legendHead.length ==0){
-                        $('#radar').html("An error occurred loading the data");
+                    if(legendHead.length ==0) {
+                        $('#radar').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the radar data.</span></h3></div>");
                         return;
                     }
                     data = null; //allow memory to be GC'ed

@@ -2,10 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="341c539d-bbdc-4f96-b376-dae5b739e9e8" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sandiego/region.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/sandiego/region.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/barchart_and_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/barchart_and_map.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/chord.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/chord.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/grouped_barchart_data.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/grouped_barchart_data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/radar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/radar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scatter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scatter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sunburst.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sunburst.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/three3d.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/three3d.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/timeuse.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/timeuse.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,63 +24,64 @@
     <session id="-1909804173">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="17" />
-          <entry key="project.open.time.1" value="2" />
+          <entry key="project.closed" value="24" />
+          <entry key="project.open.time.1" value="4" />
           <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.12" value="1" />
-          <entry key="project.open.time.16" value="1" />
+          <entry key="project.open.time.12" value="2" />
+          <entry key="project.open.time.16" value="3" />
           <entry key="project.open.time.17" value="2" />
           <entry key="project.open.time.19" value="1" />
+          <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.27" value="1" />
+          <entry key="project.open.time.27" value="2" />
           <entry key="project.open.time.29" value="1" />
           <entry key="project.open.time.33" value="1" />
           <entry key="project.open.time.37" value="2" />
           <entry key="project.open.time.39" value="1" />
           <entry key="project.open.time.6" value="2" />
           <entry key="project.open.time.93" value="1" />
-          <entry key="project.opened" value="18" />
+          <entry key="project.opened" value="25" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="css" value="297" />
-          <entry key="csv" value="103" />
-          <entry key="html" value="3909" />
-          <entry key="js" value="14114" />
-          <entry key="json" value="144" />
+          <entry key="csv" value="104" />
+          <entry key="html" value="4161" />
+          <entry key="js" value="15584" />
+          <entry key="json" value="167" />
           <entry key="md" value="833" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="297" />
-          <entry key="CSV" value="103" />
-          <entry key="HTML" value="3909" />
-          <entry key="JSON" value="144" />
-          <entry key="JavaScript" value="14114" />
+          <entry key="CSV" value="104" />
+          <entry key="HTML" value="4161" />
+          <entry key="JSON" value="167" />
+          <entry key="JavaScript" value="15584" />
           <entry key="Markdown" value="833" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="css" value="8" />
-          <entry key="csv" value="30" />
-          <entry key="html" value="9" />
-          <entry key="js" value="54" />
-          <entry key="json" value="20" />
-          <entry key="md" value="3" />
+          <entry key="csv" value="33" />
+          <entry key="html" value="10" />
+          <entry key="js" value="68" />
+          <entry key="json" value="23" />
+          <entry key="md" value="4" />
           <entry key="py" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="CSS" value="8" />
-          <entry key="CSV" value="30" />
-          <entry key="HTML" value="9" />
-          <entry key="JSON" value="20" />
-          <entry key="JavaScript" value="54" />
-          <entry key="Markdown" value="3" />
+          <entry key="CSV" value="33" />
+          <entry key="HTML" value="10" />
+          <entry key="JSON" value="23" />
+          <entry key="JavaScript" value="68" />
+          <entry key="Markdown" value="4" />
           <entry key="Python" value="1" />
         </counts>
       </usages-collector>
@@ -81,11 +89,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/scatter.css">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/grouped_barchart_data.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="26" selection-start-column="26" selection-end-column="26" />
+            <state relative-caret-position="691">
+              <caret line="126" column="202" selection-start-line="126" selection-start-column="202" selection-end-line="126" selection-end-column="202" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/sandiego/region.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/chord.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="287">
+              <caret line="121" selection-start-line="121" selection-end-line="124" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -93,10 +119,38 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/scatter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="157" column="34" selection-start-line="157" selection-start-column="34" selection-end-line="157" selection-end-column="34" />
+            <state relative-caret-position="442">
+              <caret line="48" column="13" lean-forward="true" selection-start-line="45" selection-start-column="11" selection-end-line="48" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/three3d.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="320">
+              <caret line="155" selection-start-line="155" selection-end-line="158" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/sunburst.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="36" selection-start-line="36" selection-end-line="39" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/barchart_and_map.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="281">
+              <caret line="181" selection-start-line="181" selection-end-line="184" selection-end-column="13" />
               <folding>
-                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#label#0;n#td#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -105,91 +159,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/timeuse.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="258" column="7" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="7" />
+            <state relative-caret-position="457">
+              <caret line="38" selection-start-line="38" selection-end-line="41" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/portland/I205/Scatter.csv">
+        <entry file="file://$PROJECT_DIR$/src/radar.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
+            <state relative-caret-position="306">
+              <caret line="37" selection-start-line="37" selection-end-line="40" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/index.html">
+        <entry file="file://$PROJECT_DIR$/src/grouped_barchart.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="635" column="42" selection-start-line="635" selection-start-column="42" selection-end-line="635" selection-end-column="42" />
-              <folding>
-                <element signature="n#style#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#a#0;n#div#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#div#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#ul#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#ul#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#a#0;n#li#7;n#ul#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#button#0;n#ul#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#button#1;n#ul#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#div#6;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#7;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/barchart_and_map.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="441" column="41" selection-start-line="441" selection-start-column="35" selection-end-line="441" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/chord.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="706" column="19" lean-forward="true" selection-start-line="706" selection-start-column="19" selection-end-line="706" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1054">
-                <caret line="62" column="78" selection-start-line="62" selection-start-column="78" selection-end-line="62" selection-end-column="78" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/portland/region.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="23" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/three3d.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="74">
-              <caret line="677" column="30" selection-start-line="677" selection-start-column="12" selection-end-line="677" selection-end-column="30" />
-              <folding>
-                <element signature="e#6593#11047#0" />
-                <element signature="e#11099#11660#0" />
-              </folding>
+            <state relative-caret-position="1402">
+              <caret line="195" column="50" selection-start-line="195" selection-start-column="50" selection-end-line="195" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -206,22 +195,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>classification</find>
-      <find>updateCurrentTripModeOrClassification</find>
-      <find>custom</find>
-      <find>bubble</find>
-      <find>redrawMap</find>
-      <find>&lt;hr&gt;</find>
-      <find>three3dFunction</find>
-      <find>tooltip</find>
-      <find>r</find>
-      <find>&quot;r&quot;</find>
-      <find>data</find>
-      <find>regression</find>
-      <find>addto</find>
-      <find>styleZoneGeoJSONLayer</find>
-      <find>options</find>
-      <find>map.a</find>
       <find>setTimeout(redrawMap, CSS_UPDATE_PAUSE);</find>
       <find>opacity</find>
       <find>style</find>
@@ -235,7 +208,23 @@
       <find>width</find>
       <find>legend</find>
       <find>legendHeadersShowHide</find>
+      <find>window</find>
       <find>resize</find>
+      <find>redrawMap</find>
+      <find>grouped_barchart</find>
+      <find>updatechartmouseover</find>
+      <find>createGrouped</find>
+      <find>zone</find>
+      <find>ZONE_FILTER_LOC</find>
+      <find>coc</find>
+      <find>current</find>
+      <find>currentTripModeZone</find>
+      <find>circlesLayerGroup</find>
+      <find>currentTripMode</find>
+      <find>updateCurrentTripModeOrClassification</find>
+      <find>mode-share-by-county-trip-mode</find>
+      <find>ticks</find>
+      <find>force</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -249,7 +238,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/timeuse.js" />
         <option value="$PROJECT_DIR$/data/atlanta/BS10/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/atlanta/NB2040/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/atlanta/RP-NB/3DAnimatedMapData.csv" />
@@ -260,7 +248,6 @@
         <option value="$PROJECT_DIR$/data/sandiego/BS2012/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/sandiego/BS2015/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/portland/config.json" />
-        <option value="$PROJECT_DIR$/src/radar.js" />
         <option value="$PROJECT_DIR$/src/radar-chart-nbremer.js" />
         <option value="$PROJECT_DIR$/data/portland/I205/RadarChartsData.csv" />
         <option value="$PROJECT_DIR$/data/atlanta/BS10/BarChartData.csv" />
@@ -269,37 +256,39 @@
         <option value="$PROJECT_DIR$/data/atlanta/RP2040/BarChartData.csv" />
         <option value="$PROJECT_DIR$/data/portland/I205/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/atlanta/region.json" />
-        <option value="$PROJECT_DIR$/data/sandiego/region.json" />
         <option value="$PROJECT_DIR$/data/portland/testdata/BarChartAndMapData.csv" />
         <option value="$PROJECT_DIR$/data/portland/testdata/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/data/portland/I305test/3DAnimatedMapData.csv" />
         <option value="$PROJECT_DIR$/src/grouped_barchart.css" />
         <option value="$PROJECT_DIR$/data/portland/I205Test/BarChartData.csv" />
-        <option value="$PROJECT_DIR$/data/portland/I205/BarChartData.csv" />
         <option value="$PROJECT_DIR$/vendor/vizicities.js" />
         <option value="$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" />
-        <option value="$PROJECT_DIR$/src/grouped_barchart.js" />
-        <option value="$PROJECT_DIR$/src/grouped_barchart_data.js" />
         <option value="$PROJECT_DIR$/src/mapper.js" />
         <option value="$PROJECT_DIR$/data/portland/I205/ChordData.csv" />
         <option value="$PROJECT_DIR$/src/three3d.css" />
         <option value="$PROJECT_DIR$/data/portland/I205/cocs.csv" />
         <option value="$PROJECT_DIR$/data/sacramento/Survey/districts.csv" />
         <option value="$PROJECT_DIR$/data/sacramento/region.json" />
-        <option value="$PROJECT_DIR$/src/sunburst.js" />
         <option value="$PROJECT_DIR$/src/chord.css" />
         <option value="$PROJECT_DIR$/src/style.css" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/data/portland/region.json" />
         <option value="$PROJECT_DIR$/bower_components/d3/d3-tip.js" />
-        <option value="$PROJECT_DIR$/src/three3d.js" />
         <option value="$PROJECT_DIR$/src/scatter.css" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/data/portland/I205/Scatter.csv" />
-        <option value="$PROJECT_DIR$/src/scatter.js" />
+        <option value="$PROJECT_DIR$/data/portland/region.json" />
         <option value="$PROJECT_DIR$/src/index.html" />
-        <option value="$PROJECT_DIR$/src/barchart_and_map.js" />
+        <option value="$PROJECT_DIR$/data/portland/I205/BarChartData.csv" />
+        <option value="$PROJECT_DIR$/src/grouped_barchart.js" />
+        <option value="$PROJECT_DIR$/data/sandiego/region.json" />
+        <option value="$PROJECT_DIR$/src/scatter.js" />
         <option value="$PROJECT_DIR$/src/chord.js" />
+        <option value="$PROJECT_DIR$/src/three3d.js" />
+        <option value="$PROJECT_DIR$/src/sunburst.js" />
+        <option value="$PROJECT_DIR$/src/barchart_and_map.js" />
+        <option value="$PROJECT_DIR$/src/timeuse.js" />
+        <option value="$PROJECT_DIR$/src/radar.js" />
+        <option value="$PROJECT_DIR$/src/grouped_barchart_data.js" />
       </list>
     </option>
   </component>
@@ -319,9 +308,10 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="1" />
-    <option name="width" value="1693" />
-    <option name="height" value="1015" />
+    <option name="x" value="-7" />
+    <option name="y" value="-7" />
+    <option name="width" value="1550" />
+    <option name="height" value="878" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -345,6 +335,30 @@
               <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
               <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="nebraska" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="portland" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="sacramento" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ABMVIZ" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="sandiego" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ABMVIZ" type="b2602c69:ProjectViewProjectNode" />
@@ -433,14 +447,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15100671" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17377399" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4989339" weight="0.31419286" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4989339" weight="0.31354985" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991276" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -490,48 +504,30 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/index.html</url>
+          <line>848</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/index.html</url>
+          <line>867</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/data/atlanta/region.json" />
-    <entry file="file://$PROJECT_DIR$/vendor/three.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/main.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/data/portland/I205Test/BarChartAndMapData.csv" />
     <entry file="file://$PROJECT_DIR$/data/portland/I205Test/BarChartData.csv" />
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/cocs_old.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="65" lean-forward="true" selection-start-line="23" selection-start-column="65" selection-end-line="23" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartData.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="11" selection-start-line="25" selection-end-line="25" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401676">
-          <caret line="23628" column="29" selection-start-line="23628" selection-start-column="29" selection-end-line="23628" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/3DAnimatedMapData.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="19" lean-forward="true" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/cocs_old.csv" />
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/3DAnimatedMapData.csv" />
     <entry file="file://$PROJECT_DIR$/src/three3d.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -590,13 +586,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/ChordData_old.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="108" selection-start-line="23" selection-start-column="108" selection-end-line="23" selection-end-column="108" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/ChordData_old.csv" />
     <entry file="file://$PROJECT_DIR$/src/radar-chart-nbremer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
@@ -604,13 +594,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/ChordData.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="57" selection-start-line="24" selection-start-column="57" selection-end-line="24" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/ChordData.csv" />
     <entry file="file://$PROJECT_DIR$/bower_components/nvd3/build/nv.d3.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="59415">
@@ -645,13 +629,6 @@
     <entry file="file://$PROJECT_DIR$/bower_components/bootstrap/dist/js/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/cocs.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14">
-          <caret line="2103" column="41" selection-start-line="2103" selection-start-column="41" selection-end-line="2103" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="349">
@@ -659,22 +636,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/grouped_barchart.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3366">
-          <caret line="199" column="52" selection-start-line="199" selection-start-column="46" selection-end-line="199" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="461">
           <caret line="57" column="183" selection-start-line="57" selection-start-column="183" selection-end-line="57" selection-end-column="183" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#h4#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -688,27 +653,6 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/radar.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5304">
-          <caret line="313" column="34" selection-start-line="313" selection-start-column="34" selection-end-line="313" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sunburst.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6987">
-          <caret line="412" column="24" selection-start-line="412" selection-start-column="24" selection-end-line="412" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/grouped_barchart_data.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="241" column="199" selection-start-line="241" selection-start-column="199" selection-end-line="241" selection-end-column="199" />
         </state>
       </provider>
     </entry>
@@ -742,13 +686,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/I205/Scatter.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/Scatter.csv" />
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/cocs.csv" />
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -760,17 +699,10 @@
       </provider>
       <provider editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/portland/region.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="23" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="635" column="42" selection-start-line="635" selection-start-column="42" selection-end-line="635" selection-end-column="42" />
+        <state relative-caret-position="289">
+          <caret line="900" column="58" selection-start-line="900" selection-start-column="58" selection-end-line="900" selection-end-column="58" />
           <folding>
             <element signature="n#style#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#a#0;n#div#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -787,45 +719,89 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/barchart_and_map.js">
+    <entry file="file://$PROJECT_DIR$/data/nebraska/region.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartAndMapData.csv" />
+    <entry file="file://$PROJECT_DIR$/data/portland/I205/BarChartsData.csv" />
+    <entry file="file://$PROJECT_DIR$/data/portland/region.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="441" column="41" selection-start-line="441" selection-start-column="35" selection-end-line="441" selection-end-column="41" />
+        <state relative-caret-position="691">
+          <caret line="44" column="41" selection-start-line="44" selection-start-column="41" selection-end-line="44" selection-end-column="41" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/three3d.js">
+    <entry file="file://$PROJECT_DIR$/data/sandiego/region.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="74">
-          <caret line="677" column="30" selection-start-line="677" selection-start-column="12" selection-end-line="677" selection-end-column="30" />
-          <folding>
-            <element signature="e#6593#11047#0" />
-            <element signature="e#11099#11660#0" />
-          </folding>
+        <state relative-caret-position="425">
+          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/scatter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="157" column="34" selection-start-line="157" selection-start-column="34" selection-end-line="157" selection-end-column="34" />
+        <state relative-caret-position="442">
+          <caret line="48" column="13" lean-forward="true" selection-start-line="45" selection-start-column="11" selection-end-line="48" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/chord.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="121" selection-start-line="121" selection-end-line="124" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/three3d.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="155" selection-start-line="155" selection-end-line="158" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sunburst.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="36" selection-start-line="36" selection-end-line="39" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/barchart_and_map.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="181" selection-start-line="181" selection-end-line="184" selection-end-column="13" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#label#0;n#td#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/timeuse.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="258" column="7" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="7" />
+        <state relative-caret-position="457">
+          <caret line="38" selection-start-line="38" selection-end-line="41" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/chord.js">
+    <entry file="file://$PROJECT_DIR$/src/radar.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="706" column="19" lean-forward="true" selection-start-line="706" selection-start-column="19" selection-end-line="706" selection-end-column="19" />
+        <state relative-caret-position="306">
+          <caret line="37" selection-start-line="37" selection-end-line="40" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/grouped_barchart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1402">
+          <caret line="195" column="50" selection-start-line="195" selection-start-column="50" selection-end-line="195" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/grouped_barchart_data.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="691">
+          <caret line="126" column="202" selection-start-line="126" selection-start-column="202" selection-end-line="126" selection-end-column="202" />
         </state>
       </provider>
     </entry>
