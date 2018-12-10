@@ -186,6 +186,11 @@ var barchart_and_map = (function () {
                 var headers = d3.keys(data[0]);
                 zoneColumn = headers[0];
                 countyColumn = headers[1];
+                if(countyColumn==undefined)
+				{
+				$('#mode-share-by-county').html("<p>An error occurred loading the data</p>");
+				return;
+				}
                 modeColumn = headers[2];
                 quantityColumn = headers[3];
                 var rawChartData = new Map([]);
@@ -281,9 +286,9 @@ var barchart_and_map = (function () {
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
-		d3.selectAll(".mode-share-by-county-trip-mode-zones").html(modeColumn+ "-Zones");
+		d3.selectAll(".mode-share-by-county-trip-mode-zones").html("Zones");
 		d3.selectAll(".mode-share-by-county-trip-mode").html(modeColumn);
-		d3.selectAll(".mode-share-by-county-trip-mode-bubbles").html(modeColumn+ "-Bubbles");
+		d3.selectAll(".mode-share-by-county-trip-mode-bubbles").html("Bubbles");
 		d3.selectAll(".mode-share-by-county-trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
 			$("#mode-share-by-county-current-trip-mode-zones").append("<option>" + modeName + "</option>");

@@ -132,6 +132,10 @@ var chord = (function() {
 
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
+            if(subGroupColumnName == undefined){
+                $('#chord').html("An error occurred while loading the data.");
+                return;
+            }
             quantityColumn = 3;
 
             indexByName = {};

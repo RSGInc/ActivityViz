@@ -1,56 +1,47 @@
-BENEFIT,BENEFIT GROUP,BENEFIT VALUE ($),CHART
-travel options,Everyone,1341830,Benefits
-auto ownership,Everyone,69831,Benefits
-travel time,Everyone,12462517,Benefits
-trk travel time benefit,Everyone,834686,Benefits
-travel time reliability,Everyone,1313755,Benefits
-public health,Everyone,-1500000,Benefits
-auto operating cost,Everyone,-6887689,Benefits
-emissions,Everyone,-2181843,Benefits
-noise pollution,Everyone,-365282,Benefits
-surface water pollution,Everyone,-398267,Benefits
-safety,Everyone,809272,Benefits
-travel options,Low Income,439315,Benefits
-auto ownership,Low Income,23673,Benefits
-travel time,Low Income,2228593,Benefits
-trk travel time benefit,Low Income,90893,Benefits
-travel time reliability,Low Income,211301,Benefits
-public health,Low Income,0,Benefits
-auto operating cost,Low Income,0,Benefits
-emissions,Low Income,0,Benefits
-noise pollution,Low Income,0,Benefits
-surface water pollution,Low Income,0,Benefits
-safety,Low Income,0,Benefits
-travel options,Minority,260410,Benefits
-auto ownership,Minority,11425,Benefits
-travel time,Minority,1905608,Benefits
-trk travel time benefit,Minority,63195,Benefits
-travel time reliability,Minority,195713,Benefits
-public health,Minority,0,Benefits
-auto operating cost,Minority,0,Benefits
-emissions,Minority,0,Benefits
-noise pollution,Minority,0,Benefits
-surface water pollution,Minority,0,Benefits
-safety,Minority,0,Benefits
-travel options,Low English Proficiency,23702,Benefits
-auto ownership,Low English Proficiency,1605,Benefits
-travel time,Low English Proficiency,340264,Benefits
-trk travel time benefit,Low English Proficiency,12241,Benefits
-travel time reliability,Low English Proficiency,34327,Benefits
-public health,Low English Proficiency,0,Benefits
-auto operating cost,Low English Proficiency,0,Benefits
-emissions,Low English Proficiency,0,Benefits
-noise pollution,Low English Proficiency,0,Benefits
-surface water pollution,Low English Proficiency,0,Benefits
-safety,Low English Proficiency,0,Benefits
-travel options,Child or Senior,811705,Benefits
-auto ownership,Child or Senior,21662,Benefits
-travel time,Child or Senior,6284961,Benefits
-trk travel time benefit,Child or Senior,179498,Benefits
-travel time reliability,Child or Senior,694512,Benefits
-public health,Child or Senior,0,Benefits
-auto operating cost,Child or Senior,0,Benefits
-emissions,Child or Senior,0,Benefits
-noise pollution,Child or Senior,0,Benefits
-surface water pollution,Child or Senior,0,Benefits
-safety,Child or Senior,0,Benefits
+BENEFIT,BENEFIT GROUP,VALUE,CHART
+travel options,minority,3984553.192,Benefits
+vehicle ownership,minority,42423.32203,Benefits
+travel time reliability,minority,431999.0763,Benefits
+travel savings,minority,3561067.3880000003,Benefits
+vehicle operation,minority,0.0,Benefits
+emissions,minority,0.0,Benefits
+noise pollution,minority,0.0,Benefits
+surface water pollution,minority,0.0,Benefits
+highway safety,minority,0.0,Benefits
+travel options,low english proficiency,690223.3457,Benefits
+vehicle ownership,low english proficiency,7297.519501000001,Benefits
+travel time reliability,low english proficiency,72609.44038,Benefits
+travel savings,low english proficiency,632461.4153,Benefits
+vehicle operation,low english proficiency,0.0,Benefits
+emissions,low english proficiency,0.0,Benefits
+noise pollution,low english proficiency,0.0,Benefits
+surface water pollution,low english proficiency,0.0,Benefits
+highway safety,low english proficiency,0.0,Benefits
+travel options,children and seniors,14487780.09,Benefits
+vehicle ownership,children and seniors,65077.62659,Benefits
+travel time reliability,children and seniors,1416161.879,Benefits
+travel savings,children and seniors,12362331.42,Benefits
+vehicle operation,children and seniors,0.0,Benefits
+emissions,children and seniors,0.0,Benefits
+noise pollution,children and seniors,0.0,Benefits
+surface water pollution,children and seniors,0.0,Benefits
+highway safety,children and seniors,0.0,Benefits
+travel options,low income,4101208.492,Benefits
+vehicle ownership,low income,76432.79347,Benefits
+travel time reliability,low income,470330.62899999996,Benefits
+travel savings,low income,3834376.8660000004,Benefits
+vehicle operation,low income,0.0,Benefits
+emissions,low income,0.0,Benefits
+noise pollution,low income,0.0,Benefits
+surface water pollution,low income,0.0,Benefits
+highway safety,low income,0.0,Benefits
+travel options,everybody,26464943.03,Benefits
+vehicle ownership,everybody,209216.0647,Benefits
+travel time reliability,everybody,2779973.528,Benefits
+travel savings,everybody,23301994.39,Benefits
+vehicle operation,everybody,-15499198.37,Benefits
+emissions,everybody,-4708070.842,Benefits
+noise pollution,everybody,-945067.5563,Benefits
+surface water pollution,everybody,-1103101.1809999999,Benefits
+highway safety,everybody,-1484723.26,Benefits
+active transportation,everybody,-484499.602727324,Benefits

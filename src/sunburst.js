@@ -42,6 +42,7 @@ var sunburst = (function () {
                 var maingroupColumn = headers[0];
                 var subgroupColumn = headers[1];
                 var quantityColumn = headers[2];
+
                 d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
 
                 try {
@@ -50,7 +51,7 @@ var sunburst = (function () {
                     drawLegend(originalNodeData);
                 } catch (err) {
                     if (json === null)
-                       $('#sunburst').hide();
+                       $('#sunburst').html("An error occurred loading the data");
                 }
             }); //end d3.text
 		} else {

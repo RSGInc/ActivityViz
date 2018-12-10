@@ -156,6 +156,10 @@ function getTheConfigFile(callback){
             if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
             var csv = d3.csv.parseRows(data).slice(1);
             headers = d3.csv.parseRows(data)[0];
+            if(headers[1]==undefined){
+            	$('#three3d').html("An error occurred loading data");
+            	return;
+			}
             //setDataSpecificDOM();
             data = null; //allow memory to be GC'ed
             var allData = [];
