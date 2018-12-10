@@ -42,7 +42,8 @@ var barchart_and_map = (function () {
 	var currentCycleModeIndex = 0;
 	var cycleGoing = false;
 	var breakUp;
-	var currentTripMode;
+	var currentTripModeZone;
+	var currentTripModeBubble;
 	var bubblesShowing = false;
 	var zonesShowing = true;
 	var showOutline = false;
@@ -185,6 +186,11 @@ var barchart_and_map = (function () {
                 var headers = d3.keys(data[0]);
                 zoneColumn = headers[0];
                 countyColumn = headers[1];
+                if(countyColumn==undefined)
+				{
+				$('#mode-share-by-county').html("<p>An error occurred loading the data</p>");
+				return;
+				}
                 modeColumn = headers[2];
                 quantityColumn = headers[3];
                 var rawChartData = new Map([]);
@@ -280,10 +286,13 @@ var barchart_and_map = (function () {
 	}; //end readInData
 	function setDataSpecificDOM() {
 		d3.selectAll(".mode-share-by-county-area-type").html(countyColumn);
+		d3.selectAll(".mode-share-by-county-trip-mode-zones").html("Zones");
 		d3.selectAll(".mode-share-by-county-trip-mode").html(modeColumn);
+		d3.selectAll(".mode-share-by-county-trip-mode-bubbles").html("Bubbles");
 		d3.selectAll(".mode-share-by-county-trip-mode-example").html(modes[0]);
 		modes.forEach(function (modeName) {
-			$("#mode-share-by-county-current-trip-mode").append("<option>" + modeName + "</option>");
+			$("#mode-share-by-county-current-trip-mode-zones").append("<option>" + modeName + "</option>");
+			$("#mode-share-by-county-current-trip-mode-bubbles").append("<option>" + modeName + "</option>");
 		});
 		// 		chartData.forEach(function (chartObject) {
 		// 			$("#mode-share-by-county-chart-selection").append("<option>" + chartObject.groupLabel + "</option>");
@@ -389,7 +398,7 @@ var barchart_and_map = (function () {
 			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
 			currentCounty = newCurrentCounty;
 			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-			countyLabels.classed("mode-share-by-county-trip-mode-current-county", function (d, i) {
+			countyLabels.classed("mode-share-by-county-trip-mode-current-county-zones", function (d, i) {
 				var setClass = d == currentCounty;
 				return setClass;
 			});
@@ -455,7 +464,7 @@ var barchart_and_map = (function () {
 					nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
 						var newTripMode = event.key;
 						console.log('legend legendDblclick on trip mode: ' + newTripMode);
-						$('#mode-share-by-county-current-trip-mode').val(newTripMode);
+						$('#mode-share-by-county-current-trip-mode-zones').val(newTripMode);
 						updateCurrentTripModeOrClassification();
 						redrawMap();
 					});
@@ -484,7 +493,7 @@ var barchart_and_map = (function () {
 		var color = naColor;
         var isZoneVisible = true;
 		if (feature.zoneData != undefined) {
-            var zoneDataFeature = feature.zoneData[currentTripMode];
+            var zoneDataFeature = feature.zoneData[currentTripModeZone];
             //possible that even if data for zone exists, could be missing this particular trip mode
             if (zoneDataFeature != undefined) {
                 var quantity = zoneDataFeature.QUANTITY;
@@ -765,7 +774,7 @@ var barchart_and_map = (function () {
 			updateCurrentTripModeOrClassification();
 			redrawMap();
 			currentCycleModeIndex++;
-			if (currentCycleModeIndex >= $("#mode-share-by-county-current-trip-mode option").size()) {
+			if (currentCycleModeIndex >= $("#mode-share-by-county-current-trip-mode-zones option").size()) {
 				currentCycleModeIndex = 0;
 			}
 			if (cycleGoing) {
@@ -806,10 +815,15 @@ var barchart_and_map = (function () {
 			}
 		});
 		updateColors(handlers, $("#mode-share-by-county-slider").slider("option", "max"));
-		$("#mode-share-by-county-current-trip-mode").change(function () {
+		$("#mode-share-by-county-current-trip-mode-zones").change(function () {
 			updateCurrentTripModeOrClassification();
 			redrawMap();
 		});
+		$("#mode-share-by-county-current-trip-mode-bubbles").change(function () {
+			updateCurrentTripModeOrClassification();
+			redrawMap();
+		});
+
 		$("#mode-share-by-county-classification").change(function () {
 			updateCurrentTripModeOrClassification();
 			redrawMap();
@@ -910,10 +924,12 @@ var barchart_and_map = (function () {
 		var mapRadiusInPixels = mapBounds.width / 2;
 		var maxBubbleRadiusInPixels = mapRadiusInPixels / 50;
 		var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
+		var serie = new geostats(modeData[currentTripModeBubble].serie);
+		maxFeature = serie.max();
 		var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
 		circleMarkers.forEach(function (circleMarker) {
 			var zoneData = circleMarker.zoneData;
-			var zoneTripData = zoneData[currentTripMode];
+			var zoneTripData = zoneData[currentTripModeBubble];
 			var sqrtRadius = 0;
 			var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
             var cnttrue = 0;
@@ -933,10 +949,12 @@ var barchart_and_map = (function () {
 
 	function updateCurrentTripModeOrClassification() {
 		"use strict";
-		currentTripMode = $('#mode-share-by-county-current-trip-mode').val();
+		currentTripModeBubble = $('#mode-share-by-county-current-trip-mode-bubbles').val();
+		currentTripModeZone = $('#mode-share-by-county-current-trip-mode-zones').val();
 		var startTime = Date.now();
-		console.log('updateCurrentTripModeOrClassification: #current-trip-mode.val()=' + currentTripMode);
-		var serie = new geostats(modeData[currentTripMode].serie);
+		console.log('updateCurrentTripModeOrClassification: #current-trip-mode-zone.val()=' + currentTripModeZone);
+		console.log('updateCurrentTripModeOrClassification: #current-trip-mode-bubble.val()=' + currentTripModeBubble);
+		var serie = new geostats(modeData[currentTripModeZone].serie);
 		maxFeature = serie.max();
 		//handle the different classifications
 		var classification = $("#mode-share-by-county-classification").val();

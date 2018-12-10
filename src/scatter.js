@@ -52,7 +52,10 @@ var scatter = (function() {
             xAxisColumn = headers[1];
             yAxisColumn = headers[2];
             sizeColumn = headers[3];
-
+            if(yAxisColumn==undefined){
+                $('#scatter').html("An error occurred while loading the data");
+                return;
+            }
             data.forEach(function (d) {
                 d[xAxisColumn] = +d[xAxisColumn];
                 d[yAxisColumn] = +d[yAxisColumn];
