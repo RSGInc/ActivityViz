@@ -117,7 +117,12 @@ var chord = (function() {
         //read in data and create chord when finished
 
         d3.csv(url, function (error, data) {
+
             "use strict";
+             if (error) {
+               $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                throw error;
+            }
             var headers = d3.keys(data[0]);
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
@@ -132,6 +137,10 @@ var chord = (function() {
 
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
+            if(subGroupColumnName == undefined){
+                $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                return;
+            }
             quantityColumn = 3;
 
             indexByName = {};
@@ -453,6 +462,10 @@ var chord = (function() {
             try {
                 d3.csv("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/" + ZONE_FILTER_LOC, function (error, filterdata) {
                     //zonecsv = d3.csv.parseRows(filterdata).slice(1);
+                                 if (error) {
+                                     $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                                     throw error;
+                                 }
                     zoneheaders = d3.keys(filterdata[0]);
                     ;
                     zoneFilterData = d3.nest().key(function (d) {
