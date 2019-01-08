@@ -64,6 +64,7 @@ var three3d = (function three3dFunction() {
 	var zonefiles;
 	var zoneheaders=[];
 	var zonefilterlabel = "";
+	var centroidsOff;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
 	//start off chain of initialization by reading in the data
 
@@ -92,7 +93,7 @@ function getTheConfigFile(callback){
                 if (key == "ZoneFile") {
                     zonefiles = val;
                 }
-                if (key == "CenterMap") {
+                if (key == "CenterMap" && CENTER_MAP.length ==0) {
                     CENTER_MAP = val;
                 }
                 if (key == "ThreeDMap") {
@@ -111,7 +112,18 @@ function getTheConfigFile(callback){
                                 zonefilters[filtercolumn] = filtername;
                             })
                         }
+                        if(opt=="CentroidsOff" && centroidsOff == undefined) {
+                            centroidsOff= val;
+                            drawCentroids = !centroidsOff;
+                        }
                     })
+                }
+                if(key=="scenarios" && Array.isArray(val)) {
+                    $.each(val, function (k, v) {
+                        if (v.name === abmviz_utilities.GetURLParameter("scenario") && v.CenterMap) {
+                            CENTER_MAP = v.CenterMap;
+                        }
+                    });
                 }
             });
             ZONE_FILE_LOC = zonefiles;
@@ -303,7 +315,7 @@ function getTheConfigFile(callback){
                 if (zoneDatum != undefined) {
                     checkedfilters.each(function () {
                         var filtername = this.attributes["colname"];
-                        cnttrue += parseInt(zoneDatum.filters[filtername.value]);
+                        cnttrue += parseFloat(zoneDatum.filters[filtername.value]);
                         isZoneVisible = cnttrue > 0;
                     });
                 }
