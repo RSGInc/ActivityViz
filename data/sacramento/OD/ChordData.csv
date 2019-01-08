@@ -1,0 +1,101 @@
+FROM,TO,Survey,DaySim,Passive
+NW SacramentoCounty,NW SacramentoCounty,249977,368860,25442
+NE SacramentoCounty,NE SacramentoCounty,286397,361430,21922
+SE SacramentoCounty,SE SacramentoCounty,42346,15520,1618
+SW SacramentoCounty,SW SacramentoCounty,489,4600,450
+Central SacramentoCounty,Central SacramentoCounty,299537,517120,29042
+El Dorado,El Dorado,0,0,0
+Placer,Placer,0,0,0
+Sutter,Sutter,0,0,0
+Yolo,Yolo,0,0,0
+Yuba,Yuba,0,0,0
+SE SacramentoCounty,SW SacramentoCounty,32383,33260,2729
+SE SacramentoCounty,NW SacramentoCounty,7201,12350,961
+SE SacramentoCounty,Sutter,0,140,0
+SW SacramentoCounty,NW SacramentoCounty,7311,10940,1351
+SW SacramentoCounty,NE SacramentoCounty,3519,6540,798
+El Dorado,SW SacramentoCounty,82,590,96
+SW SacramentoCounty,SE SacramentoCounty,31244,33020,2717
+SW SacramentoCounty,Sutter,41,180,36
+SE SacramentoCounty,Yuba,0,180,0
+NW SacramentoCounty,SE SacramentoCounty,6781,12410,896
+NW SacramentoCounty,SW SacramentoCounty,6254,11380,1369
+NE SacramentoCounty,SW SacramentoCounty,3662,6720,922
+NE SacramentoCounty,NW SacramentoCounty,125494,195400,13076
+NE SacramentoCounty,SE SacramentoCounty,14038,16760,1155
+Sutter,SE SacramentoCounty,0,160,0
+Sutter,SW SacramentoCounty,41,170,36
+Yuba,SE SacramentoCounty,0,200,0
+Yuba,NE SacramentoCounty,878,1730,116
+SW SacramentoCounty,Yuba,0,130,0
+NW SacramentoCounty,NE SacramentoCounty,128539,195700,13039
+SE SacramentoCounty,NE SacramentoCounty,13728,16610,1052
+Yuba,SW SacramentoCounty,0,170,0
+SW SacramentoCounty,Central SacramentoCounty,42238,73460,6291
+NW SacramentoCounty,Central SacramentoCounty,114756,209000,15366
+Sutter,Central SacramentoCounty,1610,3080,372
+Central SacramentoCounty,NW SacramentoCounty,118230,208990,15276
+Central SacramentoCounty,Yuba,807,2960,115
+NE SacramentoCounty,Yuba,1756,1630,158
+Central SacramentoCounty,SW SacramentoCounty,40481,72590,6242
+Central SacramentoCounty,Sutter,2882,3160,269
+Yuba,Central SacramentoCounty,842,2940,171
+El Dorado,NW SacramentoCounty,5890,11260,898
+El Dorado,SE SacramentoCounty,329,2200,132
+NE SacramentoCounty,Sutter,49,1460,51
+SW SacramentoCounty,Placer,41,1920,29
+SW SacramentoCounty,Yolo,1594,5050,455
+NW SacramentoCounty,Yuba,482,3480,238
+SE SacramentoCounty,Yolo,711,4150,296
+SE SacramentoCounty,El Dorado,159,2390,56
+Central SacramentoCounty,SE SacramentoCounty,49771,73500,5251
+NW SacramentoCounty,El Dorado,6317,11290,859
+Placer,SW SacramentoCounty,1648,1770,340
+Sutter,NE SacramentoCounty,49,1420,63
+Yuba,NW SacramentoCounty,431,3650,218
+NW SacramentoCounty,Sutter,4621,3960,467
+NE SacramentoCounty,Central SacramentoCounty,53415,110460,9373
+Placer,SE SacramentoCounty,5574,2320,371
+SE SacramentoCounty,Placer,5340,2150,326
+SE SacramentoCounty,Central SacramentoCounty,49637,73530,5378
+Sutter,NW SacramentoCounty,4619,3960,355
+Yolo,SW SacramentoCounty,1623,5110,454
+Yolo,SE SacramentoCounty,1346,4190,287
+Central SacramentoCounty,NE SacramentoCounty,50382,110880,9584
+El Dorado,Yuba,0,180,0
+Sutter,El Dorado,0,190,0
+El Dorado,Sutter,0,200,0
+Yuba,El Dorado,0,200,0
+Yolo,NE SacramentoCounty,7589,16490,1507
+El Dorado,Central SacramentoCounty,1275,13960,736
+Central SacramentoCounty,El Dorado,2362,14300,565
+SW SacramentoCounty,El Dorado,82,520,90
+NE SacramentoCounty,Yolo,7503,16890,1379
+Placer,NW SacramentoCounty,43388,90140,7718
+NW SacramentoCounty,Placer,43192,89600,7729
+Central SacramentoCounty,Placer,14065,28830,3439
+Placer,Central SacramentoCounty,12361,29040,3348
+Yolo,Central SacramentoCounty,34105,79430,4565
+Central SacramentoCounty,Yolo,32299,79680,4337
+NW SacramentoCounty,Yolo,29040,49940,3896
+Yuba,Yolo,70,1300,190
+Yolo,NW SacramentoCounty,26831,50090,4141
+Yolo,Yuba,70,1340,196
+NE SacramentoCounty,El Dorado,31556,56720,4222
+El Dorado,NE SacramentoCounty,33155,57390,4028
+El Dorado,Yolo,109,2090,184
+Placer,NE SacramentoCounty,60403,133900,7802
+Yolo,El Dorado,134,2350,207
+NE SacramentoCounty,Placer,58334,134630,7659
+Sutter,Yolo,61,2760,381
+Yolo,Sutter,22,2920,399
+Placer,Sutter,787,4240,493
+Sutter,Placer,3167,4300,515
+Yuba,Placer,3144,8020,1005
+Placer,Yuba,2590,8090,974
+Yolo,Placer,1997,8620,1009
+Placer,Yolo,1874,8690,885
+Placer,El Dorado,7182,15930,1079
+El Dorado,Placer,6839,16020,1101
+Yuba,Sutter,14989,47270,2991
+Sutter,Yuba,13931,47490,2972
