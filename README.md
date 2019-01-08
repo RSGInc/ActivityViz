@@ -58,8 +58,14 @@ Each Data/Region folder needs the following:
     - LinkURL: URL of the link that appears in navbar
     - CenterMap: Lat/Lng in decimal degree of the center point for the maps to use
     - FrontPageTitle: Text to appear about region scenarions on front page
-    - visualizations: true/false flag for each visualization to set default value for visuals by region    
-    - scenarios: Defines each scenario (i.e. model run) available to the user
+    - DefaultFocusColor: Set's the default color to use for the focused GeoJSON object
+    - DefaultHighlightColor: Set's the default color to use for highlighting the filtered zones
+    - visualizations: true/false flag for each visualization to set default value for visuals by region, also used to determine order of charts on page    
+    - scenarios: Defines each scenario (i.e. model run) available to the user, can be defined as an array of objects
+        - name: sets the name to use for the scenario
+        - label: set the label to used for the scenario
+        - CenterMap: overrides the region specific center of map, will also focus in on the point rather than find best view
+        - ScenarioFocus: filename of GeoJSON to be displayed on the maps (BarChart with Map and Chord Map)
     - TabbedCharts: true/false flag to show charts with tabs or in single page
     - RadarCharts: Radar Chart specific properties:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
@@ -79,7 +85,8 @@ Each Data/Region folder needs the following:
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
-        - ZoneFilterLabel: a label to be shown above the list of zone filters     
+        - ZoneFilterLabel: a label to be shown above the list of zone filters
+        - CentroidsOff: sets the default value for the centroids checkbox     
     - GrpMap: Barchart that also displays with a map
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
