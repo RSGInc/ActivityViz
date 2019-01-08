@@ -374,17 +374,25 @@
 			<div class="col-xs-6">
 				<div class="col-xs-12">The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles.
 					</div>
-				<div class="col-xs-6">
-					<div class="mode-share-by-county-trip-mode" style="font-weight:bold"></div>
+				<div class="col-xs-12">
+				<div class="col-xs-4">
+					<div class="mode-share-by-county-trip-mode-zones" style="font-weight:bold"></div>
 				</div>
-				<div class="col-xs-6" style="margin-bottom:.1em;font-weight:bold">
+				<div class="col-xs-4">
+					<div class="mode-share-by-county-trip-mode-bubbles" style="font-weight:bold"></div>
+				</div>
+				<div class="col-xs-4" style="margin-bottom:.1em;font-weight:bold">
 					<div id="mode-share-by-county-classification-label">Classification</div>
 				</div>
-				<div class="col-xs-6">
-					<select class="form-control" id="mode-share-by-county-current-trip-mode"></select>
+					</div>
+				<div class="col-xs-12">
+				<div class="col-xs-4">
+					<select class="form-control" id="mode-share-by-county-current-trip-mode-zones"></select>
 				</div>
-
-				<div class="col-xs-6" style="margin-bottom:2em;">
+				<div class="col-xs-4">
+					<select class="form-control" id="mode-share-by-county-current-trip-mode-bubbles"></select>
+				</div>
+				<div class="col-xs-4" style="margin-bottom:2em;">
 					<select class="form-control" id="mode-share-by-county-classification">
 						<option value="quartiles" selected="selected">Quartiles</option>
 						<option value="jenks">Natural breaks (Jenks)</option>
@@ -392,6 +400,7 @@
 						<option value="custom">Custom</option>
 					</select>
 				</div>
+					</div>
 				<div class='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
 
 				</div>
@@ -621,7 +630,7 @@
 					<span class="chord-chart-maingroup"></span>,</strong> by
 				Origins and Destinations
 			</p>
-			<div class="col-xs-6 right-border">
+			<div class="col-md-6 col-sm-12 right-border">
 				<div id="chord-tooltip" class="">
 
 				</div>
@@ -633,7 +642,7 @@
 					<div id="chord-chart-container"></div>
 				</div>
 			</div>
-			<div class="col-xs-6 ">
+			<div class="col-md-6 col-sm-12 ">
 				<p>Origin Destination Groups</p>
 
 				<div class="col-xs-12" id="chord-by-district-map" style="width: 100%;height:75%;"></div>
@@ -755,7 +764,11 @@
 		else {
             $('#default-content').show();
         }
-
+ $(window).load(function() {
+  var shownTabs = $('li[role="presentation"]').children(":visible");
+		if(shownTabs.length>0)
+		    shownTabs[0].click();
+    });
 	});
 </script>
 
@@ -812,9 +825,7 @@
 	        var currEl = $('a[href="#'+tablinks[key]+'"]').closest('li');
 	       $('#the_tabs').append(currEl);
 	    });
-	    var shownTabs = $('li[role="presentation"]').children(":visible");
-		if(shownTabs.length>0)
-		    shownTabs[0].click();
+
     }
 	});
 		$('a[href="#three3d_tab"]').on('shown.bs.tab', function (e) {
@@ -822,6 +833,8 @@
                 $.getScript("three3d.js").done(function(scripts,textStatus){
                     loadedScripts["three3d"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
 		$('a[href="#grouped_tab"]').on('shown.bs.tab', function (e) {
@@ -829,6 +842,8 @@
                 $.getScript("grouped_barchart_data.js").done(function(scripts,textStatus){
                     loadedScripts["grouped"] = true;
                 });
+            } else {
+                window.dispatchEvent(new Event('resize'));
             }
         });
         $('a[href="#barchartmap_tab"]').on('shown.bs.tab', function (e) {
@@ -836,6 +851,9 @@
                 $.getScript("barchart_and_map.js").done(function(scripts,textStatus){
                     loadedScripts["barchart"] = true;
                 });
+            } else {
+                window.dispatchEvent(new Event('resize'));
+
             }
         });
 		$('a[href="#timeuse_tab"]').on('shown.bs.tab', function (e) {
@@ -843,6 +861,8 @@
                 $.getScript("timeuse.js").done(function(scripts,textStatus){
                     loadedScripts["timeuse"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
 		$('a[href="#chord_tab"]').on('shown.bs.tab', function (e) {
@@ -850,6 +870,8 @@
                 $.getScript("chord.js").done(function(scripts,textStatus){
                     loadedScripts["chord"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
 		$('a[href="#radar_tab"]').on('shown.bs.tab', function (e) {
@@ -857,6 +879,8 @@
                 $.getScript("radar.js").done(function(scripts,textStatus){
                     loadedScripts["radar"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
         $('a[href="#sunburst_tab"]').on('shown.bs.tab', function (e) {
@@ -864,6 +888,8 @@
                 $.getScript("sunburst.js").done(function(scripts,textStatus){
                     loadedScripts["sunburst"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
          $('a[href="#scatter_tab"]').on('shown.bs.tab', function (e) {
@@ -871,6 +897,8 @@
                 $.getScript("scatter.js").done(function(scripts,textStatus){
                     loadedScripts["scatter"] = true;
                 });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
             }
         });
 

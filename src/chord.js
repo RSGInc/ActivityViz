@@ -117,7 +117,12 @@ var chord = (function() {
         //read in data and create chord when finished
 
         d3.csv(url, function (error, data) {
+
             "use strict";
+             if (error) {
+               $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                throw error;
+            }
             var headers = d3.keys(data[0]);
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
@@ -132,6 +137,10 @@ var chord = (function() {
 
             mainGroupColumnName = headers[0];
             subGroupColumnName = headers[1];
+            if(subGroupColumnName == undefined){
+                $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                return;
+            }
             quantityColumn = 3;
 
             indexByName = {};
@@ -157,8 +166,8 @@ var chord = (function() {
             var svg = d3.select("#chord-chart-container").append("svg:svg")
                 .attr("width", windwidth - 20)
                 .attr("height", height)
-                .style("padding-left", "3%")
-                .style("padding-right", "5%")
+                .style("padding-left", "1%")
+                .style("padding-right", "3%")
                 .append("svg:g")
                 .attr("id", "circle")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -382,7 +391,7 @@ var chord = (function() {
             var size = _.size(legendHeadersShowHide);
             var columns = width/165;
             var lines = Number.parseInt(Math.ceil(size / columns));
-            var legheight = 25 * lines;
+            var legheight = 30 * lines;
             var container = d3.select("#chord-dropdown-div").append("svg")
 
                 .attr("width", width).attr("height", legheight).style('padding-top', "10px");
@@ -403,7 +412,7 @@ var chord = (function() {
                 });
             var circles = legendOrdinal.append("circle")
                 .attr("cx", 10)
-                .attr("cy", 5)
+                .attr("cy", 7)
                 .attr("r", 5)
                 .style("stroke", "black")
                 .style("fill", function (d, i) {
@@ -411,7 +420,7 @@ var chord = (function() {
                 });
             var texts = legendOrdinal.append('text')
                 .attr("x", 20)
-                .attr("y", 10)
+                .attr("y", 12)
                 //.attr("dy", ".35em")
                 .text(function (d, i) {
                     return d
@@ -453,6 +462,10 @@ var chord = (function() {
             try {
                 d3.csv("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/" + ZONE_FILTER_LOC, function (error, filterdata) {
                     //zonecsv = d3.csv.parseRows(filterdata).slice(1);
+                                 if (error) {
+                                     $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
+                                     throw error;
+                                 }
                     zoneheaders = d3.keys(filterdata[0]);
                     ;
                     zoneFilterData = d3.nest().key(function (d) {
