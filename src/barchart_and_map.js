@@ -80,7 +80,7 @@ var barchart_and_map = (function () {
 	var BARSPACING = 0.2;
 	var showCycleTools = true;
 	var highlightLayer;
-	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
+	var showChartOnPage = true;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
 	function readInDataCallback() {

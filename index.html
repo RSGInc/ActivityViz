@@ -32,16 +32,16 @@
                                $('#logo_id').attr("src", "data/" + k + "/img/" + logo + "");
                            }
                            $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.FrontPageGraphic + ""+"'/>"+ "</h4>");
-                            appendVisuals('#' + k + '_id',k,reg.visualizations);
+
                            $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
 
                                $.each(reg.scenarios, function (key, value) {
                                    if(Array.isArray(reg.scenarios)) {
 
-                                           $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value.name + "&visuals='>" + value.name + value.label + "</a></li>");
+                                           $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value.name + "'>" + value.name + value.label + "</a></li>");
 
                                    } else {
-                                       $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "&visuals='>" + key + value + "</a></li>");
+                                       $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "'>" + key + value + "</a></li>");
                                    }
                                });
 
@@ -51,23 +51,7 @@
                }
            });
         });
-       function appendVisuals (id,region,visualizations) {
-           $(id).append('<div style="margin-bottom:10px;" id="visualizations_' + region + '"></div>');
-           $("#" + 'visualizations_' + region).append('<h5>Visualizations to Display</h5>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="3dmap" id="' + region + '_3dmap_id" visual="3" type="checkbox"  value="">3D Animated Map</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="barmap" id="' + region + '_barmap_id" visual="b" type="checkbox"  value="">Bar Chart with Map</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="grpbar" id="' + region + '_grpbar_id"  visual="g" type="checkbox"  value="">Grouped Bar Chart</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="timemap" id="' + region + '_timeuse_id" visual="t" type="checkbox"   value="">Time Use Map</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="radar" id="' + region + '_radar_id" visual="r" type="checkbox"  value="">Radar Charts</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="sunburst" id="' + region + '_sunburst_id" visual="s" type="checkbox"   value="">Sunburst Map</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="chord" id="' + region + '_chord_id" visual="c" type="checkbox"   value="">Chord Chart</label>');
-           $("#" + 'visualizations_' + region).append('<label class="checkbox-inline"><input name="scater" id="' + region + '_scatter_id" visual="a" type="checkbox"   value="">Scatter Chart</label>');
 
-
-           for (var obj in visualizations) {
-               $('#' + region + '_' + obj.toLowerCase() + "_id").prop("checked", visualizations[obj]);
-           }
-       }
 	</script>
 </head>
 
@@ -83,36 +67,6 @@
             <br/>
 	</div>
 
-
-<script>
-    (function() {
-        $('#scenarios').on('click','a.scenariolink', function(event){
-
-            var regionDiv = $(this).parent().closest('div');
-        	var total = regionDiv.find('input[type=checkbox]:checked').length;
-        	var visuals = "";
-        	regionDiv.find('input[type=checkbox]').each(function(event){
-           		if($(this).is(':checked')){
-               		visuals += $(this).attr('visual');
-           		}
-        	});
-        	$("a.scenariolink").attr('href',function(i, h) {
-           		// console.log(h);
-				//return jQuery.query.set("visuals",visuals);
-            	h= h.slice(0,h.indexOf('&visuals'));
-            	return h +  "&visuals="+visuals;
-        	});
-            if(total ==0){
-                event.preventDefault();
-                event.stopPropagation();
-                $('#novizalert').show();
-            }else {
-
-            }
-        });
-    })();
-
-</script>
 </body>
 
 </html>
