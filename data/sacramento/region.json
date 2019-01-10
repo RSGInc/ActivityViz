@@ -17,12 +17,12 @@
     "OD": "- OD flows by data source"
   },
   "visualizations":{
-  "3DMap":true,
+
   "BarMap":true,
   "GrpBar":true,
   "TimeUse":true,
   "Radar":true,
-  "Sunburst":true,
+  "Sunburst":true, "3DMap":true,
   "Chord": true
 },
   "RadarCharts":{

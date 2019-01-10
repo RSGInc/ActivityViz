@@ -13,7 +13,7 @@ var timeuse = (function () {
 	var legendGroups;
 	var chartData;
 	var chartStyle = 'expand';
-	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('t') > -1;
+	var showChartOnPage = true;
 	function getChartLeftMargin() {
 		return (chartStyle == 'expand') ? 50 : 80;
 	}
@@ -37,13 +37,17 @@ var timeuse = (function () {
 				var requiredOrigPurposesFound = new Set();
 				var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
 				if (error) {
-                    $('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+					$('#timeuse').html("");
+                    //$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
                     throw error;
                 }
 				var csv = d3.csv.parseRows(data).slice(1);
 				if(csv[0] =="") //we have no data
 				{
-					$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+					$('#timeuse_tab').parent("li").attr("disabled","disabled");
+					$('#timeuse').html("");
+
+					//$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
 					return;
 				}
 				data = null; //allow memory to be GC'ed

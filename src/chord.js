@@ -52,7 +52,7 @@ var chord = (function () {
     var SCENARIO_FOCUS = false;
     var scenarioPolyFile;
     var fill = d3.scale.category20();
-    var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('c') > -1;
+    var showChartOnPage = true;
     var circlesLayerGroup;
     var formatPercent = d3.format(".1%");
     var showGrpPercent = false;
