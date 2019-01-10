@@ -90,8 +90,10 @@ var chartDataContainer=[];
             });
             d3.csv(url, function (error, data) {
                 "use strict";
-                if (error)
+				if (error) {
+                    $('#grouped-barchart-div').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the grouped bar chart data.</span></h3></div>");
                     throw error;
+                }
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
                 var headers = d3.keys(data[0]);
                 var numCharts = headers.slice()
@@ -121,6 +123,10 @@ var chartDataContainer=[];
                 //note NVD3 multiBarChart expects data in what seemlike an inverted hierarchy subGroups at top level, containing mainGroups
                 var totalsForEachMainGroup = {};
                 var totalsForIndependentGroups = {};
+                if(subGroupColumn == undefined) {
+                      $('#grouped-barchart-div').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the grouped bar chart data.</span></h3></div>");
+                      return;
+                }
 
                 var chartTotals =  d3.nest().key(function (d) {
                     return d[chartColumn].replace(/\s+/g, '');
@@ -240,8 +246,9 @@ var chartDataContainer=[];
                  d3.select('#grouped-bar-container').select("#"+chart.chartName +"_bar").remove();
                 d3.select('#grouped-bar-container')
                     .append('div').attr('id', chart.chartName+"_bar").style('min-height','500px').attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
+                        chartDataContainer.length > 1 ?chart.chartName:""
                        );
-                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");//.style('height','400px');
+                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart" );//.style('height','400px');
                 //setDataSpecificDOM();
 
                 var chartId = "#" + chart.chartName+"_bar "+" svg";

@@ -28,6 +28,7 @@ var timeuse = (function () {
 	function createTimeUse() {
 		//read in data and create timeuse when finished
 		if (chartData === undefined) {
+
 			d3.text(url, function (error, data) {
 				"use strict";
 				var periods = new Set();
@@ -35,8 +36,16 @@ var timeuse = (function () {
 				var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
 				var requiredOrigPurposesFound = new Set();
 				var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
-				if (error) throw error; //expected data should have columns similar to: PERSON_TYPE	PER	ORIG_PURPOSE	QUANTITY
+				if (error) {
+                    $('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+                    throw error;
+                }
 				var csv = d3.csv.parseRows(data).slice(1);
+				if(csv[0] =="") //we have no data
+				{
+					$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+					return;
+				}
 				data = null; //allow memory to be GC'ed
 
 				var rolledUpMap = d3.nest().key(function (d) {

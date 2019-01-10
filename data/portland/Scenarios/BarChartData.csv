@@ -1,0 +1,361 @@
+BENEFIT,SCENARIO,VALUE,CHART
+active_transportation,I205,-484499.602727324,Benefits-everybody
+emissions_cost,I205,-4708070.842295885,Benefits-everybody
+noise_pollution_cost,I205,-945067.5562635512,Benefits-everybody
+safety_cost,I205,-1484723.2595305443,Benefits-everybody
+surface_water_pollution_cost,I205,-1103101.1813840866,Benefits-everybody
+travel_options,I205,26464943.03342078,Benefits-everybody
+travel_time,I205,23301994.39079112,Benefits-everybody
+travel_time_reliability,I205,2779973.5279783667,Benefits-everybody
+veh_operating_cost,I205,-15499198.36564064,Benefits-everybody
+veh_ownership_cost,I205,209216.06467596168,Benefits-everybody
+active_transportation,DivisionBRT,-392014.342310873,Benefits-everybody
+emissions_cost,DivisionBRT,585481.4863226414,Benefits-everybody
+noise_pollution_cost,DivisionBRT,9884.34538064897,Benefits-everybody
+safety_cost,DivisionBRT,1164379.7109398842,Benefits-everybody
+surface_water_pollution_cost,DivisionBRT,103798.27553778887,Benefits-everybody
+travel_options,DivisionBRT,8546581.470848752,Benefits-everybody
+travel_time,DivisionBRT,10389032.744128218,Benefits-everybody
+travel_time_reliability,DivisionBRT,347639.07861311035,Benefits-everybody
+veh_operating_cost,DivisionBRT,1619973.6944322588,Benefits-everybody
+veh_ownership_cost,DivisionBRT,17386310.070673592,Benefits-everybody
+active_transportation,I205,-0.4081653987571012,Benefits Per Household-everybody
+emissions_cost,I205,-3.966301730496767,Benefits Per Household-everybody
+noise_pollution_cost,I205,-0.7961696434492391,Benefits Per Household-everybody
+safety_cost,I205,-1.2508011520729587,Benefits Per Household-everybody
+surface_water_pollution_cost,I205,-0.9293046496520332,Benefits Per Household-everybody
+travel_options,I205,22.29532070927117,Benefits Per Household-everybody
+travel_time,I205,19.630703056955475,Benefits Per Household-everybody
+travel_time_reliability,I205,2.34198128789814,Benefits Per Household-everybody
+veh_operating_cost,I205,-13.05725834596303,Benefits Per Household-everybody
+veh_ownership_cost,I205,0.17625351596607086,Benefits Per Household-everybody
+active_transportation,DivisionBRT,-0.3302514376629363,Benefits Per Household-everybody
+emissions_cost,DivisionBRT,0.4932373173983286,Benefits Per Household-everybody
+noise_pollution_cost,DivisionBRT,0.008327040416617396,Benefits Per Household-everybody
+safety_cost,DivisionBRT,0.9809285835223518,Benefits Per Household-everybody
+surface_water_pollution_cost,DivisionBRT,0.08744458052533244,Benefits Per Household-everybody
+travel_options,DivisionBRT,7.200044776966128,Benefits Per Household-everybody
+travel_time,DivisionBRT,8.752212940604192,Benefits Per Household-everybody
+travel_time_reliability,DivisionBRT,0.292867615054639,Benefits Per Household-everybody
+veh_operating_cost,DivisionBRT,1.3647425204104655,Benefits Per Household-everybody
+veh_ownership_cost,DivisionBRT,14.647050571277745,Benefits Per Household-everybody
+active_transportation,I205,0.0,Benefits-minority
+emissions_cost,I205,0.0,Benefits-minority
+noise_pollution_cost,I205,0.0,Benefits-minority
+safety_cost,I205,0.0,Benefits-minority
+surface_water_pollution_cost,I205,0.0,Benefits-minority
+travel_options,I205,3984553.191757922,Benefits-minority
+travel_time,I205,3561067.3882525656,Benefits-minority
+travel_time_reliability,I205,431999.0762925315,Benefits-minority
+veh_operating_cost,I205,0.0,Benefits-minority
+veh_ownership_cost,I205,42423.32202617595,Benefits-minority
+active_transportation,DivisionBRT,0.0,Benefits-minority
+emissions_cost,DivisionBRT,0.0,Benefits-minority
+noise_pollution_cost,DivisionBRT,0.0,Benefits-minority
+safety_cost,DivisionBRT,0.0,Benefits-minority
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits-minority
+travel_options,DivisionBRT,1706157.1258278056,Benefits-minority
+travel_time,DivisionBRT,2420951.9095074264,Benefits-minority
+travel_time_reliability,DivisionBRT,66575.38259810372,Benefits-minority
+veh_operating_cost,DivisionBRT,0.0,Benefits-minority
+veh_ownership_cost,DivisionBRT,4777031.714646712,Benefits-minority
+active_transportation,I205,0.0,Benefits-low english proficiency
+emissions_cost,I205,0.0,Benefits-low english proficiency
+noise_pollution_cost,I205,0.0,Benefits-low english proficiency
+safety_cost,I205,0.0,Benefits-low english proficiency
+surface_water_pollution_cost,I205,0.0,Benefits-low english proficiency
+travel_options,I205,690223.3457010529,Benefits-low english proficiency
+travel_time,I205,632461.4153041678,Benefits-low english proficiency
+travel_time_reliability,I205,72609.44038085226,Benefits-low english proficiency
+veh_operating_cost,I205,0.0,Benefits-low english proficiency
+veh_ownership_cost,I205,7297.519500797057,Benefits-low english proficiency
+active_transportation,DivisionBRT,0.0,Benefits-low english proficiency
+emissions_cost,DivisionBRT,0.0,Benefits-low english proficiency
+noise_pollution_cost,DivisionBRT,0.0,Benefits-low english proficiency
+safety_cost,DivisionBRT,0.0,Benefits-low english proficiency
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits-low english proficiency
+travel_options,DivisionBRT,169454.21336526785,Benefits-low english proficiency
+travel_time,DivisionBRT,534917.5256935628,Benefits-low english proficiency
+travel_time_reliability,DivisionBRT,13014.483689840152,Benefits-low english proficiency
+veh_operating_cost,DivisionBRT,0.0,Benefits-low english proficiency
+veh_ownership_cost,DivisionBRT,1148624.785838169,Benefits-low english proficiency
+active_transportation,I205,0.0,Benefits-children and seniors
+emissions_cost,I205,0.0,Benefits-children and seniors
+noise_pollution_cost,I205,0.0,Benefits-children and seniors
+safety_cost,I205,0.0,Benefits-children and seniors
+surface_water_pollution_cost,I205,0.0,Benefits-children and seniors
+travel_options,I205,14487780.08763855,Benefits-children and seniors
+travel_time,I205,12362331.420441855,Benefits-children and seniors
+travel_time_reliability,I205,1416161.878503123,Benefits-children and seniors
+veh_operating_cost,I205,0.0,Benefits-children and seniors
+veh_ownership_cost,I205,65077.62658523675,Benefits-children and seniors
+active_transportation,DivisionBRT,0.0,Benefits-children and seniors
+emissions_cost,DivisionBRT,0.0,Benefits-children and seniors
+noise_pollution_cost,DivisionBRT,0.0,Benefits-children and seniors
+safety_cost,DivisionBRT,0.0,Benefits-children and seniors
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits-children and seniors
+travel_options,DivisionBRT,3670869.986213598,Benefits-children and seniors
+travel_time,DivisionBRT,5120089.913496851,Benefits-children and seniors
+travel_time_reliability,DivisionBRT,171322.12698367322,Benefits-children and seniors
+veh_operating_cost,DivisionBRT,0.0,Benefits-children and seniors
+veh_ownership_cost,DivisionBRT,7020429.070521653,Benefits-children and seniors
+active_transportation,I205,0.0,Benefits-low income
+emissions_cost,I205,0.0,Benefits-low income
+noise_pollution_cost,I205,0.0,Benefits-low income
+safety_cost,I205,0.0,Benefits-low income
+surface_water_pollution_cost,I205,0.0,Benefits-low income
+travel_options,I205,4101208.4915343523,Benefits-low income
+travel_time,I205,3834376.86567536,Benefits-low income
+travel_time_reliability,I205,470330.6289928556,Benefits-low income
+veh_operating_cost,I205,0.0,Benefits-low income
+veh_ownership_cost,I205,76432.79346882139,Benefits-low income
+active_transportation,DivisionBRT,0.0,Benefits-low income
+emissions_cost,DivisionBRT,0.0,Benefits-low income
+noise_pollution_cost,DivisionBRT,0.0,Benefits-low income
+safety_cost,DivisionBRT,0.0,Benefits-low income
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits-low income
+travel_options,DivisionBRT,1783530.0637840268,Benefits-low income
+travel_time,DivisionBRT,2589297.4037788957,Benefits-low income
+travel_time_reliability,DivisionBRT,72527.44577498261,Benefits-low income
+veh_operating_cost,DivisionBRT,0.0,Benefits-low income
+veh_ownership_cost,DivisionBRT,5065411.025385234,Benefits-low income
+active_transportation,I205,0.0,Benefits Per Household-minority
+emissions_cost,I205,0.0,Benefits Per Household-minority
+noise_pollution_cost,I205,0.0,Benefits Per Household-minority
+safety_cost,I205,0.0,Benefits Per Household-minority
+surface_water_pollution_cost,I205,0.0,Benefits Per Household-minority
+travel_options,I205,17.877353617434167,Benefits Per Household-minority
+travel_time,I205,15.977314868575508,Benefits Per Household-minority
+travel_time_reliability,I205,1.9382349482149197,Benefits Per Household-minority
+veh_operating_cost,I205,0.0,Benefits Per Household-minority
+veh_ownership_cost,I205,0.1903392157135766,Benefits Per Household-minority
+active_transportation,DivisionBRT,0.0,Benefits Per Household-minority
+emissions_cost,DivisionBRT,0.0,Benefits Per Household-minority
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household-minority
+safety_cost,DivisionBRT,0.0,Benefits Per Household-minority
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household-minority
+travel_options,DivisionBRT,7.6549547207505055,Benefits Per Household-minority
+travel_time,DivisionBRT,10.86199914876082,Benefits Per Household-minority
+travel_time_reliability,DivisionBRT,0.2987014100813596,Benefits Per Household-minority
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household-minority
+veh_ownership_cost,DivisionBRT,21.43293892552096,Benefits Per Household-minority
+active_transportation,I205,0.0,Benefits Per Household-low english proficiency
+emissions_cost,I205,0.0,Benefits Per Household-low english proficiency
+noise_pollution_cost,I205,0.0,Benefits Per Household-low english proficiency
+safety_cost,I205,0.0,Benefits Per Household-low english proficiency
+surface_water_pollution_cost,I205,0.0,Benefits Per Household-low english proficiency
+travel_options,I205,16.397589758226584,Benefits Per Household-low english proficiency
+travel_time,I205,15.025343449563492,Benefits Per Household-low english proficiency
+travel_time_reliability,I205,1.7249776081252746,Benefits Per Household-low english proficiency
+veh_operating_cost,I205,0.0,Benefits Per Household-low english proficiency
+veh_ownership_cost,I205,0.17336668162852326,Benefits Per Household-low english proficiency
+active_transportation,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+emissions_cost,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+safety_cost,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+travel_options,DivisionBRT,4.0257123884217805,Benefits Per Household-low english proficiency
+travel_time,DivisionBRT,12.707999802440309,Benefits Per Household-low english proficiency
+travel_time_reliability,DivisionBRT,0.3091842166601527,Benefits Per Household-low english proficiency
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household-low english proficiency
+veh_ownership_cost,DivisionBRT,27.287802044967012,Benefits Per Household-low english proficiency
+active_transportation,I205,0.0,Benefits Per Household-children and seniors
+emissions_cost,I205,0.0,Benefits Per Household-children and seniors
+noise_pollution_cost,I205,0.0,Benefits Per Household-children and seniors
+safety_cost,I205,0.0,Benefits Per Household-children and seniors
+surface_water_pollution_cost,I205,0.0,Benefits Per Household-children and seniors
+travel_options,I205,22.7406540046198,Benefits Per Household-children and seniors
+travel_time,I205,19.404456709180405,Benefits Per Household-children and seniors
+travel_time_reliability,I205,2.222869694236305,Benefits Per Household-children and seniors
+veh_operating_cost,I205,0.0,Benefits Per Household-children and seniors
+veh_ownership_cost,I205,0.10214869225406188,Benefits Per Household-children and seniors
+active_transportation,DivisionBRT,0.0,Benefits Per Household-children and seniors
+emissions_cost,DivisionBRT,0.0,Benefits Per Household-children and seniors
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household-children and seniors
+safety_cost,DivisionBRT,0.0,Benefits Per Household-children and seniors
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household-children and seniors
+travel_options,DivisionBRT,5.761958267412758,Benefits Per Household-children and seniors
+travel_time,DivisionBRT,8.036717322533152,Benefits Per Household-children and seniors
+travel_time_reliability,DivisionBRT,0.2689147122267148,Benefits Per Household-children and seniors
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household-children and seniors
+veh_ownership_cost,DivisionBRT,11.01957287389566,Benefits Per Household-children and seniors
+active_transportation,I205,0.0,Benefits Per Household-low income
+emissions_cost,I205,0.0,Benefits Per Household-low income
+noise_pollution_cost,I205,0.0,Benefits Per Household-low income
+safety_cost,I205,0.0,Benefits Per Household-low income
+surface_water_pollution_cost,I205,0.0,Benefits Per Household-low income
+travel_options,I205,17.861873951610704,Benefits Per Household-low income
+travel_time,I205,16.699749939326324,Benefits Per Household-low income
+travel_time_reliability,I205,2.048417296509881,Benefits Per Household-low income
+veh_operating_cost,I205,0.0,Benefits Per Household-low income
+veh_ownership_cost,I205,0.3328855203356944,Benefits Per Household-low income
+active_transportation,DivisionBRT,0.0,Benefits Per Household-low income
+emissions_cost,DivisionBRT,0.0,Benefits Per Household-low income
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household-low income
+safety_cost,DivisionBRT,0.0,Benefits Per Household-low income
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household-low income
+travel_options,DivisionBRT,7.767756565894557,Benefits Per Household-low income
+travel_time,DivisionBRT,11.277091604828028,Benefits Per Household-low income
+travel_time_reliability,DivisionBRT,0.3158766732145221,Benefits Per Household-low income
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household-low income
+veh_ownership_cost,DivisionBRT,22.06123717808856,Benefits Per Household-low income
+active_transportation,I205,-0.0,Benefits Share-minority
+emissions_cost,I205,-0.0,Benefits Share-minority
+noise_pollution_cost,I205,-0.0,Benefits Share-minority
+safety_cost,I205,-0.0,Benefits Share-minority
+surface_water_pollution_cost,I205,-0.0,Benefits Share-minority
+travel_options,I205,15.055967385707577,Benefits Share-minority
+travel_time,I205,15.282242921060393,Benefits Share-minority
+travel_time_reliability,I205,15.539683092115158,Benefits Share-minority
+veh_operating_cost,I205,-0.0,Benefits Share-minority
+veh_ownership_cost,I205,20.277277508245888,Benefits Share-minority
+active_transportation,DivisionBRT,-0.0,Benefits Share-minority
+emissions_cost,DivisionBRT,0.0,Benefits Share-minority
+noise_pollution_cost,DivisionBRT,0.0,Benefits Share-minority
+safety_cost,DivisionBRT,0.0,Benefits Share-minority
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Share-minority
+travel_options,DivisionBRT,19.96303588337957,Benefits Share-minority
+travel_time,DivisionBRT,23.30295773565374,Benefits Share-minority
+travel_time_reliability,DivisionBRT,19.15071886155695,Benefits Share-minority
+veh_operating_cost,DivisionBRT,0.0,Benefits Share-minority
+veh_ownership_cost,DivisionBRT,27.47582261692424,Benefits Share-minority
+active_transportation,I205,-0.0,Benefits Share-low english proficiency
+emissions_cost,I205,-0.0,Benefits Share-low english proficiency
+noise_pollution_cost,I205,-0.0,Benefits Share-low english proficiency
+safety_cost,I205,-0.0,Benefits Share-low english proficiency
+surface_water_pollution_cost,I205,-0.0,Benefits Share-low english proficiency
+travel_options,I205,2.6080666216791655,Benefits Share-low english proficiency
+travel_time,I205,2.7141943504806383,Benefits Share-low english proficiency
+travel_time_reliability,I205,2.6118752444975546,Benefits Share-low english proficiency
+veh_operating_cost,I205,-0.0,Benefits Share-low english proficiency
+veh_ownership_cost,I205,3.4880301912281984,Benefits Share-low english proficiency
+active_transportation,DivisionBRT,-0.0,Benefits Share-low english proficiency
+emissions_cost,DivisionBRT,0.0,Benefits Share-low english proficiency
+noise_pollution_cost,DivisionBRT,0.0,Benefits Share-low english proficiency
+safety_cost,DivisionBRT,0.0,Benefits Share-low english proficiency
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Share-low english proficiency
+travel_options,DivisionBRT,1.9827133684181628,Benefits Share-low english proficiency
+travel_time,DivisionBRT,5.148867453477736,Benefits Share-low english proficiency
+travel_time_reliability,DivisionBRT,3.743676844893508,Benefits Share-low english proficiency
+veh_operating_cost,DivisionBRT,0.0,Benefits Share-low english proficiency
+veh_ownership_cost,DivisionBRT,6.606489710405057,Benefits Share-low english proficiency
+active_transportation,I205,-0.0,Benefits Share-children and seniors
+emissions_cost,I205,-0.0,Benefits Share-children and seniors
+noise_pollution_cost,I205,-0.0,Benefits Share-children and seniors
+safety_cost,I205,-0.0,Benefits Share-children and seniors
+surface_water_pollution_cost,I205,-0.0,Benefits Share-children and seniors
+travel_options,I205,54.74328839228151,Benefits Share-children and seniors
+travel_time,I205,53.05267529086443,Benefits Share-children and seniors
+travel_time_reliability,I205,50.941559847621086,Benefits Share-children and seniors
+veh_operating_cost,I205,-0.0,Benefits Share-children and seniors
+veh_ownership_cost,I205,31.10546347673176,Benefits Share-children and seniors
+active_transportation,DivisionBRT,-0.0,Benefits Share-children and seniors
+emissions_cost,DivisionBRT,0.0,Benefits Share-children and seniors
+noise_pollution_cost,DivisionBRT,0.0,Benefits Share-children and seniors
+safety_cost,DivisionBRT,0.0,Benefits Share-children and seniors
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Share-children and seniors
+travel_options,DivisionBRT,42.95132502667231,Benefits Share-children and seniors
+travel_time,DivisionBRT,49.28360550591851,Benefits Share-children and seniors
+travel_time_reliability,DivisionBRT,49.28160771428654,Benefits Share-children and seniors
+veh_operating_cost,DivisionBRT,0.0,Benefits Share-children and seniors
+veh_ownership_cost,DivisionBRT,40.379062848783434,Benefits Share-children and seniors
+active_transportation,I205,-0.0,Benefits Share-low income
+emissions_cost,I205,-0.0,Benefits Share-low income
+noise_pollution_cost,I205,-0.0,Benefits Share-low income
+safety_cost,I205,-0.0,Benefits Share-low income
+surface_water_pollution_cost,I205,-0.0,Benefits Share-low income
+travel_options,I205,15.49675918952561,Benefits Share-low income
+travel_time,I205,16.45514457419445,Benefits Share-low income
+travel_time_reliability,I205,16.918529052860663,Benefits Share-low income
+veh_operating_cost,I205,-0.0,Benefits Share-low income
+veh_ownership_cost,I205,36.53294673485142,Benefits Share-low income
+active_transportation,DivisionBRT,-0.0,Benefits Share-low income
+emissions_cost,DivisionBRT,0.0,Benefits Share-low income
+noise_pollution_cost,DivisionBRT,0.0,Benefits Share-low income
+safety_cost,DivisionBRT,0.0,Benefits Share-low income
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Share-low income
+travel_options,DivisionBRT,20.868344493847154,Benefits Share-low income
+travel_time,DivisionBRT,24.923373210488165,Benefits Share-low income
+travel_time_reliability,DivisionBRT,20.86285755454405,Benefits Share-low income
+veh_operating_cost,DivisionBRT,0.0,Benefits Share-low income
+veh_ownership_cost,DivisionBRT,29.134479971856305,Benefits Share-low income
+active_transportation,I205,-0.0,Benefits Per Household Share-minority
+emissions_cost,I205,-0.0,Benefits Per Household Share-minority
+noise_pollution_cost,I205,-0.0,Benefits Per Household Share-minority
+safety_cost,I205,-0.0,Benefits Per Household Share-minority
+surface_water_pollution_cost,I205,-0.0,Benefits Per Household Share-minority
+travel_options,I205,80.18433038283294,Benefits Per Household Share-minority
+travel_time,I205,81.38941749676401,Benefits Per Household Share-minority
+travel_time_reliability,I205,82.76047969428608,Benefits Per Household Share-minority
+veh_operating_cost,I205,-0.0,Benefits Per Household Share-minority
+veh_ownership_cost,I205,107.99172695665105,Benefits Per Household Share-minority
+active_transportation,DivisionBRT,-0.0,Benefits Per Household Share-minority
+emissions_cost,DivisionBRT,0.0,Benefits Per Household Share-minority
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-minority
+safety_cost,DivisionBRT,0.0,Benefits Per Household Share-minority
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-minority
+travel_options,DivisionBRT,106.31815437092409,Benefits Per Household Share-minority
+travel_time,DivisionBRT,124.10574585507037,Benefits Per Household Share-minority
+travel_time_reliability,DivisionBRT,101.99195634028439,Benefits Per Household Share-minority
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household Share-minority
+veh_ownership_cost,DivisionBRT,146.32938434410855,Benefits Per Household Share-minority
+active_transportation,I205,-0.0,Benefits Per Household Share-low english proficiency
+emissions_cost,I205,-0.0,Benefits Per Household Share-low english proficiency
+noise_pollution_cost,I205,-0.0,Benefits Per Household Share-low english proficiency
+safety_cost,I205,-0.0,Benefits Per Household Share-low english proficiency
+surface_water_pollution_cost,I205,-0.0,Benefits Per Household Share-low english proficiency
+travel_options,I205,73.54722532162498,Benefits Per Household Share-low english proficiency
+travel_time,I205,76.54001696205053,Benefits Per Household Share-low english proficiency
+travel_time_reliability,I205,73.65462811504321,Benefits Per Household Share-low english proficiency
+veh_operating_cost,I205,-0.0,Benefits Per Household Share-low english proficiency
+veh_ownership_cost,I205,98.36211248228187,Benefits Per Household Share-low english proficiency
+active_transportation,DivisionBRT,-0.0,Benefits Per Household Share-low english proficiency
+emissions_cost,DivisionBRT,0.0,Benefits Per Household Share-low english proficiency
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-low english proficiency
+safety_cost,DivisionBRT,0.0,Benefits Per Household Share-low english proficiency
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-low english proficiency
+travel_options,DivisionBRT,55.91232434137845,Benefits Per Household Share-low english proficiency
+travel_time,DivisionBRT,145.19756190441862,Benefits Per Household Share-low english proficiency
+travel_time_reliability,DivisionBRT,105.57132327603706,Benefits Per Household Share-low english proficiency
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household Share-low english proficiency
+veh_ownership_cost,DivisionBRT,186.3023679216159,Benefits Per Household Share-low english proficiency
+active_transportation,I205,-0.0,Benefits Per Household Share-children and seniors
+emissions_cost,I205,-0.0,Benefits Per Household Share-children and seniors
+noise_pollution_cost,I205,-0.0,Benefits Per Household Share-children and seniors
+safety_cost,I205,-0.0,Benefits Per Household Share-children and seniors
+surface_water_pollution_cost,I205,-0.0,Benefits Per Household Share-children and seniors
+travel_options,I205,101.99742942097909,Benefits Per Household Share-children and seniors
+travel_time,I205,98.84748729009526,Benefits Per Household Share-children and seniors
+travel_time_reliability,I205,94.91406723540759,Benefits Per Household Share-children and seniors
+veh_operating_cost,I205,-0.0,Benefits Per Household Share-children and seniors
+veh_ownership_cost,I205,57.95554868461501,Benefits Per Household Share-children and seniors
+active_transportation,DivisionBRT,-0.0,Benefits Per Household Share-children and seniors
+emissions_cost,DivisionBRT,0.0,Benefits Per Household Share-children and seniors
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-children and seniors
+safety_cost,DivisionBRT,0.0,Benefits Per Household Share-children and seniors
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-children and seniors
+travel_options,DivisionBRT,80.0267004706138,Benefits Per Household Share-children and seniors
+travel_time,DivisionBRT,91.82497474722493,Benefits Per Household Share-children and seniors
+travel_time_reliability,DivisionBRT,91.82125247154576,Benefits Per Household Share-children and seniors
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household Share-children and seniors
+veh_ownership_cost,DivisionBRT,75.23407405655158,Benefits Per Household Share-children and seniors
+active_transportation,I205,-0.0,Benefits Per Household Share-low income
+emissions_cost,I205,-0.0,Benefits Per Household Share-low income
+noise_pollution_cost,I205,-0.0,Benefits Per Household Share-low income
+safety_cost,I205,-0.0,Benefits Per Household Share-low income
+surface_water_pollution_cost,I205,-0.0,Benefits Per Household Share-low income
+travel_options,I205,80.11490027224912,Benefits Per Household Share-low income
+travel_time,I205,85.06954585821282,Benefits Per Household Share-low income
+travel_time_reliability,I205,87.4651435984903,Benefits Per Household Share-low income
+veh_operating_cost,I205,-0.0,Benefits Per Household Share-low income
+veh_ownership_cost,I205,188.867449543404,Benefits Per Household Share-low income
+active_transportation,DivisionBRT,-0.0,Benefits Per Household Share-low income
+emissions_cost,DivisionBRT,0.0,Benefits Per Household Share-low income
+noise_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-low income
+safety_cost,DivisionBRT,0.0,Benefits Per Household Share-low income
+surface_water_pollution_cost,DivisionBRT,0.0,Benefits Per Household Share-low income
+travel_options,DivisionBRT,107.88483692135655,Benefits Per Household Share-low income
+travel_time,DivisionBRT,128.8484601706861,Benefits Per Household Share-low income
+travel_time_reliability,DivisionBRT,107.85647062943113,Benefits Per Household Share-low income
+veh_operating_cost,DivisionBRT,0.0,Benefits Per Household Share-low income
+veh_ownership_cost,DivisionBRT,150.61897322420478,Benefits Per Household Share-low income

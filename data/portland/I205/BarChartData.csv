@@ -1,56 +1,101 @@
-BENEFIT,BENEFIT GROUP,BENEFIT VALUE ($),CHART
-travel options,Everyone,1341830,Benefits
-auto ownership,Everyone,69831,Benefits
-travel time,Everyone,12462517,Benefits
-trk travel time benefit,Everyone,834686,Benefits
-travel time reliability,Everyone,1313755,Benefits
-public health,Everyone,-1500000,Benefits
-auto operating cost,Everyone,-6887689,Benefits
-emissions,Everyone,-2181843,Benefits
-noise pollution,Everyone,-365282,Benefits
-surface water pollution,Everyone,-398267,Benefits
-safety,Everyone,809272,Benefits
-travel options,Low Income,439315,Benefits
-auto ownership,Low Income,23673,Benefits
-travel time,Low Income,2228593,Benefits
-trk travel time benefit,Low Income,90893,Benefits
-travel time reliability,Low Income,211301,Benefits
-public health,Low Income,0,Benefits
-auto operating cost,Low Income,0,Benefits
-emissions,Low Income,0,Benefits
-noise pollution,Low Income,0,Benefits
-surface water pollution,Low Income,0,Benefits
-safety,Low Income,0,Benefits
-travel options,Minority,260410,Benefits
-auto ownership,Minority,11425,Benefits
-travel time,Minority,1905608,Benefits
-trk travel time benefit,Minority,63195,Benefits
-travel time reliability,Minority,195713,Benefits
-public health,Minority,0,Benefits
-auto operating cost,Minority,0,Benefits
-emissions,Minority,0,Benefits
-noise pollution,Minority,0,Benefits
-surface water pollution,Minority,0,Benefits
-safety,Minority,0,Benefits
-travel options,Low English Proficiency,23702,Benefits
-auto ownership,Low English Proficiency,1605,Benefits
-travel time,Low English Proficiency,340264,Benefits
-trk travel time benefit,Low English Proficiency,12241,Benefits
-travel time reliability,Low English Proficiency,34327,Benefits
-public health,Low English Proficiency,0,Benefits
-auto operating cost,Low English Proficiency,0,Benefits
-emissions,Low English Proficiency,0,Benefits
-noise pollution,Low English Proficiency,0,Benefits
-surface water pollution,Low English Proficiency,0,Benefits
-safety,Low English Proficiency,0,Benefits
-travel options,Child or Senior,811705,Benefits
-auto ownership,Child or Senior,21662,Benefits
-travel time,Child or Senior,6284961,Benefits
-trk travel time benefit,Child or Senior,179498,Benefits
-travel time reliability,Child or Senior,694512,Benefits
-public health,Child or Senior,0,Benefits
-auto operating cost,Child or Senior,0,Benefits
-emissions,Child or Senior,0,Benefits
-noise pollution,Child or Senior,0,Benefits
-surface water pollution,Child or Senior,0,Benefits
-safety,Child or Senior,0,Benefits
+BENEFIT,BENEFIT GROUP,VALUE,CHART
+active_transportation,children and seniors,0.0,Benefits
+emissions_cost,children and seniors,0.0,Benefits
+noise_pollution_cost,children and seniors,0.0,Benefits
+safety_cost,children and seniors,0.0,Benefits
+surface_water_pollution_cost,children and seniors,0.0,Benefits
+travel_options,children and seniors,14487780.08763855,Benefits
+travel_time,children and seniors,12362331.420441857,Benefits
+travel_time_reliability,children and seniors,1416161.878503123,Benefits
+veh_operating_cost,children and seniors,0.0,Benefits
+veh_ownership_cost,children and seniors,65077.62658523675,Benefits
+active_transportation,everybody,-484499.602727324,Benefits
+emissions_cost,everybody,-4708070.842295885,Benefits
+noise_pollution_cost,everybody,-945067.5562635512,Benefits
+safety_cost,everybody,-1484723.2595305443,Benefits
+surface_water_pollution_cost,everybody,-1103101.1813840866,Benefits
+travel_options,everybody,26464943.03342078,Benefits
+travel_time,everybody,23301994.39079112,Benefits
+travel_time_reliability,everybody,2779973.5279783667,Benefits
+veh_operating_cost,everybody,-15499198.36564064,Benefits
+veh_ownership_cost,everybody,209216.06467596168,Benefits
+active_transportation,low english proficiency,0.0,Benefits
+emissions_cost,low english proficiency,0.0,Benefits
+noise_pollution_cost,low english proficiency,0.0,Benefits
+safety_cost,low english proficiency,0.0,Benefits
+surface_water_pollution_cost,low english proficiency,0.0,Benefits
+travel_options,low english proficiency,690223.3457010529,Benefits
+travel_time,low english proficiency,632461.4153041678,Benefits
+travel_time_reliability,low english proficiency,72609.44038085226,Benefits
+veh_operating_cost,low english proficiency,0.0,Benefits
+veh_ownership_cost,low english proficiency,7297.519500797057,Benefits
+active_transportation,low income,0.0,Benefits
+emissions_cost,low income,0.0,Benefits
+noise_pollution_cost,low income,0.0,Benefits
+safety_cost,low income,0.0,Benefits
+surface_water_pollution_cost,low income,0.0,Benefits
+travel_options,low income,4101208.4915343532,Benefits
+travel_time,low income,3834376.86567536,Benefits
+travel_time_reliability,low income,470330.6289928556,Benefits
+veh_operating_cost,low income,0.0,Benefits
+veh_ownership_cost,low income,76432.79346882139,Benefits
+active_transportation,minority,0.0,Benefits
+emissions_cost,minority,0.0,Benefits
+noise_pollution_cost,minority,0.0,Benefits
+safety_cost,minority,0.0,Benefits
+surface_water_pollution_cost,minority,0.0,Benefits
+travel_options,minority,3984553.191757922,Benefits
+travel_time,minority,3561067.3882525656,Benefits
+travel_time_reliability,minority,431999.0762925315,Benefits
+veh_operating_cost,minority,0.0,Benefits
+veh_ownership_cost,minority,42423.32202617595,Benefits
+active_transportation,children and seniors,0.0,Benefits Per Household
+emissions_cost,children and seniors,0.0,Benefits Per Household
+noise_pollution_cost,children and seniors,0.0,Benefits Per Household
+safety_cost,children and seniors,0.0,Benefits Per Household
+surface_water_pollution_cost,children and seniors,0.0,Benefits Per Household
+travel_options,children and seniors,22.740654004619795,Benefits Per Household
+travel_time,children and seniors,19.404456709180412,Benefits Per Household
+travel_time_reliability,children and seniors,2.2228696942363055,Benefits Per Household
+veh_operating_cost,children and seniors,0.0,Benefits Per Household
+veh_ownership_cost,children and seniors,0.10214869225406187,Benefits Per Household
+active_transportation,everybody,-0.4081653987571012,Benefits Per Household
+emissions_cost,everybody,-3.966301730496767,Benefits Per Household
+noise_pollution_cost,everybody,-0.7961696434492391,Benefits Per Household
+safety_cost,everybody,-1.2508011520729587,Benefits Per Household
+surface_water_pollution_cost,everybody,-0.9293046496520333,Benefits Per Household
+travel_options,everybody,22.295320709271166,Benefits Per Household
+travel_time,everybody,19.630703056955475,Benefits Per Household
+travel_time_reliability,everybody,2.34198128789814,Benefits Per Household
+veh_operating_cost,everybody,-13.05725834596303,Benefits Per Household
+veh_ownership_cost,everybody,0.17625351596607083,Benefits Per Household
+active_transportation,low english proficiency,0.0,Benefits Per Household
+emissions_cost,low english proficiency,0.0,Benefits Per Household
+noise_pollution_cost,low english proficiency,0.0,Benefits Per Household
+safety_cost,low english proficiency,0.0,Benefits Per Household
+surface_water_pollution_cost,low english proficiency,0.0,Benefits Per Household
+travel_options,low english proficiency,16.397589758226584,Benefits Per Household
+travel_time,low english proficiency,15.02534344956349,Benefits Per Household
+travel_time_reliability,low english proficiency,1.7249776081252746,Benefits Per Household
+veh_operating_cost,low english proficiency,0.0,Benefits Per Household
+veh_ownership_cost,low english proficiency,0.17336668162852326,Benefits Per Household
+active_transportation,low income,0.0,Benefits Per Household
+emissions_cost,low income,0.0,Benefits Per Household
+noise_pollution_cost,low income,0.0,Benefits Per Household
+safety_cost,low income,0.0,Benefits Per Household
+surface_water_pollution_cost,low income,0.0,Benefits Per Household
+travel_options,low income,17.861873951610704,Benefits Per Household
+travel_time,low income,16.699749939326324,Benefits Per Household
+travel_time_reliability,low income,2.048417296509881,Benefits Per Household
+veh_operating_cost,low income,0.0,Benefits Per Household
+veh_ownership_cost,low income,0.3328855203356944,Benefits Per Household
+active_transportation,minority,0.0,Benefits Per Household
+emissions_cost,minority,0.0,Benefits Per Household
+noise_pollution_cost,minority,0.0,Benefits Per Household
+safety_cost,minority,0.0,Benefits Per Household
+surface_water_pollution_cost,minority,0.0,Benefits Per Household
+travel_options,minority,17.877353617434167,Benefits Per Household
+travel_time,minority,15.97731486857551,Benefits Per Household
+travel_time_reliability,minority,1.9382349482149193,Benefits Per Household
+veh_operating_cost,minority,0.0,Benefits Per Household
+veh_ownership_cost,minority,0.1903392157135766,Benefits Per Household
