@@ -65,7 +65,7 @@ var three3d = (function three3dFunction() {
 	var zoneheaders=[];
 	var zonefilterlabel = "";
 	var centroidsOff;
-	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
+	var showChartOnPage = true;
 	//start off chain of initialization by reading in the data
 
 	getTheConfigFile(function(){

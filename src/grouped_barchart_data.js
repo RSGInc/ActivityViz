@@ -17,7 +17,7 @@ var barchart = (function () {
     var ChartWidthOverride ;
     var defaultMax = 0;
     var chartSelector = "#grouped-barchart";
-    var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('g') > -1;
+    var showChartOnPage = true;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
     //CONFIG VARIABLES
     var numberOfCols ;

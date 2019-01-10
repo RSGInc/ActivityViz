@@ -16,7 +16,7 @@ var sunburst = (function () {
 	var negativePrefix = "- ";
 	var originalNodeData;
 	var radius, x, y, svg, arc;
-	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('s') > -1;
+	var showChartOnPage = true;
 	// Dimensions of legend item: width, height, spacing, radius of rounded rect.
 	var li = {
 		w: legendBoxWidth,
