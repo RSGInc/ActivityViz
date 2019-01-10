@@ -240,7 +240,7 @@ runAfterChartCreated();
 	//WARNING -- this canbe called more than once because of PIVOT reload kluge
  //end initializeMuchOfUI
 	//return only the parts that need to be global
-	return {};
+	return { };
 
 }
 

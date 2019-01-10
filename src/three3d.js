@@ -64,6 +64,7 @@ var three3d = (function three3dFunction() {
 	var zonefiles;
 	var zoneheaders=[];
 	var zonefilterlabel = "";
+	var centroidsOff;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('3') > -1;
 	//start off chain of initialization by reading in the data
 
@@ -92,7 +93,7 @@ function getTheConfigFile(callback){
                 if (key == "ZoneFile") {
                     zonefiles = val;
                 }
-                if (key == "CenterMap") {
+                if (key == "CenterMap" && CENTER_MAP.length ==0) {
                     CENTER_MAP = val;
                 }
                 if (key == "ThreeDMap") {
@@ -111,7 +112,18 @@ function getTheConfigFile(callback){
                                 zonefilters[filtercolumn] = filtername;
                             })
                         }
+                        if(opt=="CentroidsOff" && centroidsOff == undefined) {
+                            centroidsOff= val;
+                            drawCentroids = !centroidsOff;
+                        }
                     })
+                }
+                if(key=="scenarios" && Array.isArray(val)) {
+                    $.each(val, function (k, v) {
+                        if (v.name === abmviz_utilities.GetURLParameter("scenario") && v.CenterMap) {
+                            CENTER_MAP = v.CenterMap;
+                        }
+                    });
                 }
             });
             ZONE_FILE_LOC = zonefiles;
@@ -153,9 +165,16 @@ function getTheConfigFile(callback){
 		d3.text("../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv", function (error, data) {
             var zonecsv;
             "use strict";
-            if (error) throw error; //expected data should have columns similar to: ZONE,PERIOD,QUANTITY
+            if (error) {
+               $('#three3d').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the 3D Map data.</span></h3></div>");
+                throw error;
+            }
             var csv = d3.csv.parseRows(data).slice(1);
             headers = d3.csv.parseRows(data)[0];
+            if(headers[1]==undefined){
+            	$('#three3d').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the 3D Map data.</span></h3></div>");
+            	return;
+			}
             //setDataSpecificDOM();
             data = null; //allow memory to be GC'ed
             var allData = [];
@@ -296,7 +315,7 @@ function getTheConfigFile(callback){
                 if (zoneDatum != undefined) {
                     checkedfilters.each(function () {
                         var filtername = this.attributes["colname"];
-                        cnttrue += parseInt(zoneDatum.filters[filtername.value]);
+                        cnttrue += parseFloat(zoneDatum.filters[filtername.value]);
                         isZoneVisible = cnttrue > 0;
                     });
                 }
@@ -307,11 +326,13 @@ function getTheConfigFile(callback){
 					//replace polygon with smaller rect in middle
 					var currentPolygon = layer._coordinates[0];
 
+
 				}
 			}, //end onEachFeature
 		});
 		//console.log(zoneDataLayer )
 		map.addLayer(zoneDataLayer);
+
 	} //end addZoneGeoJSONToMap
 
 	function redrawMap() {
@@ -349,13 +370,13 @@ function getTheConfigFile(callback){
 		color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
 
-
+        var slider = document.getElementById("opacityRange");
 
 		var returnStyle = {
 			height: allTimeSqrtScale(periodQuantity) * 5000,
 			color: color,
-			//transparent: !isZoneVisible,
-			//opacity: isZoneVisible?1.0:0.4
+			transparent: true,
+			opacity: slider.value/100
 		};
 
 		return (returnStyle);
@@ -590,6 +611,14 @@ function getTheConfigFile(callback){
 			//after clicking button if there is only one period, do not reshow the cycle button
 			$("#three3d-start-cycle-map").css("display", DataHasPeriods==false?"none":"inline");
 		});
+
+		var slider = document.getElementById("opacityRange");
+		var output = document.getElementById("opacityval");
+		output.innerHTML = slider.value;
+		slider.oninput = function(){
+			output.innerHTML = this.value;
+			 setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+		};
 
 		var lastCycleStartTime;
 
