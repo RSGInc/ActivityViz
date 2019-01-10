@@ -672,9 +672,10 @@
              if (error) {
                 $(id).hide();
                 $('a[href="' + tab + '"]').hide();
+                return;
             }
             var firstrow = d3.csv.parseRows(data)[0];
-      
+
             //alert('pagefound');
 
             if (firstrow == "<html>") {
@@ -687,7 +688,10 @@
         });
     }
 	$(document).ready(function () {
-	var timeuse_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
+    var threedanimated_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv";
+	fileExists(threedanimated_path,"#three3d","#three3d_tab");
+
+    var timeuse_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
 	fileExists(timeuse_path,'#timeuse','#timeuse_tab');
 
 	var chord_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/ChordData.csv";
@@ -699,8 +703,7 @@
 	var barchart_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv";
 	fileExists(barchart_path,"#grouped-barchart-div","#grouped_tab");
 
-	var threedanimated_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv";
-	fileExists(threedanimated_path,"#three3d","#three3d_tab");
+
 
 	var radar_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv";
 	fileExists(radar_path,"#radar","#radar_tab");
@@ -710,7 +713,6 @@
 
 	var scatter_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
 	fileExists(scatter_path,"#scatter","#scatter_tab");
-
 
  $(window).load(function() {
   var shownTabs = $('li[role="presentation"]').children(":visible");
@@ -758,6 +760,8 @@
 			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter"	};
 		var tablinks =
             {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab"	};
+		var dataFiles =
+			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter"	};
 	if(tabbedCharts == undefined || tabbedCharts==false) {
 	    $('#the_tabs').hide();
         $.each(data.visualizations, function (key, value) {
@@ -776,6 +780,7 @@
 
     }
 	});
+
 		$('a[href="#three3d_tab"]').on('shown.bs.tab', function (e) {
 		    if(loadedScripts["three3d"] ==false){
                 $.getScript("three3d.js").done(function(scripts,textStatus){
