@@ -669,13 +669,14 @@
 	function fileExists(url,id, tab) {
         var returnme = true;
         d3.text(url, function (error, data) {
-            var firstrow = d3.csv.parseRows(data)[0];
-            console.log(firstrow);
-            //alert('pagefound');
-            if (error) {
+             if (error) {
                 $(id).hide();
                 $('a[href="' + tab + '"]').hide();
             }
+            var firstrow = d3.csv.parseRows(data)[0];
+      
+            //alert('pagefound');
+
             if (firstrow == "<html>") {
                 $(id).hide();
                 $('a[href="' + tab + '"]').hide();
