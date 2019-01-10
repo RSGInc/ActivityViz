@@ -6,12 +6,15 @@
   "Logo":"sacog-logo.png",
   "NavbarTitle":"ABMVIZ",
   "LinkURL":"https://www.sacog.org/",
+  "TabbedCharts": true,
   "CenterMap": [38.57576, -121.47885],  
   "FrontPageTitle": "Sacramento Area Council of Governments",
   "FrontPageGraphic": "sacog-logo.png",
   "scenarios":{
     "DaySim": "- Model Run",
-    "Survey": "- Survey Data"
+    "Survey": "- Survey Data",
+    "Passive": "- LBS Data",
+    "OD": "- OD flows by data source"
   },
   "visualizations":{
   "3DMap":true,
