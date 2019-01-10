@@ -665,54 +665,62 @@
 		return decodeURIComponent(results[2].replace(/\+/g, " "));
 	}
 	// Give the parameter a variable name
-	var dynamicContent = getParameterByName('visuals');
+
+	function fileExists(url,id, tab) {
+        var returnme = true;
+        d3.text(url, function (error, data) {
+             if (error) {
+                $(id).hide();
+                $('a[href="' + tab + '"]').hide();
+                return;
+            }
+            var firstrow = d3.csv.parseRows(data)[0];
+
+            if (firstrow == "<html>") {
+                $(id).hide();
+                $('a[href="' + tab + '"]').hide();
+            } else {
+                $(id).show();
+                $('a[href="' + tab + '"]').show();
+                var shownTabs = $('li[role="presentation"]').children(":visible");
+                if (shownTabs.length > 0)
+                    shownTabs[0].click();
+            }
+        });
+
+    }
 	$(document).ready(function () {
+    var threedanimated_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv";
+    fileExists(threedanimated_path,"#three3d","#three3d_tab");
 
-		// Check if the URL parameter is 3
-		if (dynamicContent.indexOf('3') > -1) {
-			$('#three3d').show();
-			$('a[href="#three3d_tab"]').show();
-		}
-		// Check if the URL parameter is b
-		if (dynamicContent.indexOf('b') > -1) {
-			$('#mode-share-by-county').show();
-			$('a[href="#barchartmap_tab"]').show();
+    var timeuse_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
+	fileExists(timeuse_path,'#timeuse','#timeuse_tab');
 
-		}
-		// Check if the URL parameter is r
-		if (dynamicContent.indexOf('r') > -1) {
-			$('#radar').show();
-			$('a[href="#radar_tab"]').show();
-		}
-		if (dynamicContent.indexOf('g') > -1) {
-			$('#grouped-barchart-div').show();
-			$('a[href="#grouped_tab"]').show();
-		}
-		if (dynamicContent.indexOf('t') > -1) {
-			$('#timeuse').show();
-			$('a[href="#timeuse_tab"]').show();
-		}
-		if (dynamicContent.indexOf('s') > -1) {
-			$('#sunburst').show();
-			$('a[href="#sunburst_tab"]').show();
-		}
-		if (dynamicContent.indexOf('c') > -1) {
-			$('#chord').show();
-			$('a[href="#chord_tab"]').show();
-		}
-		if (dynamicContent.indexOf('a') > -1) {
-			$('#scatter').show();
-			$('a[href="#scatter_tab"]').show();
-		}
-		// Check if the URL parmeter is empty or not defined, display default content
-		else {
-            $('#default-content').show();
-        }
- $(window).load(function() {
+	var chord_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/ChordData.csv";
+	fileExists(chord_path,'#chord','#chord_tab');
+
+	var barchartmap_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv";
+	fileExists(barchartmap_path,"#mode-share-by-county","#barchartmap_tab");
+
+	var barchart_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv";
+	fileExists(barchart_path,"#grouped-barchart-div","#grouped_tab");
+
+	var radar_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv";
+	fileExists(radar_path,"#radar","#radar_tab");
+
+	var sunburst_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
+	fileExists(sunburst_path,"#sunburst","#sunburst_tab");
+
+	var scatter_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
+	fileExists(scatter_path,"#scatter","#scatter_tab");
+ var shownTabs = $('li[role="presentation"]').children(":visible");
+		if(shownTabs.length>0)
+		    shownTabs[0].click();
+/* $(window).load(function() {
   var shownTabs = $('li[role="presentation"]').children(":visible");
 		if(shownTabs.length>0)
 		    shownTabs[0].click();
-    });
+    });*/
 	});
 </script>
 
@@ -731,7 +739,7 @@
         "sunburst":false,
         "scatter": false,
     };
-	$.getJSON("../data/" + region + "/region.json", function (data) {
+    $.getJSON("../data/" + region + "/region.json", function (data) {
 		var icon = data.Icon;
 		var logo = data.Logo;
 		var title = data.Title;
@@ -754,6 +762,7 @@
 			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter"	};
 		var tablinks =
             {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab"	};
+
 	if(tabbedCharts == undefined || tabbedCharts==false) {
 	    $('#the_tabs').hide();
         $.each(data.visualizations, function (key, value) {
@@ -761,15 +770,14 @@
             $('#'+ids[key]).prepend("<hr>");
             $.getScript(jsFiles[key]+".js");
         });
+
     } else {
 	    var navIdx =0;
 	    var elementStore = new Array();
-
 	    $.each(data.visualizations, function (key, value) {
 	        var currEl = $('a[href="#'+tablinks[key]+'"]').closest('li');
 	       $('#the_tabs').append(currEl);
 	    });
-
     }
 	});
 		$('a[href="#three3d_tab"]').on('shown.bs.tab', function (e) {

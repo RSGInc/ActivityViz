@@ -4,7 +4,7 @@ var scatter = (function() {
     "use strict";
 
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
-    var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('a') > -1;
+    var showChartOnPage = true;
     $("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
     var xAxisColumn;
     var yAxisColumn;
