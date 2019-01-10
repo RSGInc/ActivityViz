@@ -3,6 +3,8 @@
 var barchart_and_map = (function () {
 	"use strict";
 	var naColor = "White";
+	var highlightColor = "Yellow";
+	var focusColor = "Yellow";
 	var bubbleColor = 'rgba(255, 120, 0, 0.5)';
 	var colors = ["red", "red", "red", "red"];
 	//these will be replaced by default palette/ramp colors
@@ -26,6 +28,7 @@ var barchart_and_map = (function () {
 	var countyColumn;
 	var zoneColumn;
 	var modeColumn;
+	var scenarioPolyFile;
 	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv"
 	var chartSelector = "#mode-share-by-county-chart";
 	var svgChart;
@@ -50,6 +53,7 @@ var barchart_and_map = (function () {
 	var maxFeature;
 	var zoneDataLayer;
 	var countyLayer;
+	var focusLayer;
 	var barsWrap;
 	var barsWrapRect;
 	var barsWrapRectHeight;
@@ -71,9 +75,11 @@ var barchart_and_map = (function () {
 	var COUNTY_FILE="";
 	var ZONE_FILE_LOC="";
 	var CENTER_LOC = [];
+	var SCENARIO_FOCUS = false;
 	var ROTATELABEL = 0;
 	var BARSPACING = 0.2;
 	var showCycleTools = true;
+	var highlightLayer;
 	var showChartOnPage = abmviz_utilities.GetURLParameter("visuals").indexOf('b') > -1;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
@@ -107,6 +113,10 @@ var barchart_and_map = (function () {
                         ZONE_FILE_LOC = val;
                     if (key == "CenterMap")
                         CENTER_LOC = val;
+                    if(key=="DefaultFocusColor")
+                        focusColor = val;
+                    if(key=="DefaultHighlightColor")
+                        highlightColor=val;
                     if (key == "GrpMap") {
 
                     $.each(val, function (opt, value) {
@@ -132,6 +142,18 @@ var barchart_and_map = (function () {
                         }
                     })
                 }
+					if(key=="scenarios" && Array.isArray(val)) {
+                        $.each(val,function(k,v){
+                           if(v.name === abmviz_utilities.GetURLParameter("scenario") && v.CenterMap) {
+                               CENTER_LOC = v.CenterMap;
+                               if (v.ScenarioFocus && v.ScenarioFocus.length > 0) {
+                                   SCENARIO_FOCUS = true;
+                                   scenarioPolyFile = v.ScenarioFocus;
+                                    $('#mode-share-by-county-tools').prepend(" Focus Color: <input type='text' id='mode-share-by-county-focus-color' style='display: none;' >  ");
+                               }
+                           }
+                        });
+                    }
                 });
                 callback();
             });
@@ -143,6 +165,12 @@ var barchart_and_map = (function () {
 	function redrawMap() {
 		"use strict";
 		zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
+		if(Object.keys(zonefilters).length > 1) {
+            highlightLayer.setStyle(styleZoneHightlightLayer);
+        }
+		if(scenarioPolyFile != undefined) {
+            focusLayer.setStyle(styleFocusGeoJSONLayer);
+        }
 		if (bubblesShowing) {
 				updateBubbleSize();
 			}
@@ -157,13 +185,18 @@ var barchart_and_map = (function () {
                 zoneFilterData = d3.nest().key(function (d) {
                     return "filters";
                 }).map(zonecsv);
-                $('#mode-share-by-county-checkboxes').append(zonefilterlabel+"<table ><tr>");
+
+                $('#mode-share-by-county-checkboxes').append(zonefilterlabel)
+                $('#mode-share-by-county-checkboxes').append(" <input type='text' id='mode-share-by-county-highlight-color' style='display: none;' > ");
+                 $('#mode-share-by-county-checkboxes').append("<table style='vertical-align: baseline;display:inline;'><tr>");
                 for (var i = 0; i < zoneheaders.length; i++) {
                     if (zoneheaders[i] in zonefilters) {
-                        $('#mode-share-by-county-checkboxes table tr').append('<td style="padding:3px;"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" checked>' + zonefilters[zoneheaders[i]] + '</input></label></td>')
+                        $('#mode-share-by-county-checkboxes table tr').append('<td style="padding:3px;vertical-align: baseline"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" >' + zonefilters[zoneheaders[i]] + '</input></label></td>')
                     }
                 }
                 $('#mode-share-by-county-checkboxes').append("</tr></table>");
+
+
             });
             callback();
 
@@ -180,7 +213,7 @@ var barchart_and_map = (function () {
             d3.csv(url, function (error, data) {
                 "use strict";
             if (error) {
-               $('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+               $('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the Barchart and Map data.</span></h3></div>");
                 throw error;
             }
                 //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
@@ -189,7 +222,7 @@ var barchart_and_map = (function () {
                 countyColumn = headers[1];
                 if(countyColumn==undefined)
 				{
-				$('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
+				$('#mode-share-by-county').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the Barchart and Map data.</span></h3></div>");
 				return;
 				}
                 modeColumn = headers[2];
@@ -511,15 +544,7 @@ var barchart_and_map = (function () {
                     color = colors[0];
                 }
             }
-            //end if we have data for this trip mode
-            var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
-            var cnttrue = 0;
-            checkedfilters.each(function () {
-                var filtername = this.attributes["colname"];
-                cnttrue += parseInt(feature.zoneData.FILTERS[filtername.value]);
-                isZoneVisible = cnttrue > 0;
-            });
-        }
+		}
 
 		//end if we have data for this zone
 		//the allowed options are described here: http://leafletjs.com/reference.html#path-options
@@ -534,6 +559,40 @@ var barchart_and_map = (function () {
 		};
 		return (returnStyle);
 	}
+
+	function styleZoneHightlightLayer(feature) {
+        var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
+        var highlightHidden = false;
+        var cnttrue = 0;
+        if (feature.zoneData != undefined) {
+            checkedfilters.each(function () {
+                var filtername = this.attributes["colname"];
+                cnttrue += parseFloat(feature.zoneData.FILTERS[filtername.value]);
+                highlightHidden = cnttrue > 0;
+            });
+        }
+
+        var returnStyle = {
+            //all SVG styles allowed
+            fill: false,
+            fillOpacity: 0.0,
+            stroke: true,
+            weight: 0.5,
+            strokeOpacity: 0.5,
+            color: highlightColor
+        };
+        //console.log(isHighlightedVisible);
+        if (highlightHidden == false || feature.zoneData == undefined) {
+            returnStyle = {
+                color: "none",
+                strokeOpacity: 0.0,
+                stroke:false
+            };
+        }
+        return (returnStyle);
+
+    }
+
 	//end styleZoneGeoJSONLayer function
 	function styleCountyGeoJSONLayer(feature) {
 		var returnStyle = {
@@ -554,7 +613,7 @@ var barchart_and_map = (function () {
 		//var lng=latlngcenter[1];
 		map = L.map("mode-share-by-county-map",{
 			minZoom: 7
-		}).setView(CENTER_LOC, 12);
+		}).setView(CENTER_LOC, 9);
 		//centered at Atlanta
 		map.on('zoomend', function (type, target) {
 			var zoomLevel = map.getZoom();
@@ -587,6 +646,13 @@ var barchart_and_map = (function () {
 				}
 			}
 
+             highlightLayer = L.geoJson(zoneTiles, {
+				updateWhenIdle: true,
+				unloadInvisibleFiles: true,
+				reuseTiles: true,
+				opacity: 0.5,
+				style: styleZoneHightlightLayer
+			});
 
 			circlesLayerGroup = L.layerGroup(circleMarkers);
 			//http://leafletjs.com/reference.html#tilelayer
@@ -597,6 +663,8 @@ var barchart_and_map = (function () {
 				opacity: 1.0,
 				style: styleZoneGeoJSONLayer
 			});
+
+
 			//var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
 			//map.addLayer(stamenTileLayer);
 			var underlyingMapLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
@@ -626,10 +694,12 @@ var barchart_and_map = (function () {
 				});
 				var allCountyBounds = countyLayer.getBounds();
 				console.log(allCountyBounds);
-				map.fitBounds(allCountyBounds);
+				if(!SCENARIO_FOCUS)
+				    map.fitBounds(allCountyBounds);
 				map.setMaxBounds(allCountyBounds);
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
+				highlightLayer.addTo(map);
 			}).success(function () {
 				console.log(COUNTY_FILE+" second success");
 			}).error(function (jqXHR, textStatus, errorThrown) {
@@ -650,9 +720,35 @@ var barchart_and_map = (function () {
 				var layer = e.target;
 				changeCurrentCounty(layer.feature.properties.NAME);
 			}
+			//end if we have data for this trip mode
+
 		});
+
+		if(scenarioPolyFile != undefined){
+		    $.getJSON("../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") +"/"+scenarioPolyFile, function (scenarioTiles) {
+             "use strict";
+              focusLayer = L.geoJSON(scenarioTiles, {
+                 style: styleFocusGeoJSONLayer
+             } );
+             focusLayer.addTo(map);
+            });
+        }
+
+
+
 		//end geoJson of zone layer
 	}; //end createMap
+
+
+    function styleFocusGeoJSONLayer(feature){
+        var returnStyle = {
+			//all SVG styles allowed
+			stroke: true,
+			weight: 5,
+			color: focusColor
+		};
+		return (returnStyle);
+    }
 	function updateColors(values, themax) {
 		"use strict";
 		var colorStops = colors[0] + ", ";
@@ -847,6 +943,42 @@ var barchart_and_map = (function () {
 				updateColors($("#mode-share-by-county-slider").slider("values"));
 			}
 		});
+		$("#mode-share-by-county-highlight-color").spectrum({
+			color: highlightColor,
+			showInput: true,
+			className: "full-spectrum",
+			showInitial: false,
+			showPalette: true,
+			showAlpha: true,
+			showSelectionPalette: true,
+			maxSelectionSize: 10,
+			preferredFormat: "hex",
+			localStorageKey: "spectrum.demo",
+			palette: palette,
+			change: function (color) {
+				highlightColor = color;
+				redrawMap();
+
+			}
+		});
+		$("#mode-share-by-county-focus-color").spectrum({
+			color: focusColor,
+			showInput: true,
+			className: "full-spectrum",
+			showInitial: false,
+			showPalette: true,
+			showAlpha: true,
+			showSelectionPalette: true,
+			maxSelectionSize: 10,
+			preferredFormat: "hex",
+			localStorageKey: "spectrum.demo",
+			palette: palette,
+			change: function (color) {
+				focusColor = color;
+				redrawMap();
+
+			}
+		});
 		$("#mode-share-by-county-bubble-color").spectrum({
 			color: bubbleColor,
 			showInput: true,
@@ -935,11 +1067,11 @@ var barchart_and_map = (function () {
 			var checkedfilters = $('#mode-share-by-county-checkboxes input[type=checkbox]:checked');
             var cnttrue = 0;
             var isZoneVisible = true;
-            checkedfilters.each(function () {
+           /* checkedfilters.each(function () {
                 var filtername = this.attributes["colname"];
                 cnttrue += parseInt(zoneData.FILTERS[filtername.value]);
                 isZoneVisible = cnttrue > 0;
-            });
+            });*/
 			if (zoneTripData != undefined && isZoneVisible) {
 				var quantity = zoneTripData.QUANTITY;
 				var sqrtRadius = scaleSqrt(quantity);

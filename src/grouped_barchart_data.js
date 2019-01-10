@@ -248,7 +248,7 @@ var chartDataContainer=[];
                     .append('div').attr('id', chart.chartName+"_bar").style('min-height','500px').attr('class','col-sm-'+widthOfEachCol).append("div").attr("class","barcharttitle").style('padding-top','50px').text(
                         chartDataContainer.length > 1 ?chart.chartName:""
                        );
-                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart");//.style('height','400px');
+                d3.select("#"+chart.chartName+"_bar").append("svg").attr("id", "grouped-barchart" );//.style('height','400px');
                 //setDataSpecificDOM();
 
                 var chartId = "#" + chart.chartName+"_bar "+" svg";

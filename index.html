@@ -36,7 +36,13 @@
                            $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
 
                                $.each(reg.scenarios, function (key, value) {
-                                   $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "&visuals='>" + key + value + "</a></li>");
+                                   if(Array.isArray(reg.scenarios)) {
+
+                                           $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value.name + "&visuals='>" + value.name + value.label + "</a></li>");
+
+                                   } else {
+                                       $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "&visuals='>" + key + value + "</a></li>");
+                                   }
                                });
 
 

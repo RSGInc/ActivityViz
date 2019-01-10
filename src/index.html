@@ -102,8 +102,7 @@
 			</p>
 			<div class="col-xs-12" style="margin-top:1em;">
 				<div class="col-xs-6" style="margin-bottom:1em">
-					The map displays the zonal data as choropleth polygon coloring and height. The coloring and height are relative to the max
-					value over all periods.
+					
 
 					<div class="col-xs-12">
 						<label>
@@ -282,16 +281,11 @@
 					<span class="grouped-barchart-main-group"></span>,</strong> by
 				<span class="grouped-barchart-sub-group"></span>
 			</p>
-			<div class="col-xs-12">The Bar Chart displays grouped bars, with each group corresponding to a
-				<span class="grouped-barchart-main-group"></span> and each bar corresponding to a
-				<span class="grouped-barchart-sub-group"></span> pivoted field
+			<div class="col-xs-12">
 				<div class="row" style="margin-top:4px">
 					<ul>
 
-						<li>
-							Click on legend symbols/labels to show or hide the
-							<span class="grouped-barchart-sub-group">PLACEHOLDER</span>
-						</li>
+						
 						<li>
 							<label class="checkbox-inline">
 								<input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
@@ -308,11 +302,7 @@
 							<label class="checkbox-inline">
 								<input id="grouped-barchart-toggle-stacked" type="checkbox">Show as Stacked?</label>
 						</li>
-						<li>
-							Double click on legend symbols/labels to change chart to a single
-							<span class="grouped-barchart-sub-group">PLACEHOLDER</span> such as
-							<span class="grouped-barchart-sub-group-example">PLACEHOLDER</span>
-						</li>
+						
 					</ul>
 
 				</div>
@@ -335,28 +325,11 @@
 			</p>
 			<div class="col-xs-6 right-border" style="margin-top:4px">
 				<div class="row">
-					The Bar Chart displays grouped bars, with each group corresponding to a spatial aggregator, such as County, and each bar
-					corresponding to a Quantity, such as trips by mode.
+					
 
 					<div class="row" style="margin-top:4px">
 						<div class="col-xs-10">
-							<ul>
-								<li>Click on the 'Stacked' checkbox at the end of this line to change chart style &rarr;</li>
-								<li>
-									Click anywhere on a row to highlight the
-									<span class="mode-share-by-county-area-type">PLACEHOLDER</span> area on the map
-
-								</li>
-								<li>
-									Click on legend symbols/labels to show or hide the
-									<span class="mode-share-by-county-trip-mode">PLACEHOLDER</span>
-								</li>
-								<li>
-									Double click on legend symbols/labels to change map and charts to a single
-									<span class="mode-share-by-county-trip-mode">PLACEHOLDER</span> such as
-									<span class="mode-share-by-county-trip-mode-example">PLACEHOLDER</span>
-								</li>
-							</ul>
+							
 						</div>
 						<div class="col-xs-2">
 							<label>
@@ -372,7 +345,7 @@
 				</div>
 			</div>
 			<div class="col-xs-6">
-				<div class="col-xs-12">The map displays the zonal level information in two ways: choropleth polygon coloring or size dependent centroid bubbles.
+				<div class="col-xs-12">
 					</div>
 				<div class="col-xs-12">
 				<div class="col-xs-4">
@@ -405,7 +378,7 @@
 
 				</div>
 				<div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
-				<div class="col-xs-6" style="margin-top:1em;text-align:right">
+				<div class="col-xs-6" id="mode-share-by-county-pallette" style="margin-top:1em;text-align:right">
 					<table width="100%">
 						<tr>
 							<td rowspan="2">Palette:</td>
@@ -482,7 +455,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="col-xs-6" style="margin-top:1em;text-align:right">
+				<div class="col-xs-6" id='mode-share-by-county-tools' style="margin-top:1em;text-align:right">
                     <input type="checkbox" id="mode-share-by-county-zones" checked/> Zones
 					<input type="checkbox" id="mode-share-by-county-bubbles" /> Bubbles
 					<input type="text" id="mode-share-by-county-bubble-color" disabled/> Size:
@@ -541,18 +514,7 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-12" style="margin-top:1em;">
-							<br> The Map interactive features include:
-							<ul>
-								<li>Click and drag to pan the map area</li>
-								<li>Zoom in and out with the mouse wheel or the +|- controls in the upper left</li>
-								<li>Click on an area to highlight the SPATIALAGG both on the map and the bar chart</li>
-								<li>Turn the zone centroid bubbles on and off and set the scaling</li>
-								<li>Draw zones with an outline and draw zones with an NA value according to the color picker</li>
-								<li>Change the classification scheme from quantiles to equal intervals to custom</li>
-								<li>Redraw the map using a custom classification using the classification range sliders</li>
-								<li>Color zones with a semi-transparent fill to retain background network display</li>
-								<li>Cycle through (i.e. animate) the maps at the specified time interval</li>
-							</ul>
+							
 						</div>
 					</div>
 				</div>
@@ -569,11 +531,7 @@
 			<div id="timeuse-sidebar" class="col-xs-2">
 				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of
 					activity and the horizontal axis displays the period of the day.</div>
-				<ul>
-					<li>Select a person type below to filter the data</li>
-					<li>Click on legend symbols/labels to show or hide the purpose</li>
-					<li>Select stacked to show absolute numbers or expanded to show percents</li>
-				</ul>
+				
 				<div id="timeuse-legend"></div>
 			</div>
 			<div id="timeuse-main" class="col-xs-10">
@@ -597,14 +555,7 @@
 				<div id="sunburst-chart" class="col-xs-7"></div>
 				<div class="col-xs-5">
 					<div id="sunburst-text-area">
-						The Sunburst displays grouped data, such as trips by mode
-						<ul>
-							<li>The inner ring shows the most aggregate group</li>
-							<li>The larger the group value, the more intense the color</li>
-							<li>If included, negative values are shown in absolute terms and outlined in red</li>
-							<li>Clicking an arc or legend rect will zoom to concentrate on that region</li>
-							<li>Clicking in the middle will zoom back out one level</li>
-						</ul>
+						
 					</div>
 					<div id="sunburst-explanation" style="visibility: hidden;">
 						<p>
@@ -628,7 +579,7 @@
 
 				<strong>
 					<span class="chord-chart-maingroup"></span>,</strong> by
-				Origins and Destinations
+				
 			</p>
 			<div class="col-md-6 col-sm-12 right-border">
 				<div id="chord-tooltip" class="">
@@ -643,7 +594,7 @@
 				</div>
 			</div>
 			<div class="col-md-6 col-sm-12 ">
-				<p>Origin Destination Groups</p>
+				<p></p>
 
 				<div class="col-xs-12" id="chord-by-district-map" style="width: 100%;height:75%;"></div>
 				<div class="col-xs-6" style="margin-top:1em;text-align:right">
@@ -662,15 +613,8 @@
 				<span class="radar-maingroup">RADAR CHARTS</span>
 			</p>
 			<div id="radar-sidebar" class="col-xs-2">
-				<div id="radar-text-area">Radar charts display multiple data series on different axes in order to compare multiple measures. For example, an activity
-					center's "score" across scenarios could be compared by measuring both accessibility to jobs and availability of premium
-					transit. </div>
-				<ul>
-					<li>The larger the area, the "better" that chart (activity center) does as compared to others</li>
-					<li>In addition to size, the intensity of the color increases with total area</li>
-					<li>The title top bar of each chart can be clicked and dragged to reorder the charts</li>
-					<li>When multiple data sets are displayed, you can enable/disable one by clicking on the color box on the legend</li>
-				</ul>
+				<div id="radar-text-area"></div>
+				
 				<div id="radar-legend"></div>
 			</div>
 			<div id="radar-main" class="col-xs-10">
