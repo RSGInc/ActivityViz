@@ -1,0 +1,101 @@
+FROM,TO,LBS
+NW SacramentoCounty,NW SacramentoCounty,25442
+NE SacramentoCounty,NE SacramentoCounty,21922
+SE SacramentoCounty,SE SacramentoCounty,1618
+SW SacramentoCounty,SW SacramentoCounty,450
+Central SacramentoCounty,Central SacramentoCounty,29042
+El Dorado,El Dorado,0
+Placer,Placer,0
+Sutter,Sutter,0
+Yolo,Yolo,0
+Yuba,Yuba,0
+SE SacramentoCounty,SW SacramentoCounty,2729
+SE SacramentoCounty,NW SacramentoCounty,961
+SE SacramentoCounty,Sutter,0
+SW SacramentoCounty,NW SacramentoCounty,1351
+SW SacramentoCounty,NE SacramentoCounty,798
+El Dorado,SW SacramentoCounty,96
+SW SacramentoCounty,SE SacramentoCounty,2717
+SW SacramentoCounty,Sutter,36
+SE SacramentoCounty,Yuba,0
+NW SacramentoCounty,SE SacramentoCounty,896
+NW SacramentoCounty,SW SacramentoCounty,1369
+NE SacramentoCounty,SW SacramentoCounty,922
+NE SacramentoCounty,NW SacramentoCounty,13076
+NE SacramentoCounty,SE SacramentoCounty,1155
+Sutter,SE SacramentoCounty,0
+Sutter,SW SacramentoCounty,36
+Yuba,SE SacramentoCounty,0
+Yuba,NE SacramentoCounty,116
+SW SacramentoCounty,Yuba,0
+NW SacramentoCounty,NE SacramentoCounty,13039
+SE SacramentoCounty,NE SacramentoCounty,1052
+Yuba,SW SacramentoCounty,0
+SW SacramentoCounty,Central SacramentoCounty,6291
+NW SacramentoCounty,Central SacramentoCounty,15366
+Sutter,Central SacramentoCounty,372
+Central SacramentoCounty,NW SacramentoCounty,15276
+Central SacramentoCounty,Yuba,115
+NE SacramentoCounty,Yuba,158
+Central SacramentoCounty,SW SacramentoCounty,6242
+Central SacramentoCounty,Sutter,269
+Yuba,Central SacramentoCounty,171
+El Dorado,NW SacramentoCounty,898
+El Dorado,SE SacramentoCounty,132
+NE SacramentoCounty,Sutter,51
+SW SacramentoCounty,Placer,29
+SW SacramentoCounty,Yolo,455
+NW SacramentoCounty,Yuba,238
+SE SacramentoCounty,Yolo,296
+SE SacramentoCounty,El Dorado,56
+Central SacramentoCounty,SE SacramentoCounty,5251
+NW SacramentoCounty,El Dorado,859
+Placer,SW SacramentoCounty,340
+Sutter,NE SacramentoCounty,63
+Yuba,NW SacramentoCounty,218
+NW SacramentoCounty,Sutter,467
+NE SacramentoCounty,Central SacramentoCounty,9373
+Placer,SE SacramentoCounty,371
+SE SacramentoCounty,Placer,326
+SE SacramentoCounty,Central SacramentoCounty,5378
+Sutter,NW SacramentoCounty,355
+Yolo,SW SacramentoCounty,454
+Yolo,SE SacramentoCounty,287
+Central SacramentoCounty,NE SacramentoCounty,9584
+El Dorado,Yuba,0
+Sutter,El Dorado,0
+El Dorado,Sutter,0
+Yuba,El Dorado,0
+Yolo,NE SacramentoCounty,1507
+El Dorado,Central SacramentoCounty,736
+Central SacramentoCounty,El Dorado,565
+SW SacramentoCounty,El Dorado,90
+NE SacramentoCounty,Yolo,1379
+Placer,NW SacramentoCounty,7718
+NW SacramentoCounty,Placer,7729
+Central SacramentoCounty,Placer,3439
+Placer,Central SacramentoCounty,3348
+Yolo,Central SacramentoCounty,4565
+Central SacramentoCounty,Yolo,4337
+NW SacramentoCounty,Yolo,3896
+Yuba,Yolo,190
+Yolo,NW SacramentoCounty,4141
+Yolo,Yuba,196
+NE SacramentoCounty,El Dorado,4222
+El Dorado,NE SacramentoCounty,4028
+El Dorado,Yolo,184
+Placer,NE SacramentoCounty,7802
+Yolo,El Dorado,207
+NE SacramentoCounty,Placer,7659
+Sutter,Yolo,381
+Yolo,Sutter,399
+Placer,Sutter,493
+Sutter,Placer,515
+Yuba,Placer,1005
+Placer,Yuba,974
+Yolo,Placer,1009
+Placer,Yolo,885
+Placer,El Dorado,1079
+El Dorado,Placer,1101
+Yuba,Sutter,2991
+Sutter,Yuba,2972

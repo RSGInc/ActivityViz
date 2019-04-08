@@ -1,0 +1,52 @@
+{
+  "Title":"SACOG ABMVIZ",
+  "CountyFile":"sacog_counties.json",
+  "ZoneFile":"sacogll.json",
+  "Icon":"sacog.ico",
+  "Logo":"sacog-logo.png",
+  "NavbarTitle":"ABMVIZ",
+  "LinkURL":"https://www.sacog.org/",
+  "TabbedCharts": true,
+  "CenterMap": [38.57576, -121.47885],  
+  "FrontPageTitle": "Sacramento Area Council of Governments",
+  "FrontPageGraphic": "sacog-logo.png",
+  "scenarios":{
+    "DaySim": "- Model Run",
+    "Survey": "- Survey Data",
+    "Passive": "- LBS Data",
+    "OD": "- OD flows by data source"
+  },
+  "visualizations":{
+
+  "BarMap":true,
+  "GrpBar":true,
+  "TimeUse":true,
+  "Radar":true,
+  "Sunburst":true, "3DMap":true,
+  "Chord": true
+},
+  "RadarCharts":{
+    "NumberColsRadar":4,
+    "IndependentScale":[""],
+    "ConvertAxesToPercent":true
+  },
+  "GroupedCharts":{
+    "NumberColsGrouped":1,
+    "SwapLegendByDefault":true,
+    "ShowAsPercentByDefault":true,
+    "ShowAsVerticalByDefault":false,
+    "StackAllChartsByDefault":false,
+    "ChartWidthOverride": []
+  },
+  "ThreeDMap":{
+    "ShowPeriodsAsDropdown":false,
+    "DataHasPeriods":true,
+    "ZoneFile": []
+  },
+  "Chord": {
+    "ZoneFilterFile": "districts.csv",
+    "LabelSize": "14",
+    "LegendText": "TRIPS"
+    }
+}
+
