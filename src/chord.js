@@ -59,7 +59,8 @@ var chord = (function () {
     var showWholePercent = true;
     var wholeDataTotal = 0;
     var legendText = "Legend";
-
+    var minZoom = 6;
+    
     function getConfigSettings(callback) {
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
@@ -653,7 +654,7 @@ var chord = (function () {
         //var lat=latlngcenter[0];
         //var lng=latlngcenter[1];
         map = L.map("chord-by-district-map", {
-            minZoom: 7
+            minZoom: minZoom
         }).setView(CENTER_LOC, 9);
         //centered at Atlanta
         map.on('zoomend', function (type, target) {

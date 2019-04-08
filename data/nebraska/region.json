@@ -8,7 +8,7 @@
   "LinkURL":"https://dot.nebraska.gov",
   "TabbedCharts":false,
   "CenterMap": [41.460011, -99.791661],
-  "FrontPageTitle": "NE DOT",
+  "FrontPageTitle": "Nebraska DOT",
   "FrontPageGraphic": "ndot_logo_white.png",
   "scenarios":{
     "ATRI": "- ATRI Processing"
