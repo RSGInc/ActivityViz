@@ -3,13 +3,13 @@
   "CountyFile":"ZoneShape.json",
   "ZoneFile":"ZoneShape.json",
   "Icon":"RSG.ico",
-  "Logo":"RSG_400px.png",
-  "NavbarTitle":"INRIXVIZ",
+  "Logo":"RSG_400px.jpg",
+  "NavbarTitle":"INRIX VIZ",
   "LinkURL":"https://www.rsginc.com",
   "TabbedCharts":false,
   "CenterMap": [38.9072, -77.0369],
   "FrontPageTitle": "Washington, DC",
-  "FrontPageGraphic": "RSG_400px.png",
+  "FrontPageGraphic": "RSG_400px.jpg",
   "scenarios":{
     "INRIX": "- INRIX Processing"
   },
