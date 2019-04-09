@@ -18,12 +18,12 @@
   "BarMap":true,
   "GrpBar":false,
   "TimeUse":false,
-  "Radar":false,
+  "Radar":true,
   "Sunburst":false,
   "Chord":true
 },
   "RadarCharts":{
-    "NumberColsRadar":4,
+    "NumberColsRadar":3,
     "IndependentScale":[""],
     "ConvertAxesToPercent":true
   },
