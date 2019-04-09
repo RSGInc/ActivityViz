@@ -15,7 +15,7 @@
   },
   "visualizations":{
   "3DMap":false,
-  "BarMap":false,
+  "BarMap":true,
   "GrpBar":false,
   "TimeUse":false,
   "Radar":false,
