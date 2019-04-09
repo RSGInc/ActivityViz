@@ -1,7 +1,6 @@
 AXIS,CHART,QUANTITY
 Heavy_Trucks VMT,DistrictofColumbia,50287.9339625785
 Heavy_Trucks VMT,PrinceWilliam,95515.6443196512
-Heavy_Trucks VMT,,0
 Heavy_Trucks VMT,Stafford,79728.517956915
 Heavy_Trucks VMT,Arlington,10181.595304033
 Heavy_Trucks VMT,Alexandria,17746.3759521051
@@ -28,7 +27,6 @@ Heavy_Trucks VMT,Calvert,16237.5587867441
 Heavy_Trucks VMT,St.Marys,21344.5312507317
 Medium_Trucks VMT,DistrictofColumbia,322119.133079534
 Medium_Trucks VMT,PrinceWilliam,211345.166024808
-Medium_Trucks VMT,,0
 Medium_Trucks VMT,Stafford,66327.9989560024
 Medium_Trucks VMT,Arlington,83448.4944090941
 Medium_Trucks VMT,Alexandria,53234.9645657447
@@ -55,7 +53,6 @@ Medium_Trucks VMT,Calvert,96803.681069841
 Medium_Trucks VMT,St.Marys,122772.990498751
 Light_Trucks VMT,DistrictofColumbia,334055.883078916
 Light_Trucks VMT,PrinceWilliam,303717.464760063
-Light_Trucks VMT,,0
 Light_Trucks VMT,Stafford,84502.4816255081
 Light_Trucks VMT,Arlington,171375.025302663
 Light_Trucks VMT,Alexandria,87856.9605980182
