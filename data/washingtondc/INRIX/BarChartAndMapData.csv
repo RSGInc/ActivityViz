@@ -1,4 +1,4 @@
-ZONE,COUNTY,TRUCKTYPE,QUANTITY
+ZONE,COUNTY,DailyTruckTrips,QUANTITY
 1,DistrictofColumbia,Heavy_Trucks,5981.64076535654
 1,DistrictofColumbia,Light_Trucks,47572.5956970384
 1,DistrictofColumbia,Medium_Trucks,56352.7799354473
