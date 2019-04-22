@@ -1,29 +1,29 @@
 {
-  "Title":"Nebraska ATRI VIZ",
+  "Title":"Washington DC INRIX Data",
   "CountyFile":"ZoneShape.json",
   "ZoneFile":"ZoneShape.json",
   "Icon":"RSG.ico",
-  "Logo":"ndot_logo_black.png",
-  "NavbarTitle":"ATRIVIZ",
-  "LinkURL":"https://dot.nebraska.gov",
-  "TabbedCharts":false,
-  "CenterMap": [41.460011, -99.791661],
-  "FrontPageTitle": "Nebraska DOT",
-  "FrontPageGraphic": "ndot_logo_white.png",
+  "Logo":"RSG_400px.jpg",
+  "NavbarTitle":"INRIX VIZ",
+  "LinkURL":"https://www.rsginc.com",
+  "TabbedCharts":true,
+  "CenterMap": [38.9072, -77.0369],
+  "FrontPageTitle": "Washington, DC",
+  "FrontPageGraphic": "RSG_400px.jpg",
   "scenarios":{
-    "ATRI": "- ATRI Processing"
+    "INRIX": "- INRIX Processing"
   },
   "visualizations":{
   "3DMap":false,
-  "BarMap":false,
+  "BarMap":true,
   "GrpBar":false,
   "TimeUse":false,
-  "Radar":false,
+  "Radar":true,
   "Sunburst":false,
   "Chord":true
 },
   "RadarCharts":{
-    "NumberColsRadar":4,
+    "NumberColsRadar":3,
     "IndependentScale":[""],
     "ConvertAxesToPercent":true
   },
