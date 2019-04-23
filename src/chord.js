@@ -8,8 +8,8 @@ var chord = (function () {
     var subGroupColumnName;
     var quantityColumn;
     var countiesSet;
-    var width = 720,
-        height = 720;
+    var width = 600,
+        height = 600;
     var outerRadius = width / 2,
         innerRadius = outerRadius - 130;
     var json = null;
@@ -59,8 +59,7 @@ var chord = (function () {
     var showWholePercent = true;
     var wholeDataTotal = 0;
     var legendText = "Legend";
-    var minZoom = 6;
-    
+
     function getConfigSettings(callback) {
         if (showChartOnPage) {
             $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
@@ -166,10 +165,12 @@ var chord = (function () {
 
             indexByName = {};
             nameByIndex = {};
-            var outerRadius = $('#chord-chart-container').width() / 2,
+            var totalContainerWidth = $('#chord-chart-container').width() - ($('#chord-chart-container').width() *0.2);
+            var outerRadius = totalContainerWidth /2,
                 innerRadius = outerRadius - 130;
-            height = $('#chord-chart-container').width();
-            width = $('#chord-chart-container').width();
+            height = totalContainerWidth-50;
+            width = totalContainerWidth-50;
+
 
             var r1 = height / 2, r0 = r1 / 2;
             var chord = d3.layout.chord()
@@ -180,18 +181,18 @@ var chord = (function () {
             var arc = d3.svg.arc()
                 .innerRadius(innerRadius)
                 .outerRadius(innerRadius + 20);
-            var windwidth = $('#chord-chart-container').width();
+            var windwidth = totalContainerWidth;
             d3.select('#chord-chart-container').select("svg").remove();
             d3.select('#chord-dropdown-div').select("svg").remove();
-
+    var transForm = ($('#chord-chart-container').width()/2);
             var svg = d3.select("#chord-chart-container").append("svg:svg")
-                .attr("width", windwidth - 20)
+                .attr("width", $('#chord-chart-container').width() )
                 .attr("height", height)
-                .style("padding-left", "1%")
-                .style("padding-right", "3%")
+                //.style("padding-left", "3%")
+                //style("padding-right", "3%")
                 .append("svg:g")
                 .attr("id", "circle")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+                .attr("transform", "translate(" + transForm + "," + height / 2 + ")");
             svg.append("circle")
                 .attr("r", r0 + 20);
             var n = 0;
@@ -416,6 +417,9 @@ var chord = (function () {
             var container = d3.select("#chord-dropdown-div").append("svg")
 
                 .attr("width", width).attr("height", legheight).style('padding-top', "10px");
+                if(!SCENARIO_FOCUS){
+                     $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height()/2+"px");
+                     }
             var dataL = 0;
             var offset = 100;
             var newdataL = 0;
@@ -494,6 +498,7 @@ var chord = (function () {
 
             }
         });
+
     }
 
     function readInFilterData(callback) {
@@ -637,6 +642,9 @@ var chord = (function () {
         if (scenarioPolyFile != undefined) {
             focusLayer.setStyle(styleFocusGeoJSONLayer);
         }
+        if(!SCENARIO_FOCUS) {
+            $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height() + "px");
+        }
     }
 
     function styleFocusGeoJSONLayer(feature) {
@@ -654,7 +662,7 @@ var chord = (function () {
         //var lat=latlngcenter[0];
         //var lng=latlngcenter[1];
         map = L.map("chord-by-district-map", {
-            minZoom: minZoom
+            minZoom: 6
         }).setView(CENTER_LOC, 9);
         //centered at Atlanta
         map.on('zoomend', function (type, target) {
@@ -779,7 +787,7 @@ var chord = (function () {
             }).complete(function () {
                 console.log(COUNTY_FILE + " complete");
             });
-
+ $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height() +"px");
             //end geoJson of county layer
             function onEachCounty(feature, layer) {
                 layer.on({
@@ -793,6 +801,7 @@ var chord = (function () {
                 changeCurrentCounty(layer.feature.properties.NAME);
             }
         });
+
         //end geoJson of zone layer
         callback();
     }; //end createMap
