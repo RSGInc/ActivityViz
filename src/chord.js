@@ -417,7 +417,9 @@ var chord = (function () {
             var container = d3.select("#chord-dropdown-div").append("svg")
 
                 .attr("width", width).attr("height", legheight).style('padding-top', "10px");
-                     $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height()+"px");
+                if(!SCENARIO_FOCUS){
+                     $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height()/2+"px");
+                     }
             var dataL = 0;
             var offset = 100;
             var newdataL = 0;
@@ -640,7 +642,9 @@ var chord = (function () {
         if (scenarioPolyFile != undefined) {
             focusLayer.setStyle(styleFocusGeoJSONLayer);
         }
-        $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height()+"px");
+        if(!SCENARIO_FOCUS) {
+            $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height() + "px");
+        }
     }
 
     function styleFocusGeoJSONLayer(feature) {
