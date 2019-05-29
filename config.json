@@ -1,7 +1,22 @@
 {
   "regions":{
-    "portland":{
+    "atlanta":{
       "default":  true
+    },
+    "portland":{
+      "default":  false
+    },
+    "sandiego":{
+      "default":  false
+    },
+    "sacramento":{
+      "default":  false
+    },
+	  "nebraska":{
+      "default":  false
+    },
+	  "washingtondc":{
+      "default":  false
     }
   }
 }
