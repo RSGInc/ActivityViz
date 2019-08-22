@@ -318,11 +318,16 @@ var pointofinterest_and_map = (function() {
     function redrawMap() {
         highlightBoxes = [];
         circleMarkers = [];
+        if(circlesLayerGroup != undefined) {
+            map.removeLayer(circlesLayerGroup);
+        }
         if(highlightLayer != undefined) {
             map.removeLayer(highlightLayer);
         }
 
         highlightLayer = new L.FeatureGroup();
+        circlesLayerGroup = new L.LayerGroup();
+        circlesLayerGroup.clearLayers();
          highlightLayer.clearLayers();
         var selectedData = selectedDataGrp;
         var polyLayers = [];
@@ -347,7 +352,7 @@ var pointofinterest_and_map = (function() {
                     color: pointColor,
                     weight: 4,
                     fillOpacity: 1.0
-                }).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>"+d+"</strong></td></tr></thead><tbody><tr><td class='key'>"+selectedGroup+" "+"</td><td class='value'>"+tooltipval.value+"</td></tr></tbody></table></div>",{minWidth:100, maxWidth:200});
+                }).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>"+d+"</strong></td></tr></thead><tbody><tr><td class='key'>"+selectedGroup+" "+"</td><td class='value'>"+tooltipval.value+"</td></tr></tbody></table></div>",{minWidth:130, maxWidth:250});
                     //.bindTooltip("<div style='text-align:center'><span style='font-size:'" + d + "</br>" + tooltipval.value + "</div>");
 
                 rect.on('mouseover',function(e){
@@ -361,8 +366,16 @@ var pointofinterest_and_map = (function() {
 
                     highlightBoxes.push(rect);
 
-                    var circleMarker = L.circleMarker(L.latLng(poiData[d].LAT, poiData[d].LNG), circleStyle).bindTooltip("<div style='text-align:center'>" + d + "</br>" + tooltipval.value + "</div>");
+                    var circleMarker = L.circleMarker(L.latLng(poiData[d].LAT, poiData[d].LNG), circleStyle).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>"+d+"</strong></td></tr></thead><tbody><tr><td class='key'>"+selectedGroup+" "+"</td><td class='value'>"+tooltipval.value+"</td></tr></tbody></table></div>",{minWidth:130, maxWidth:250});
+                    circleMarker.on('mouseover',function(e){
+                    this.openPopup();
+                });
+                circleMarker.on('mouseout', function(e){
+                   this.closePopup();
+                });
                     circleMarker.myData = tooltipval.value;
+                    circleMarker.properties = {};
+                    circleMarker.properties["NAME"] = d;
                     circleMarkers.push(circleMarker);
 
 
@@ -374,11 +387,16 @@ var pointofinterest_and_map = (function() {
 
             highlightLayer.addLayer(highlightBoxes[i]);
         }
-        map.addLayer(highlightLayer);
+
         circlesLayerGroup = L.layerGroup(circleMarkers);
         		if (bubblesShowing) {
+        		      updateBubbleColor();
 				updateBubbleSize();
-			}
+			  circlesLayerGroup.addTo(map);
+			} else {
+
+        		    map.addLayer(highlightLayer);
+                }
     }
     function ColorLuminance(hex, lum) {
         // validate hex string
@@ -389,12 +407,15 @@ var pointofinterest_and_map = (function() {
         lum = lum || 0;
         // convert to decimal and change luminosity
         var rgb = "#", c, i;
+        var noPound="";
         for (i = 0; i < 3; i++) {
             c = parseInt(hex.substr(i*2,2), 16);
             c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
             rgb += ("00"+c).substr(c.length);
+            noPound += ("00"+c).substr(c.length);
         }
-        return rgb;
+
+        return noPound == hex? ColorLuminance(rgb,-0.5): rgb;
     }
     function initializeMuchOfUI() {
         $("#poi-by-group-stacked").click(function () {
@@ -550,6 +571,7 @@ function setColorPalette(clickedIndex) {
         };
         circleMarkers.forEach(function (circleMarker) {
         	circleMarker.setStyle(styleObject);
+
         	});
     }
 
@@ -699,19 +721,37 @@ function changeCurrentCounty(newCurrentCounty) {
 				return setClass;
 			});
 			//end classed of group rect
-			highlightLayer.eachLayer(function (feature) {
-				var style = {};
-				if (feature.properties.NAME == currentCounty) {
-					style.weight = 6;
-					style.color = ColorLuminance(pointColor, 0.5);
-					//style.fillColor ="green";
-				} else {
-				    style.color= pointColor;
-					style.weight = 4;
-				}
-				feature.setStyle(style);
-				//return (style);
-			});
+            if(bubblesShowing){
+                circlesLayerGroup.eachLayer(function (feature) {
+                    var style = {};
+                    if (feature.properties.NAME == currentCounty) {
+                        style.weight = 6;
+
+                        style.fillColor = ColorLuminance(feature.options.fillColor, 0.5);
+
+                        //style.fillColor ="green";
+                    } else {
+                        style.fillColor = bubbleColor;
+                        style.weight = 4;
+                    }
+                    feature.setStyle(style);
+                    //return (style);
+                });
+            } else {
+                highlightLayer.eachLayer(function (feature) {
+                    var style = {};
+                    if (feature.properties.NAME == currentCounty) {
+                        style.weight = 6;
+                        style.color = ColorLuminance(pointColor, 0.5);
+                        //style.fillColor ="green";
+                    } else {
+                        style.color = pointColor;
+                        style.weight = 4;
+                    }
+                    feature.setStyle(style);
+                    //return (style);
+                });
+            }
 			//end setStyle function
 			//add delay to redrawMap so that text has chance to bold
 			//setTimeout(redrawMap, CSS_UPDATE_PAUSE);
