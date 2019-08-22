@@ -12,10 +12,10 @@
     "sacramento":{
       "default":  false
     },
-	"nebraska":{
+    "nebraska":{
       "default":  false
     },
-	"washingtondc":{
+    "washingtondc":{
       "default":  false
     }
   }

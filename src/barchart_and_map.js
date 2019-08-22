@@ -732,11 +732,7 @@ var barchart_and_map = (function () {
              } );
              focusLayer.addTo(map);
             });
-        }
-
-
-
-		//end geoJson of zone layer
+        }		//end geoJson of zone layer
 	}; //end createMap
 
 
