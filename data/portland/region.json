@@ -32,17 +32,23 @@
             "name":"Scenarios",
             "label":"- I205 versus Division BRT",
             "CenterMap":[45.512794,-122.679565]
+        },
+        {
+            "name":"Freight",
+            "label":"- Freight Flows",
+            "CenterMap":[45.512794,-122.679565]
         }
         ],
     "visualizations": {
-        "GrpBar": true, 
-        "BarMap": true, 
+        "GrpBar": false,
+        "BarMap": false,
         "TimeUse": false, 
         "Radar": false, 
-        "3DMap": true, 
+        "3DMap": false,
         "Sunburst": false, 
-        "Chord": true, 
-        "Scatter": true
+        "Chord": false,
+        "Scatter": false,
+        "POIMap": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -67,7 +73,14 @@
             6, 
             6
         ]
-    }, 
+    },
+    "POIMap": {
+        "BarSpacing": "0.6",
+        "RotateLabels": "0",
+        "LegendTitle": "Freight Flows",
+        "BubbleDefault": true
+
+    },
     "GrpMap": {
         "BarSpacing": "0.6", 
         "RotateLabels": "0", 

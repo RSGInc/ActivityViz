@@ -41,6 +41,7 @@
 	<link rel="stylesheet" href="../vendor/vizicities.css" />
 	<link rel="stylesheet" href="style.css" />
 	<link rel="stylesheet" href="grouped_barchart.css" />
+		<link rel="stylesheet" href="points_of_interest_map.css" />
 	<link rel="stylesheet" href="barchart_and_map.css" />
 	<link rel="stylesheet" href="sunburst.css" />
 	<link rel="stylesheet" href="timeuse.css" />
@@ -85,6 +86,7 @@
 			<li id="nav5"  role="presentation"><a href="#radar_tab"   role="tab" data-toggle="tab" style="display:none">Radar</a></li>
 			<li id="nav6"  role="presentation"><a href="#sunburst_tab"   role="tab" data-toggle="tab" style="display:none">Sunburst</a></li>
             <li id="nav7"  role="presentation"><a href="#scatter_tab"   role="tab" data-toggle="tab" style="display:none">Scatter</a></li>
+            <li id="nav8"  role="presentation"><a href="#poimap_tab"   role="tab" data-toggle="tab" style="display:none">Points of Interest</a></li>
             <button id="leftnavbtn"><span class="glyphicon glyphicon-chevron-left" style="font-size:25px"></span></button>
             <button id="rightnavbtn"><span class="glyphicon glyphicon-chevron-right" style="font-size:25px"></span></button>
 		</ul>
@@ -642,8 +644,127 @@
 			</div>
 		</div>
     </div>
-        </div>
-        </div>
+
+	   <div role="tabpanel" class="tab-pane" id="poimap_tab">
+		<div id="poi-by-group" class="row dynamic-content">
+
+			<p class="text-center" style="font-size:2em">
+				<strong>
+					<span class="poi-by-group-group"></span>,</strong> by
+				<span class="poi-by-group-type"></span>
+			</p>
+			<div class="col-xs-6 right-border" style="margin-top:4px">
+				<div class="row">
+
+					<div class="row" style="margin-top:4px">
+						<div class="col-xs-10">
+                        <span style="text-align:center;display:block;font-weight:bold;font-size:16px;" class="legendtitle"></span>
+						</div>
+						<div class="col-xs-2">
+
+							<label>
+								<input type="checkbox" checked id="poi-by-group-stacked" />Stacked
+
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="width:100%;height:80%;">
+					<svg id="poi-by-group-chart"></svg>
+				</div>
+			</div>
+			<div class="col-xs-6">
+ 				<div class="col-xs-12">
+					</div>
+				<div class="col-xs-12">
+                    <div class="col-xs-3">
+					<div class="poi-by-group-values" style="font-weight:bold"></div>
+				</div>
+				<div class="col-xs-3">
+					<div class="poi-by-group-groups" style="font-weight:bold"></div>
+				</div>
+
+					</div>
+				<div class="col-xs-12">
+                    				<div class="col-xs-3">
+					<select class="form-control" id="poi-by-group-values-current"></select>
+				</div>
+				<div class="col-xs-3" style="margin-bottom:2em;">
+					<select class="form-control" id="poi-by-group-groups-current"></select>
+				</div>
+
+		<div class="col-xs-6" style="">
+				<div id='poi-by-group-tools' >
+					<table id="poi-by-group-tooltable">
+					<tr>
+						<td>
+					<input type="checkbox" id="poi-by-group-bubbles" /></td>
+						<td>Bubbles</td>
+					<td><input type="text" id="poi-by-group-bubble-color" /></td>
+						<td>Size: </td>
+						<td>
+					<select id="poi-by-group-bubble-size" >
+						<option>1</option>
+						<option selected>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option >5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+						<option>9</option>
+						<option>10</option>
+						<option>11</option>
+						<option>12</option>
+						<option>13</option>
+						<option>14</option>
+						<option>15</option>
+					</select>
+</td>
+</tr>
+						<tr>
+							<td></td>
+                    <td><span >
+						Point:</span></td>
+							<td>
+                    <input type="text" id="poi-by-group-point-color"
+					/></td>
+					<td>
+						Size:</td>
+<td>
+					<select id="poi-by-group-point-size" >
+						<option>1</option>
+						<option >2</option>
+						<option>3</option>
+						<option>4</option>
+						<option selected>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+						<option>9</option>
+						<option>10</option>
+					</select>
+</td>
+					</tr>
+						</table>
+				</div>
+				</div>
+					</div>
+        		<div class='col-xs-12' id="poi-by-group-emptydiv" style="font-weight: bold;">
+
+				</div>
+				<div class="col-xs-12" id="poi-by-group-map" style="width: 100%;height:60%;"></div>
+				<div class="col-xs-6" id="poi-by-group-pallette" style="margin-top:1em;text-align:right">
+
+				</div>
+
+
+			</div>
+		</div>
+       </div> <!--END POIMAP TAB -->
+
+        </div><!-- END TAB CONTENT-->
+        </div>  <!-- END MAIN CONTENT-->
 
 </body>
 <!-- end body -->
@@ -713,6 +834,9 @@
 
 	var scatter_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
 	fileExists(scatter_path,"#scatter","#scatter_tab");
+
+	var poi_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/PointofInterest.csv";
+	fileExists(poi_path,"#poi-by-group","#poimap_tab");
  var shownTabs = $('li[role="presentation"]').children(":visible");
 		if(shownTabs.length>0)
 		    shownTabs[0].click();
@@ -738,6 +862,7 @@
         "radar":false,
         "sunburst":false,
         "scatter": false,
+        "poimap": false
     };
     $.getJSON("../data/" + region + "/region.json", function (data) {
 		var icon = data.Icon;
@@ -757,11 +882,11 @@
 				$('.' + [key]).remove();
 		});
 		var ids =
-			{"3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter" };
+			{"3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter","POIMap":"poi-by-group" };
 		var jsFiles =
-			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter"	};
+			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter","POIMap":"points_of_interest_map"	};
 		var tablinks =
-            {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab"	};
+            {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab","POIMap":"poimap_tab"	};
 
 	if(tabbedCharts == undefined || tabbedCharts==false) {
 	    $('#the_tabs').hide();
@@ -853,7 +978,15 @@
 		        window.dispatchEvent(new Event('resize'));
             }
         });
-
+         $('a[href="#poimap_tab"]').on('shown.bs.tab', function (e) {
+		    if(loadedScripts["poimap"] ==false){
+                $.getScript("points_of_interest_map.js").done(function(scripts,textStatus){
+                    loadedScripts["poimap"] = true;
+                });
+            } else {
+		        window.dispatchEvent(new Event('resize'));
+            }
+        });
          $('#leftnavbtn').click(function(d) {
              var shownTabs = $('li[role="presentation"]').children(":visible");
              var i = 0;

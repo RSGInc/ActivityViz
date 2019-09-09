@@ -1,0 +1,15 @@
+/* strangely the nvd3 multiBarHorizontalChart has the axis names reversed so that the yaxis is actually along bottom.
+Presumably this is because it used the same code as the vertical chart
+*/
+
+
+#poi-by-group .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
+	font-weight: bold;
+}
+
+#poi-by-group-map div.leaflet-popup-content {
+	width: 100%;
+}
+#poi-by-group-tooltable > tbody > tr > td {
+	padding:3px !important;
+}
