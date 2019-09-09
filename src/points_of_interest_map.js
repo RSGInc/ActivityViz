@@ -4,11 +4,11 @@
 var pointofinterest_and_map = (function() {
     "use strict";
     var map;
-    	var circleStyle = {
-		"stroke": false,
-		"fillColor": "set by updateBubbles",
-		"fillOpacity": 1.0
-	};
+    var circleStyle = {
+        "stroke": false,
+        "fillColor": "set by updateBubbles",
+        "fillOpacity": 1.0
+    };
     var chartData = null;
     var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/PointofInterest.csv"
     var chartSelector = "#poi-by-group-chart";
@@ -38,14 +38,14 @@ var pointofinterest_and_map = (function() {
     var bubbleColor = 'rgba(255, 120, 0, 0.5)';
     var pointColor = '#ff7800';
     var groupsSet;
-    var groupArry=[];
+    var groupArry = [];
     var extNvd3Chart;
     var enabledGroups;
     var minBarWidth = 1;
     var minBarSpacing = 1;
     var marginTop = 0;
     var marginBottom = 50;
-    var marginLeft = 110;
+    var marginLeft = 175;
     var marginRight = 50;
     var valueCols = [];
     var CSS_UPDATE_PAUSE = 150;
@@ -53,12 +53,12 @@ var pointofinterest_and_map = (function() {
     var myZoom = {};
     var circlesLayerGroup;
     var barsWrap;
-	var barsWrapRect;
-	var barsWrapRectHeight;
-	var barsWrapRectId = "poi-by-group-barsWrapRectRSG"
-	var barsWrapRectSelector = "#" + barsWrapRectId;
-	var pointSet;
-	var currentCounty = "";
+    var barsWrapRect;
+    var barsWrapRectHeight;
+    var barsWrapRectId = "poi-by-group-barsWrapRectRSG"
+    var barsWrapRectSelector = "#" + barsWrapRectId;
+    var pointSet;
+    var currentCounty = "";
 
     var paletteRamps = d3.selectAll("#poi-by-group .ramp");
     var pointsAll = [];
@@ -96,8 +96,11 @@ var pointofinterest_and_map = (function() {
                             if (opt == "BarSpacing") {
                                 BARSPACING = value;
                             }
-                            if(opt=="LegendTitle"){
+                            if (opt == "LegendTitle") {
                                 $('.legendtitle').html(value);
+                            }
+                            if (opt == "BubbleDefault") {
+                                bubblesShowing = value;
                             }
                         })
                     }
@@ -129,7 +132,7 @@ var pointofinterest_and_map = (function() {
                 //console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 
                 nvd3Chart.x(function (d, i) {
-                    return d.label
+                    return d.label;
                 }).y(function (d) {
                     return d.value
                 }).color(function (d, i) {
@@ -143,9 +146,9 @@ var pointofinterest_and_map = (function() {
                     bottom: marginBottom
                 }).id("poi-by-group-chart-multiBarHorizontalChart").stacked(true).showControls(false);
                 nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
-                nvd3Chart.yAxis.axisLabel(groupColumn+ " by " + $("#poi-by-group-values-current").val());
+                nvd3Chart.yAxis.axisLabel(groupColumn + " by " + $("#poi-by-group-values-current").val());
                 //this is actually for xAxis since basically a sideways column chart
-                nvd3Chart.xAxis.axisLabel(pointNameCol).axisLabelDistance(30);
+                nvd3Chart.xAxis.axisLabel(pointNameCol).axisLabelDistance(80);
                 //this is actually for yAxis
 
                 nv.utils.windowResize(function () {
@@ -213,7 +216,7 @@ var pointofinterest_and_map = (function() {
 
             groupsSet = new Set();
             console.log("this is my poi");
-             pointSet = new Set();
+            pointSet = new Set();
             data.forEach(function (d) {
                 var pointName = d[pointNameCol];
                 var groupName = d[groupColumn];
@@ -240,8 +243,7 @@ var pointofinterest_and_map = (function() {
                     poiData[pointName][groupName].push({name: name, value: +value});
                 }
 
-                if (!pointSet.has(pointName) )
-                {
+                if (!pointSet.has(pointName)) {
                     pointSet.add(pointName);
                     chartData.push({
                         pointlabel: pointName,
@@ -252,8 +254,8 @@ var pointofinterest_and_map = (function() {
 
 
             // chartData.push(newPoiObject);
-            groupsSet.forEach(function(D){
-               groupArry.push(D);
+            groupsSet.forEach(function (D) {
+                groupArry.push(D);
             });
             selectedGroup = groupArry[0];
             selectedDataGrp = valueCols[0];
@@ -266,6 +268,18 @@ var pointofinterest_and_map = (function() {
         d3.selectAll(".poi-by-group-values").html("Point Value");
         d3.selectAll(".poi-by-group-group").html(pointNameCol);
         d3.selectAll(".poi-by-group-groups").html("Point " + groupColumn);
+        if (bubblesShowing) {
+            $("#poi-by-group-bubbles").prop("checked", bubblesShowing);
+            $("#poi-by-group-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
+
+            $("#poi-by-group-bubble-size").prop("disabled", !bubblesShowing);
+        } else {
+            $("#poi-by-group-bubbles").prop("checked", false);
+            $("#poi-by-group-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
+            $("#poi-by-group-bubble-size").prop("disabled", !bubblesShowing);
+
+        }
+
 
         //d3.selectAll(".poi-by-group-trip-mode-bubbles").html("Bubbles");
         //d3.selectAll(".poi-by-group-trip-mode-example").html(modes[0]);
@@ -318,17 +332,17 @@ var pointofinterest_and_map = (function() {
     function redrawMap() {
         highlightBoxes = [];
         circleMarkers = [];
-        if(circlesLayerGroup != undefined) {
+        if (circlesLayerGroup != undefined) {
             map.removeLayer(circlesLayerGroup);
         }
-        if(highlightLayer != undefined) {
+        if (highlightLayer != undefined) {
             map.removeLayer(highlightLayer);
         }
 
         highlightLayer = new L.FeatureGroup();
         circlesLayerGroup = new L.LayerGroup();
         circlesLayerGroup.clearLayers();
-         highlightLayer.clearLayers();
+        highlightLayer.clearLayers();
         var selectedData = selectedDataGrp;
         var polyLayers = [];
         var selectedGrping;
@@ -336,47 +350,56 @@ var pointofinterest_and_map = (function() {
         var prevPoint;
         pointsAll.forEach(function (d) {
             var dataSelected = poiData[d][selectedGroup];
-            dataSelected.forEach(function(d){
-               if(d.name == selectedData) {
-                   selectedGrping = d;
-               }
+            dataSelected.forEach(function (d) {
+                if (d.name == selectedData) {
+                    selectedGrping = d;
+                }
             });
             currentPoint = d;
-            if(currentPoint != prevPoint) {
+            if (currentPoint != prevPoint) {
                 var tooltipval = selectedGrping;
                 var zoomLevel = map.getZoom();
                 var diff = myZoom.start - zoomLevel;
-                var radius = zoomLevel <= 9 ? 450.0 : zoomLevel > 9 ? 350 : 25.0;
+                var radiusMultiplier = parseInt($("#poi-by-group-point-size").val());
+                var radius = ((radiusMultiplier * 1000) / zoomLevel);
+                radius = radius + (zoomLevel <= 9 ? 100 : 0);
+                //zoomLevel <= 9 ? 450.0 : zoomLevel > 9 ? 350 : 25.0;
                 var circle = new L.Circle([poiData[d].LAT, poiData[d].LNG], {radius: radius}).addTo(map);
                 var rect = L.rectangle(circle.getBounds(), {
                     color: pointColor,
                     weight: 4,
                     fillOpacity: 1.0
-                }).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>"+d+"</strong></td></tr></thead><tbody><tr><td class='key'>"+selectedGroup+" "+"</td><td class='value'>"+tooltipval.value+"</td></tr></tbody></table></div>",{minWidth:130, maxWidth:250});
-                    //.bindTooltip("<div style='text-align:center'><span style='font-size:'" + d + "</br>" + tooltipval.value + "</div>");
+                }).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>" + d + "</strong></td></tr></thead><tbody><tr><td class='key'><strong>Group</strong>: " + selectedGroup + " " + "</td></tr><tr><td class='value'> <strong>Value</strong>: " + tooltipval.value.toLocaleString() + "</td></tr></tbody></table></div>", {
+                    minWidth: 130,
+                    maxWidth: 250
+                });
+                //.bindTooltip("<div style='text-align:center'><span style='font-size:'" + d + "</br>" + tooltipval.value + "</div>");
 
-                rect.on('mouseover',function(e){
+                rect.on('mouseover', function (e) {
                     this.openPopup();
                 });
-                rect.on('mouseout', function(e){
-                   this.closePopup();
+                rect.on('mouseout', function (e) {
+                    this.closePopup();
                 });
                 rect.properties = {};
                 rect.properties["NAME"] = d;
 
-                    highlightBoxes.push(rect);
+                highlightBoxes.push(rect);
 
-                    var circleMarker = L.circleMarker(L.latLng(poiData[d].LAT, poiData[d].LNG), circleStyle).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>"+d+"</strong></td></tr></thead><tbody><tr><td class='key'>"+selectedGroup+" "+"</td><td class='value'>"+tooltipval.value+"</td></tr></tbody></table></div>",{minWidth:130, maxWidth:250});
-                    circleMarker.on('mouseover',function(e){
+                var circleMarker = L.circleMarker(L.latLng(poiData[d].LAT, poiData[d].LNG), circleStyle).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>" + d + "</strong></td></tr></thead><tbody><tr><td class='key'><strong>Group</strong>: " + selectedGroup + " " + "</td></tr><tr><td class='value'> <strong>Value</strong>: " + tooltipval.value.toLocaleString() + "</td></tr></tbody></table></div>", {
+                    minWidth: 130,
+                    maxWidth: 250
+                });
+                circleMarker.on('mouseover', function (e) {
                     this.openPopup();
                 });
-                circleMarker.on('mouseout', function(e){
-                   this.closePopup();
+                circleMarker.on('mouseout', function (e) {
+                    this.closePopup();
                 });
-                    circleMarker.myData = tooltipval.value;
-                    circleMarker.properties = {};
-                    circleMarker.properties["NAME"] = d;
-                    circleMarkers.push(circleMarker);
+                circleMarker.myData = tooltipval.value;
+                circleMarker.properties = {};
+                circleMarker.properties["NAME"] = d;
+                circleMarkers.push(circleMarker);
 
 
                 circle.removeFrom(map);
@@ -389,35 +412,39 @@ var pointofinterest_and_map = (function() {
         }
 
         circlesLayerGroup = L.layerGroup(circleMarkers);
-        		if (bubblesShowing) {
-        		      updateBubbleColor();
-				updateBubbleSize();
-			  circlesLayerGroup.addTo(map);
-			} else {
+        if (bubblesShowing) {
+            circlesLayerGroup.addTo(map);
+            updateBubbleColor();
+            updateBubbleSize();
 
-        		    map.addLayer(highlightLayer);
-                }
+        } else {
+            map.addLayer(highlightLayer);
+        }
     }
+
     function ColorLuminance(hex, lum) {
         // validate hex string
         hex = String(hex).replace(/[^0-9a-f]/gi, '');
         if (hex.length < 6) {
-            hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
         lum = lum || 0;
         // convert to decimal and change luminosity
         var rgb = "#", c, i;
-        var noPound="";
+        var noPound = "";
         for (i = 0; i < 3; i++) {
-            c = parseInt(hex.substr(i*2,2), 16);
+            c = parseInt(hex.substr(i * 2, 2), 16);
             c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-            rgb += ("00"+c).substr(c.length);
-            noPound += ("00"+c).substr(c.length);
+            rgb += ("00" + c).substr(c.length);
+            noPound += ("00" + c).substr(c.length);
         }
 
-        return noPound == hex? ColorLuminance(rgb,-0.5): rgb;
+        return noPound == hex ? ColorLuminance(rgb, -0.5) : rgb;
     }
+
     function initializeMuchOfUI() {
+
+
         $("#poi-by-group-stacked").click(function () {
             extNvd3Chart.stacked(this.checked);
             var test = extNvd3Chart.groupSpacing();
@@ -428,7 +455,9 @@ var pointofinterest_and_map = (function() {
             }
             extNvd3Chart.update();
         });
-
+        if(bubblesShowing){
+            updateMapUI();
+        }
         $("#poi-by-group-bubbles").click(function () {
             updateMapUI();
         });
@@ -454,6 +483,7 @@ var pointofinterest_and_map = (function() {
             }
         }
 
+        $('#poi-by-group-point-size').change(updatePointSize);
         $("#poi-by-group-bubble-size").change(updateBubbleSize);
         $("#poi-by-group-legend-type").click(function () {
             extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
@@ -559,20 +589,23 @@ var pointofinterest_and_map = (function() {
         updateChart(function () {
             console.log('updateChart callback after initialize');
         });
-
     }
-function setColorPalette(clickedIndex) {
+
+    function setColorPalette(clickedIndex) {
         console.log("DO NOTHING");
-	}; //end setColorPalette
+    }; //end setColorPalette
     function updateBubbleColor() {
         "use strict";
         var styleObject = {
             "fillColor": bubbleColor
         };
         circleMarkers.forEach(function (circleMarker) {
-        	circleMarker.setStyle(styleObject);
+            circleMarker.setStyle(styleObject);
+        });
+    }
 
-        	});
+    function updatePointSize() {
+        redrawMap();
     }
 
     function updatePointColor() {
@@ -580,8 +613,8 @@ function setColorPalette(clickedIndex) {
         var styleObject = {
             "fillColor": pointColor
         };
-        highlightBoxes.forEach(function (highlightBox){
-           highlightBox.setStyle(styleObject);
+        highlightBoxes.forEach(function (highlightBox) {
+            highlightBox.setStyle(styleObject);
         });
     }
 
@@ -596,26 +629,27 @@ function setColorPalette(clickedIndex) {
         var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
         var dataSeries = [];
         var selectedDataName = $('#poi-by-group-values-current').val();
-         pointsAll.forEach(function (d) {
+        pointsAll.forEach(function (d) {
             var dataSelected = poiData[d][selectedGroup];
-            dataSelected.forEach(function(d){
-               if(d.name == selectedDataName){
-                   dataSeries.push(d.value);
-               }
+            dataSelected.forEach(function (d) {
+                if (d.name == selectedDataName) {
+                    dataSeries.push(d.value);
+                }
             });
-        var serie = new geostats(dataSeries);
-        maxFeature = serie.max();
-        var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
-        circleMarkers.forEach(function (circleMarker) {
-            var myData = circleMarker.myData;
-            var sqrtRadius = 0;
-            var quantity = myData;
-            var sqrtRadius = scaleSqrt(quantity);
+            var serie = new geostats(dataSeries);
+            maxFeature = serie.max();
+            var scaleSqrt = d3.scale.sqrt().domain([0, maxFeature]).range([0, maxBubbleSize]);
+            circleMarkers.forEach(function (circleMarker) {
+                var myData = circleMarker.myData;
+                var sqrtRadius = 0;
+                var quantity = myData;
+                var sqrtRadius = scaleSqrt(quantity);
 
-            circleMarker.setRadius(sqrtRadius);
+                circleMarker.setRadius(sqrtRadius);
+            });
         });
-    });
     }
+
     function updateChartNVD3(callback) {
         "use strict";
         //nvd3 expects data in the opposite hierarchy than rest of code so need to create
@@ -661,25 +695,24 @@ function setColorPalette(clickedIndex) {
             //create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
             //first check if
             $('#poi-by-group .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(' + ROTATELABEL + 'deg)');
-                barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
-			if (barsWrap[0].length == 0) {
-				throw ("did not find expected part of chart")
-			}
-			//if first time (enter() selection) create rect
-			//nv-barsWrap nvd3-svg
-			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
-				//console.log('barsWrap mousemove');
-				var mouseY = d3.mouse(this)[1];
-				var pointarry = Array.from(new Set(pointSet));
-				var numCounties = pointarry.length;
-				var heightPerGroup = (barsWrapRectHeight / numCounties);
-				var countyIndex = Math.floor(mouseY / heightPerGroup);
-				var countyObject = pointarry[countyIndex];
-				var newCounty = countyObject;
-				changeCurrentCounty(newCounty);
-			});
-			setTimeout(updateChartMouseoverRect, 1000);
-		}, function () {
+            barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
+            if (barsWrap[0].length == 0) {
+                throw ("did not find expected part of chart")
+            }
+            //if first time (enter() selection) create rect
+            //nv-barsWrap nvd3-svg
+            barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+                var mouseY = d3.mouse(this)[1];
+                var pointarry = Array.from(new Set(pointSet));
+                var numCounties = pointarry.length;
+                var heightPerGroup = (barsWrapRectHeight / numCounties);
+                var countyIndex = Math.floor(mouseY / heightPerGroup);
+                var countyObject = pointarry[countyIndex];
+                var newCounty = countyObject;
+                changeCurrentCounty(newCounty);
+            });
+            setTimeout(updateChartMouseoverRect, 1000);
+        }, function () {
             throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
         });
         //end call to poll
@@ -687,9 +720,9 @@ function setColorPalette(clickedIndex) {
         callback();
 
     }; //end updateChartNVD3
-function updateChartMouseoverRect() {
-		var shownTabs = $('li[role="presentation"]').children(":visible");
-		if(shownTabs.length ==0 || ($('li[role="presentation"]').children(":visible").length >1 && $("#thenavbar li.active").text() ==="Points of Interest"))  {
+    function updateChartMouseoverRect() {
+        var shownTabs = $('li[role="presentation"]').children(":visible");
+        if (shownTabs.length == 0 || ($('li[role="presentation"]').children(":visible").length > 1 && $("#thenavbar li.active").text() === "Points of Interest")) {
             var innerContainer = svgChart.select(".nvd3.nv-wrap.nv-multibarHorizontal");
             var innerContainerNode = innerContainer.node();
             var tryAgain = true;
@@ -709,30 +742,30 @@ function updateChartMouseoverRect() {
                 setTimeout(updateChartMouseoverRect, 500);
             }
         }
-	}
-	//end updateChartMouseoverRect
-function changeCurrentCounty(newCurrentCounty) {
-		if (currentCounty != newCurrentCounty) {
-			console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
-			currentCounty = newCurrentCounty;
-			var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-			countyLabels.classed("poi-by-group-current-poi", function (d, i) {
-				var setClass = d == currentCounty;
-				return setClass;
-			});
-			//end classed of group rect
-            if(bubblesShowing){
+    }
+
+    //end updateChartMouseoverRect
+    function changeCurrentCounty(newCurrentCounty) {
+        if (currentCounty != newCurrentCounty) {
+            console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
+            currentCounty = newCurrentCounty;
+            var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
+            countyLabels.classed("poi-by-group-current-poi", function (d, i) {
+                var setClass = d == currentCounty;
+                return setClass;
+            });
+            //end classed of group rect
+            if (bubblesShowing) {
                 circlesLayerGroup.eachLayer(function (feature) {
                     var style = {};
                     if (feature.properties.NAME == currentCounty) {
                         style.weight = 6;
-
                         style.fillColor = ColorLuminance(feature.options.fillColor, 0.5);
-
-                        //style.fillColor ="green";
+                         feature.openPopup();
                     } else {
                         style.fillColor = bubbleColor;
                         style.weight = 4;
+                        feature.closePopup();
                     }
                     feature.setStyle(style);
                     //return (style);
@@ -743,21 +776,23 @@ function changeCurrentCounty(newCurrentCounty) {
                     if (feature.properties.NAME == currentCounty) {
                         style.weight = 6;
                         style.color = ColorLuminance(pointColor, 0.5);
+                        feature.openPopup();
                         //style.fillColor ="green";
                     } else {
                         style.color = pointColor;
                         style.weight = 4;
+                        feature.closePopup();
                     }
                     feature.setStyle(style);
                     //return (style);
                 });
             }
-			//end setStyle function
-			//add delay to redrawMap so that text has chance to bold
-			//setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-		}
-		//end if county is changing
-	}; //end change currentCounty
+            //end setStyle function
+            //add delay to redrawMap so that text has chance to bold
+            //setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+        }
+        //end if county is changing
+    }; //end change currentCounty
     function updateOutline() {
 
         redrawMap();

@@ -101,10 +101,11 @@ Each Data/Region folder needs the following:
         - LegendRows: the number of data points per row to be shown in the legend default is 4
         - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
     - Scatter: Scatter chart that also shows a 45 degree regression line
-    -Points of Interest: Barchart that displays a map that has points of interest plotted on the page
+    - Points of Interest: Barchart that displays a map that has points of interest plotted on the page
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
         - LegendTitle: Title shown above the legend of the bar chart
+        - BubbleDefault: (true/false) flag that determines if the bubbles are displayed by default on load
 3. Data Folder - Scenario data folder with its name equal to its scenario entry
 4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
