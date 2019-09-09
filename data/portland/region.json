@@ -77,7 +77,7 @@
     "POIMap": {
         "BarSpacing": "0.6",
         "RotateLabels": "0",
-        "LegendTitle": "Freight Value and Volume ",
+        "LegendTitle": "Freight Flows",
         "BubbleDefault": true
 
     },
