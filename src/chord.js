@@ -425,14 +425,17 @@ var chord = (function () {
             var newdataL = 0;
 
             var legendfill = d3.scale.category20();
+            var prevLegendLength = 0;
             var xOff, yOff;
             var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                 .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
                     var calcX = (i % legendRows) * (width / columns);
-
                     xOff = (i % legendRows) * (width / columns)
-
                     yOff = Math.floor(i / legendRows) * 20
+                    if(prevLegendLength !=0){
+                        xOff = xOff + (prevLegendLength-9);
+                    }
+                    prevLegendLength = d.length;
                     return "translate(" + xOff + "," + yOff + ")"
                 });
             var circles = legendOrdinal.append("circle")
