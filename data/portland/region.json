@@ -37,6 +37,18 @@
             "name":"Freight",
             "label":"- Freight Flows",
             "CenterMap":[45.512794,-122.679565]
+        },
+        {
+            "name":"Concept-B",
+            "label":"- Concept B",
+            "CenterMap":[45.512794,-122.679565],
+            "ScenarioFocus": "concept-b.json"
+        },
+        {
+            "name":"Concept-E",
+            "label":"- Concept E",
+            "CenterMap":[45.512794,-122.679565],
+            "ScenarioFocus": "concept-e.json"
         }
         ],
     "visualizations": {
