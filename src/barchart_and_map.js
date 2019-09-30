@@ -80,6 +80,7 @@ var barchart_and_map = (function () {
 	var BARSPACING = 0.2;
 	var showCycleTools = true;
 	var highlightLayer;
+	var maxLabelLength = 0;
 	var showChartOnPage = true;
 	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
 	//start off chain of initialization by reading in the data	
@@ -261,6 +262,7 @@ var barchart_and_map = (function () {
                         if (rawChartData[countyName] == undefined) {
                             rawChartData[countyName] = {};
                             countiesSet.add(countyName);
+                            maxLabelLength = Math.max(countyName.length,maxLabelLength);
                         }
                         if (rawChartData[countyName][modeName] == undefined) {
                             rawChartData[countyName][modeName] = 0;
@@ -467,6 +469,7 @@ var barchart_and_map = (function () {
 					//console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 
 					nvd3Chart.x(function (d, i) {
+
 						return d.label
 					}).y(function (d) {
 						return d.value
@@ -475,11 +478,12 @@ var barchart_and_map = (function () {
 						//console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
 						return color;
 					}).duration(250).margin({
-						left: marginLeft,
+						left: Math.max(110,marginLeft+ ( (maxLabelLength-14)*5 )),
 						right: marginRight,
 						top: marginTop,
 						bottom: marginBottom
 					}).id("mode-share-by-county-multiBarHorizontalChart").stacked(true).showControls(false);
+					marginLeft = Math.max(110 + ( (maxLabelLength-14)*5 ),110);
 					nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
 					nvd3Chart.yAxis.axisLabel(quantityColumn);
 					//this is actually for xAxis since basically a sideways column chart
@@ -692,11 +696,12 @@ var barchart_and_map = (function () {
 					style: styleCountyGeoJSONLayer,
 					onEachFeature: onEachCounty
 				});
-				var allCountyBounds = countyLayer.getBounds();
+
+					var allCountyBounds = countyLayer.getBounds();
 				console.log(allCountyBounds);
-				if(!SCENARIO_FOCUS)
+				if(!SCENARIO_FOCUS && countyLayer.getBounds().isValid())
 				    map.fitBounds(allCountyBounds);
-				map.setMaxBounds(allCountyBounds);
+
 				zoneDataLayer.addTo(map);
 				countyLayer.addTo(map);
 				highlightLayer.addTo(map);

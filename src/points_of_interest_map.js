@@ -34,7 +34,7 @@ var pointofinterest_and_map = (function() {
     var poiData;
     var chartData = null;
     var svgChart;
-    var bubblesShowing = false;
+    var bubblesShowing = true;
     var bubbleColor = 'rgba(255, 120, 0, 0.5)';
     var pointColor = '#ff7800';
     var groupsSet;
@@ -59,7 +59,7 @@ var pointofinterest_and_map = (function() {
     var barsWrapRectSelector = "#" + barsWrapRectId;
     var pointSet;
     var currentCounty = "";
-
+var maxLabelLength = 0;
     var paletteRamps = d3.selectAll("#poi-by-group .ramp");
     var pointsAll = [];
     $("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
@@ -99,9 +99,7 @@ var pointofinterest_and_map = (function() {
                             if (opt == "LegendTitle") {
                                 $('.legendtitle').html(value);
                             }
-                            if (opt == "BubbleDefault") {
-                                bubblesShowing = value;
-                            }
+
                         })
                     }
                     if (key == "scenarios" && Array.isArray(val)) {
@@ -140,7 +138,7 @@ var pointofinterest_and_map = (function() {
 
                     return color;
                 }).duration(250).margin({
-                    left: marginLeft,
+                    left: Math.max(110,110 + (maxLabelLength-14)*5),
                     right: marginRight,
                     top: marginTop,
                     bottom: marginBottom
@@ -148,9 +146,9 @@ var pointofinterest_and_map = (function() {
                 nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
                 nvd3Chart.yAxis.axisLabel(groupColumn + " by " + $("#poi-by-group-values-current").val());
                 //this is actually for xAxis since basically a sideways column chart
-                nvd3Chart.xAxis.axisLabel(pointNameCol).axisLabelDistance(80);
+                nvd3Chart.xAxis.axisLabel(pointNameCol).axisLabelDistance(100);
                 //this is actually for yAxis
-
+                marginLeft =Math.max(110, 110 + (maxLabelLength-14)*5);
                 nv.utils.windowResize(function () {
                     //reset marginTop in case legend has gotten less tall
                     nvd3Chart.margin({
@@ -244,6 +242,7 @@ var pointofinterest_and_map = (function() {
                 }
 
                 if (!pointSet.has(pointName)) {
+                    maxLabelLength = Math.max(maxLabelLength,pointName.length);
                     pointSet.add(pointName);
                     chartData.push({
                         pointlabel: pointName,
@@ -269,15 +268,15 @@ var pointofinterest_and_map = (function() {
         d3.selectAll(".poi-by-group-group").html(pointNameCol);
         d3.selectAll(".poi-by-group-groups").html("Point " + groupColumn);
         if (bubblesShowing) {
-            $("#poi-by-group-bubbles").prop("checked", bubblesShowing);
+           // $("#poi-by-group-bubbles").prop("checked", bubblesShowing);
             $("#poi-by-group-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
 
             $("#poi-by-group-bubble-size").prop("disabled", !bubblesShowing);
         } else {
-            $("#poi-by-group-bubbles").prop("checked", false);
+          /*  $("#poi-by-group-bubbles").prop("checked", false);
             $("#poi-by-group-bubble-color").spectrum(bubblesShowing ? "enable" : "disable", true);
             $("#poi-by-group-bubble-size").prop("disabled", !bubblesShowing);
-
+    */
         }
 
 
@@ -360,12 +359,12 @@ var pointofinterest_and_map = (function() {
                 var tooltipval = selectedGrping;
                 var zoomLevel = map.getZoom();
                 var diff = myZoom.start - zoomLevel;
-                var radiusMultiplier = parseInt($("#poi-by-group-point-size").val());
-                var radius = ((radiusMultiplier * 1000) / zoomLevel);
-                radius = radius + (zoomLevel <= 9 ? 100 : 0);
+                //var radiusMultiplier = parseInt($("#poi-by-group-point-size").val());
+                //var radius = ((radiusMultiplier * 1000) / zoomLevel);
+                //radius = radius + (zoomLevel <= 9 ? 100 : 0);
                 //zoomLevel <= 9 ? 450.0 : zoomLevel > 9 ? 350 : 25.0;
-                var circle = new L.Circle([poiData[d].LAT, poiData[d].LNG], {radius: radius}).addTo(map);
-                var rect = L.rectangle(circle.getBounds(), {
+               // var circle = new L.Circle([poiData[d].LAT, poiData[d].LNG], {radius: radius}).addTo(map);
+                /*var rect = L.rectangle(circle.getBounds(), {
                     color: pointColor,
                     weight: 4,
                     fillOpacity: 1.0
@@ -385,7 +384,7 @@ var pointofinterest_and_map = (function() {
                 rect.properties["NAME"] = d;
 
                 highlightBoxes.push(rect);
-
+*/
                 var circleMarker = L.circleMarker(L.latLng(poiData[d].LAT, poiData[d].LNG), circleStyle).bindPopup("<div  ><table style='width:100%;'><thead><tr><td colspan='3'><strong class='x-value'>" + d + "</strong></td></tr></thead><tbody><tr><td class='key'><strong>Group</strong>: " + selectedGroup + " " + "</td></tr><tr><td class='value'> <strong>Value</strong>: " + tooltipval.value.toLocaleString() + "</td></tr></tbody></table></div>", {
                     minWidth: 130,
                     maxWidth: 250
@@ -402,7 +401,7 @@ var pointofinterest_and_map = (function() {
                 circleMarkers.push(circleMarker);
 
 
-                circle.removeFrom(map);
+                //circle.removeFrom(map);
                 prevPoint = currentPoint;
             }
         });
@@ -458,12 +457,10 @@ var pointofinterest_and_map = (function() {
         if(bubblesShowing){
             updateMapUI();
         }
-        $("#poi-by-group-bubbles").click(function () {
-            updateMapUI();
-        });
+
 
         function updateMapUI() {
-            bubblesShowing = $("#poi-by-group-bubbles").is(":checked");
+           // bubblesShowing = $("#poi-by-group-bubbles").is(":checked");
 
             console.log('updateBubbles: bubblesShowing=' + bubblesShowing);
             console.log('$("#poi-by-group-bubble-size").prop("disabled"): ' + $("#poi-by-group-bubble-size").prop("disabled"));
