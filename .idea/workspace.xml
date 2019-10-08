@@ -2,26 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="341c539d-bbdc-4f96-b376-dae5b739e9e8" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/bower_components/bootstrap/dist/css/bootstrap-multiselect.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bower_components/bootstrap/js/bootstrap-multiselect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/atlanta/region.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/atlanta/region.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/nebraska/region.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/nebraska/region.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/portland/Freight/PointofInterest.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/portland/Freight/PointofInterest.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/portland/region.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/portland/region.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/INRIX/BarChartAndMapData.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/INRIX/ChordData.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/INRIX/RadarChartsData.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/INRIX/cocs.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/ZoneShape.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/img/RSG.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/img/RSG_400px.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/img/Thumbs.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/washingtondc/region.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/points_of_interest_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/points_of_interest_map.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,7 +42,7 @@
           <entry key="css" value="385" />
           <entry key="csv" value="132" />
           <entry key="html" value="5719" />
-          <entry key="js" value="25769" />
+          <entry key="js" value="25786" />
           <entry key="json" value="563" />
           <entry key="md" value="1179" />
         </counts>
@@ -73,7 +53,7 @@
           <entry key="CSV" value="132" />
           <entry key="HTML" value="5720" />
           <entry key="JSON" value="563" />
-          <entry key="JavaScript" value="25768" />
+          <entry key="JavaScript" value="25785" />
           <entry key="Markdown" value="1179" />
         </counts>
       </usages-collector>
@@ -107,8 +87,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="451" column="38" selection-start-line="451" selection-start-column="38" selection-end-line="451" selection-end-column="38" />
+            <state relative-caret-position="435">
+              <caret line="306" column="49" lean-forward="true" selection-start-line="306" selection-start-column="49" selection-end-line="306" selection-end-column="49" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
@@ -1003,8 +983,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="451" column="38" selection-start-line="451" selection-start-column="38" selection-end-line="451" selection-end-column="38" />
+        <state relative-caret-position="435">
+          <caret line="306" column="49" lean-forward="true" selection-start-line="306" selection-start-column="49" selection-end-line="306" selection-end-column="49" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />

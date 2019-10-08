@@ -289,7 +289,7 @@ var maxLabelLength = 0;
         }
         if(filterSet.size > 1) {
              $('#poi-by-group-filters').append(filterColumn);
-             $('#poi-by-group-filter-span').append( '<select id="poi-by-group-filters" style="width:150px;" multiple="multiple">Corridors </select>');
+             $('#poi-by-group-filter-span').append( '<strong>Filter:</strong> <select id="poi-by-group-filters" style="width:150px;" multiple="multiple">Corridors </select>');
                 var cnt = 0;
             filterSet.forEach(function (filterName) {
                 $('#poi-by-group-filters').append('<option>'+filterName+'</option>')
