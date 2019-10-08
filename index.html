@@ -15,7 +15,6 @@
                if(key =="regions") {
                    $.each(val, function (k, v) {
                        $('#scenarios').append('<div id="' + k + '_id' + '"></div>');
-
                        $.getJSON("data/" + k + "/region.json", function (reg) {
                             regiontitle = reg.FrontPageTitle;
                            if (v.default === true && setdefault == false) {
@@ -32,26 +31,19 @@
                                $('#logo_id').attr("src", "data/" + k + "/img/" + logo + "");
                            }
                            $('#' + k + '_id').append("<h4>"+ regiontitle +"<img style='max-height: 25px;margin-left:2%;'src='"+"data/" + k + "/img/" + reg.FrontPageGraphic + ""+"'/>"+ "</h4>");
-
                            $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
-
                                $.each(reg.scenarios, function (key, value) {
                                    if(Array.isArray(reg.scenarios)) {
-
                                            $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + value.name + "'>" + value.name + value.label + "</a></li>");
-
                                    } else {
                                        $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "'>" + key + value + "</a></li>");
                                    }
                                });
-
-
                        });
                    });
                }
            });
         });
-
 	</script>
 </head>
 

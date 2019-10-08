@@ -9,6 +9,7 @@
   "CenterMap": [33.754525, -84.384774],
   "FrontPageTitle": "Atlanta Regional Commission",
   "FrontPageGraphic": "arc_logo.png",
+  "TabbedCharts": true,
   "scenarios":{
     "BS10": "- Base year 2010",
     "NB2040": "- No-Build 2040",
