@@ -21,6 +21,7 @@
             "label": "- I205",
             "CenterMap": [ 45.367157, -122.692046],
             "ScenarioFocus": "I205.json"
+
         },
         {
             "name": "DivisionBRT",
@@ -94,15 +95,18 @@
 
     },
     "GrpMap": {
-        "BarSpacing": "0.6", 
-        "RotateLabels": "0", 
+
+        "BarSpacing": "0.6",
+        "RotateLabels": "0",
         "ZoneFilterFile": "cocs.csv",
-        "ZoneFilterLabel": "Historically Marginalized Communities", 
-        "CycleMapTools": false, 
+        "ZoneFilterLabel": "Historically Marginalized Communities",
+        "CycleMapTools": false,
         "ZoneFilters": {"minority_zone": "Minority",
             "lowengpro_zone": "Low English",
             "age18or65_zone": "Age 18 or 65",
             "lowinc_zone": "Low Income"}
+
+
     },
     "colorRamps": {
         "Reds": false, 
