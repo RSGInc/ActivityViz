@@ -197,10 +197,9 @@ var barchart_and_map = (function () {
                 }
                 $('#mode-share-by-county-checkboxes').append("</tr></table>");
 
-
-            }).complete(function () {
                 callback();
             });
+
 
 
         } else {
