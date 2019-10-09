@@ -32,12 +32,14 @@ var pointofinterest_and_map = (function() {
     var latColumn;
     var lngColumn;
     var poiData;
+    var filterColumn;
     var chartData = null;
     var svgChart;
     var bubblesShowing = true;
     var bubbleColor = 'rgba(255, 120, 0, 0.5)';
     var pointColor = '#ff7800';
     var groupsSet;
+    var filterSet;
     var groupArry = [];
     var extNvd3Chart;
     var enabledGroups;
@@ -97,7 +99,7 @@ var maxLabelLength = 0;
                                 BARSPACING = value;
                             }
                             if (opt == "LegendTitle") {
-                                $('.legendtitle').html(value);
+                                $('.legendtitle').append(value);
                             }
 
                         })
@@ -143,7 +145,7 @@ var maxLabelLength = 0;
                     top: marginTop,
                     bottom: marginBottom
                 }).id("poi-by-group-chart-multiBarHorizontalChart").stacked(true).showControls(false);
-                nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
+                nvd3Chart.yAxis.tickFormat(d3.format(',.0f'));
                 nvd3Chart.yAxis.axisLabel(groupColumn + " by " + $("#poi-by-group-values-current").val());
                 //this is actually for xAxis since basically a sideways column chart
                 nvd3Chart.xAxis.axisLabel(pointNameCol).axisLabelDistance(100);
@@ -158,6 +160,7 @@ var maxLabelLength = 0;
                     //	console.log('updateChart callback after windowResize');
                     //});
                 });
+                nvd3Chart.legend.margin({top:0,right:0,left:-75,bottom:0});
                 nvd3Chart.legend.dispatch.on('legendDblclick', function (event) {
                     var newTripMode = event.key;
                     console.log('legend legendDblclick on trip mode: ' + newTripMode);
@@ -203,32 +206,37 @@ var maxLabelLength = 0;
 
             var headers = d3.keys(data[0]);
             pointNameCol = headers[0];
-            latColumn = headers[1];
-            lngColumn = headers[2];
-            groupColumn = headers[3]
+            filterColumn = headers[1];
+            latColumn = headers[2];
+            lngColumn = headers[3];
+            groupColumn = headers[4]
             chartData = [];
             poiData = {};
-            for (var i = 4; i < headers.length; i++) {
+            for (var i = 5; i < headers.length; i++) {
                 valueCols.push(headers[i]);
             }
 
             groupsSet = new Set();
             console.log("this is my poi");
             pointSet = new Set();
+            filterSet = new Set();
             data.forEach(function (d) {
                 var pointName = d[pointNameCol];
                 var groupName = d[groupColumn];
                 var pointLat = +d[latColumn];
                 var pointLng = +d[lngColumn];
+                var filterName = d[filterColumn];
                 var dataRow = d;
 
                 pointsAll.push(pointName);
                 groupsSet.add(groupName);
+                filterSet.add(filterName);
                 if (poiData[pointName] == undefined) {
 
                     poiData[pointName] = {
                         LAT: pointLat,
                         LNG: pointLng,
+                        pointfilter: filterName
                     };
                 }
 
@@ -246,7 +254,8 @@ var maxLabelLength = 0;
                     pointSet.add(pointName);
                     chartData.push({
                         pointlabel: pointName,
-                        pointdata: poiData[pointName]
+                        pointdata: poiData[pointName],
+                        pointfilter: filterName
                     });
                 }
             });
@@ -278,8 +287,30 @@ var maxLabelLength = 0;
             $("#poi-by-group-bubble-size").prop("disabled", !bubblesShowing);
     */
         }
+        if(filterSet.size > 1) {
+             $('#poi-by-group-filters').append(filterColumn);
+             $('#poi-by-group-filter-span').append( '<strong>Filter:</strong> <select id="poi-by-group-filters" style="width:150px;" multiple="multiple">Corridors </select>');
+                var cnt = 0;
+            filterSet.forEach(function (filterName) {
+                $('#poi-by-group-filters').append('<option>'+filterName+'</option>')
 
-
+            });
+            $('#poi-by-group-filters').multiselect({
+                includeSelectAllOption: true,
+                numberDisplayed:1,
+                selectedClass: 'multiselect-selected',
+                onChange: function(option,checked){
+                     createEmptyChart();
+                        redrawMap();
+                },
+                onSelectAll: function(option,checked){
+                     createEmptyChart();
+                        redrawMap();
+                }
+            } )
+             .multiselect('selectAll',false)
+                .multiselect('updateButtonText');
+        }
         //d3.selectAll(".poi-by-group-trip-mode-bubbles").html("Bubbles");
         //d3.selectAll(".poi-by-group-trip-mode-example").html(modes[0]);
         valueCols.forEach(function (modeName) {
@@ -363,7 +394,7 @@ var maxLabelLength = 0;
                 //var radius = ((radiusMultiplier * 1000) / zoomLevel);
                 //radius = radius + (zoomLevel <= 9 ? 100 : 0);
                 //zoomLevel <= 9 ? 450.0 : zoomLevel > 9 ? 350 : 25.0;
-               // var circle = new L.Circle([poiData[d].LAT, poiData[d].LNG], {radius: radius}).addTo(map);
+                // var circle = new L.Circle([poiData[d].LAT, poiData[d].LNG], {radius: radius}).addTo(map);
                 /*var rect = L.rectangle(circle.getBounds(), {
                     color: pointColor,
                     weight: 4,
@@ -390,16 +421,49 @@ var maxLabelLength = 0;
                     maxWidth: 250
                 });
                 circleMarker.on('mouseover', function (e) {
+                    var currentGrp = $('#poi-by-group-groups-current').val();
+                    var fullString = currentGrp;
+
+                    if(currentGrp.length>20){
+                        currentGrp = currentGrp.substring(0,20)+"...";
+                    }
+                    var color = $('#poi-by-group-chart text:contains("'+currentGrp+'")').siblings("circle")[0].style.fill;
+                    var name = e.target.properties.NAME;
+                    var value = e.target.myData;
+                    $('div.nvtooltip strong.x-value').text(name);
+                    $('div.nvtooltip td.key').text($('#poi-by-group-groups-current').val());
+                    $('div.nvtooltip td.value').text(value.toLocaleString());
+                    $('div.nvtooltip').css('opacity',1);
+                    $('div.nvtooltip').css('transform',"translate(430px,430px)");
+                    $('div.nvtooltip td.legend-color-guide div').css('background-color',color);
                     this.openPopup();
                 });
                 circleMarker.on('mouseout', function (e) {
+                    $('div.nvtooltip').css('opacity',0);
                     this.closePopup();
                 });
                 circleMarker.myData = tooltipval.value;
+                circleMarker.pointFilter = poiData[d].pointfilter;
                 circleMarker.properties = {};
                 circleMarker.properties["NAME"] = d;
-                circleMarkers.push(circleMarker);
+                var checkedfilters = $('#poi-by-group-filters').val();
 
+                var showThis = false;
+
+                if(checkedfilters != undefined) {
+                    checkedfilters.forEach(function (name) {
+                        var filtername = name;
+
+                        if (filtername == poiData[d].pointfilter) {
+
+                            showThis = true;
+                        }
+
+                    });
+                }
+                if (showThis) {
+                    circleMarkers.push(circleMarker);
+                }
 
                 //circle.removeFrom(map);
                 prevPoint = currentPoint;
@@ -580,14 +644,15 @@ var maxLabelLength = 0;
         });
         //initialize the map palette
         // setColorPalette(selectedColorRampIndex);
-        $("#poi-by-group-checkboxes").change(function () {
-            redrawMap();
-        });
+
         updateChart(function () {
             console.log('updateChart callback after initialize');
         });
     }
-
+        $("#poi-by-group-checkboxes").change(function (d) {
+                       createEmptyChart();
+            redrawMap();
+        });
     function setColorPalette(clickedIndex) {
         console.log("DO NOTHING");
     }; //end setColorPalette
@@ -639,8 +704,14 @@ var maxLabelLength = 0;
             circleMarkers.forEach(function (circleMarker) {
                 var myData = circleMarker.myData;
                 var sqrtRadius = 0;
+
                 var quantity = myData;
-                var sqrtRadius = scaleSqrt(quantity);
+                var sqrtRadius = 0;//scaleSqrt(quantity);
+                var cnttrue = 0;
+                var isZoneVisible = true;
+
+
+                    sqrtRadius = scaleSqrt(quantity);
 
                 circleMarker.setRadius(sqrtRadius);
             });
@@ -652,8 +723,22 @@ var maxLabelLength = 0;
         //nvd3 expects data in the opposite hierarchy than rest of code so need to create
         //but can also filter out counties at same time
         //NOTE: ability to enable/disable counties  removed from UI so currently never used.
+         var checkedfilters = $('#poi-by-group-filters').val();
+
         var enabledGroups = chartData.filter(function (D) {
-            return D;
+            var showThis = false;
+            if(checkedfilters != undefined) {
+                checkedfilters.forEach(function (name) {
+                    var filtername = name;
+
+                    if (filtername == D.pointfilter) {
+
+                        showThis = true;
+                    }
+
+                });
+            }
+            return showThis;
         });
         var selectedValues = selectedDataGrp;
         var selectedGrp = selectedGroup;
@@ -688,7 +773,9 @@ var maxLabelLength = 0;
         abmviz_utilities.poll(function () {
             return extNvd3Chart != undefined;
         }, function () {
+            extNvd3Chart.legend.width(700);
             svgChart.datum(hierarchicalData).call(extNvd3Chart);
+            console.log(svgChart);
             //create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include county labels
             //first check if
             $('#poi-by-group .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(' + ROTATELABEL + 'deg)');

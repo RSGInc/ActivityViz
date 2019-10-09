@@ -197,9 +197,10 @@ var barchart_and_map = (function () {
                 }
                 $('#mode-share-by-county-checkboxes').append("</tr></table>");
 
-
+                callback();
             });
-            callback();
+
+
 
         } else {
         	$('#three3d-geography-label').hide();
@@ -868,6 +869,12 @@ var barchart_and_map = (function () {
 
 		function cycleTripMode() {
 			var newTripMode = modes[currentCycleModeIndex];
+			/*if ( $("#mode-share-by-county-bubbles").is(":checked") ){
+				$('#mode-share-by-county-current-trip-mode-bubbles').val(newTripMode);
+			}*/
+			if( $("#mode-share-by-county-zones").is(":checked") ) {
+				$('#mode-share-by-county-current-trip-mode-zones').val(newTripMode);
+			}
 			$('#mode-share-by-county-current-trip-mode').val(newTripMode);
 			updateCurrentTripModeOrClassification();
 			redrawMap();

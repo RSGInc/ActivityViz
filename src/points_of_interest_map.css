@@ -2,7 +2,9 @@
 Presumably this is because it used the same code as the vertical chart
 */
 
-
+li.multiselect-selected a label {
+	background-color:#e09d15;
+}
 #poi-by-group .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
 	font-weight: bold;
 }

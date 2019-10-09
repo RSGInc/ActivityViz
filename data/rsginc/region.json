@@ -1,17 +1,17 @@
 {
-  "Title":"Washington DC INRIX Data",
+  "Title":"RSG - ActivityViz",
   "CountyFile":"ZoneShape.json",
   "ZoneFile":"ZoneShape.json",
   "Icon":"RSG.ico",
   "Logo":"RSG_400px.jpg",
-  "NavbarTitle":"INRIX VIZ",
+  "NavbarTitle":"RSG ActivityViz",
   "LinkURL":"https://www.rsginc.com",
   "TabbedCharts":true,
   "CenterMap": [38.9072, -77.0369],
-  "FrontPageTitle": "Washington, DC",
+  "FrontPageTitle": "RSG Demo Data",
   "FrontPageGraphic": "RSG_400px.jpg",
   "scenarios":{
-    "INRIX": "- INRIX Processing"
+    "INRIX": "- Washington DC INRIX Processing"
   },
   "visualizations":{
   "3DMap":false,
@@ -26,6 +26,9 @@
     "NumberColsRadar":3,
     "IndependentScale":[""],
     "ConvertAxesToPercent":true
+  },
+  "GrpMap": {
+            "CycleMapTools": false
   },
   "GroupedCharts":{
     "NumberColsGrouped":1,
