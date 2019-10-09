@@ -298,10 +298,15 @@ var maxLabelLength = 0;
             $('#poi-by-group-filters').multiselect({
                 includeSelectAllOption: true,
                 numberDisplayed:1,
+                selectedClass: 'multiselect-selected',
                 onChange: function(option,checked){
                      createEmptyChart();
                         redrawMap();
                 },
+                onSelectAll: function(option,checked){
+                     createEmptyChart();
+                        redrawMap();
+                }
             } )
              .multiselect('selectAll',false)
                 .multiselect('updateButtonText');
