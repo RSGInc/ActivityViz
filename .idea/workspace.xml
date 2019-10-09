@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="341c539d-bbdc-4f96-b376-dae5b739e9e8" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/src/points_of_interest_map.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/points_of_interest_map.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/points_of_interest_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/points_of_interest_map.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,28 +40,28 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="css" value="385" />
+          <entry key="css" value="415" />
           <entry key="csv" value="132" />
           <entry key="html" value="5719" />
-          <entry key="js" value="25786" />
+          <entry key="js" value="25809" />
           <entry key="json" value="563" />
           <entry key="md" value="1179" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="CSS" value="385" />
+          <entry key="CSS" value="415" />
           <entry key="CSV" value="132" />
           <entry key="HTML" value="5720" />
           <entry key="JSON" value="563" />
-          <entry key="JavaScript" value="25785" />
+          <entry key="JavaScript" value="25808" />
           <entry key="Markdown" value="1179" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="bootstrap-multiselect" value="2" />
-          <entry key="css" value="11" />
+          <entry key="css" value="12" />
           <entry key="csv" value="41" />
           <entry key="html" value="19" />
           <entry key="js" value="105" />
@@ -71,7 +72,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CSS" value="11" />
+          <entry key="CSS" value="12" />
           <entry key="CSV" value="41" />
           <entry key="HTML" value="19" />
           <entry key="JSON" value="35" />
@@ -84,16 +85,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="306" column="49" lean-forward="true" selection-start-line="306" selection-start-column="49" selection-end-line="306" selection-end-column="49" />
+            <state relative-caret-position="333">
+              <caret line="300" column="54" selection-start-line="300" selection-start-column="54" selection-end-line="300" selection-end-column="54" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#table#0;n#div#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="15" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -228,15 +238,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/rsginc/region.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="30" column="34" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/scatter.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4182">
@@ -266,7 +267,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>c</find>
       <find>poi-by-group-bubble-color</find>
       <find>feature</find>
       <find>transform</find>
@@ -296,6 +296,7 @@
       <find>checkedfilters</find>
       <find>showThis</find>
       <find>filtername</find>
+      <find>multisel</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -349,7 +350,6 @@
         <option value="$PROJECT_DIR$/src/radar.js" />
         <option value="$PROJECT_DIR$/src/grouped_barchart_data.js" />
         <option value="$PROJECT_DIR$/data/portland/I205/PointofInterest.csv" />
-        <option value="$PROJECT_DIR$/src/points_of_interest_map.css" />
         <option value="$PROJECT_DIR$/src/chord.js" />
         <option value="$PROJECT_DIR$/src/grouped_barchart.js" />
         <option value="$PROJECT_DIR$/data/rsginc/region.json" />
@@ -365,6 +365,7 @@
         <option value="$PROJECT_DIR$/bower_components/bootstrap/dist/css/bootstrap-multiselect.css" />
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/points_of_interest_map.js" />
+        <option value="$PROJECT_DIR$/src/points_of_interest_map.css" />
       </list>
     </option>
   </component>
@@ -383,11 +384,11 @@
       <path value="$PROJECT_DIR$/bower_components/spectrum/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-456" />
-    <option name="y" value="270" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-12" />
+    <option name="y" value="472" />
     <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -542,7 +543,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-12" y="472" width="1936" height="1053" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19083156" />
@@ -759,13 +760,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/portland/I205/PointofInterest.csv" />
-    <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/chord.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -983,13 +977,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="306" column="49" lean-forward="true" selection-start-line="306" selection-start-column="49" selection-end-line="306" selection-end-column="49" />
+        <state relative-caret-position="333">
+          <caret line="300" column="54" selection-start-line="300" selection-start-column="54" selection-end-line="300" selection-end-column="54" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#table#0;n#div#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/points_of_interest_map.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="15" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
         </state>
       </provider>
     </entry>
