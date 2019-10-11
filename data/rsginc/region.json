@@ -8,7 +8,7 @@
   "LinkURL":"https://www.rsginc.com",
   "TabbedCharts":true,
   "CenterMap": [38.9072, -77.0369],
-  "FrontPageTitle": "RSG Demo Data",
+  "FrontPageTitle": "RSG",
   "FrontPageGraphic": "RSG_400px.jpg",
   "scenarios":{
     "INRIX": "- Washington DC INRIX Processing"
