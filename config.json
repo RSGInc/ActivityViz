@@ -1,22 +1,7 @@
 {
   "regions":{
-    "rsginc":{
-      "default":  true
-    },
-    "atlanta":{
-      "default":  false
-    },
     "portland":{
-      "default":  false
-    },
-    "sandiego":{
-      "default":  false
-    },
-    "sacramento":{
-      "default":  false
-    },
-    "nebraska":{
-      "default":  false
+      "default":  true
     }
   }
 }
