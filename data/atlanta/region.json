@@ -9,6 +9,7 @@
   "CenterMap": [33.754525, -84.384774],
   "FrontPageTitle": "Atlanta Regional Commission",
   "FrontPageGraphic": "arc_logo.png",
+  "TabbedCharts": true,
   "scenarios":{
     "BS10": "- Base year 2010",
     "NB2040": "- No-Build 2040",
@@ -16,17 +17,21 @@
     "RP-NB": "- Regional Plan 2040 minus No-Build 2040"
   },
   "visualizations":{
-  "3DMap":true,
+
   "BarMap":true,
   "GrpBar":true,
   "TimeUse":true,
   "Radar":true,
-  "Sunburst":true
+  "Sunburst":true,
+   "3DMap":true
 },
   "RadarCharts":{
     "NumberColsRadar":4,
     "IndependentScale":[""],
     "ConvertAxesToPercent":true
+  },
+  "GrpMap": {
+
   },
   "GroupedCharts":{
     "NumberColsGrouped":1,
