@@ -21,6 +21,7 @@
             "label": "- I205",
             "CenterMap": [ 45.367157, -122.692046],
             "ScenarioFocus": "I205.json"
+
         },
         {
             "name": "DivisionBRT",
@@ -32,17 +33,35 @@
             "name":"Scenarios",
             "label":"- I205 versus Division BRT",
             "CenterMap":[45.512794,-122.679565]
+        },
+        {
+            "name":"Freight",
+            "label":"- Freight Flows",
+            "CenterMap":[45.512794,-122.679565]
+        },
+        {
+            "name":"Concept-B",
+            "label":"- Concept B",
+            "CenterMap":[45.512794,-122.679565],
+            "ScenarioFocus": "concept-b.json"
+        },
+        {
+            "name":"Concept-E",
+            "label":"- Concept E",
+            "CenterMap":[45.512794,-122.679565],
+            "ScenarioFocus": "concept-e.json"
         }
         ],
     "visualizations": {
-        "GrpBar": true, 
-        "BarMap": true, 
+        "GrpBar": false,
+        "BarMap": false,
         "TimeUse": false, 
         "Radar": false, 
-        "3DMap": true, 
+        "3DMap": false,
         "Sunburst": false, 
-        "Chord": true, 
-        "Scatter": true
+        "Chord": false,
+        "Scatter": false,
+        "POIMap": true
     }, 
     "RadarCharts": {
         "NumberColsRadar": 4, 
@@ -67,17 +86,27 @@
             6, 
             6
         ]
-    }, 
+    },
+    "POIMap": {
+        "BarSpacing": "0.6",
+        "RotateLabels": "0",
+        "LegendTitle": "Freight Flows",
+        "BubbleDefault": true
+
+    },
     "GrpMap": {
-        "BarSpacing": "0.6", 
-        "RotateLabels": "0", 
+
+        "BarSpacing": "0.6",
+        "RotateLabels": "0",
         "ZoneFilterFile": "cocs.csv",
-        "ZoneFilterLabel": "Historically Marginalized Communities", 
-        "CycleMapTools": false, 
+        "ZoneFilterLabel": "Historically Marginalized Communities",
+        "CycleMapTools": false,
         "ZoneFilters": {"minority_zone": "Minority",
             "lowengpro_zone": "Low English",
             "age18or65_zone": "Age 18 or 65",
             "lowinc_zone": "Low Income"}
+
+
     },
     "colorRamps": {
         "Reds": false, 

@@ -57,8 +57,6 @@ function runAfterChartCreated() {
     }
 
 }
-
-
 	//end setDataSpecificDOM
 	function updateChart(callback) {
 		"use strict";
