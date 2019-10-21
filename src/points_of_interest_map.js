@@ -460,6 +460,8 @@ var maxLabelLength = 0;
                         }
 
                     });
+                } else {
+                 showThis = true;   
                 }
                 if (showThis) {
                     circleMarkers.push(circleMarker);
