@@ -1,6 +1,7 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
 //global object grouped_barchart will contain functions and variables that must be accessible from elsewhere
-function grouped_barchart (id, data,options) {
+
+function grouped_barchart (id, data,options,divid) {
 	"use strict";
 	var chartDataContainer=[];
 	var chartData;
@@ -10,8 +11,9 @@ function grouped_barchart (id, data,options) {
 	var mainGroupSet = options.mainGrpSet;
 	var subGroupSet = options.subGrpSet;
 	var chartSet;
-	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv"
-	var chartSelector = "#grouped-barchart";
+	var region = abmviz_utilities.GetURLParameter("region");
+	var dataLocation = localStorage.getItem(region);
+	var chartSelector = "#"+divid+"_grouped-barchart";
 	var svgChart;
 	var extNvd3Chart;
 	var minBarWidth = 2;
@@ -38,22 +40,22 @@ function grouped_barchart (id, data,options) {
     var minVal = options.minVal;
 	var ROTATELABEL = options.rotateLabel;
 	var BARSPACING = showAsGrouped ? options.barSpacing:0.2;
-	var barsWrapRectId = "grouped-barchart-barsWrapRectRSG"
+	var barsWrapRectId = divid+"-barsWrapRectRSG"
 	var barsWrapRectSelector = "#" + barsWrapRectId;
 	var showChartOnPage = true;
-	$("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
-	//start off chain of initialization by reading in the data	
+
+	//start off chain of initialization by reading in the data
     svgChart = d3.select(id);
     //setDataSpecificDOM();
 	createEmptyChart(runAfterChartCreated);
 	//initializeMuchOfUI();
 
 
-	//start off chain of initialization by reading in the data	
+	//start off chain of initialization by reading in the data
 
 function runAfterChartCreated() {
-    if ($("#grouped-barchart-toggle-horizontal").prop('checked')) {
-        $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
+    if ($("#"+divid+"-toggle-horizontal").prop('checked')) {
+        $('#'+divid+'-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
     }
 
 }
@@ -69,19 +71,19 @@ function runAfterChartCreated() {
 		abmviz_utilities.poll(function () {
 			return extNvd3Chart != undefined;
 		}, function () {
-		    svgChart.datum(data).call(extNvd3Chart);
-			//create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
-			//first check if
+            svgChart.datum(data).call(extNvd3Chart);
+            //create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
+            //first check if
 
-			barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
-			if (barsWrap[0].length == 0) {
-				throw ("did not find expected part of chart")
-			}
-			//if first time (enter() selection) create rect
-			//nv-barsWrap nvd3-svg
-			barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x",showAsVertical?0: -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
-				//console.log('barsWrap mousemove');
-                if(showAsVertical){
+            barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
+            if (barsWrap[0].length == 0) {
+                throw ("did not find expected part of chart")
+            }
+            //if first time (enter() selection) create rect
+            //nv-barsWrap nvd3-svg
+            barsWrapRect = barsWrap.selectAll(barsWrapRectSelector).data([barsWrapRectId]).enter().insert("rect", ":first-child").attr("id", barsWrapRectId).attr("x", showAsVertical ? 0 : -marginLeft).attr("fill-opacity", "0.0").on("mousemove", function (event) {
+                //console.log('barsWrap mousemove');
+                if (showAsVertical) {
                     var mouseX = d3.mouse(this)[0];
                     var numMainGroups = mainGroupSet.size;
                     var widthPerGroup = barsWrapRectWidth / numMainGroups;
@@ -98,10 +100,10 @@ function runAfterChartCreated() {
                     var mainGroupObject = data[0].values[mainGroupIndex];
                     var newMainGroup = mainGroupObject.label;
                     changeCurrentMainGroup(newMainGroup);
-				}
-			});
-			setTimeout(updateChartMouseoverRect, 1000);
-		}, function () {
+                }
+            });
+            setTimeout(updateChartMouseoverRect, 1000);
+        }, function () {
 			throw "something is wrong -- extNvd3Chart still doesn't exist after polling "
 		});
 		//end call to poll
@@ -135,9 +137,9 @@ runAfterChartCreated();
 		if (currentMainGroup != newCurrentMainGroup) {
 			console.log('changing from ' + currentMainGroup + " to " + newCurrentMainGroup);
 			currentMainGroup = newCurrentMainGroup;
-			var mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick text");
+			var mainGroupLabels = d3.selectAll("#"+divid+"-div .nv-x .tick text");
 			if(showAsVertical)
-			    mainGroupLabels = d3.selectAll("#grouped-barchart-div .nv-x .tick foreignObject p");
+			    mainGroupLabels = d3.selectAll("#"+divid+"-div .nv-x .tick foreignObject p");
 			mainGroupLabels.classed("selected", function (d, i) {
 				var setClass = d == currentMainGroup;
 				return setClass;
@@ -177,7 +179,7 @@ runAfterChartCreated();
                     right: showAsVertical ? marginRightVert : marginRight,
                     top: showAsVertical ? marginTopVert : marginTop,
                     bottom: showAsVertical ? marginBottomVert : marginBottom
-                }).id("grouped-barchart-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
+                }).id(divid+"-multiBarHorizontalChart").stacked(showAsGrouped).showControls(false);
 
 
                // if (maxVal != 0 && !showPercentages) {
@@ -221,8 +223,8 @@ runAfterChartCreated();
 					console.log("nv.addGraph callback called");
 					extNvd3Chart = newGraph;
                     extNvd3Chart.dispatch.on("renderEnd", function (d, j) {
-                    if ($("#grouped-barchart-toggle-horizontal").prop('checked')) {
-                        $('#grouped-barchart-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
+                    if ($("#"+divid+"-toggle-horizontal").prop('checked')) {
+                        $('#'+divid+'-div .nv-x .nv-axis text').not('.nv-axislabel').css('transform', 'rotate(-90deg)').css('text-anchor', 'end').attr('y', '-7');
                     }
                 });
 

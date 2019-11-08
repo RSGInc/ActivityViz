@@ -9,39 +9,112 @@
   "CenterMap": [32.715738, -117.161083],
   "FrontPageTitle": "San Diego Association of Governments",
   "FrontPageGraphic":"logo_sandag.gif",
-  "scenarios":{
-    "BS2012": "- Base year 2012 (default)",
-    "BS2015": "- Base year 2015,127",
-    "2020RC": "- Revenue-Constrained Year 2020",
-    "2035RC": "- Revenue-Constrained Year 2035",
-    "2050RC": "- Revenue-Constrained Year 2050"
+  "scenarios": {
+    "BS2012": {
+      "title": "- Base year 2012 (default)",
+      "visualizations": {
+        "BarMap": [
+          {"name": "BarChart","config": "Default","file": "BarChartAndMapData.csv"}
+        ],
+        "RadarCharts": [{"name":"Radar","config":"Default", "file":"RadarChartsData.csv"}],
+        "Sunburst": [{"name":"Sunburst","config":"Default", "file":"TreeMapData.csv"}],
+        "3DMap": [{"name":"3D Map","config":"Default", "file":"3DAnimatedMapData.csv"}],
+        "GroupedCharts": [{"name":"Group BarChart","config":"Default", "file":"BarChartData.csv"}],
+        "TimeUse": [{"name":"TimeUse","config":"Default", "file":"TimeUseData.csv"}]
+      }
+    },
+    "BS2015": {
+      "title": "- Base year 2015,127",
+      "visualizations": {
+        "BarMap": [
+          {"name": "BarChart","config": "Default","file": "BarChartAndMapData.csv"}
+        ],
+        "RadarCharts": [{"name":"Radar","config":"Default", "file":"RadarChartsData.csv"}],
+        "Sunburst": [{"name":"Sunburst","config":"Default", "file":"TreeMapData.csv"}],
+        "3DMap": [{"name":"3D Map","config":"Default", "file":"3DAnimatedMapData.csv"}],
+        "GroupedCharts": [{"name":"Group BarChart","config":"Default", "file":"BarChartData.csv"}],
+        "TimeUse": [{"name":"TimeUse","config":"Default", "file":"TimeUseData.csv"}]
+      }
+    },
+    "2020RC": {
+      "title": "- Revenue-Constrained Year 2020",
+      "visualizations": {
+        "BarMap": [
+          {"name": "BarChart","config": "Default","file": "BarChartAndMapData.csv"}
+        ],
+        "RadarCharts": [{"name":"Radar","config":"Default", "file":"RadarChartsData.csv"}],
+        "Sunburst": [{"name":"Sunburst","config":"Default", "file":"TreeMapData.csv"}],
+        "3DMap": [{"name":"3D Map","config":"Default", "file":"3DAnimatedMapData.csv"}],
+        "GroupedCharts": [{"name":"Group BarChart","config":"Default", "file":"BarChartData.csv"}],
+        "TimeUse": [{"name":"TimeUse","config":"Default", "file":"TimeUseData.csv"}]
+      }
+    },
+    "2035RC": {
+      "title": "- Revenue-Constrained Year 2035",
+      "visualizations": {
+        "BarMap": [
+          {"name": "BarChart","config": "Default","file": "BarChartAndMapData.csv"}
+        ],
+        "RadarCharts": [{"name":"Radar","config":"Default", "file":"RadarChartsData.csv"}],
+        "Sunburst": [{"name":"Sunburst","config":"Default", "file":"TreeMapData.csv"}],
+        "3DMap": [{"name":"3D Map","config":"Default", "file":"3DAnimatedMapData.csv"}],
+        "GroupedCharts": [{"name":"Group BarChart","config":"Default", "file":"BarChartData.csv"}],
+        "TimeUse": [{"name":"TimeUse","config":"Default", "file":"TimeUseData.csv"}]
+      }
+    },
+    "2050RC": {
+      "title": "- Revenue-Constrained Year 2050",
+      "visualizations": {
+        "BarMap": [
+          {"name": "BarChart","config": "Default","file": "BarChartAndMapData.csv"}
+        ],
+        "RadarCharts": [{"name":"Radar","config":"Default", "file":"RadarChartsData.csv"}],
+        "Sunburst": [{"name":"Sunburst","config":"Default", "file":"TreeMapData.csv"}],
+        "3DMap": [{"name":"3D Map","config":"Default", "file":"3DAnimatedMapData.csv"}],
+        "GroupedCharts": [{"name":"Group BarChart","config":"Default", "file":"BarChartData.csv"}],
+        "TimeUse": [{"name":"TimeUse","config":"Default", "file":"TimeUseData.csv"}]
+      }
+    }
   },
-  "visualizations":{
-    "3DMap":true,
-    "BarMap":true,
-    "GrpBar":true,
-    "TimeUse":true,
-    "Radar":true,
-    "Sunburst":true
+  "BarMap":{
+    "Default":{}
   },
-  "RadarCharts":{
-    "NumberColsRadar":4,
-    "IndependentScale":[""],
-   "ConvertAxesToPercent":true
+  "RadarCharts": {
+    "Default": {
+      "NumberColsRadar": 4,
+      "IndependentScale": [
+        ""
+      ],
+      "ConvertAxesToPercent": true
+    }
   },
 
   "GroupedCharts":{
-    "NumberColsGrouped":1,
-    "SwapLegendByDefault":true,
-    "ShowAsPercentByDefault":false,
-    "ShowAsVerticalByDefault":false,
-    "StackAllChartsByDefault":false,
-    "ChartWidthOverride": []
+    "Default": {
+      "NumberColsGrouped": 1,
+      "SwapLegendByDefault": true,
+      "ShowAsPercentByDefault": false,
+      "ShowAsVerticalByDefault": false,
+      "StackAllChartsByDefault": false,
+      "ChartWidthOverride": []
+    }
   },
-  "ThreeDMap":{
-    "ShowPeriodsAsDropdown":false,
-    "DataHasPeriods":true,
-    "ZoneFile": []
+  "TimeUse": {
+    "Default":{
+
+    }
+  },
+  "Sunburst": {
+    "Default":{
+
+    }
+  },
+  "3DMap":{
+    "Default": {
+      "ShowPeriodsAsDropdown": false,
+      "DataHasPeriods": true,
+      "ZoneFile": []
+    }
   }
 }
 
