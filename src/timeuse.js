@@ -44,22 +44,22 @@ function timeuse (id,indx) {
 
          }
          if (data["scenarios"][scenario].visualizations["TimeUse"][indx].config) {
-            configName = data["scenarios"][scenario].visualizations["TimeUse"][indx].config;
-        }
-        if (data["scenarios"][scenario].visualizations["TimeUse"][indx].datafilecolumns) {
-            var datacols = data["scenarios"][scenario].visualizations["TimeUse"][indx].datafilecolumns;
-            $.each(datacols,function(key,value){
-                $('#'+id+'-datatable-columns').append("<p>"+key+": "+value+"</p>");
-            })
-        }
-        if (data["scenarios"][scenario].visualizations["TimeUse"][indx].info) {
-            var infoBox;
-            infoBox = data["scenarios"][scenario].visualizations["TimeUse"][indx].info;
-            $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
-            $('#' + id + '-div [data-toggle="tooltip"]').tooltip();
+             configName = data["scenarios"][scenario].visualizations["TimeUse"][indx].config;
+         }
+         if (data["scenarios"][scenario].visualizations["TimeUse"][indx].datafilecolumns) {
+             var datacols = data["scenarios"][scenario].visualizations["TimeUse"][indx].datafilecolumns;
+             $.each(datacols, function (key, value) {
+                 $('#' + id + '-datatable-columns').append("<p>" + key + ": " + value + "</p>");
+             })
+         }
+         if (data["scenarios"][scenario].visualizations["TimeUse"][indx].info) {
+             var infoBox;
+             infoBox = data["scenarios"][scenario].visualizations["TimeUse"][indx].info;
+             $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
+             $('#' + id + '-div [data-toggle="tooltip"]').tooltip();
 
 
-        }
+         }
      }
 
  }).complete(function(){

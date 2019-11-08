@@ -26,7 +26,7 @@ var RadarData = {
            if (showChartOnPage) {
                $.getJSON(dataLocation + "region.json", function (data) {
                    var configName = "Default";
-                   $.each(data, function (key, val) {
+
                        if (data["scenarios"][scenario].visualizations != undefined) {
                            if (data["scenarios"][scenario].visualizations["RadarCharts"][indx].file) {
                                fileName = data["scenarios"][scenario].visualizations["RadarCharts"][indx].file;
@@ -47,7 +47,7 @@ var RadarData = {
                                })
                            }
                        }
-                   });
+
                    var configSettings = data["RadarCharts"][configName];
                    if (configSettings != undefined) {
                        $.each(configSettings, function (opt, value) {

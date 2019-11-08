@@ -41,7 +41,7 @@ var chartDataContainer=[];
         if (showChartOnPage) {
             $.getJSON(dataLocation + "region.json", function (data) {
                 var configName = "Default";
-                $.each(data, function (key, val) {
+
 
                     if (data["scenarios"][scenario].visualizations != undefined) {
                         if (data["scenarios"][scenario].visualizations["GroupedCharts"][configIndx].file) {
@@ -63,7 +63,7 @@ var chartDataContainer=[];
                             })
                         }
                     }
-                });
+
                 var configSettings = data["GroupedCharts"][configName];
 
 
