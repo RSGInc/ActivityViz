@@ -22,7 +22,7 @@ region by doing the following:
 
 1. Add the region name and data folder location in the config.json file.  Delete the other existing regions if desired.
 2. The data location can be anywhere that serves up the files. 
-    For example: The region "rsginc" should have a folder named "rsginc" in the data location "https://raw.githubusercontent.com/medailey/AVDevRepo/master/data/rsginc/"  
+    For example: The region "rsginc" should have a folder named "rsginc" in the data location "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"  
 3. The first region will determine which graphics are shown on the main page.
 4. Copy existing region.json file into the region folder.
 
