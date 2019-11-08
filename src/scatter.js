@@ -31,27 +31,27 @@ function scatter(id,indx) {
         if (showChartOnPage) {
             $.getJSON(dataLocation + "region.json", function (data) {
                 var configName = "Default";
-                $.each(data, function (key, val) {
 
-                    if (data["scenarios"][scenario].visualizations != undefined) {
-                        if (data["scenarios"][scenario].visualizations["Scatter"][indx].file) {
-                            fileName = data["scenarios"][scenario].visualizations["Scatter"][indx].file;
-                        }
-                        if (data["scenarios"][scenario].visualizations["Scatter"][indx].info) {
-                            var infoBox;
-                            infoBox = data["scenarios"][scenario].visualizations["Scatter"][indx].info;
-                            $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
-                            $('#'+id+'-div [data-toggle="tooltip"]').tooltip();
-                        }
-                if (data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns) {
-            var datacols = data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns;
-            $.each(datacols,function(key,value){
-                $('#'+id+'-datatable-columns').append("<p>"+key+": "+value+"</p>");
-            })
-        }
 
+                if (data["scenarios"][scenario].visualizations != undefined) {
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].file) {
+                        fileName = data["scenarios"][scenario].visualizations["Scatter"][indx].file;
                     }
-                });
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].info) {
+                        var infoBox;
+                        infoBox = data["scenarios"][scenario].visualizations["Scatter"][indx].info;
+                        $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
+                        $('#' + id + '-div [data-toggle="tooltip"]').tooltip();
+                    }
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns) {
+                        var datacols = data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns;
+                        $.each(datacols, function (key, value) {
+                            $('#' + id + '-datatable-columns').append("<p>" + key + ": " + value + "</p>");
+                        })
+                    }
+
+                }
+
                 var configSettings = data["Scatter"][configName];
 
                 $.each(configSettings, function (opt, value) {

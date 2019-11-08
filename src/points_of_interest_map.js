@@ -98,7 +98,6 @@ function pointofinterest_and_map (id,indx) {
         if (showChartOnPage) {
             $.getJSON(dataLocation + "region.json", function (data) {
                 var configName = "Default";
-                $.each(data, function (key, val) {
 
                     if (data["scenarios"][scenario].visualizations != undefined) {
                         if (data["scenarios"][scenario].visualizations["POIMap"][indx].file) {
@@ -120,7 +119,7 @@ function pointofinterest_and_map (id,indx) {
                             })
                         }
                     }
-                });
+
                 var configSettings = data["POIMap"][configName];
                 //go through region level settings
                 $.each(data, function (key, val) {

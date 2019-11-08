@@ -111,12 +111,12 @@ var ThreeDMap = {
 
 
                     }
-        if (data["scenarios"][scenario].visualizations["3DMap"][indx].datafilecolumns) {
-            var datacols = data["scenarios"][scenario].visualizations["3DMap"][indx].datafilecolumns;
-            $.each(datacols,function(key,value){
-                $('#'+id+'-datatable-columns').append("<p>"+key+": "+value+"</p>");
-            })
-        }
+                    if (data["scenarios"][scenario].visualizations["3DMap"][indx].datafilecolumns) {
+                        var datacols = data["scenarios"][scenario].visualizations["3DMap"][indx].datafilecolumns;
+                        $.each(datacols, function (key, value) {
+                            $('#' + id + '-datatable-columns').append("<p>" + key + ": " + value + "</p>");
+                        })
+                    }
                 }
                 url += "/" + fileName;
                 //go through region level config settings
