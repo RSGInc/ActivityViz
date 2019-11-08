@@ -496,9 +496,9 @@ function pointofinterest_and_map (id,indx) {
                     var name = e.target.properties.NAME;
                     var value = e.target.myData;
                     //remove the tooltip and then recreate template tooltip because we are trying to mimic the barchart tooltip
-                    $('div.nvtooltip').remove();
-                    if($('div.nvtooltip').length ==0){
-                        $('body').append('<div class="nvtooltip xy-tooltip" style="top: 0px; left: 0px; opacity: 0; position: fixed; transform: translate(419px, 366px) !important;"><table><thead><tr><td colspan="3"><strong class="x-value"></strong></td></tr></thead><tbody><tr><td class="legend-color-guide"><div style="background-color: rgb(255, 187, 120);"></div></td><td class="key"></td><td class="value"></td></tr></tbody></table></div>');
+                    $('div.nvtooltip table').remove();
+                    if($('div.nvtooltip table').length ==0){
+                        $('div.nvtooltip ').append('<table><thead><tr><td colspan="3"><strong class="x-value"></strong></td></tr></thead><tbody><tr><td class="legend-color-guide"><div style="background-color: rgb(255, 187, 120);"></div></td><td class="key"></td><td class="value"></td></tr></tbody></table>');
                     }
                     $('div.nvtooltip strong.x-value').text(name);
                     $('div.nvtooltip td.key').text($('#'+id+'-groups-current').val());
