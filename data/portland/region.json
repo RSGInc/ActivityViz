@@ -5,8 +5,7 @@
     "Icon": "oregon-metro2.ico", 
     "Logo": "oregon-metro.png", 
     "NavbarTitle": "MCEVIZ", 
-    "LinkURL": "http://www.oregonmetro.gov/", 
-    "TabbedCharts": true, 
+    "LinkURL": "http://www.oregonmetro.gov/",
     "CenterMap": [
         45.512794, 
         -122.679565
@@ -15,98 +14,110 @@
     "DefaultHighlightColor":"red",
     "FrontPageTitle": "Oregon Metro", 
     "FrontPageGraphic": "oregon-metro_black.png", 
-    "scenarios": [
-        {
-            "name": "I205",
-            "label": "- I205",
-            "CenterMap": [ 45.367157, -122.692046],
-            "ScenarioFocus": "I205.json"
-
+    "scenarios": {
+        "I205": {"title": "- I205","CenterMap": [45.367157,-122.692046],"ScenarioFocus": "I205.json",
+            "visualizations": {
+                "3DMap": [{"name":"3DMap","config":"Default","file":"3DAnimatedMapData.csv"}],
+                "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"}],
+                "BarMap": [{"name":"BarChart","config":"Default", "file":"BarChartAndMapData.csv"}],
+                "Chord": [{"name":"Chord Chart","config":"Default", "file":"ChordData.csv"}],
+                "RadarCharts": [{"name":"Radar","config":"Default","file":"RadarChartsData.csv"}]
+            }
         },
-        {
-            "name": "DivisionBRT",
-            "label":"- DivisionBRT",
-            "CenterMap":[45.512794,-122.679565],
-            "ScenarioFocus": "DivisionBRT.json"
+        "DivisionBRT": {
+            "title": "- DivisionBRT",
+            "CenterMap": [45.512794,-122.679565],
+            "ScenarioFocus": "DivisionBRT.json",
+            "visualizations": {
+                "3DMap": [{"name":"3DMap","config":"Default","file":"3DAnimatedMapData.csv"}],
+                "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"}],
+                "BarMap": [{"name":"BarChart","config":"Default", "file":"BarChartAndMapData.csv"}],
+                "Chord": [{"name":"Chord Chart","config":"Default", "file":"ChordData.csv"}]
+            }
         },
-        {
-            "name":"Scenarios",
-            "label":"- I205 versus Division BRT",
-            "CenterMap":[45.512794,-122.679565]
+        "Scenarios": {
+            "name": "Scenarios",
+            "title": "- I205 versus Division BRT",
+            "CenterMap": [45.512794,-122.679565],
+            "visualizations": {
+                "Scatter": [{"name":"Scatter","config":"Default","file":"Scatter.csv"}],
+                "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"}]
+            }
         },
-        {
-            "name":"Freight",
-            "label":"- Freight Flows",
-            "CenterMap":[45.512794,-122.679565]
+        "Freight": {
+            "name": "Freight",
+            "title": "- Freight Flows",
+            "CenterMap": [45.512794,-122.679565],
+            "visualizations": {
+                "POIMap": [{"name":"My POI","config":"Default","file":"PointofInterest.csv"}]
+            }
         },
-        {
-            "name":"Concept-B",
-            "label":"- Concept B",
-            "CenterMap":[45.512794,-122.679565],
-            "ScenarioFocus": "concept-b.json"
+        "Concept-B": {
+            "name": "Concept-B",
+            "title": "- Concept B",
+            "CenterMap": [45.512794,-122.679565],
+            "ScenarioFocus": "concept-b.json",
+            "visualizations": {
+                "3DMap": [{"name":"3DMap","config":"Default","file":"3DAnimatedMapData.csv"}],
+                "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"}],
+                "BarMap": [{"name":"BarChart","config":"Default", "file":"BarChartAndMapData.csv"}],
+                "Chord": [{"name":"Chord Chart","config":"Default", "file":"ChordData.csv"}]
+            }
         },
-        {
-            "name":"Concept-E",
-            "label":"- Concept E",
-            "CenterMap":[45.512794,-122.679565],
-            "ScenarioFocus": "concept-e.json"
+        "Concept-E": {
+            "name": "Concept-E",
+            "title": "- Concept E",
+            "CenterMap": [45.512794,-122.679565],
+            "ScenarioFocus": "concept-e.json",
+            "visualizations": {
+                "3DMap": [{"name":"3DMap","config":"Default","file":"3DAnimatedMapData.csv"}],
+                "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"}],
+                "BarMap": [{"name":"BarChart","config":"Default", "file":"BarChartAndMapData.csv"}],
+                "Chord": [{"name":"Chord Chart","config":"Default", "file":"ChordData.csv"}]
+            }
         }
-        ],
-    "visualizations": {
-        "GrpBar": false,
-        "BarMap": false,
-        "TimeUse": false, 
-        "Radar": false, 
-        "3DMap": false,
-        "Sunburst": false, 
-        "Chord": false,
-        "Scatter": false,
-        "POIMap": true
-    }, 
+    },
     "RadarCharts": {
-        "NumberColsRadar": 4, 
-        "IndependentScale": [
-            "Everyone Negative Benefits", 
-            "Everyone Positive Benefits"
-        ], 
+      "Default": {
+        "NumberColsRadar": 4,
+        "IndependentScale": ["Everyone Negative Benefits","Everyone Positive Benefits"],
         "ConvertAxesToPercent": false
+      }
     }, 
     "GroupedCharts": {
-        "BarSpacing": "0.2", 
-        "RotateLabels": "0", 
-        "NumberColsGrouped": 2, 
-        "SwapLegendByDefault": false, 
-        "ShowAsPercentByDefault": "N/A", 
-        "ShowAsVerticalByDefault": true, 
-        "StackAllChartsByDefault": false, 
-        "ChartWidthOverride": [
-            12, 
-            12, 
-            6, 
-            6, 
-            6
-        ]
+        "Default": {
+            "BarSpacing": "0.2",
+            "RotateLabels": "0",
+            "NumberColsGrouped": 2,
+            "SwapLegendByDefault": false,
+            "ShowAsPercentByDefault": "N/A",
+            "ShowAsVerticalByDefault": true,
+            "StackAllChartsByDefault": false,
+            "ChartWidthOverride": [12,12,6,6,6]
+        }
     },
     "POIMap": {
-        "BarSpacing": "0.6",
-        "RotateLabels": "0",
-        "LegendTitle": "Freight Flows",
-        "BubbleDefault": true
-
+        "Default": {
+            "BarSpacing": "0.6",
+            "RotateLabels": "0",
+            "LegendTitle": "Freight Flows",
+            "BubbleDefault": true
+        }
     },
-    "GrpMap": {
-
+    "BarMap": {
+      "Default": {
         "BarSpacing": "0.6",
         "RotateLabels": "0",
         "ZoneFilterFile": "cocs.csv",
         "ZoneFilterLabel": "Historically Marginalized Communities",
         "CycleMapTools": false,
-        "ZoneFilters": {"minority_zone": "Minority",
-            "lowengpro_zone": "Low English",
-            "age18or65_zone": "Age 18 or 65",
-            "lowinc_zone": "Low Income"}
-
-
+        "ZoneFilters": {
+          "minority_zone": "Minority",
+          "lowengpro_zone": "Low English",
+          "age18or65_zone": "Age 18 or 65",
+          "lowinc_zone": "Low Income"
+        }
+      }
     },
     "colorRamps": {
         "Reds": false, 
@@ -119,17 +130,21 @@
     }, 
     "Scatter": {}, 
     "Chord": {
-        "ZoneFilterFile": "cocs.csv", 
-        "LabelSize": "14", 
-        "LegendRows": 4, 
-        "LegendText": "TRIPS"
+        "Default": {
+            "ZoneFilterFile": "cocs.csv",
+            "LabelSize": "14",
+            "LegendRows": 4,
+            "LegendText": "TRIPS"
+        }
     }, 
-    "ThreeDMap": {
-        "ShowPeriodsAsDropdown": true, 
-        "DataHasPeriods": false, 
-        "ZoneFilterLabel": "Historically Marginalized Communities", 
-        "ZoneFilterFile": "cocs.csv",
-        "CentroidsOff":true,
-        "ZoneFilters": {}
+    "3DMap": {
+        "Default": {
+            "ShowPeriodsAsDropdown": true,
+            "DataHasPeriods": false,
+            "ZoneFilterLabel": "Historically Marginalized Communities",
+            "ZoneFilterFile": "cocs.csv",
+            "CentroidsOff": true,
+            "ZoneFilters": {}
+        }
     }
 }

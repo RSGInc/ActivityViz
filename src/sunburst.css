@@ -1,5 +1,4 @@
-#sunburst {
-	//
+[charttype$="sunburstchart"] {
 	padding: 0px;
 	padding-left: 10px;
 	padding-top: 0;
@@ -10,33 +9,33 @@
 	display: table;
 }
 
-#sunburst-legend {
+.sunburst-legend {
 	//display: table-cell;
 	vertical-align: middle;
 	cursor: default;
 }
 
-#sunburst-text-area {
+.sunburst-text-area {
 	margin-bottom: 30;
 }
 
-#sunburst-legend text {
+.sunburst-legend text {
 	font-weight: 400;
 	fill: white;
 }
 
-#sunburst-legend rect.disabled {
+.sunburst-legend rect.disabled {
 	font-weight: 400;
 	fill: #d3d3d3 !important;
 }
 
-#sunburst-chart path {
+.sunburst-chart path {
 	stroke: #fff;
 }
 
 .sunburst-negative *,
 .sunburst-negative,
-#sunburst-chart .sunburst-negative {
+.sunburst-chart .sunburst-negative {
 	stroke: red;
 	stroke-width: 5px;
 	color: red;
@@ -46,34 +45,34 @@
 	opacity: 0.5;
 }
 
-#sunburst-chart {
+.sunburst-chart {
 	position: relative;
 	padding-left: 0;
 	padding-top: 0;
 }
 
-#sunburst-explanation {
+.sunburst-explanation {
 	//display: table;
 	color: #666;
 	z-index: -1;
 	padding-left: 0px;
 }
 
-#sunburst-explanation p {
+.sunburst-explanation p {
 	//display: table-cell;
 	//vertical-align: bottom;
 	//horizontal-align: middle;
 	text-align: center;
 }
 
-#sunburst-percentage {
+.sunburst-percentage {
 	font-size: 2.5em;
 }
 
-#sunburst-current-node {
+.sunburst-current-node {
 	font-size: 2em;
 }
 
-#sunburst-current-node-value {
+.sunburst-current-node-value {
 	font-size: 1.5em;
 }

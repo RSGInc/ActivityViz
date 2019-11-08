@@ -1,43 +1,43 @@
-#timeuse-main {
+.timeuse-main {
 	//
 	padding: 0px;
 	padding-left: 0;
 	padding-top: 0;
 }
 
-#timeuse-sidebar {
+.timeuse-sidebar {
 	padding-left: 10px;
 	//display: table;
 }
 
-#timeuse-text-area {
+.timeuse-text-area {
 	margin-bottom: 30px;
 }
 
-#timeuse-legend {
+.timeuse-legend {
 	//display: table-cell;
 	vertical-align: middle;
 	cursor: default;
 }
 
-#timeuse-legend rect {
+.timeuse-legend rect {
 	fill: white;
 	stroke:black;
 	stroke-width:2;
 	opacity: 1.0;
 }
 
-#timeuse-legend rect.timeuse-current-person-type {
+.timeuse-legend rect.timeuse-current-person-type {
 	opacity: 1.0;
 	fill: yellow;
 }
 
-#timeuse-legend text {
+.timeuse-legend text {
 	font-weight: 400;
 	fill: black;
 }
 
-#timeuse-chart {
+.timeuse-chart {
 	position: relative;
 	padding-left: 0;
 	padding-top: 0;
@@ -45,11 +45,11 @@
 	width: 100%;
 }
 
-#timeuse-chart path {
+.timeuse-chart path {
 	stroke: #fff;
 }
 
-#timeuse-explanation {
+.timeuse-explanation {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -59,20 +59,20 @@
 	padding-left: 0px;
 }
 
-#timeuse-explanation p {
+.timeuse-explanation p {
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
 }
 
-#timeuse-percentage {
+.timeuse-percentage {
 	font-size: 2.5em;
 }
 
-#timeuse-current-node {
+.timeuse-current-node {
 	font-size: 2em;
 }
 
-#timeuse-current-node-value {
+.timeuse-current-node-value {
 	font-size: 1.5em;
 }

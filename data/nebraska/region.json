@@ -6,43 +6,57 @@
   "Logo":"ndot_logo_black.png",
   "NavbarTitle":"ATRIVIZ",
   "LinkURL":"https://dot.nebraska.gov",
-    "TabbedCharts": true,
   "CenterMap": [41.460011, -99.791661],
   "FrontPageTitle": "Nebraska DOT",
   "FrontPageGraphic": "ndot_logo_white.png",
   "scenarios":{
-    "ATRI": "- ATRI Processing"
+    "ATRI": {
+      "title":"- ATRI Processing",
+      "visualizations": {
+        "Sunburst": [],
+        "3DMap": [],
+        "GroupedCharts": [],
+        "TimeUse": [],
+        "RadarCharts": [],
+        "BarMap": [],
+        "Scatter":[],
+        "POIMap": [],
+        "Chord": [{"name":"Chord","config":"Default","file":"ChordData.csv"}]
+      }
+    }
   },
-  "visualizations":{
-  "3DMap":false,
-  "BarMap":false,
-  "GrpBar":false,
-  "TimeUse":false,
-  "Radar":false,
-  "Sunburst":false,
-  "Chord":true
-},
+
   "RadarCharts":{
-    "NumberColsRadar":4,
-    "IndependentScale":[""],
-    "ConvertAxesToPercent":true
+    "Default": {
+      "NumberColsRadar": 4,
+      "IndependentScale": [
+        ""
+      ],
+      "ConvertAxesToPercent": true
+    }
   },
   "GroupedCharts":{
-    "NumberColsGrouped":1,
-    "SwapLegendByDefault":true,
-    "ShowAsPercentByDefault":true,
-    "ShowAsVerticalByDefault":false,
-    "StackAllChartsByDefault":false,
-    "ChartWidthOverride": []
+    "Default": {
+      "NumberColsGrouped": 1,
+      "SwapLegendByDefault": true,
+      "ShowAsPercentByDefault": true,
+      "ShowAsVerticalByDefault": false,
+      "StackAllChartsByDefault": false,
+      "ChartWidthOverride": []
+    }
   },
-  "ThreeDMap":{
-    "ShowPeriodsAsDropdown":false,
-    "DataHasPeriods":true,
-    "ZoneFile": []
+  "3DMap":{
+    "Default" : {
+      "ShowPeriodsAsDropdown": false,
+      "DataHasPeriods": true,
+      "ZoneFile": []
+    }
   },
   "Chord": {
-    "ZoneFilterFile": "cocs.csv",
-    "LabelSize": "14",
-    "LegendText": "Truck Flows"
+    "Default": {
+      "ZoneFilterFile": "cocs.csv",
+      "LabelSize": "14",
+      "LegendText": "Truck Flows"
+    }
     }
 }
