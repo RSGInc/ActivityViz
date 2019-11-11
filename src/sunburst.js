@@ -4,7 +4,9 @@ var SunburstChart = {
 sunburst:
 function sunburst(id,indx) {
 	"use strict";
-	var url = "../data/" +abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") ;
+    var region = abmviz_utilities.GetURLParameter("region");
+	var dataLocation = localStorage.getItem(region);
+    var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
 	 var fileName = "TreeMapData.csv";
 	 var scenario = abmviz_utilities.GetURLParameter("scenario");
 	//var url = "../data/" + abmviz_utilities.GetURLParameter("scenario") + "/visit-sequences.csv";
