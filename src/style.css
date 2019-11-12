@@ -96,3 +96,6 @@ body {
     width: 100%;
     z-index: 999999;
 }
+.datatable-div{
+	margin-top:10px;
+}
