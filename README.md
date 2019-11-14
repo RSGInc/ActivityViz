@@ -112,6 +112,7 @@ Each Data/Region folder needs the following:
         - LabelSize: the font size in pixels "10" is the default if not specified. 
         - LegendRows: the number of data points per row to be shown in the legend default is 4
         - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
+		- ExcludeSameOD: this flag will tell the Chord chart to exclude the data points that have the same origin and destination in the data. 
     - Scatter: Scatter chart that also shows a 45 degree regression line
     - POIMap: Barchart that displays a map that has points of interest plotted on the page, this chart also allows for a filter on the data not provided to the normal barchart and map 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.

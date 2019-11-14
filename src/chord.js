@@ -70,6 +70,7 @@ function chord (id,indx) {
     var showWholePercent = true;
     var wholeDataTotal = 0;
     var legendText = "Legend";
+    var excludeSameOD = false;
     var datamatrix;
     function getConfigSettings(callback) {
         if (chartOnPage) {
@@ -138,6 +139,9 @@ function chord (id,indx) {
                         if(opt =="DesireLines"){
                             DESIRELINE_FILE_LOC = value;
                         }
+                        if(opt=="ExcludeSameOD"){
+                            excludeSameOD = value;
+                        }
 
                     });
                 }
@@ -178,7 +182,7 @@ function chord (id,indx) {
         //read in data and create chord when finished
 
         d3.csv(url, function (error, data) {
-            var excludeSameOD = true;
+
             "use strict";
             if (error) {
                 $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
