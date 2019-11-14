@@ -69,39 +69,39 @@ Each Data/Region folder needs the following:
     - DefaultFocusColor: Sets the default color to use for the focused GeoJSON object if included on a map
     - DefaultHighlightColor: Sets the default color to use for highlighting filtered zones if included on a map
     - scenarios: Defines each scenario.  Each scenario is an object, the name of the scenario is the name of the object.
-        - title: the sub text or title of the scenario that will appear along with the name on the front page        
+        - title: the sub text or title of the scenario that will appear along with the name on the front page
         - CenterMap: overrides the region specific center of map, will also focus in on the point rather than find best view
         - label: overrides the default scenario - title setup for the scenario and instead displays the label text in all cases
         - ScenarioFocus: filename of GeoJSON to be displayed on the maps (BarChart with Map, Point of Interest and Chord Map)
         - visualizations: set of visuals to be display on the scenario specific page, the order they are defined will determine the order of the tab
-            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord, and POIMap (barchart with points of interest instead of zones)
-            - Each visual title allows for an array of multiple charts. Each entry will be it's own tab on the scenario specific page.  
+            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord, and POIMap (barchart with POIs instead of zones)
+            - Each visual title allows for an array of multiple charts. Each entry will be it's own tab on the scenario specific page.
             - Each chart object requires a "name", "config" (name of configuration set to use) and a "file" (filename that will contain the data). 
             - Optional chart properties: "info" - is is a tooltip to appear next to the chart title, "datafilecolumns" - a key/value object that will display underneath the data table on the bottom of the chart tab
             - Example of multiple visuals for single chart type:  "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"},{"name":"GroupedCharts2","config":"Default", "file":"BarChartData2.csv"}],
     
     - Each chart type has a different entry for their specific configuration settings. You can set up several different configuration entries for each chart type. This lets you customize the each chart tab 
-        The property entry is the name of the configuration, each chart needs to have at a minimum an empty (example: "BarMap": { "Default": {}  } ) configuration.               
+        The property entry is the name of the configuration, each chart needs to have at a minimum an empty (example: "BarMap": { "Default": {}  } ) configuration.
     - RadarCharts: Radar Chart specific configurations:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
         - IndependentScale: Names of charts to separate into second scale and collection of axes
         - ConvertAxesToPercent: true/false flag that will convert the radar charts to a percent of the highest value  
     - GroupedCharts: Grouped Bar Chart specific configurations:
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
-        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis for the non-vertical chart.  Default is 0 can go from -90 to 90. 
+        - RotateLabels: Number of degrees to rotate the labels on the Y-Axis for the non-vertical chart.  Default is 0 can go from -90 to 90.
         - NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
         - SwapLegendByDefault: (true/false or "N/A" to hide) flag that swaps the bar and legend by default for all grouped charts
         - ShowAsPercentByDefault: (true/false or "N/A" to hide) flag that shows data as a percentage by default for all grouped charts
         - ShowAsVerticalByDefault: (true/false or "N/A" to hide) flag that shows the bar chart as vertical rather than horizontal by default for all charts
         - StackAllChartsByDefault: (true/false or "N/A" to hide) flag that shows all data as stacked rather than grouped by default for all charts
         - ChartWidthOverride: array of values to allow you to individually set each chart's width
-    - 3DMap: 3d Map specific properties
+    - 3DMap: 3D Map specific properties
         - ShowPeriodsAsDropdown: true/false flag that shows a dropdown to select different periods
         - DataHasPeriods: true/false flag to show or hide the time related features of the slider (true shows them, false hides)
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
-        - CentroidsOff: sets the default value for the centroids checkbox     
+        - CentroidsOff: sets the default value for the centroids checkbox
     - BarMap: Barchart that also displays with a map with zones or bubbles 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
@@ -110,13 +110,12 @@ Each Data/Region folder needs the following:
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CycleMapTools: true/false flag to hide or show the cycle map tools
     - Chord: Chord chart that also displays with a map
-        - DesireLines: GeoJSON file that takes "linestring" objects that will be displayed on the map color coded to the chord chart. Desire lines and zones cannot be displayed at the same time
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID and that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
         - ZoneFile: GeoJSON zone file override that will take precedence over the region or scenario level zone file, these zones will appear on the map color coded to the chord chart data points
         - LabelSize: the font size in pixels "10" is the default if not specified. 
         - LegendRows: the number of data points per row to be shown in the legend default is 4
         - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
-		- ExcludeSameOD: this flag will tell the Chord chart to exclude the data points that have the same origin and destination in the data. 
+        - ExcludeSameOD: this flag will tell the Chord chart to exclude the data points that have the same origin and destination in the data. 
     - Scatter: Scatter chart that also shows a 45 degree regression line
     - POIMap: Barchart that displays a map that has points of interest plotted on the page, this chart also allows for a filter on the data not provided to the normal barchart and map 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
