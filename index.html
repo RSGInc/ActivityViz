@@ -7,6 +7,7 @@
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/d3/d3.min.js"></script>
+
 	<script type="text/javascript">
 		var sideBarStuff = {};
 		$.getJSON( "config.json", function (data) {
@@ -113,5 +114,23 @@
 </div>
 </div>
 </body>
+<div class="footer">
+    <div class="container" display="inline" style="position:relative; padding:5px 0px 5px 0px">
+      <span style="color:#9D9D9D; text-align:left"><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
+      <span style="position:absolute;right:0;text-align:right"><a href="https://github.com/rsginc/ActivityViz" style="color:#9D9D9D" target="_blank"><i class="fab fa-github-alt" aria-hidden="true"></i> Source Code</a></span>
+    </div>
 
+</div>
 </html>
+<style>
+	.footer{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    max-height: 25px;
+    background-color: #222222;
+    color: white;
+    width: 100%;
+    z-index: 999999;
+}
+</style>

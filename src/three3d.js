@@ -469,7 +469,7 @@ var ThreeDMap = {
             }).addTo(map);
 
 
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + ZONE_FILE_LOC, function (zoneTiles) {
+            $.getJSON(dataLocation + "/" + ZONE_FILE_LOC, function (zoneTiles) {
                 "use strict";
                 //there should be at least as many zones as the number we have data for.
                 if (zoneTiles.features.length < Object.keys(zoneData).length) {

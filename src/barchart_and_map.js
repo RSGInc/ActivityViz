@@ -496,7 +496,7 @@ var BarChartMap = {
             console.log('changing from ' + currentCounty + " to " + newCurrentCounty);
             currentCounty = newCurrentCounty;
             var countyLabels = d3.selectAll(".nvd3.nv-multiBarHorizontalChart .nv-x text ");
-            countyLabels.classed(id + "-trip-mode-current-county-zones", function (d, i) {
+            countyLabels.classed("mode-share-by-county-trip-mode-current-county", function (d, i) {
                 var setClass = d == currentCounty;
                 return setClass;
             });
@@ -815,7 +815,7 @@ var BarChartMap = {
                 focusLayer = L.geoJSON(scenarioTiles, {
                     style: styleFocusGeoJSONLayer
                 });
-                focusLayer.addTo(map);
+
             }).complete(function(d){
 
                controlLayer.addOverlay(focusLayer,"Focus");
@@ -963,7 +963,12 @@ var BarChartMap = {
 
         function cycleTripMode() {
             var newTripMode = modes[currentCycleModeIndex];
-            $('#' + id + '-current-trip-mode').val(newTripMode);
+            if(map.hasLayer(zoneDataLayer)) {
+                $('#' + id + '-current-trip-mode-zones').val(newTripMode);
+            }
+            if(map.hasLayer(circlesLayerGroup)){
+                $('#' + id + '-current-trip-mode-bubbles').val(newTripMode);
+            }
             updateCurrentTripModeOrClassification();
             redrawMap();
             currentCycleModeIndex++;
