@@ -546,7 +546,7 @@ var BarChartMap = {
                     bottom: marginBottom
                 }).id(id + "-multiBarHorizontalChart").stacked(true).showControls(false);
                 marginLeft = Math.max(110 + ((maxLabelLength - 14) * 5), 110);
-                nvd3Chart.yAxis.tickFormat(d3.format(',.2f'));
+                nvd3Chart.yAxis.tickFormat(d3.format(',.0f'));
                 nvd3Chart.yAxis.axisLabel(quantityColumn);
                 //this is actually for xAxis since basically a sideways column chart
                 nvd3Chart.xAxis.axisLabel(countyColumn).axisLabelDistance(30);
