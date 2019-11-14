@@ -122,7 +122,7 @@ Each Data/Region folder needs the following:
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
         - LegendTitle: Title shown above the legend of the bar chart
-        - CenterMap: chart specific center lat/lng override, this will take precedence over the region and scenario level points         
+        - CenterMap: chart specific center lat/lng override, this will take precedence over the region and scenario level points
 3. Data Folder - Scenario data folder with its name equal to its scenario entry, can either be local or in the cloud. Location of the region's scenario data folder is specified in the main config.json file 
 4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
