@@ -1,14 +1,16 @@
 # ActivityViz 
-ActivityViz is an interactive travel and activity data visualization tool.  It is built with JavaScript 
-and HTML technologies and works with various types of travel and activity data - household travel surveys, trip-based
-model outputs, activity-based model outputs, disaggregate passive data, etc.  The dashboard features several 
-interactive and customizable visualizations for exploring data, such as 3D maps of 
+ActivityViz is an interactive travel and activity data visualization tool.  It is built with JavaScript technologies 
+and works with various types of travel and activity data - household travel surveys, trip-based
+model outputs, activity-based model outputs, disaggregate passive data, freight models, on-board surveys, etc.  
+The dashboard features several interactive and customizable visualizations for exploring data, such as 3D maps of 
 trips in time and space, time use by person type and activity, radar charts for performance measure analysis, 
-sunburst diagrams for visualizing mode shares, and animated bubble maps.  ActivityViz is published using GitHub 
-pages which eliminates most of the administrative backend in traditional systems.  This improved deployment 
-strategy makes maintenance much easier for the modeling staff.
+sunburst diagrams for visualizing mode shares, animated bubble maps, chord diagrams for OD data, point-of-interest maps for
+transit stop data, truck flow data, etc.  ActivityViz is published using GitHub pages which eliminates most of the 
+administrative backend in traditional systems.  This improved deployment strategy makes maintenance much easier 
+for data science users.
 
-ActivityViz was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/) (ARC).  
+ActivityViz was initially funded by the [Atlanta Regional Commission](https://atlantaregional.org/) (ARC), with additional
+support from [Oregon Metro](https://www.oregonmetro.gov/) and others.
 
 ## Collaborating on this Project
 1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
@@ -16,15 +18,14 @@ ActivityViz was initially funded by the [Atlanta Regional Commission](https://at
 3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
 
 # Adding a New Region or New Scenario Data
-ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region, fork this repository
-to your GitHub account and then remove the existing configured region folders in the data folder.  Next, add your
-region by doing the following:
+ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region:
 
-1. Add the region name and data folder location in the config.json file.  Delete the other existing regions if desired.
-2. The data location can be anywhere that serves up the files. 
+1. Fork this repository to your GitHub account
+2. Add the region name and data folder location in the config.json file.  Delete the other existing example regions.
+3. The data location can be anywhere that serves up the files. 
     For example: The region "rsginc" should have a folder named "rsginc" in the data location "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"  
-3. The first region will determine which graphics are shown on the main page.
-4. Copy existing region.json file into the region folder.
+4. The first region will determine which graphics are shown on the main page.
+5. Copy an existing region.json file into the region folder.
 
 ## Adding New Scenario Data
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
@@ -32,7 +33,6 @@ Each region supports data for multiple scenarios.  Do the following to add scena
 1. Create a new folder in the region specific folder with the scenario name
 2. Copy in the data tables that supply the data for the visualizations, each with the following set of fields:
   - BarChartAndMapData.csv: ZONE, COUNTY, <BAR_LABEL>, QUANTITY  
-  - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
   - 3DAnimatedMapData.csv: ZONE, PERIOD, QUANTITY
   - TreeMapData.csv: GROUP1, GROUP2, GROUP3, ..., QUANTITY
   - RadarChartsData.csv: AXIS, CHART, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ...
@@ -40,12 +40,12 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - ChordData.csv: FROM, TO, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ... 
   - Scatter.csv: LABEL, XAXIS, YAXIS, SIZE (YAXIS/XAXIS)
   - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ...
+  - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
 
 Notes: 
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
 a look at the example data tables to see how each visual is constructed based on the data.  Most of the 
 visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  
-  - 
   - The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the next day.  
   - The TimeUse purposes must be ALLCAPS and must include at least HOME, WORK, SCHOOL.  TimeUse must also include an ALL person types.
   
@@ -53,24 +53,28 @@ visuals are populated based by what is in the data tables, thereby making the vi
 Each Data/Region folder needs the following:
 1. region.json - Region specific config file:
     - Title: Title that shows up in tab of web page
-    - CountyFile: Name of the file with the county data
-    - ZoneFile: Name of the file with the zone data
+    - CountyFile: Name of the geojson file with region counties
+    - ZoneFile: Name of the geojson file with zones
     - Icon: ico format agency logo image file stored in the img folder (use an online converter from png if needed)
-    - Logo: png format agency logo image file stored in the img folder 
-    - NavbarTitle: Abbreviated name to appear in the navbar
+    - Logo: png format agency logo image file stored in the img folder (use an online converter from png if needed)
+    - NavbarTitle: Name to appear in the navbar
     - LinkURL: URL of the link that appears in navbar
     - CenterMap: Lat/Lng in decimal degree of the center point for the maps to use
     - FrontPageTitle: Text to appear about region scenarions on front page
     - FrontPageGraphic: Image to appear on the front page next to the title text
-    - DefaultFocusColor: Set's the default color to use for the focused GeoJSON object
-    - DefaultHighlightColor: Set's the default color to use for highlighting the filtered zones        
-    - scenarios: Defines each scenario (i.e. model run) available to each user.  Each scenario is an object, the name of the scenario is the name of the object. For example "BS10": {} the scenario name is BS10.
+    - SideBarTextLeft: Left bottom text box on web page
+    - SideBarTextRight: Right bottom text box on web page
+    - SideBarLogo: Web page top image to the right (omit if desired)
+    - SideBarImage: Web page bottom image to the right
+    - DefaultFocusColor: Sets the default color to use for the focused GeoJSON object if included on a map
+    - DefaultHighlightColor: Sets the default color to use for highlighting filtered zones if included on a map
+    - scenarios: Defines each scenario.  Each scenario is an object, the name of the scenario is the name of the object.
         - title: the sub text or title of the scenario that will appear along with the name on the front page        
         - CenterMap: overrides the region specific center of map, will also focus in on the point rather than find best view
         - label: overrides the default scenario - title setup for the scenario and instead displays the label text in all cases
         - ScenarioFocus: filename of GeoJSON to be displayed on the maps (BarChart with Map, Point of Interest and Chord Map)
         - visualizations: set of visuals to be display on the scenario specific page, the order they are defined will determine the order of the tab
-            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord and POIMap (barchart with points of interest instead of zones)
+            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord, and POIMap (barchart with points of interest instead of zones)
             - Each visual title allows for an array of multiple charts. Each entry will be it's own tab on the scenario specific page.  
             - Each chart object requires a "name", "config" (name of configuration set to use) and a "file" (filename that will contain the data). 
             - Optional chart properties: "info" - is is a tooltip to appear next to the chart title, "datafilecolumns" - a key/value object that will display underneath the data table on the bottom of the chart tab
