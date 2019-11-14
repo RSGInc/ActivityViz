@@ -74,7 +74,7 @@ Each Data/Region folder needs the following:
         - label: overrides the default scenario - title setup for the scenario and instead displays the label text in all cases
         - ScenarioFocus: filename of GeoJSON to be displayed on the maps (BarChart with Map, Point of Interest and Chord Map)
         - visualizations: set of visuals to be display on the scenario specific page, the order they are defined will determine the order of the tab
-            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord and POIMap (barchart with points of interest instead of zones)
+            - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord, and POIMap (barchart with points of interest instead of zones)
             - Each visual title allows for an array of multiple charts. Each entry will be it's own tab on the scenario specific page.  
             - Each chart object requires a "name", "config" (name of configuration set to use) and a "file" (filename that will contain the data). 
             - Optional chart properties: "info" - is is a tooltip to appear next to the chart title, "datafilecolumns" - a key/value object that will display underneath the data table on the bottom of the chart tab
