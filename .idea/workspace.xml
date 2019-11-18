@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="341c539d-bbdc-4f96-b376-dae5b739e9e8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/barchart_and_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/barchart_and_map.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/chord.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/chord.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/points_of_interest_map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/points_of_interest_map.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/templates/barchartmap.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/barchartmap.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/templates/pointofinterest.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/pointofinterest.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/templates/threed.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/threed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/three3d.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/three3d.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/timeuse.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/timeuse.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +44,7 @@
           <entry key="css" value="539" />
           <entry key="csv" value="132" />
           <entry key="html" value="5930" />
-          <entry key="js" value="27272" />
+          <entry key="js" value="27424" />
           <entry key="json" value="595" />
           <entry key="md" value="1215" />
         </counts>
@@ -64,7 +55,7 @@
           <entry key="CSV" value="132" />
           <entry key="HTML" value="5931" />
           <entry key="JSON" value="595" />
-          <entry key="JavaScript" value="27271" />
+          <entry key="JavaScript" value="27423" />
           <entry key="Markdown" value="1215" />
         </counts>
       </usages-collector>
@@ -96,7 +87,7 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.6209887">
+    <splitter split-orientation="horizontal" split-proportion="0.3534763">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="false">
@@ -114,10 +105,10 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/three3d.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="644">
+                <state relative-caret-position="1154">
                   <caret line="152" column="46" lean-forward="true" selection-start-line="152" selection-start-column="46" selection-end-line="152" selection-end-column="46" />
                 </state>
               </provider>
@@ -158,14 +149,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/chord.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="804">
-                  <caret line="610" column="24" lean-forward="true" selection-start-line="610" selection-start-column="24" selection-end-line="610" selection-end-column="24" />
-                  <folding>
-                    <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
-                  </folding>
+                <state relative-caret-position="-1503">
+                  <caret line="753" column="27" selection-start-line="753" selection-start-column="18" selection-end-line="753" selection-end-column="27" />
                 </state>
               </provider>
             </entry>
@@ -186,8 +174,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/chord.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2730">
-                  <caret line="272" column="33" selection-start-line="272" selection-start-column="20" selection-end-line="272" selection-end-column="33" />
+                <state relative-caret-position="391">
+                  <caret line="802" column="46" selection-start-line="802" selection-start-column="46" selection-end-line="802" selection-end-column="46" />
                 </state>
               </provider>
             </entry>
@@ -233,8 +221,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>select</find>
-      <find>&lt;option&gt;</find>
       <find>col-xs-10</find>
       <find>checkedfilters</find>
       <find>showThis</find>
@@ -263,6 +249,8 @@
       <find>ZONE_FILTER_LOC</find>
       <find>Opacity:</find>
       <find>ZONE_FI</find>
+      <find>zoneheaders</find>
+      <find>desirelines</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -330,8 +318,8 @@
         <option value="$PROJECT_DIR$/src/templates/threed.html" />
         <option value="$PROJECT_DIR$/src/timeuse.css" />
         <option value="$PROJECT_DIR$/src/barchart_and_map.js" />
-        <option value="$PROJECT_DIR$/src/chord.js" />
         <option value="$PROJECT_DIR$/src/three3d.js" />
+        <option value="$PROJECT_DIR$/src/chord.js" />
       </list>
     </option>
   </component>
@@ -356,11 +344,11 @@
       <path value="$PROJECT_DIR$/bower_components/spectrum/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="214" />
-    <option name="y" value="-18" />
-    <option name="width" value="1936" />
-    <option name="height" value="880" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-481" />
+    <option name="y" value="358" />
+    <option name="width" value="2420" />
+    <option name="height" value="1100" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -486,7 +474,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17963752" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.17963752" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -813,20 +801,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/chord.js">
+    <entry file="file://$PROJECT_DIR$/src/three3d.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="804">
-          <caret line="610" column="24" lean-forward="true" selection-start-line="610" selection-start-column="24" selection-end-line="610" selection-end-column="24" />
-          <folding>
-            <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="1154">
+          <caret line="152" column="46" lean-forward="true" selection-start-line="152" selection-start-column="46" selection-end-line="152" selection-end-column="46" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/three3d.js">
+    <entry file="file://$PROJECT_DIR$/src/chord.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="152" column="46" lean-forward="true" selection-start-line="152" selection-start-column="46" selection-end-line="152" selection-end-column="46" />
+        <state relative-caret-position="391">
+          <caret line="802" column="46" selection-start-line="802" selection-start-column="46" selection-end-line="802" selection-end-column="46" />
         </state>
       </provider>
     </entry>
