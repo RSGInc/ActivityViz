@@ -44,7 +44,7 @@
           <entry key="css" value="539" />
           <entry key="csv" value="132" />
           <entry key="html" value="5930" />
-          <entry key="js" value="27424" />
+          <entry key="js" value="28022" />
           <entry key="json" value="595" />
           <entry key="md" value="1215" />
         </counts>
@@ -55,7 +55,7 @@
           <entry key="CSV" value="132" />
           <entry key="HTML" value="5931" />
           <entry key="JSON" value="595" />
-          <entry key="JavaScript" value="27423" />
+          <entry key="JavaScript" value="28021" />
           <entry key="Markdown" value="1215" />
         </counts>
       </usages-collector>
@@ -87,7 +87,7 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.3534763">
+    <splitter split-orientation="horizontal" split-proportion="0.5335821">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="false">
@@ -152,8 +152,11 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/chord.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1503">
-                  <caret line="753" column="27" selection-start-line="753" selection-start-column="18" selection-end-line="753" selection-end-column="27" />
+                <state relative-caret-position="537">
+                  <caret line="954" column="12" selection-start-line="954" selection-start-column="12" selection-end-line="954" selection-end-column="12" />
+                  <folding>
+                    <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -174,8 +177,18 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/chord.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="391">
-                  <caret line="802" column="46" selection-start-line="802" selection-start-column="46" selection-end-line="802" selection-end-column="46" />
+                <state relative-caret-position="1825">
+                  <caret line="639" column="48" selection-start-line="639" selection-start-column="48" selection-end-line="639" selection-end-column="48" />
+                  <folding>
+                    <element signature="e#8238#26116#0" />
+                    <element signature="e#26158#27205#0" />
+                    <element signature="e#26062#27373#0" />
+                    <element signature="e#27009#28089#0" />
+                    <element signature="e#30005#30280#0" />
+                    <element signature="e#30358#31034#0" />
+                    <element signature="e#31061#32270#0" />
+                    <element signature="e#32303#34901#0" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -221,12 +234,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>col-xs-10</find>
-      <find>checkedfilters</find>
-      <find>showThis</find>
-      <find>filtername</find>
-      <find>multisel</find>
-      <find>mode-share-by-county-current-trip-mode-zones</find>
       <find>column</find>
       <find>updateCurrentTripModeOrClassification</find>
       <find>excludeSameOD</find>
@@ -246,10 +253,16 @@
       <find>circlesLayerGroup.bringToFront();</find>
       <find>excludesameod</find>
       <find>zoneFilterData</find>
-      <find>ZONE_FILTER_LOC</find>
       <find>Opacity:</find>
       <find>ZONE_FI</find>
       <find>zoneheaders</find>
+      <find>zonefilter</find>
+      <find>ZONE_FILTER_LOC</find>
+      <find>readinfilterdata</find>
+      <find>desirelines</find>
+      <find>styleZoneGeoJSONLayer</find>
+      <find>indexbyname</find>
+      <find>updatedesirelines()</find>
       <find>desirelines</find>
     </findStrings>
     <replaceStrings>
@@ -344,11 +357,11 @@
       <path value="$PROJECT_DIR$/bower_components/spectrum/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="-481" />
-    <option name="y" value="358" />
-    <option name="width" value="2420" />
-    <option name="height" value="1100" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-451" />
+    <option name="y" value="-14" />
+    <option name="width" value="2118" />
+    <option name="height" value="1068" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -545,6 +558,12 @@
           <url>file://$PROJECT_DIR$/src/barchart_and_map.js</url>
           <line>2</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/chord.js</url>
+          <line>611</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -810,8 +829,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/chord.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="802" column="46" selection-start-line="802" selection-start-column="46" selection-end-line="802" selection-end-column="46" />
+        <state relative-caret-position="537">
+          <caret line="954" column="12" selection-start-line="954" selection-start-column="12" selection-end-line="954" selection-end-column="12" />
+          <folding>
+            <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
