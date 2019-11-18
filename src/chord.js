@@ -48,6 +48,7 @@ function chord (id,indx) {
     var legendHeadersShowHide = {};
     var zoneData;
     var circleMarkers;
+    var desireLines;
     var legendRows = 4;
 //config file options
     var COUNTY_FILE = "";
@@ -65,6 +66,7 @@ function chord (id,indx) {
     var fill = d3.scale.category20();
     var chartOnPage = $('#' + id + '_circle').length == 0;
     var circlesLayerGroup;
+    var desireLineLayerGroup;
     var formatPercent = d3.format(".1%");
     var showGrpPercent = false;
     var showWholePercent = true;
@@ -114,7 +116,7 @@ function chord (id,indx) {
                     if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                         SCENARIO_FOCUS = true;
                         scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-by-district-map').before(" Focus Color: <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
+                        $('#' + id + '-by-district-map').before(" Focus <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
                     }
                 }
                 var configSettings = data["Chord"][configName];
@@ -158,8 +160,6 @@ function chord (id,indx) {
                     createChord();
                 });
             });
-
-
         }
     }
 
@@ -750,8 +750,9 @@ function chord (id,indx) {
             }  else {
                 map.removeLayer(destZoneDataLayer);
             }
-            if(map.hasLayer(desireLineDataLayer)){
-                  desireLineDataLayer.setStyle(styleDesireLineGeoJSONLayer);
+            if(map.hasLayer(desireLineLayerGroup)){
+                  updateDesireLines();
+                  //desireLineDataLayer.setStyle(styleDesireLineGeoJSONLayer);
             }
             //zoneDataLayer.addTo(map);
 
@@ -768,7 +769,51 @@ function chord (id,indx) {
 
         }
     }
+    function updateDesireLines(){
+         var color = naColor;
+        var isZoneVisible = false;
+          var findDistrict = currentDistrict;
+              // Create initial scales for lines on map (width and opacity)
+        var w = d3.scale.linear().range([0, 50]);
+        var op = d3.scale.linear().range([0, 1]);
+        var featureValue = 0;
+        var featureGrpTotal = 0;
+        desireLines.forEach(function (desireLine){
+           var zoneData = desireLine.zoneData;
+           if(zoneData != undefined) {
+               var zoneDataFeatureOrigin = desireLine.properties.o;
+               var zoneDataFeatureDest = desireLine.properties.d;
+               if (datamatrix.length > 0) {
+                   var origIdx = zoneFilterData.filters.findIndex(x => x[zoneheaders[0]] == zoneDataFeatureOrigin);
 
+                   var destIdx = zoneFilterData.filters.findIndex(x => x[zoneheaders[0]] == zoneDataFeatureDest);
+
+                   featureValue = datamatrix[origIdx][destIdx] + datamatrix[destIdx][origIdx];
+               }
+                if (zoneDataFeatureOrigin != undefined && findDistrict !="") {
+                    if (currentDestDistrict != null) {
+                        isZoneVisible = zoneDataFeatureOrigin == indexByName[findDistrict].uniqueid && zoneDataFeatureDest == indexByName[currentDestDistrict].uniqueid;
+                    } else {
+                        isZoneVisible = zoneDataFeatureOrigin == indexByName[findDistrict].uniqueid;
+                    }
+                    color = fill(indexByName[findDistrict].index);
+                    featureGrpTotal = indexByName[findDistrict].grptotal;
+                }
+           } //end if we have data for this zone
+            w.domain([0, featureGrpTotal]);
+             op.domain([0, featureGrpTotal]);
+                         var returnStyle = {
+                //all SVG styles allowed
+                // fillColor: color,
+
+                weight: w(featureValue),
+                color: color,
+                strokeOpacity: op(featureValue),
+                stroke: isZoneVisible ? true : false
+            };
+           desireLine.setStyle(returnStyle);
+        });
+    }
     function styleDesireLineGeoJSONLayer(feature){
          var color = naColor;
         var isZoneVisible = false;
@@ -807,7 +852,7 @@ function chord (id,indx) {
           w.domain([0, featureGrpTotal]);
           op.domain([0, featureGrpTotal]);
         if(isZoneVisible){
-            console.log(color);
+
         }
         var returnStyle = {};
         if(DESIRELINE_FILE_LOC!=""){
@@ -907,15 +952,39 @@ function chord (id,indx) {
                 if (featureZoneData == undefined) { //missing data for this zone
                 } else {                    //WARNING: center coordinates seem to have lat and lng reversed!
 
-                        var centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
-                        //REORDER lat and lng
-                        var circleMarker = L.circleMarker(L.latLng(centroid.lng, centroid.lat), circleStyle);
-                        circleMarker.zoneData = featureZoneData;
-                        circleMarkers.push(circleMarker);
+                    var centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
+
+                    //REORDER lat and lng
+                    var circleMarker = L.circleMarker(L.latLng(centroid.lng, centroid.lat), circleStyle);
+                    circleMarker.zoneData = featureZoneData;
+                    circleMarkers.push(circleMarker);
 
                     feature.zoneData = featureZoneData;
                 }
             }
+            desireLines = [];
+            for(var i =0; i < circleMarkers.length;i++){
+                var origLat = circleMarkers[i]["_latlng"];
+                var origId = circleMarkers[i]["zoneData"].ID;
+                var zoneData = circleMarkers[i]["zoneData"];
+                $.each(circleMarkers,function(idx,marker){
+                    var destId = marker["zoneData"].ID;
+                    var destLatLng = marker["_latlng"];
+                    var latlngs = [];
+                    latlngs.push(origLat,destLatLng);
+                    var desireLine = L.polyline(latlngs);
+                    desireLine.zoneData = zoneData;
+                    desireLine.properties = {
+                        o:origId,
+                        d: destId
+                    }
+
+
+                    desireLines.push(desireLine);
+                });
+
+            }
+            desireLineLayerGroup =L.layerGroup(desireLines);
             circlesLayerGroup = L.layerGroup(circleMarkers);
             //http://leafletjs.com/reference.html#tilelayer
 
@@ -940,7 +1009,7 @@ function chord (id,indx) {
             //map.addLayer(stamenTileLayer);
 
             var desireLineDataTiles;
-             if(DESIRELINE_FILE_LOC!="") {
+            /* if(DESIRELINE_FILE_LOC!="") {
                  $.getJSON(dataLocation + DESIRELINE_FILE_LOC, function (desireLineTiles) {
                      "use strict";
                      var zoneData = zoneFilterData.filters.filter(function (el) {
@@ -978,7 +1047,7 @@ function chord (id,indx) {
                  }).complete(function(){
                       controlLayer.addOverlay(desireLineDataLayer,"Desire Lines");
                  });
-             }
+             }*/
 
             if (scenarioPolyFile != undefined) {
                 $.getJSON(dataLocation + abmviz_utilities.GetURLParameter("scenario") + "/" + scenarioPolyFile, function (scenarioTiles) {
@@ -1037,6 +1106,8 @@ function chord (id,indx) {
             }).complete(function () {
                 console.log(COUNTY_FILE + " complete");
                 controlLayer.addOverlay(countyLayer,"Counties");
+                controlLayer.addOverlay(desireLineLayerGroup,"Desire Lines");
+                updateDesireLines();
             });
             if (!SCENARIO_FOCUS) {
                 $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-dropdown-div').height() / 2 + "px");

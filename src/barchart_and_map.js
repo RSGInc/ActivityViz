@@ -161,12 +161,15 @@ var BarChartMap = {
                     if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                         SCENARIO_FOCUS = true;
                         scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tools').prepend(" Focus: <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
+                        $('#' + id + '-tools').prepend(" Focus <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
                     }
                 }
                 var configSettings = data["BarMap"][configName];
                 if (configSettings != undefined) {
                     $.each(configSettings, function (opt, value) {
+                        if(opt=="ZoneFile"){
+                            ZONE_FILE_LOC = value;
+                        }
                         if (opt == "ZoneFilterFile") {
                             ZONE_FILTER_LOC = value;
                         }
