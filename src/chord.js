@@ -780,15 +780,18 @@ function chord (id,indx) {
         var featureGrpTotal = 0;
         desireLines.forEach(function (desireLine){
            var zoneData = desireLine.zoneData;
+           isZoneVisible = false;
+           featureGrpTotal = 0;
+           featureValue = 0;
            if(zoneData != undefined) {
                var zoneDataFeatureOrigin = desireLine.properties.o;
                var zoneDataFeatureDest = desireLine.properties.d;
                if (datamatrix.length > 0) {
-                   var origIdx = zoneFilterData.filters.findIndex(x => x[zoneheaders[0]] == zoneDataFeatureOrigin);
+                   var origDist = zoneFilterData["filters"].find(x=> x[zoneheaders[0]] == zoneDataFeatureOrigin).district;
 
-                   var destIdx = zoneFilterData.filters.findIndex(x => x[zoneheaders[0]] == zoneDataFeatureDest);
+                   var destDist = zoneFilterData["filters"].find(x=> x[zoneheaders[0]] == zoneDataFeatureDest).district;
 
-                   featureValue = datamatrix[origIdx][destIdx] + datamatrix[destIdx][origIdx];
+                   featureValue = datamatrix[indexByName[origDist].index][indexByName[destDist].index];// + datamatrix[indexByName[destDist].index][indexByName[origDist].index];
                }
                 if (zoneDataFeatureOrigin != undefined && findDistrict !="") {
                     if (currentDestDistrict != null) {
@@ -796,21 +799,40 @@ function chord (id,indx) {
                     } else {
                         isZoneVisible = zoneDataFeatureOrigin == indexByName[findDistrict].uniqueid;
                     }
+                    if(featureValue==0){
+                        isZoneVisible = false;
+                    }
                     color = fill(indexByName[findDistrict].index);
                     featureGrpTotal = indexByName[findDistrict].grptotal;
+
                 }
            } //end if we have data for this zone
+
             w.domain([0, featureGrpTotal]);
              op.domain([0, featureGrpTotal]);
-                         var returnStyle = {
+             var returnStyle = {};
+             if(isZoneVisible){
+                   returnStyle = {
+                      //all SVG styles allowed
+                      // fillColor: color,
+
+                      weight: w(featureValue),
+                      color: color,
+                      strokeOpacity: op(featureValue),
+                      stroke: isZoneVisible ? true : false
+                  }
+             } else {
+                  returnStyle = {
                 //all SVG styles allowed
                 // fillColor: color,
 
-                weight: w(featureValue),
+                weight: 0,
                 color: color,
-                strokeOpacity: op(featureValue),
-                stroke: isZoneVisible ? true : false
-            };
+                strokeOpacity: 0,
+                stroke: false
+             }
+
+            }
            desireLine.setStyle(returnStyle);
         });
     }
