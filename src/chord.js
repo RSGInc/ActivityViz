@@ -35,7 +35,7 @@ function chord (id,indx) {
     var ZONE_FILTER_LOC = "";
     var zoneFilterData;
 
-    var showDesireLines = false;
+    var showDesireLines = true;
     var zoneheaders = [];
     var circleStyle = {
         "stroke": false,
