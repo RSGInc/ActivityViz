@@ -149,6 +149,9 @@ var ThreeDMap = {
                         if (opt == "ZoneFilterFile" && value != "") {
                             ZONE_FILTER_LOC = value;
                         }
+                        if(opt=="ZoneFile"){
+                            zonefiles = value;
+                        }
                         if (opt == "ZoneFilters") {
                             $.each(value, function (filtercolumn, filtername) {
                                 zonefilters[filtercolumn] = filtername;

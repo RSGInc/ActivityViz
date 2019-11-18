@@ -130,7 +130,7 @@ function pointofinterest_and_map (id,indx) {
                 if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                         SCENARIO_FOCUS = true;
                         scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tooltable tbody tr').append("<td>Focus: <input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
+                        $('#' + id + '-tooltable tbody tr').append("<td>Focus <input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
                     }
 
                 $.each(configSettings, function (opt, value) {
@@ -432,6 +432,7 @@ function pointofinterest_and_map (id,indx) {
                     style: styleFocusGeoJSONLayer
                 });
                 focusLayer.addTo(map);
+                focusLayer.bringToBack();
             }).complete(function(){
                 controlLayer.addOverlay(focusLayer,"Focus");
             });
@@ -551,6 +552,7 @@ function pointofinterest_and_map (id,indx) {
         circlesLayerGroup = L.layerGroup(circleMarkers);
         if (bubblesShowing) {
             circlesLayerGroup.addTo(map);
+
             updateBubbleColor();
             updateBubbleSize();
 
@@ -629,6 +631,7 @@ function pointofinterest_and_map (id,indx) {
                 updateBubbleColor();
                 updateBubbleSize();
                 circlesLayerGroup.addTo(map);
+
                 map.removeLayer(highlightLayer);
             } else {
                 map.addLayer(highlightLayer);

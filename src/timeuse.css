@@ -12,12 +12,18 @@
 
 .timeuse-text-area {
 	margin-bottom: 30px;
+	text-align:center;
 }
 
 .timeuse-legend {
 	//display: table-cell;
 	vertical-align: middle;
 	cursor: default;
+}
+.timeuse-legend svg {
+	margin-left:auto;
+	margin-right:auto;
+	display:block;
 }
 
 .timeuse-legend rect {
