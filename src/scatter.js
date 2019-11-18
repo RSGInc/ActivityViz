@@ -1,11 +1,15 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
 //global object scatter will contain functions and variables that must be accessible from elsewhere
-var scatter = (function() {
+var ScatterChart = {
+    scatter:
+function scatter(id,indx) {
     "use strict";
-
-    var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
+	var region = abmviz_utilities.GetURLParameter("region");
+	var dataLocation = localStorage.getItem(region);
+    var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
     var showChartOnPage = true;
-    $("#scenario-header").html("Scenario " + abmviz_utilities.GetURLParameter("scenario"));
+    var fileName = "Scatter.csv";
+
     var xAxisColumn;
     var yAxisColumn;
     var sizeColumn;
@@ -25,14 +29,40 @@ var scatter = (function() {
 
     function getConfigSettings(callback) {
         if (showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
-                $.each(data, function (key, val) {
-                    if (key == "Scatter") {
-                        $.each(val, function (opt, value) {
+            $.getJSON(dataLocation + "region.json", function (data) {
+                var configName = "Default";
 
-                        });
+
+                if (data["scenarios"][scenario].visualizations != undefined) {
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].file) {
+                        fileName = data["scenarios"][scenario].visualizations["Scatter"][indx].file;
                     }
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].info) {
+                        var infoBox;
+                        infoBox = data["scenarios"][scenario].visualizations["Scatter"][indx].info;
+                        $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
+                        $('#' + id + '-div [data-toggle="tooltip"]').tooltip();
+                    }
+                    if (data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns) {
+                        var datacols = data["scenarios"][scenario].visualizations["Scatter"][indx].datafilecolumns;
+                        $.each(datacols, function (key, value) {
+                            $('#' + id + '-datatable-columns').append("<p>" + key + ": " + value + "</p>");
+                        })
+                    }
+
+                }
+
+                var configSettings = data["Scatter"][configName];
+
+                $.each(configSettings, function (opt, value) {
+
                 });
+
+
+            }).complete(function () {
+                if (url.indexOf(fileName) == -1) {
+                    url += "/" + fileName;
+                }
                 callback();
             });
         }
@@ -50,6 +80,26 @@ var scatter = (function() {
 
             //expected data should have columns similar to: ZONE,COUNTY,TRIP_MODE_NAME,QUANTITY
             var headers = d3.keys(data[0]);
+            if(! $.fn.DataTable.isDataTable('#'+id+'-datatable-table')) {
+                var columnsDT = [];
+                $.each(headers, function (d, i) {
+                    columnsDT.push({data: i});
+                    $('#' + id + '-datatable-div table thead tr').append("<th>" + i + "</th>")
+                });
+
+                $('#' + id + '-datatable-table').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: '<span class="glyphicon glyphicon-save"></span>',
+                            titleAttr:'Download CSV'
+                        }
+                    ],
+                    data: data,
+                    columns: columnsDT
+                });
+            }
             labelColumn = headers[0];
             xAxisColumn = headers[1];
             yAxisColumn = headers[2];
@@ -142,7 +192,7 @@ var scatter = (function() {
                     yAxisColumn + " / " + xAxisColumn + ": " + (d[yAxisColumn] / d[xAxisColumn]).toFixed(2);
             });
 
-        var svg = d3.select("#scatter-chart-container")
+        var svg = d3.select("#"+id+"-chart-container")
             .append("svg")
             .attr("width", outerWidth)
             .attr("height", outerHeight)
@@ -249,8 +299,8 @@ var scatter = (function() {
     };
 
     function setDataSpecificDOM() {
-        $('.scatter-chart-yaxis-title').text(yAxisColumn);
-        $('.scatter-chart-xaxis-title').text(xAxisColumn);
+        $('#'+id+'-div .scatter-chart-yaxis-title').text(yAxisColumn);
+        $('#'+id+'-div .scatter-chart-xaxis-title').text(xAxisColumn);
     };
     //readInData();
-}());
+} };

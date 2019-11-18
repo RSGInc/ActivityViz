@@ -1,4 +1,4 @@
-      #circle circle {
+      [selector$="chordcircle"] circle {
         fill: none;
         pointer-events: all;
       }
@@ -9,18 +9,18 @@
         fill-opacity: .7;
         stroke-width: .25px;
       }
-      #circle:hover path.faded {
+      [selector$="chordcircle"]:hover path.faded {
         display: none;
       }
 
-#chord-chart-container {
+[charttype$="chordchart"] {
     font: 10px sans-serif;
 }
 
 .chordLegend circle, .chordLegend text {
     cursor: pointer;
 }
- #chord-tooltip {
+[selector$="chordtooltip"] {
         color: white;
         opacity: .9;
         background: #333;

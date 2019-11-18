@@ -1,18 +1,18 @@
-#radar-main {
+.radar-main {
 	padding: 0px;
 	padding-left: 0;
 	padding-top: 0;
 }
 
-#radar-sidebar {
+.radar-sidebar {
 	padding-left: 30px;
 }
 
-#radar-text-area {
+.radar-text-area {
 	margin-bottom: 30px;
 }
 
-#radar-chart-container .tooltip {
+.radar-chart-container .tooltip {
 	fill: #333333;
 }
 .legend-color-guide{
