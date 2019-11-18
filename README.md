@@ -126,6 +126,7 @@ Each Data/Region folder needs the following:
 3. Data Folder - Scenario data folder with its name equal to its scenario entry, can either be local or in the cloud. Location of the region's scenario data folder is specified in the main config.json file 
 4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
+4. Chord_Zones.geojson - Chord zone polygons with the *NAME* property equal to the origin/destination name. 
 
 # Testing and Publishing 
 
