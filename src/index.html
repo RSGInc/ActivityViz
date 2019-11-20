@@ -6,44 +6,56 @@
 	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 	<script defer src="../bower_components/jqueryui/jquery-ui.min.js"></script>
 	<script defer src="../bower_components/spectrum/spectrum.js"></script>
-	<script defer src="../bower_components/chosen/chosen.jquery.js"></script>
-	<script defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script defer src="../bower_components/d3/d3.js"></script>
-    <script defer src="../bower_components/d3/d3-tip.js"></script>
-	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
-	<script defer src="../bower_components/nvd3/build/nv.d3.js"></script>
-	<script defer src="../bower_components/underscore/underscore-min.js"></script>
-	<script defer src="../bower_components/geostats/lib/geostats.js"></script>
-	<script defer type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js"></script>
-	<script defer src="../vendor/leaflet/leaflet-src.js"></script>
-	<script defer src="../vendor/three.min.js"></script>
-	<script defer src="../vendor/TweenMax.min.js"></script>
-	<script defer src="../vendor/vizicities.js"></script>
+	<script  src="../bower_components/chosen/chosen.jquery.js"></script>
+	<script  defer src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script  defer src="../bower_components/datatables/datatables.min.js"></script>
+	<script  src="../bower_components/d3/d3.js"></script>
+    <script  src="../bower_components/d3/d3-tip.js"></script>
+
+	<script  src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
+	<script  src="../bower_components/nvd3/build/nv.d3.js"></script>
+	<script  src="../bower_components/underscore/underscore-min.js"></script>
+	<script  src="../bower_components/geostats/lib/geostats.js"></script>
+	<script  type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js"></script>
+	<script  src="../vendor/leaflet/leaflet-src.js"></script>
+	<script  src="../vendor/leaflet/leaflet.groupedlayercontrol.min.js"></script>
+	<script  src="../vendor/three.min.js"></script>
+	<script  src="../vendor/TweenMax.min.js"></script>
+	<script  src="../vendor/vizicities.js"></script>
 	<script type="text/javascript" src="../abmviz_utilities.js"></script>
-
-	<script defer type="text/javascript" src="grouped_barchart.js"></script>
-
+    <script defer type="text/javascript"  src="../bower_components/bootstrap/js/bootstrap-multiselect.js"></script>
+	<script  type="text/javascript" src="grouped_barchart.js"></script>
+	<script  type="text/javascript" src="timeuse.js"></script>
+    <script  type="text/javascript" src="sunburst.js"></script>
+    <script  type="text/javascript" src="scatter.js"></script>
+	<script  type="text/javascript" src="chord.js"></script>
+    <script  type="text/javascript" src="barchart_and_map.js"></script>
+	<script  type="text/javascript" src="points_of_interest_map.js"></script>
+    <script  type="text/javascript" src="radar.js"></script>
+    <script  type="text/javascript" src="three3d.js "></script>
 
 	<script defer type="text/javascript" src="mapper.js"></script>
-    <script defer src="../bower_components/bootstrap/js/bootstrap-multiselect.js"></script>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-multiselect.css"/>
 
+	<script type="text/javascript" src="grouped_barchart_data.js"></script>
 
-
-	<script defer type="text/javascript" src="radar-chart-nbremer.js"></script>
+	<script  type="text/javascript" src="radar-chart-nbremer.js"></script>
 
 	<link rel="shortcut icon" href="">
+	<link rel="stylesheet" href="../bower_components/datatables/datatables.min.css" />
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-multiselect.css"/>
 	<link rel="stylesheet" href="../bower_components/spectrum/spectrum.css" />
 	<link rel="stylesheet" href="../bower_components/jqueryui/themes/base/jquery-ui.min.css" />
 	<link rel="stylesheet" href="../bower_components/chosen/chosen.css" />
 	<link rel="stylesheet" href="../bower_components/nvd3/build/nv.d3.min.css" />
 	<link rel="stylesheet" href="../bower_components/geostats/lib/geostats.css" />
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/all.min.css" />
+		<link rel="stylesheet" href="../vendor/leaflet/leaflet.groupedlayercontrol.min.css" />
 	<link rel="stylesheet" href="../vendor/leaflet/leaflet.css" />
 	<link rel="stylesheet" href="../vendor/vizicities.css" />
 	<link rel="stylesheet" href="style.css" />
 	<link rel="stylesheet" href="grouped_barchart.css" />
-		<link rel="stylesheet" href="points_of_interest_map.css" />
+	<link rel="stylesheet" href="points_of_interest_map.css" />
 	<link rel="stylesheet" href="barchart_and_map.css" />
 	<link rel="stylesheet" href="sunburst.css" />
 	<link rel="stylesheet" href="timeuse.css" />
@@ -51,9 +63,7 @@
 	<link rel="stylesheet" href="radar.css" />
 	<link rel="stylesheet" href="chord.css" />
     <link rel="stylesheet" href="scatter.css" />
-	<script type="text/javascript">
 
-	</script>
 </head>
 <!-- end head -->
 
@@ -80,891 +90,322 @@
 
 <div id="thenavbar">
 		<ul class="nav nav-tabs" role="tablist" id="the_tabs" style="display:inline-block">
-			<li id="nav0" role="presentation"><a href="#three3d_tab"   role="tab" data-toggle="tab" style="display:none">3D Map</a></li>
-			<li id="nav1"  role="presentation"><a href="#grouped_tab"      role="tab" data-toggle="tab" style="display:none">BarChart</a></li>
-			<li id="nav2"  role="presentation"><a href="#barchartmap_tab"      role="tab" data-toggle="tab" style="display:none">BarChart and Map</a></li>
-			<li id="nav3"  role="presentation"><a href="#timeuse_tab" role="tab" data-toggle="tab" style="display:none">TimeUse</a></li>
-			<li id="nav4"  role="presentation"><a href="#chord_tab"   role="tab" data-toggle="tab" style="display:none">Chord</a></li>
-			<li id="nav5"  role="presentation"><a href="#radar_tab"   role="tab" data-toggle="tab" style="display:none">Radar</a></li>
-			<li id="nav6"  role="presentation"><a href="#sunburst_tab"   role="tab" data-toggle="tab" style="display:none">Sunburst</a></li>
-            <li id="nav7"  role="presentation"><a href="#scatter_tab"   role="tab" data-toggle="tab" style="display:none">Scatter</a></li>
-            <li id="nav8"  role="presentation"><a href="#poimap_tab"   role="tab" data-toggle="tab" style="display:none">Points of Interest</a></li>
+
             <button id="leftnavbtn"><span class="glyphicon glyphicon-chevron-left" style="font-size:25px"></span></button>
             <button id="rightnavbtn"><span class="glyphicon glyphicon-chevron-right" style="font-size:25px"></span></button>
 		</ul>
     </div>
 
         <div class="tab-content">
-       <div role="tabpanel" class="tab-pane" id="three3d_tab">
-		<div id="three3d" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<strong>
-					<span class="three3d-purpose"></span>
-				</strong>
-				<span id="three3d-current-period"></span>
-			</p>
-			<div class="col-xs-12" style="margin-top:1em;">
-				<div class="col-xs-6" style="margin-bottom:1em">
-					
-
-					<div class="col-xs-12">
-						<label>
-							<input type="checkbox" id="three3d-controls">Controls
-							</input>
-						</label>
-						<label style="padding-left:10px;">
-							<input type="checkbox" id="three3d-centroids">Centroids
-							</input>
-						</label>
-						<div class="row control">
-							<!-- symbols defined at: https://graphemica.com/ -->
-							<button class="move left" title="move left">&larr;</button>
-							<button class="move right" title="move right">&rarr;</button> &nbsp;&nbsp;&nbsp;
-							<button class="move back" title="move back">&uarr;</button>
-							<button class="move forward" title="move forward">&darr;</button> &nbsp;&nbsp;&nbsp;
-							<!-- north east arrow ? https://graphemica.com/%E2%86%97 -->
-							<button class="tilt up" title="tilt up">&#8599;</button>
-							<button class="tilt down" title="tilt down">&#8601;</button> &nbsp;&nbsp;&nbsp;
-							<button class="rotate left" title="rotate left">&#8635;</button>
-							<button class="rotate right" title="rotate right">&#8634;</button> &nbsp;&nbsp;&nbsp;
-							<button class="zoom in" title="zoom in">&#9547;</button>
-							<button class="zoom out" title="zoom out">&#9473;</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-classification-label">Classification</div>
-					<select class="form-control" id="three3d-classification">
-						<option value="quartiles" selected="selected">Quartiles</option>
-						<option value="even-interval">Even interval</option>
-						<option value="custom">Custom</option>
-					</select>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-filter-label"></div>
-					<div id="three3d-filter-checkboxes"></div>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-period-id">
-						<div id="three3d-period-label">Data Selection</div>
-						<select class="form-control" id="three3d-period">
-
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
-			<div class="col-xs-4" style="margin-top:1em;text-align:right">
-				<table width="100%">
-					<tr>
-						<td rowspan="2">Palette:</td>
-						<td>
-							<div class="col-xs-10">
-								<div class="row">
-									<div class="ramp Blues">
-										<svg width="60" height="15">
-											<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Greens">
-										<svg width="60" height="15">
-											<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Greys">
-										<svg width="60" height="15">
-											<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp RedGreen">
-										<svg width="60" height="15">
-											<rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-xs-10">
-									<div class="ramp Oranges">
-										<svg width="60" height="15">
-											<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Purples">
-										<svg width="60" height="15">
-											<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Reds">
-										<svg width="60" height="15">
-											<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-								</div>
-							</div>
-						</td>
-					</tr>
-				</table>
-
-			</div>
-			<div class="col-xs-2" style="margin-top:1em;text-align:left">
-
-				<input type="range" class="slider" value="100" id="opacityRange" min="1" max="100"/>
-                <p>	Opacity: <span id="opacityval"></span></p>
-			</div>
-			<div class="col-xs-6" style="margin-top:1em;text-align:right">
-				<input type="text" id="three3d-naColor" />N/A
-
-				</nobr>
-			</div>
-			<div class="col-xs-12" style="margin-top:1em;">
-				<div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>
-				<div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider"></div>
-				<div class="row">
-					<div class="col-xs-6">
-						<button id="three3d-update-map" style="display:none" class="btn">Update Map</button>
-						<button id="three3d-start-cycle-map" class="btn">Cycle Through Day</button>
-						<button id="three3d-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
-					</div>
-					<div class="col-xs-6" id="three3d-redraw">
-						Redraw
-
-
-						<select id="three3d-cycle-frequency" class="form-control form-control-inline">
-							<option value="1">every 1 sec</option>
-							<option value="2">every 2 sec</option>
-							<option value="3">every 3 sec</option>
-							<option value="4">every 4 sec</option>
-							<option value="5">every 5 sec</option>
-							<option value="6">every 6 sec</option>
-							<option value="7">every 7 sec</option>
-							<option value="8">every 8 sec</option>
-							<option value="9">every 9 sec</option>
-							<option value="10">every 10 sec</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-       </div>
-		<!--end three3d-->
-<div role="tabpanel" class="tab-pane" id="grouped_tab">
-		<div id="grouped-barchart-div" class="row dynamic-content" style="margin-bottom:100px">
-
-			<p class="text-center" style="font-size:2em">
-
-				<strong>
-					<span class="grouped-barchart-main-group"></span>,</strong> by
-				<span class="grouped-barchart-sub-group"></span>
-			</p>
-			<div class="col-xs-12">
-				<div class="row" style="margin-top:4px">
-					<ul>
-
-						
-						<li>
-							<label class="checkbox-inline">
-								<input id="grouped-barchart-pivot-axes" type="checkbox">Swap bars and legend?</label>
-						</li>
-						<li>
-							<label class="checkbox-inline">
-								<input id="grouped-barchart-toggle-percentage" type="checkbox">Show as Percentage?</label>
-						</li>
-						<li>
-							<label class="checkbox-inline">
-								<input id="grouped-barchart-toggle-horizontal" type="checkbox">Show as Vertical?</label>
-						</li>
-						<li>
-							<label class="checkbox-inline">
-								<input id="grouped-barchart-toggle-stacked" type="checkbox">Show as Stacked?</label>
-						</li>
-						
-					</ul>
-
-				</div>
-			</div>
-			<div class="row" style="width:100%;height:400px">
-				<div id="grouped-barmain">
-					<div id="grouped-bar-container"></div>
-				</div>
-			</div>
-		</div>
-		<!-- end grouped-barchart -->
-</div>
-                            <div role="tabpanel" class="tab-pane" id="barchartmap_tab">
-		<div id="mode-share-by-county" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<strong>
-					<span class="mode-share-by-county-trip-mode"></span>,</strong> by
-				<span class="mode-share-by-county-area-type"></span>
-			</p>
-			<div class="col-xs-6 right-border" style="margin-top:4px">
-				<div class="row">
-					
-
-					<div class="row" style="margin-top:4px">
-						<div class="col-xs-10">
-							
-						</div>
-						<div class="col-xs-2">
-							<label>
-								<input type="checkbox" checked id="mode-share-by-county-stacked" />Stacked
-
-							</label>
-							<!-- <label><input type="checkbox" checked id="mode-share-by-county-legend-type" />Classic Legend/label>-->
-						</div>
-					</div>
-				</div>
-				<div class="row" style="width:100%;height:70%;">
-					<svg id="mode-share-by-county-chart"></svg>
-				</div>
-			</div>
-			<div class="col-xs-6">
-				<div class="col-xs-12">
-					</div>
-				<div class="col-xs-12">
-				<div class="col-xs-4">
-					<div class="mode-share-by-county-trip-mode-zones" style="font-weight:bold"></div>
-				</div>
-				<div class="col-xs-4">
-					<div class="mode-share-by-county-trip-mode-bubbles" style="font-weight:bold"></div>
-				</div>
-				<div class="col-xs-4" style="margin-bottom:.1em;font-weight:bold">
-					<div id="mode-share-by-county-classification-label">Classification</div>
-				</div>
-					</div>
-				<div class="col-xs-12">
-				<div class="col-xs-4">
-					<select class="form-control" id="mode-share-by-county-current-trip-mode-zones"></select>
-				</div>
-				<div class="col-xs-4">
-					<select class="form-control" id="mode-share-by-county-current-trip-mode-bubbles"></select>
-				</div>
-				<div class="col-xs-4" style="margin-bottom:2em;">
-					<select class="form-control" id="mode-share-by-county-classification">
-						<option value="quartiles" selected="selected">Quartiles</option>
-						<option value="jenks">Natural breaks (Jenks)</option>
-						<option value="even-interval">Even interval</option>
-						<option value="custom">Custom</option>
-					</select>
-				</div>
-					</div>
-				<div class='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;">
-
-				</div>
-				<div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
-				<div class="col-xs-6" id="mode-share-by-county-pallette" style="margin-top:1em;text-align:right">
-					<table width="100%">
-						<tr>
-							<td rowspan="2">Palette:</td>
-							<td>
-								<div class="col-xs-10">
-									<div class="row">
-										<div class="ramp Blues">
-											<svg width="60" height="15">
-												<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-										<div class="ramp Greens">
-											<svg width="60" height="15">
-												<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-										<div class="ramp Greys">
-											<svg width="60" height="15">
-												<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-										<div class="ramp RedGreen">
-											<svg width="60" height="15">
-												<rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="row">
-									<div class="col-xs-10">
-										<div class="ramp Oranges">
-											<svg width="60" height="15">
-												<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-										<div class="ramp Purples">
-											<svg width="60" height="15">
-												<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-										<div class="ramp Reds">
-											<svg width="60" height="15">
-												<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-												<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-												<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-												<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-											</svg>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-xs-6" id='mode-share-by-county-tools' style="margin-top:1em;text-align:right">
-                    <input type="checkbox" id="mode-share-by-county-zones" checked/> Zones
-					<input type="checkbox" id="mode-share-by-county-bubbles" /> Bubbles
-					<input type="text" id="mode-share-by-county-bubble-color" disabled/> Size:
-
-
-					<select id="mode-share-by-county-bubble-size" disabled>
-						<option>1</option>
-						<option>2</option>
-						<option>3</option>
-						<option>4</option>
-						<option selected>5</option>
-						<option>6</option>
-						<option>7</option>
-						<option>8</option>
-						<option>9</option>
-						<option>10</option>
-						<option>11</option>
-						<option>12</option>
-						<option>13</option>
-						<option>14</option>
-						<option>15</option>
-					</select>
-					<input type="checkbox" id="mode-share-by-county-stroke" onclick="barchart_and_map.updateOutline()" /> Outline
-
-
-					<nobr>
-						<input type="text" id="mode-share-by-county-naColor" />N/A
-
-					</nobr>
-				</div>
-				<div class="col-xs-12" style="margin-top:1em;">
-					<div style="margin-bottom:1em;margin-top:1.6em;" id="mode-share-by-county-slider"></div>
-					<div class="row">
-						<div class="col-xs-6">
-							<button id="mode-share-by-county-update-map" style="display:none" class="btn">Update Map</button>
-							<button id="mode-share-by-county-start-cycle-map" class="btn">Cycle Through Maps</button>
-							<button id="mode-share-by-county-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
-						</div>
-						<div class="col-xs-6">
-							Redraw
-
-
-							<select id="mode-share-by-county-cycle-frequency" class="form-control form-control-inline">
-								<option value="1">every 1 sec</option>
-								<option value="2">every 2 sec</option>
-								<option value="3">every 3 sec</option>
-								<option value="4">every 4 sec</option>
-								<option value="5">every 5 sec</option>
-								<option value="6">every 6 sec</option>
-								<option value="7">every 7 sec</option>
-								<option value="8">every 8 sec</option>
-								<option value="9">every 9 sec</option>
-								<option value="10">every 10 sec</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12" style="margin-top:1em;">
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-                            </div>
-		<!-- end mode-share-by-county -->
-<div role="tabpanel" class="tab-pane" id="timeuse_tab">
-		<div id="timeuse" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<span class="timeuse-maingroup">TIME USE</span>
-			</p>
-			<div id="timeuse-sidebar" class="col-xs-2">
-				<div id="timeuse-text-area">Time Use displays person out-of-home travel purpose by time of day. The vertical axis displays the sum or percent of
-					activity and the horizontal axis displays the period of the day.</div>
-				
-				<div id="timeuse-legend"></div>
-			</div>
-			<div id="timeuse-main" class="col-xs-10">
-				<div id="timeuse-chart">
-					<svg></svg>
-				</div>
-			</div>
-		</div>
-		<!-- end timeuse -->
-</div>
-<div role="tabpanel" class="tab-pane" id="sunburst_tab">
-		<div id="sunburst" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<span class="sunburst-maingroup">PLACEHOLDER</span>
-			</p>
-			<div class="col-xs-2">
-				<div id="sunburst-legend"></div>
-			</div>
-			<div class="col-xs-10">
-				<div id="sunburst-chart" class="col-xs-7"></div>
-				<div class="col-xs-5">
-					<div id="sunburst-text-area">
-						
-					</div>
-					<div id="sunburst-explanation" style="visibility: hidden;">
-						<p>
-							<span id="sunburst-percentage"></span>
-							<br/>
-							<span id="sunburst-current-node"></span>
-							<br/>
-							<span id="sunburst-current-node-value"></span>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-</div>
-		<!-- end sunburst -->
-		<!-- begin chord -->
-                            <div role="tabpanel" class="tab-pane" id="chord_tab">
-		<div id="chord" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-
-				<strong>
-					<span class="chord-chart-maingroup"></span>,</strong> by
-				
-			</p>
-			<div class="col-md-6 col-sm-12 right-border">
-				<div id="chord-tooltip" class="">
-
-				</div>
-				<div id="chord-main">
-					<div id="chord-dropdown-div" class="col-xs-5">
-						<p class="chord-chart-maingroup"></p>
-					</div>
-
-					<div id="chord-chart-container" style="width:100%;margin-left:auto;margin-right:auto;"></div>
-				</div>
-			</div>
-			<div class="col-md-6 col-sm-12 " id="chord-chart-map">
-				<p></p>
-
-				<div class="col-xs-12" id="chord-by-district-map" style="width: 100%;height:75%;"></div>
-				<div class="col-xs-6" style="margin-top:1em;text-align:right">
-
-				</div>
-
-			</div>
-		</div>
-
-                            </div>
-		<!-- end chord -->
-                            <div role="tabpanel" class="tab-pane" id="radar_tab">
-		<div id="radar" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<span class="radar-maingroup">RADAR CHARTS</span>
-			</p>
-			<div id="radar-sidebar" class="col-xs-2">
-				<div id="radar-text-area"></div>
-				
-				<div id="radar-legend"></div>
-			</div>
-			<div id="radar-main" class="col-xs-10">
-				<div id="radar-chart-container"></div>
-			</div>
-		</div>
-                            </div>
-		<!-- end radar -->
-	<div role="tabpanel" class="tab-pane" id="scatter_tab">
-        <div id="scatter" class="row dynamic-content">
-
-
-			<div class="col-xs-12 right-border">
-				<p class="text-center" style="font-size:2em;width:1050px;">
-
-				<strong><span class="scatter-chart-yaxis-title"></span></strong> /
-				<strong><span class="scatter-chart-xaxis-title"></span></strong>
-			</p>
-				<div id="scatter-tooltip" class="">
-				</div>
-				<div id="scatter-main">
-
-					<div id="scatter-chart-container"></div>
-				</div>
-			</div>
-		</div>
-    </div>
-
-	   <div role="tabpanel" class="tab-pane" id="poimap_tab">
-		<div id="poi-by-group" class="row dynamic-content">
-
-			<p class="text-center" style="font-size:2em">
-				<strong>
-					<span class="poi-by-group-group"></span>,</strong> by
-				<span class="poi-by-group-type"></span>
-			</p>
-			<div class="col-xs-6 right-border" style="margin-top:4px">
-				<div class="row">
-
-					<div class="row" style="margin-top:4px">
-						<div class="col-xs-10" style="padding-bottom:8px;">
-                        <span id="poi-by-group-filter-span" class="col-sm-6"></span>
-                        <span style="font-weight:bold;font-size:16px;" class="legendtitle col-sm-6"> </span>
-
-						</div>
-						<div class="col-xs-2">
-
-							<label>
-								<input type="checkbox" checked id="poi-by-group-stacked" />Stacked
-
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="row" style="width:100%;height:80%;">
-					<svg id="poi-by-group-chart"></svg>
-				</div>
-			</div>
-			<div class="col-xs-6">
- 				<div class="col-xs-12">
-					</div>
-				<div class="col-xs-12">
-                    <div class="col-xs-3">
-					<div class="poi-by-group-values" style="font-weight:bold"></div>
-				</div>
-				<div class="col-xs-3">
-					<div class="poi-by-group-groups" style="font-weight:bold"></div>
-				</div>
-
-					</div>
-				<div class="col-xs-12">
-                    				<div class="col-xs-3">
-					<select class="form-control" id="poi-by-group-values-current"></select>
-				</div>
-				<div class="col-xs-3" style="margin-bottom:2em;">
-					<select class="form-control" id="poi-by-group-groups-current"></select>
-				</div>
-
-		<div class="col-xs-6" style="">
-				<div id='poi-by-group-tools' >
-					<table id="poi-by-group-tooltable">
-					<tr>
-
-						<td>Bubbles</td>
-					<td><input type="text" id="poi-by-group-bubble-color" /></td>
-						<td>Size: </td>
-						<td>
-					<select id="poi-by-group-bubble-size" >
-						<option>1</option>
-						<option selected>2</option>
-						<option>3</option>
-						<option>4</option>
-						<option >5</option>
-						<option>6</option>
-						<option>7</option>
-						<option>8</option>
-						<option>9</option>
-						<option>10</option>
-						<option>11</option>
-						<option>12</option>
-						<option>13</option>
-						<option>14</option>
-						<option>15</option>
-					</select>
-</td>
-</tr>
-
-						</table>
-				</div>
-				</div>
-					</div>
-
-				<div class="col-xs-12" id="poi-by-group-map" style="width: 100%;height:60%;"></div>
-				<div class="col-xs-6" id="poi-by-group-pallette" style="margin-top:1em;text-align:right">
-
-				</div>
-
-
-			</div>
-		</div>
-       </div> <!--END POIMAP TAB -->
 
         </div><!-- END TAB CONTENT-->
         </div>  <!-- END MAIN CONTENT-->
 
 </body>
 <!-- end body -->
+<div class="footer">
+    <div class="container" display="inline" style="position:relative; padding:5px 0px 5px 0px">
+      <span style="color:#9D9D9D; text-align:left"><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
+      <span style="position:absolute;right:0;text-align:right"><a href="https://github.com/rsginc/ActivityViz" style="color:#9D9D9D" target="_blank"><i class="fab fa-github-alt" aria-hidden="true"></i> Source Code</a></span>
+    </div>
 
+</div>
 </html>
 
 
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script type="text/javascript">
-	// Parse the URL parameter
-	var visualizations;
-	function getParameterByName(name, url) {
-		if (!url) url = window.location.href;
-		name = name.replace(/[\[\]]/g, "\\$&");
-		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-			results = regex.exec(url);
-		if (!results) return null;
-		if (!results[2]) return '';
-		return decodeURIComponent(results[2].replace(/\+/g, " "));
-	}
-	// Give the parameter a variable name
-
-	function fileExists(url,id, tab) {
-        var returnme = true;
-        d3.text(url, function (error, data) {
-             if (error) {
-                $(id).hide();
-                $('a[href="' + tab + '"]').hide();
-                return;
-            }
-            var firstrow = d3.csv.parseRows(data)[0];
-
-            if (firstrow == "<html>") {
-                $(id).hide();
-                $('a[href="' + tab + '"]').hide();
-            } else {
-                $(id).show();
-                $('a[href="' + tab + '"]').show();
-                var shownTabs = $('li[role="presentation"]').children(":visible");
-                if (shownTabs.length > 0)
-                    shownTabs[0].click();
-            }
-        });
-
-    }
-	$(document).ready(function () {
-    var threedanimated_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/3DAnimatedMapData.csv";
-    fileExists(threedanimated_path,"#three3d","#three3d_tab");
-
-    var timeuse_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TimeUseData.csv";
-	fileExists(timeuse_path,'#timeuse','#timeuse_tab');
-
-	var chord_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/ChordData.csv";
-	fileExists(chord_path,'#chord','#chord_tab');
-
-	var barchartmap_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartAndMapData.csv";
-	fileExists(barchartmap_path,"#mode-share-by-county","#barchartmap_tab");
-
-	var barchart_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/BarChartData.csv";
-	fileExists(barchart_path,"#grouped-barchart-div","#grouped_tab");
-
-	var radar_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/RadarChartsData.csv";
-	fileExists(radar_path,"#radar","#radar_tab");
-
-	var sunburst_path = "../data/"+abmviz_utilities.GetURLParameter("region")+"/"+ abmviz_utilities.GetURLParameter("scenario") + "/TreeMapData.csv";
-	fileExists(sunburst_path,"#sunburst","#sunburst_tab");
-
-	var scatter_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/Scatter.csv";
-	fileExists(scatter_path,"#scatter","#scatter_tab");
-
-	var poi_path = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/PointofInterest.csv";
-	fileExists(poi_path,"#poi-by-group","#poimap_tab");
- var shownTabs = $('li[role="presentation"]').children(":visible");
-		if(shownTabs.length>0)
-		    shownTabs[0].click();
-/* $(window).load(function() {
+$(document).ready(function () {
   var shownTabs = $('li[role="presentation"]').children(":visible");
-		if(shownTabs.length>0)
-		    shownTabs[0].click();
-    });*/
-	});
+		if(shownTabs.length>0){}
+		    //shownTabs[0].click();
+    });
 </script>
 
-<script defer type="text/javascript">
+<script  type="text/javascript">
+	var scenario = abmviz_utilities.GetURLParameter("scenario");
 	var region = abmviz_utilities.GetURLParameter("region");
 	$.ajaxSetup({
   cache: true
 });
-	var loadedScripts = {
-	    "three3d":false,
-        "grouped":false,
-        "barchart":false,
-        "timeuse":false,
-        "chord":false,
-        "radar":false,
-        "sunburst":false,
-        "scatter": false,
-        "poimap": false
-    };
-    $.getJSON("../data/" + region + "/region.json", function (data) {
+	 var dataLocation = localStorage.getItem(region);
+    $.getJSON(dataLocation + "region.json", function (data) {
 		var icon = data.Icon;
 		var logo = data.Logo;
 		var title = data.Title;
 		var linkURL = data.LinkURL;
 		var navbartitle = data.NavbarTitle;
 		var tabbedCharts = data.TabbedCharts;
-		$("link[rel*='icon']").attr("href", "../data/" + region + "/img/" + icon + "");
+		$("link[rel*='icon']").attr("href", dataLocation + "img/" + icon + "");
 		$("title").text(title);
 		$('#title_id').text(navbartitle);
 		$('#navbarlink').attr("href", linkURL);
-		$('#logo_id').attr("src", "../data/" + region + "/img/" + logo + "");
-
+		$('#logo_id').attr("src", dataLocation + "img/" + logo + "");
+		 var label = abmviz_utilities.GetURLParameter("scenario");
+		if('label' in data["scenarios"][scenario]){
+			label = data["scenarios"][scenario].label;
+		}
+ 		$("#scenario-header").html("Scenario " + label);
 		$.each(data.colorRamps, function (key, value) {
 			if (value == false)
 				$('.' + [key]).remove();
 		});
-		var ids =
-			{"3DMap": "three3d", "BarMap": "mode-share-by-county", "GrpBar": "grouped-barchart-div", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter","POIMap":"poi-by-group" };
-		var jsFiles =
-			{"3DMap": "three3d", "BarMap": "barchart_and_map", "GrpBar": "grouped_barchart_data", "TimeUse": "timeuse", "Radar": "radar", "Sunburst": "sunburst","Chord":"chord","Scatter":"scatter","POIMap":"points_of_interest_map"	};
-		var tablinks =
-            {"3DMap": "three3d_tab", "BarMap": "barchartmap_tab", "GrpBar": "grouped_tab", "TimeUse": "timeuse_tab", "Radar": "radar_tab", "Sunburst": "sunburst_tab","Chord":"chord_tab","Scatter":"scatter_tab","POIMap":"poimap_tab"	};
 
-	if(tabbedCharts == undefined || tabbedCharts==false) {
-	    $('#the_tabs').hide();
-        $.each(data.visualizations, function (key, value) {
-            $('#' + ids[key]).appendTo($("#main_div"));
-            $('#'+ids[key]).prepend("<hr>");
-            $.getScript(jsFiles[key]+".js");
+		var visuals =  data["scenarios"][scenario].visualizations;
+		if(visuals != undefined) {
+            $.each(visuals, function (key, value) {
+                if (key == "GroupedCharts") {
+                    $.each(value, function (k, v) {
+                        addMyTab("barchart.html", "BarChartGrp.barchart", v.name,k,"bc_"+v.name.replace(/\s/g, ""), function () {
+                            var chartname = "bc_"+v.name.replace(/\s/g, "");
+                            $('#grouped_tab').attr('id', chartname + '_id');
+                            $('#grouped-barchart-div').attr('id', chartname + '-div');
+                            $('#grouped-barchart-pivot-axes').attr('id', chartname + '-pivot-axes');
+                            $('#grouped-barchart-toggle-percentage').attr('id', chartname + '-toggle-percentage');
+                            $('#grouped-barchart-toggle-horizontal').attr('id', chartname + '-toggle-horizontal');
+                            $('#grouped-barchart-toggle-stacked').attr('id', chartname + '-toggle-stacked');
+                            $('#grouped-barmain').attr('id', chartname + '-barmain');
+                            $('#grouped-bar-container').attr('id', chartname + '-container');
+                            $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if (key == "TimeUse") {
+                    $.each(value, function (k, v) {
+                        addMyTab("timeuse.html", "TimeuseChart.timeuse", v.name,k,'tu_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'tu_'+v.name.replace(/\s/g, "");
+                            $('#timeuse_tab').attr('id', chartname + '_id');
+                            $('#timeuse').attr('id', chartname + '-div');
+                            $('#timeuse-sidebar').attr('id', chartname + '-sidebar');
+                            $('#timeuse-text-area').attr('id', chartname + '-text-area');
+                            $('#timeuse-legend').attr('id', chartname + '-legend');
+                            $('#timeuse-main').attr('id', chartname + '-main');
+                            $('#timeuse-chart').attr('id', chartname + '-chart');
+                            $('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if (key == "Sunburst") {
+                    $.each(value, function (k, v) {
+                        addMyTab("sunburst.html", "SunburstChart.sunburst", v.name,k,'sb_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'sb_'+v.name.replace(/\s/g, "");
+                            $('#sunburst_tab').attr('id', chartname + '_id');
+                            $('#sunburst').attr('id', chartname + '-div');
+                            $('#sunburst-legend').attr('id', chartname + '-legend');
+                            $('#sunburst-chart').attr('id', chartname + '-chart');
+                            $('#sunburst-text-area').attr('id', chartname + '-text-area');
+                            $('#sunburst-explanation').attr('id', chartname + '-explanation');
+                            $('#sunburst-percentage').attr('id', chartname + '-percentage');
+                            $('#sunburst-current-node').attr('id', chartname + '-current-node');
+                            $('#sunburst-current-node-value').attr('id', chartname + '-current-node-value');
+                             $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if (key == "Scatter") {
+                    $.each(value, function (k, v) {
+                        addMyTab("scatter.html", "ScatterChart.scatter", v.name,k,'sc_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'sc_'+v.name.replace(/\s/g, "");
+                            $('#scatter_tab').attr('id', chartname + '_id');
+                            $('#scatter').attr('id', chartname + '-div');
+                            $('#scatter-tooltip').attr('id', chartname + '-tooltip');
+                            $('#scatter-main').attr('id', chartname + '-main');
+                            $('#scatter-chart-container').attr('id', chartname + '-chart-container');
+                             $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+							$('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if (key == "Chord") {
+                    $.each(value, function (k, v) {
+                        addMyTab("chord.html", "ChordChart.chord", v.name,k,'ch_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'ch_'+v.name.replace(/\s/g, "");
+                            $('#chord_tab').attr('id', chartname + '_id');
+                            $('#chord').attr('id', chartname + '-div');
+                            $('#chord-tooltip').attr('id', chartname + '-tooltip');
+                            $('#chord-main').attr('id', chartname + '-main');
+                            $('#chord-dropdown-div').attr('id', chartname + '-dropdown-div');
+                            $('#chord-chart-container').attr('id', chartname + '-chart-container');
+                            $('#chord-chart-map').attr('id', chartname + '-chart-map');
+                            $('#chord-by-district-map').attr('id', chartname + '-by-district-map');
+							$('#datatable-div').attr('id', chartname + '-datatable-div');
+                             $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+							$('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if(key == "POIMap"){
+                    $.each(value, function (k, v) {
+                        addMyTab("pointofinterest.html", "POIMap.pointofinterest_and_map", v.name,k,'poi_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'poi_'+v.name.replace(/\s/g, "");
+                            $('#poimap_tab').attr('id', chartname + '_id');
+                            $('#poi-by-group').attr('id', chartname + '-div');
+                            $('#poi-by-group-stacked').attr('id', chartname + '-stacked');
+                            $('#poi-by-group-chart').attr('id', chartname + '-chart');
+                            $('#poi-by-group-values-current').attr('id', chartname + '-values-current');
+                            $('#poi-by-group-groups-current').attr('id', chartname + '-groups-current');
+                            $('#poi-by-group-tooltable').attr('id', chartname + '-tooltable');
+                            $('#poi-by-group-bubble-color').attr('id', chartname + '-bubble-color');
+                            $('#poi-by-group-bubble-size').attr('id', chartname + '-bubble-size');
+                            $('#poi-by-group-emptydiv').attr('id', chartname + '-emptydiv');
+                            $('#poi-by-group-map').attr('id', chartname + '-map');
+                            $('#poi-by-group-pallette').attr('id', chartname + '-pallette');
+                            $('#poi-by-group-filter-span').attr('id', chartname + '-filter-span');
+							$('#datatable-div').attr('id', chartname + '-datatable-div');
+ 							$('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if(key == "RadarCharts"){
+                    $.each(value, function (k, v) {
+                        addMyTab("radar.html", "RadarData.radar", v.name,k,'rc_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'rc_'+v.name.replace(/\s/g, "");
+                            $('#radar_tab').attr('id', chartname + '_id');
+                            $('#radar').attr('id', chartname + '-div');
+                            $('#radar-sidebar').attr('id', chartname + '-sidebar');
+                            $('#radar-text-area').attr('id', chartname + '-text-area');
+                            $('#radar-legend').attr('id', chartname + '-legend');
+                            $('#radar-main').attr('id', chartname + '-main');
+                            $('#radar-chart-container').attr('id', chartname + '-chart-container');
+                             $('#datatable-columns').attr('id', chartname + '-datatable-columns');
+							$('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if(key == "3DMap") {
+                    $.each(value, function (k, v) {
+                        addMyTab("threed.html", "ThreeDMap.three3dFunction", v.name, k,'td_'+v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'td_'+v.name.replace(/\s/g, "");
+                            $('#three3d_tab').attr('id', chartname + '_id');
+                            $('#three3d').attr('id', chartname + '-div');
+                            $('#three3d-current-period').attr('id', chartname + '-current-period');
+                            $('#three3d-controls').attr('id', chartname + '-controls');
+                            $('#three3d-centroids').attr('id', chartname + '-centroids');
+                            $('#three3d-classification-label').attr('id', chartname + '-classification-label');
+                            $('#three3d-classification').attr('id', chartname + '-classification');
+                            $('#three3d-period-id').attr('id', chartname + '-period-id');
+                            $('#three3d-period-label').attr('id', chartname + '-period-label');
+                            $('#three3d-period').attr('id', chartname + '-period');
+                            $('#three3d-map').attr('id', chartname + '-map');
+                            $('#opacityRange').attr('id', chartname + '-opacityRange');
+                            $('#opacityval').attr('id', chartname + '-opacityval');
+                            $('#three3d-naColor').attr('id', chartname + '-naColor');
+                            $('#three3d-slider').attr('id', chartname + '-slider');
+                            $('#three3d-slider-time').attr('id', chartname + '-slider-time');
+                            $('#three3d-update-map').attr('id', chartname + '-update-map');
+                            $('#three3d-start-cycle-map').attr('id', chartname + '-start-cycle-map');
+                            $('#three3d-stop-cycle-map').attr('id', chartname + '-stop-cycle-map');
+                            $('#three3d-redraw').attr('id', chartname + '-redraw');
+                            $('#three3d-cycle-frequency').attr('id', chartname + '-cycle-frequency');
+ 							$('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname+'-datatable-collapse');
+                             $('#collapsebtn').attr('data-target', '#'+chartname+'-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname+'-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+                if(key == "BarMap") {
+                    $.each(value, function (k, v) {
+                        addMyTab("barchartmap.html", "BarChartMap.barchart_and_map", v.name, k, 'bm_' + v.name.replace(/\s/g, ""), function () {
+                            var chartname = 'bm_' + v.name.replace(/\s/g, "");
+                            $('#barchartmap_tab').attr('id', chartname + '_id');
+                            $('#mode-share-by-county').attr('id', chartname + '-div');
+                            $('#mode-share-by-county-stacked').attr('id', chartname + '-stacked');
+                            $('#mode-share-by-county-chart').attr('id', chartname + '-chart');
+                            $('#mode-share-by-county-classification-label').attr('id', chartname + '-classification-label');
+                            $('#mode-share-by-county-current-trip-mode-zones').attr('id', chartname + '-current-trip-mode-zones');
+                            $('#mode-share-by-county-current-trip-mode-bubbles').attr('id', chartname + '-current-trip-mode-bubbles');
+                            $('#mode-share-by-county-classification').attr('id', chartname + '-classification');
+                            $('#mode-share-by-county-checkboxes').attr('id', chartname + '-checkboxes');
+                            $('#mode-share-by-county-map').attr('id', chartname + '-map');
+                            $('#mode-share-by-county-pallette').attr('id', chartname + '-pallette');
+                            $('#mode-share-by-county-tools').attr('id', chartname + '-tools');
+                            $('#mode-share-by-county-zones').attr('id', chartname + '-zones');
+                            $('#mode-share-by-county-bubbles').attr('id', chartname + '-bubbles');
+                            $('#mode-share-by-county-bubble-color').attr('id', chartname + '-bubble-color');
+                            $('#mode-share-by-county-bubble-size').attr('id', chartname + '-bubble-size');
+                            $('#mode-share-by-county-stroke').attr('id', chartname + '-stroke');
+                            $('#mode-share-by-county-naColor').attr('id', chartname + '-naColor');
+                            $('#mode-share-by-county-slider').attr('id', chartname + '-slider');
+                            $('#mode-share-by-county-update-map').attr('id', chartname + '-update-map');
+                            $('#mode-share-by-county-start-cycle-map').attr('id', chartname + '-start-cycle-map');
+                            $('#mode-share-by-county-stop-cycle-map').attr('id', chartname + '-stop-cycle-map');
+                            $('#mode-share-by-county-cycle-frequency').attr('id', chartname + '-cycle-frequency');
+							$('#datatable-columns').attr('id', chartname + '-datatable-columns');
+                            $('#datatable-div').attr('id', chartname + '-datatable-div');
+                            $('#datatable-table').attr('id', chartname + '-datatable-table');
+                            $('#datatable-collapse').attr('id', chartname + '-datatable-collapse');
+                            $('#collapsebtn').attr('data-target', '#' + chartname + '-datatable-collapse');
+                            $('#collapsebtn').attr('id', chartname + '-collapsebtn');
+                            $('#' + chartname + '-div').show();
+                        });
+                    });
+                }
+            });
+        }
+	}).done(function() {
+        $('#the_tabs a').on('click', function (link) {
+            eval(link.currentTarget.getAttribute("funct"))
+            console.log(link.currentTarget.getAttribute("funct"));
+        })
+        var shownTabs = $('li[role="presentation"] a');
+        if (shownTabs.length > 0)
+            setTimeout(function () {
+                shownTabs[0].click()
+            }, 100);
+    });
+
+	function addMyTab(filename,chartype,name,indx,idname,callback) {
+        var newEl = "<li role='presentation'><a href='#" + idname + "_id' role='tab' data-toggle='tab' funct='" + chartype + "(\"" + idname + "\"," + indx + ")' >" + name + "</a></li>";
+        $(newEl).insertBefore("#leftnavbtn");
+        $.get("templates/" + filename, function (data) {
+            $('.tab-content').append(data);
+        }).complete(function (d) {
+
+
+            callback();
         });
-
-    } else {
-	    var navIdx =0;
-	    var elementStore = new Array();
-	    $.each(data.visualizations, function (key, value) {
-	        var currEl = $('a[href="#'+tablinks[key]+'"]').closest('li');
-	       $('#the_tabs').append(currEl);
-	    });
     }
-	});
-		$('a[href="#three3d_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["three3d"] ==false){
-                $.getScript("three3d.js").done(function(scripts,textStatus){
-                    loadedScripts["three3d"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-		$('a[href="#grouped_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["grouped"] ==false){
-                $.getScript("grouped_barchart_data.js").done(function(scripts,textStatus){
-                    loadedScripts["grouped"] = true;
-                });
-            } else {
-                window.dispatchEvent(new Event('resize'));
-            }
-        });
-        $('a[href="#barchartmap_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["barchart"] ==false){
-                $.getScript("barchart_and_map.js").done(function(scripts,textStatus){
-                    loadedScripts["barchart"] = true;
-                });
-            } else {
-                window.dispatchEvent(new Event('resize'));
-
-            }
-        });
-		$('a[href="#timeuse_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["timeuse"] ==false){
-                $.getScript("timeuse.js").done(function(scripts,textStatus){
-                    loadedScripts["timeuse"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-		$('a[href="#chord_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["chord"] ==false){
-                $.getScript("chord.js").done(function(scripts,textStatus){
-                    loadedScripts["chord"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-		$('a[href="#radar_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["radar"] ==false){
-                $.getScript("radar.js").done(function(scripts,textStatus){
-                    loadedScripts["radar"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-        $('a[href="#sunburst_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["sunburst"] ==false){
-                $.getScript("sunburst.js").done(function(scripts,textStatus){
-                    loadedScripts["sunburst"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-         $('a[href="#scatter_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["scatter"] ==false){
-                $.getScript("scatter.js").done(function(scripts,textStatus){
-                    loadedScripts["scatter"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
-         $('a[href="#poimap_tab"]').on('shown.bs.tab', function (e) {
-		    if(loadedScripts["poimap"] ==false){
-                $.getScript("points_of_interest_map.js").done(function(scripts,textStatus){
-                    loadedScripts["poimap"] = true;
-                });
-            } else {
-		        window.dispatchEvent(new Event('resize'));
-            }
-        });
          $('#leftnavbtn').click(function(d) {
              var shownTabs = $('li[role="presentation"]').children(":visible");
              var i = 0;

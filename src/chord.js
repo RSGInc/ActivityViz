@@ -1,15 +1,23 @@
 //encapsulate all code within a IIFE (Immediately-invoked-function-expression) to avoid polluting global namespace
 //global object chord will contain functions and variables that must be accessible from elsewhere
+var ChordChart = {
 
-var chord = (function () {
+chord:
+function chord (id,indx) {
     "use strict";
-    var url = "../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/ChordData.csv";
+    var region = abmviz_utilities.GetURLParameter("region");
+    var dataLocation = localStorage.getItem(region);
+    var fileName = "ChordData.csv";
+    var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
+    var scenario = abmviz_utilities.GetURLParameter("scenario");
     var mainGroupColumnName;
     var subGroupColumnName;
     var quantityColumn;
     var countiesSet;
+    var zoneFilterNameCol;
     var width = 600,
         height = 600;
+    var chartData;
     var outerRadius = width / 2,
         innerRadius = outerRadius - 130;
     var json = null;
@@ -22,11 +30,12 @@ var chord = (function () {
     var currentDestDistrict = "";
     var colors = {}; //will be filled in to map keys to colors
     var map;
-    var zonefilters = {};
-    var zonefilterlabel = "";
+    var DESIRELINE_FILE_LOC = "";
+    var controlLayer;
     var ZONE_FILTER_LOC = "";
     var zoneFilterData;
-    var zonefiles;
+
+    var showDesireLines = true;
     var zoneheaders = [];
     var circleStyle = {
         "stroke": false,
@@ -35,9 +44,11 @@ var chord = (function () {
     };
     var indexByName = {};
     var nameByIndex = {};
+    var rawData;
     var legendHeadersShowHide = {};
     var zoneData;
     var circleMarkers;
+    var desireLines;
     var legendRows = 4;
 //config file options
     var COUNTY_FILE = "";
@@ -47,22 +58,46 @@ var chord = (function () {
     var showCycleTools = true;
     var zoneDataLayer;
     var destZoneDataLayer;
+    var desireLineDataLayer;
     var countyLayer;
     var focusLayer;
     var SCENARIO_FOCUS = false;
     var scenarioPolyFile;
     var fill = d3.scale.category20();
-    var showChartOnPage = true;
+    var chartOnPage = $('#' + id + '_circle').length == 0;
     var circlesLayerGroup;
+    var desireLineLayerGroup;
     var formatPercent = d3.format(".1%");
     var showGrpPercent = false;
     var showWholePercent = true;
     var wholeDataTotal = 0;
     var legendText = "Legend";
-
+    var excludeSameOD = false;
+    var datamatrix;
     function getConfigSettings(callback) {
-        if (showChartOnPage) {
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + "region.json", function (data) {
+        if (chartOnPage) {
+            $.getJSON(dataLocation + "region.json", function (data) {
+                var configName = "Default";
+                if (data["scenarios"][scenario].visualizations != undefined) {
+                    if (data["scenarios"][scenario].visualizations["Chord"][indx].file) {
+                        fileName = data["scenarios"][scenario].visualizations["Chord"][indx].file;
+                        var infoBox;
+                        if (data["scenarios"][scenario].visualizations["Chord"][indx].info) {
+                            infoBox = data["scenarios"][scenario].visualizations["Chord"][indx].info;
+                            $('#' + id + '-div span.glyphicon-info-sign').attr("title", infoBox);
+                            $('#' + id + '-div [data-toggle="tooltip"]').tooltip();
+                        }
+                    }
+                    if (data["scenarios"][scenario].visualizations["Chord"][indx].datafilecolumns) {
+                        var datacols = data["scenarios"][scenario].visualizations["Chord"][indx].datafilecolumns;
+                        $.each(datacols, function (key, value) {
+                            $('#' + id + '-datatable-columns').append("<p>" + key + ": " + value + "</p>");
+                        })
+                    }
+                }
+                url += "/" + fileName;
+
+                //GO THROUGH region level configuration settings
                 $.each(data, function (key, val) {
                     if (key == "CountyFile")
                         COUNTY_FILE = val;
@@ -72,47 +107,56 @@ var chord = (function () {
                         CENTER_LOC = val;
                     if (key == "DefaultFocusColor")
                         focusColor = val;
-
-                    if (key == "Chord") {
-
-                        $.each(val, function (opt, value) {
-                            if (opt == "ZoneFilterFile") {
-                                ZONE_FILTER_LOC = value;
-                            }
-                            if (opt == "LabelSize") {
-                                labelSize = value;
-                            }
-                            if (opt == "LegendRows") {
-                                legendRows = value;
-                            }
-                            if (opt == "LegendText") {
-                                legendText = value;
-                            }
-                        })
-                    }
-                    if (key == "scenarios" && Array.isArray(val)) {
-                        $.each(val, function (k, v) {
-                            if (v.name === abmviz_utilities.GetURLParameter("scenario") && v.CenterMap) {
-                                CENTER_LOC = v.CenterMap;
-                                if (v.ScenarioFocus && v.ScenarioFocus.length > 0) {
-                                    SCENARIO_FOCUS = true;
-                                    scenarioPolyFile = v.ScenarioFocus;
-                                    $('#chord-by-district-map').before(" Focus Color: <input type='text' id='chord-focus-color' style='display: none;' >  ");
-                                }
-                            }
-                        });
-                    }
                 });
+
+                if (data["scenarios"] != undefined && data["scenarios"][scenario] != undefined) {
+                    if (data["scenarios"][scenario]["CenterMap"] != undefined) {
+                        CENTER_LOC = data["scenarios"][scenario]["CenterMap"];
+                    }
+                    if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
+                        SCENARIO_FOCUS = true;
+                        scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
+                        $('#' + id + '-by-district-map').before(" Focus <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
+                    }
+                }
+                var configSettings = data["Chord"][configName];
+
+                if (configSettings != undefined) {
+                    $.each(configSettings, function (opt, value) {
+
+                        if (opt == "LabelSize") {
+                            labelSize = value;
+                        }
+                        if (opt == "LegendRows") {
+                            legendRows = value;
+                        }
+                        if (opt == "LegendText") {
+                            legendText = value;
+                        }
+                        if(opt =="ZoneFile") {
+                            ZONE_FILE_LOC = value;
+                        }
+                        if(opt =="DesireLines"){
+                            DESIRELINE_FILE_LOC = value;
+                        }
+                        if(opt=="ExcludeSameOD"){
+                            excludeSameOD = value;
+                        }
+
+                    });
+                }
+            }).complete(function () {
+
                 callback();
-            });
-            ZONE_FILTER_LOC = ZONE_FILTER_LOC;
-            $("#chord-grouppercent").off().click(function () {
-                showGrpPercent = !showGrpPercent;
-                createChord();
-            });
-            $("#chord-wholepercent").off().click(function () {
-                showWholePercent = !showWholePercent;
-                createChord();
+
+                $("#chord-grouppercent").off().click(function () {
+                    showGrpPercent = !showGrpPercent;
+                    createChord();
+                });
+                $("#chord-wholepercent").off().click(function () {
+                    showWholePercent = !showWholePercent;
+                    createChord();
+                });
             });
         }
     }
@@ -131,9 +175,8 @@ var chord = (function () {
         })
 
     }
-
     function createChord() {
-        var datamatrix = [];
+        datamatrix = [];
         //read in data and create chord when finished
 
         d3.csv(url, function (error, data) {
@@ -144,13 +187,36 @@ var chord = (function () {
                 throw error;
             }
             var headers = d3.keys(data[0]);
+            var columnsDT=[];
+            if(! $.fn.DataTable.isDataTable('#'+id+'-datatable-table')) {
+                $.each(headers, function (d, i) {
+                    columnsDT.push({data: i});
+
+                    $('#' + id + '-datatable-div table thead tr').append("<th>" + i + "</th>")
+                });
+
+                $('#' + id + '-datatable-table').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: '<span class="glyphicon glyphicon-save"></span>',
+                            titleAttr:'Download CSV'
+                        }
+                    ],
+                    data: data,
+                    columns: columnsDT
+                });
+            }
             //var csv = d3.csv.parseRows(data).slice(1);
             //var headers = d3.keys(data[0]);
             var quantities = headers.slice(2);
             var legendHead = headers.slice(2, headers.len);
+            var showLegendHead = true;
             if (_.size(legendHeadersShowHide) == 0) {
                 for (var i = 0; i < legendHead.length; i++) {
-                    legendHeadersShowHide[legendHead[i]] = true;
+                    legendHeadersShowHide[legendHead[i]] = showLegendHead;
+                    showLegendHead = false;
                 }
             }
             $('.chord-chart-maingroup').text(legendText);
@@ -165,11 +231,11 @@ var chord = (function () {
 
             indexByName = {};
             nameByIndex = {};
-            var totalContainerWidth = $('#chord-chart-container').width() - ($('#chord-chart-container').width() *0.2);
-            var outerRadius = totalContainerWidth /2,
+            var totalContainerWidth = $('#' + id + '-chart-container').width() - ($('#' + id + '-chart-container').width() * 0.2);
+            var outerRadius = totalContainerWidth / 2,
                 innerRadius = outerRadius - 130;
-            height = totalContainerWidth-50;
-            width = totalContainerWidth-50;
+            height = totalContainerWidth - 50;
+            width = totalContainerWidth - 50;
 
 
             var r1 = height / 2, r0 = r1 / 2;
@@ -182,16 +248,17 @@ var chord = (function () {
                 .innerRadius(innerRadius)
                 .outerRadius(innerRadius + 20);
             var windwidth = totalContainerWidth;
-            d3.select('#chord-chart-container').select("svg").remove();
-            d3.select('#chord-dropdown-div').select("svg").remove();
-    var transForm = ($('#chord-chart-container').width()/2);
-            var svg = d3.select("#chord-chart-container").append("svg:svg")
-                .attr("width", $('#chord-chart-container').width() )
+            d3.select('#' + id + '-chart-container').select("svg").remove();
+            d3.select('#' + id + '-dropdown-div').select("svg").remove();
+            var transForm = ($('#' + id + '-chart-container').width() / 2);
+            var svg = d3.select("#" + id + "-chart-container").append("svg:svg")
+                .attr("width", $('#' + id + '-chart-container').width())
                 .attr("height", height)
                 //.style("padding-left", "3%")
                 //style("padding-right", "3%")
                 .append("svg:g")
-                .attr("id", "circle")
+                .attr("id", id + "_circle")
+                .attr("selector", "chordcircle")
                 .attr("transform", "translate(" + transForm + "," + height / 2 + ")");
             svg.append("circle")
                 .attr("r", r0 + 20);
@@ -201,33 +268,48 @@ var chord = (function () {
             data.forEach(function (d) {
                 var total = 0;
                 var grpTotal = 0;
-                for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
-                    if (legendHeadersShowHide[legendHead[i]]) {
-                        var value = Number.parseFloat(d[legendHead[i]]);
-                        total += value;
-                        grpTotal += value;
-                    }
-                }
-                d.Total = (Number.parseFloat(total));
-                if (!(d[mainGroupColumnName] in indexByName)) {
-                    nameByIndex[n] = {
-                        name: d[mainGroupColumnName],
-                        col: d[mainGroupColumnName],
-                        index: n,
-                        grptotal: Number.parseFloat(total)
-                    };
-
-                    indexByName[d[mainGroupColumnName]] = {
-                        index: n++,
-                        name: d[mainGroupColumnName],
-                        grptotal: Number.parseFloat(total)
-                    };
-
+                if (excludeSameOD && d[mainGroupColumnName] == d[subGroupColumnName]) {
+                    //do nothing we don't want the same O/D data
                 } else {
-                    indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(total);
-                    nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(total);
+
+
+                    for (var i = 0; i < _.size(legendHeadersShowHide); i++) {
+                        if (legendHeadersShowHide[legendHead[i]]) {
+                            var value = Number.parseFloat(d[legendHead[i]]);
+                            total += value;
+                            grpTotal += value;
+                        }
+                    }
+                    d.Total = (Number.parseFloat(total));
+                    if (!(d[mainGroupColumnName] in indexByName)) {
+                       // var uniqueRec = zoneFilterData.filters.find(x => x[zoneheaders[1]] == d[mainGroupColumnName]);
+                       // if(uniqueRec)
+                        //    uniqueRec = uniqueRec.ID;
+                       // else
+                          //  uniqueRec = 0;
+                        nameByIndex[n] = {
+                            name: d[mainGroupColumnName],
+                            col: d[mainGroupColumnName],
+                            index: n,
+                            grptotal: Number.parseFloat(total),
+                          //  uniqueid: uniqueRec
+                    }
+                        ;
+
+                        indexByName[d[mainGroupColumnName]] = {
+                            index: n++,
+                            name: d[mainGroupColumnName],
+                            grptotal: Number.parseFloat(total),
+                          //  uniqueid: uniqueRec
+                    }
+                        ;
+
+                    } else {
+                        indexByName[d[mainGroupColumnName]].grptotal += Number.parseFloat(total);
+                        nameByIndex[indexByName[d[mainGroupColumnName]].index].grptotal += Number.parseFloat(total);
+                    }
+                    wholeDataTotal += total;
                 }
-                wholeDataTotal += total;
             });
             //initialize matrix
             for (var i = 0; i < _.size(indexByName); i++) {
@@ -242,8 +324,11 @@ var chord = (function () {
                 var mainGrp = d[mainGroupColumnName];
                 var subGrp = d[subGroupColumnName];
 
+                if (excludeSameOD && mainGrp == subGrp) {
 
-                datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total;
+                } else {
+                    datamatrix[indexByName[mainGrp].index][indexByName[subGrp].index] = d.Total;
+                }
             });
             var matrixmap = chordMpr(data);
             matrixmap.addValuesToMap("FROM")
@@ -267,7 +352,7 @@ var chord = (function () {
                 .attr("class", "group")
                 .on("mouseover", mouseover)
                 .on("mouseout", function (d) {
-                    d3.select('#chord-tooltip').style("visibility", "hidden")
+                    d3.select('#' + id + '-tooltip').style("visibility", "hidden")
                 });
 
             var groupPath = g.append("path")
@@ -316,7 +401,7 @@ var chord = (function () {
                     return fill(d.source.index);
                 })
                 .attr("d", d3.svg.chord().radius(innerRadius)).on("mouseover", function (d) {
-                    d3.select("#chord-tooltip")
+                    d3.select("#" + id + "-tooltip")
                         .style("visibility", "visible")
                         .html(chordTip(rdr(d)))
                         .style("top", function () {
@@ -334,7 +419,7 @@ var chord = (function () {
 
                 })
                 .on("mouseout", function (d) {
-                    d3.select("#chord-tooltip").style("visibility", "hidden")
+                    d3.select("#" + id + "-tooltip").style("visibility", "hidden")
                 });
 
             function chordTip(d, i) {
@@ -381,7 +466,7 @@ var chord = (function () {
             function mouseover(d, i) {
                 var name = nameByIndex[i].col;
                 console.log("source" + nameByIndex[i].col);
-                d3.select("#chord-tooltip")
+                d3.select("#" + id + "-tooltip")
                     .style("visibility", "visible")
                     .html(groupTip(rdr(d)))
                     .style("top", function () {
@@ -411,30 +496,33 @@ var chord = (function () {
             data = null;
 
             var size = _.size(legendHeadersShowHide);
-            var columns = width / 165;
+            var legendWidth = $('#' + id + '-chart-container').width();
+            var columns = Math.floor(legendWidth/ 165);
             var lines = Number.parseInt(Math.ceil(size / columns));
             var legheight = 30 * lines;
-            var container = d3.select("#chord-dropdown-div").append("svg")
+            var container = d3.select("#" + id + "-dropdown-div").append("svg")
 
-                .attr("width", width).attr("height", legheight).style('padding-top', "10px");
-                if(!SCENARIO_FOCUS){
-                     $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height()/2+"px");
-                     }
+                .attr("width", legendWidth).attr("height", legheight).style('padding-top', "10px");
+            if (!SCENARIO_FOCUS) {
+                $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-dropdown-div').height() / 2 + "px");
+            }
+            if(DESIRELINE_FILE_LOC){
+                $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-chckboxes').height() / 2 + "px");
+
+            }
             var dataL = 0;
             var offset = 100;
-            var newdataL = 0;
-
-            var legendfill = d3.scale.category20();
             var prevLegendLength = 0;
             var xOff, yOff;
+
             var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                 .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
-                    var calcX = (i % legendRows) * (width / columns);
-                    xOff = (i % legendRows) * (width / columns)
+                    var calcX = (i % legendRows) * (legendWidth / columns);
+                    xOff = (i % legendRows) * 165;
                     yOff = Math.floor(i / legendRows) * 20
-                    if(prevLegendLength !=0){
-                        xOff = xOff + (prevLegendLength-9);
-                    }
+                   // if (prevLegendLength != 0) {
+                     //   xOff = xOff + (prevLegendLength - 9);
+                   // }
                     prevLegendLength = d.length;
                     return "translate(" + xOff + "," + yOff + ")"
                 });
@@ -462,28 +550,26 @@ var chord = (function () {
             texts.on("click", function (d) {
                 showHideBlobs(d);
             })
-        });   //end d3.csv
+        });
+
+        //end d3.csv
 
         function showHideBlobs(d) {
-            legendHeadersShowHide[d] = !legendHeadersShowHide[d];
-            var result = true;
+            if(legendHeadersShowHide[d] == false){
+                legendHeadersShowHide[d] = true;
+            } //if the blob is false, set it to true
+            //set all others to false
             for (var i in legendHeadersShowHide) {
-                if (legendHeadersShowHide[i] === true) {
-                    result = false;
-                    break;
+                if (i != d) {
+                    legendHeadersShowHide[i] = false;
                 }
             }
-            //if all the values are false (set to hidden) show them all, we don't want empty space.
-            if (result == true) {
-                for (var i in legendHeadersShowHide) {
-                    legendHeadersShowHide[i] = true;
-                }
-            }
-            createChord();
 
+
+            createChord();
         }
 
-        $("#chord-focus-color").spectrum({
+        $("#" + id + "-focus-color").spectrum({
             color: focusColor,
             showInput: true,
             className: "full-spectrum",
@@ -498,58 +584,42 @@ var chord = (function () {
             change: function (color) {
                 focusColor = color;
                 redrawMap();
-
             }
+        });
+        $("#" + id + "-desirelines").click(function (e) {
+            if ($("#" + id + "-desirelines").is(":checked")) {
+                $("#" + id + "-chkzone").prop('checked', false);
+            } else {
+                $("#" + id + "-chkzone").prop('checked', true)
+            }
+            setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+        });
+        $("#" + id + "-chkzone").click(function () {
+            if ($("#" + id + "-chkzone").is(":checked")) {
+                $("#" + id + "-desirelines").prop('checked', false);
+            } else {
+                $("#" + id + "-desirelines").prop('checked', true)
+            }
+            setTimeout(redrawMap, CSS_UPDATE_PAUSE);
         });
 
     }
 
     function readInFilterData(callback) {
-        if (ZONE_FILTER_LOC != '') {
-            var zonecsv;
-            try {
-                d3.csv("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/" + ZONE_FILTER_LOC, function (error, filterdata) {
-                    //zonecsv = d3.csv.parseRows(filterdata).slice(1);
-                    if (error) {
-                        $('#chord').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the chord data.</span></h3></div>");
-                        throw error;
-                    }
-                    zoneheaders = d3.keys(filterdata[0]);
-                    ;
-                    zoneFilterData = d3.nest().key(function (d) {
-
-                        return "filters";
-                    }).map(filterdata);
-                    callback();
-                });
-            }
-            catch (error) {
-                console.log(error);
-            }
-
-
-        } else {
-            callback();
-        }
+        callback();
     }
 
     function styleZoneGeoJSONLayer(feature) {
         var color = naColor;
         var isZoneVisible = false;
-        if (feature.zoneData != undefined) {
-            var zoneDataFeature = feature.zoneData[currentDistrict];
-            //possible that even if data for zone exists, could be missing this particular trip mode
-            if (zoneDataFeature != undefined) {
-                isZoneVisible = zoneDataFeature == "1";
-                if (zoneDataFeature == undefined) {
-                    throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
-                }
+        if (feature.properties.NAME != undefined && currentDistrict != "") {
+            var zoneDataFeature = feature.properties.NAME;
+
+
                 var findDistrict = currentDistrict;//.replace(/\s/g, ".");
+            isZoneVisible = zoneDataFeature == findDistrict;
                 var district = indexByName[findDistrict];
                 color = fill(indexByName[findDistrict].index);
-
-            }
-            //end if we have data for this trip mode
 
         }
 
@@ -570,22 +640,18 @@ var chord = (function () {
     function styleDestZoneGeoJSONLayer(feature) {
         var color = naColor;
         var isZoneVisible = false;
-        if (feature.zoneData != undefined) {
-            var zoneDataFeature = feature.zoneData[currentDestDistrict];
+        if (feature.properties.NAME != undefined && currentDestDistrict!= undefined&& currentDestDistrict !="") {
+            var zoneDataFeature = feature.properties.NAME;
             //possible that even if data for zone exists, could be missing this particular trip mode
-            if (zoneDataFeature != undefined) {
-                isZoneVisible = zoneDataFeature == "1";
-                if (zoneDataFeature == undefined) {
-                    throw ("Something is wrong. zoneDataFeature.QUANTITY is undefined. " + JSON.stringify(zoneDataFeature));
-                }
+
+                isZoneVisible = zoneDataFeature == currentDestDistrict;
+
                 var findDistrict = currentDestDistrict;//.replace(/\s/g, ".");
                 var district = indexByName[findDistrict];
                 color = fill(indexByName[findDistrict].index);
 
             }
             //end if we have data for this trip mode
-
-        }
 
         //end if we have data for this zone
         //the allowed options are described here: http://leafletjs.com/reference.html#path-options
@@ -600,8 +666,6 @@ var chord = (function () {
         };
         return (returnStyle);
     }
-
-
     //end styleZoneGeoJSONLayer function
     function styleCountyGeoJSONLayer(feature) {
         var returnStyle = {
@@ -640,14 +704,104 @@ var chord = (function () {
 
     function redrawMap() {
         "use strict";
-        zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
-        destZoneDataLayer.setStyle(styleDestZoneGeoJSONLayer);
+        showDesireLines = $('#'+id+'-desirelines').is(':checked');
+
+            if(map.hasLayer(zoneDataLayer)){
+                console.log("zone layer on");
+                 zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
+                         if(destZoneDataLayer !=undefined){
+                destZoneDataLayer.addTo(map);
+                 destZoneDataLayer.setStyle(styleDestZoneGeoJSONLayer);
+            }
+
+            }  else {
+                map.removeLayer(destZoneDataLayer);
+            }
+            if(map.hasLayer(desireLineLayerGroup)){
+                  updateDesireLines();
+                  //desireLineDataLayer.setStyle(styleDesireLineGeoJSONLayer);
+            }
+            //zoneDataLayer.addTo(map);
+
+
         if (scenarioPolyFile != undefined) {
             focusLayer.setStyle(styleFocusGeoJSONLayer);
+            focusLayer.bringToBack();
         }
-        if(!SCENARIO_FOCUS) {
-            $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height() + "px");
+        if (!SCENARIO_FOCUS) {
+            $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-dropdown-div').height() / 2 + "px");
         }
+        if(DESIRELINE_FILE_LOC){
+            $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-chckboxes').height() / 2 + "px");
+
+        }
+    }
+    function updateDesireLines(){
+         var color = naColor;
+        var isZoneVisible = false;
+          var findDistrict = currentDistrict;
+              // Create initial scales for lines on map (width and opacity)
+        var w = d3.scale.linear().range([0, 50]);
+        var op = d3.scale.linear().range([0, 1]);
+        var featureValue = 0;
+        var featureGrpTotal = 0;
+        desireLines.forEach(function (desireLine){
+           var zoneData = desireLine.properties.o;
+           isZoneVisible = false;
+           featureGrpTotal = 0;
+           featureValue = 0;
+           if(zoneData != undefined) {
+               var zoneDataFeatureOrigin = desireLine.properties.o;
+               var zoneDataFeatureDest = desireLine.properties.d;
+               if (datamatrix.length > 0) {
+                   var origDist = zoneDataFeatureOrigin;
+
+                   var destDist = zoneDataFeatureDest;
+
+                   featureValue = datamatrix[indexByName[origDist].index][indexByName[destDist].index];// + datamatrix[indexByName[destDist].index][indexByName[origDist].index];
+               }
+                if (zoneDataFeatureOrigin != undefined && findDistrict !="") {
+                    if (currentDestDistrict != null) {
+                        isZoneVisible = zoneDataFeatureOrigin == findDistrict && zoneDataFeatureDest == currentDestDistrict;
+                    } else {
+                        isZoneVisible = zoneDataFeatureOrigin == findDistrict;
+                    }
+                    if(featureValue==0){
+                        isZoneVisible = false;
+                    }
+                    color = fill(indexByName[findDistrict].index);
+                    featureGrpTotal = indexByName[findDistrict].grptotal;
+
+                }
+           } //end if we have data for this zone
+
+            w.domain([0, featureGrpTotal]);
+             op.domain([0, featureGrpTotal]);
+             var returnStyle = {};
+             if(isZoneVisible){
+                   returnStyle = {
+                      //all SVG styles allowed
+                      // fillColor: color,
+
+                      weight: w(featureValue),
+                      color: color,
+                      strokeOpacity: op(featureValue),
+                      stroke: isZoneVisible ? true : false
+                  }
+             } else {
+                  returnStyle = {
+                //all SVG styles allowed
+                // fillColor: color,
+
+                weight: 0,
+                color: color,
+                strokeOpacity: 0,
+                stroke: false
+             }
+
+            }
+           desireLine.setStyle(returnStyle);
+        });
     }
 
     function styleFocusGeoJSONLayer(feature) {
@@ -661,12 +815,31 @@ var chord = (function () {
     }
 
     function createMap(callback) {
-        //var latlngcenter = JSON.parse(CENTER_LOC);
-        //var lat=latlngcenter[0];
-        //var lng=latlngcenter[1];
-        map = L.map("chord-by-district-map", {
-            minZoom: 6
+
+        if (map != undefined) {
+            return;
+        }
+        var tonerLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', { id:id + "-by-district-map.toner",
+                updateWhenIdle: true,
+                unloadInvisibleFiles: true,
+                reuseTiles: true,
+                opacity: 1.0
+            });
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {id:id + "-by-district-map.aerial",
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            });
+
+
+        map = L.map(id + "-by-district-map", {
+            minZoom: 6,
+            layers:[tonerLayer]
         }).setView(CENTER_LOC, 9);
+        var baseMaps = {
+            "Grayscale": tonerLayer,
+            "Aerial": Esri_WorldImagery
+
+        }
+      controlLayer =   L.control.layers(baseMaps).addTo(map);
         //centered at Atlanta
         map.on('zoomend', function (type, target) {
             var zoomLevel = map.getZoom();
@@ -674,85 +847,80 @@ var chord = (function () {
             console.log('zoomLevel: ', zoomLevel, ' zoomScale: ', zoomScale);
         });
         countiesSet = new Set();
-
-
-        $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + ZONE_FILE_LOC, function (zoneTiles) {
+        $.getJSON(dataLocation + ZONE_FILE_LOC, function (zoneTiles) {
             "use strict";
-            //there should be at least as many zones as the number we have data for.
-
-            var zoneData = zoneFilterData.filters.filter(function (el) {
-                return el.ID <= zoneTiles.features.length;
-            });
-
-
-            if (zoneTiles.features.length < Object.keys(zoneData).length) {
-                throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
-            }
             circleMarkers = [];
             //create circle markers for each zone centroid
             for (var i = 0; i < zoneTiles.features.length; i++) {
                 var feature = zoneTiles.features[i];
-                var zoneFiltered = zoneData.filter(function (d) {
-                    return d.ID == feature.properties.id;
-                });
-                var featureZoneData = undefined;
-                if (zoneFiltered.length > 0) {
-                    featureZoneData = zoneFiltered[0];
-                }
 
-
-                if (featureZoneData == undefined) { //missing data for this zone
-                } else {
-                    //WARNING: center coordinates seem to have lat and lng reversed!
                     var centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
-                    //REORDER lat and lng
+
+
                     var circleMarker = L.circleMarker(L.latLng(centroid.lng, centroid.lat), circleStyle);
-                    circleMarker.zoneData = featureZoneData;
-                    feature.zoneData = featureZoneData;
-                    circleMarkers.push(circleMarker);
-                }
+                    circleMarker.properties = {"NAME":feature.properties.NAME};
+                    if(feature.properties.NAME != undefined && feature.properties.NAME != "" ) {
+                        circleMarkers.push(circleMarker);
+                    }
             }
+            desireLines = [];
+            for(var i =0; i < circleMarkers.length;i++){
+                var origLat = circleMarkers[i]["_latlng"];
+                var origDist = circleMarkers[i].properties.NAME;//circleMarkers[i]["zoneData"].ID;
+
+                $.each(circleMarkers,function(idx,marker){
+                    var destDist = marker["properties"].NAME;
+                    var destLatLng = marker["_latlng"];
+                    var latlngs = [];
+                    latlngs.push(origLat,destLatLng);
+                    var desireLine = L.polyline(latlngs);
+                    //desireLine.zoneData = zoneData;
+                    desireLine.properties = {
+                        o:origDist,
+                        d: destDist
+                    }
+
+
+                    desireLines.push(desireLine);
+                });
+
+            }
+            desireLineLayerGroup =L.layerGroup(desireLines);
             circlesLayerGroup = L.layerGroup(circleMarkers);
             //http://leafletjs.com/reference.html#tilelayer
-            zoneDataLayer = L.geoJson(zoneTiles, {
-                updateWhenIdle: true,
-                unloadInvisibleFiles: true,
-                reuseTiles: true,
-                opacity: 1.0,
-                style: styleZoneGeoJSONLayer
-            });
-            if (currentDestDistrict != null) {
-                destZoneDataLayer = L.geoJson(zoneTiles, {
+
+                zoneDataLayer = L.geoJson(zoneTiles, {
                     updateWhenIdle: true,
                     unloadInvisibleFiles: true,
                     reuseTiles: true,
                     opacity: 1.0,
-                    style: styleDestZoneGeoJSONLayer
+                    style: styleZoneGeoJSONLayer
                 });
-            }
-            //var stamenTileLayer = new L.StamenTileLayer("toner-lite"); //B&W stylized background map
-            //map.addLayer(stamenTileLayer);
-            var underlyingMapLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
-                updateWhenIdle: true,
-                unloadInvisibleFiles: true,
-                reuseTiles: true,
-                opacity: 1.0
-            });
+                if (currentDestDistrict != null) {
+                    destZoneDataLayer = L.geoJson(zoneTiles, {
+                        updateWhenIdle: true,
+                        unloadInvisibleFiles: true,
+                        reuseTiles: true,
+                        opacity: 1.0,
+                        style: styleDestZoneGeoJSONLayer
+                    });
+                }
+
             if (scenarioPolyFile != undefined) {
-                $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + abmviz_utilities.GetURLParameter("scenario") + "/" + scenarioPolyFile, function (scenarioTiles) {
+                $.getJSON(dataLocation + abmviz_utilities.GetURLParameter("scenario") + "/" + scenarioPolyFile, function (scenarioTiles) {
                     "use strict";
                     focusLayer = L.geoJSON(scenarioTiles, {
                         style: styleFocusGeoJSONLayer
                     });
-                    focusLayer.addTo(map);
+
+                }).complete(function(d){
+                    controlLayer.addOverlay(focusLayer,"Focus");
                 });
             }
-            underlyingMapLayer.addTo(map);
-            $.getJSON("../data/" + abmviz_utilities.GetURLParameter("region") + "/" + COUNTY_FILE, function (countyTiles) {
+            //underlyingMapLayer.addTo(map);
+            $.getJSON(dataLocation + COUNTY_FILE, function (countyTiles) {
                 "use strict";
                 console.log(COUNTY_FILE + " success");
-
-
                 //http://leafletjs.com/reference.html#tilelayer
                 countyLayer = L.geoJson(countyTiles, {
                     //keep only counties that we have data for
@@ -773,13 +941,6 @@ var chord = (function () {
                 if (!SCENARIO_FOCUS)
                     map.fitBounds(allCountyBounds);
                 map.setMaxBounds(allCountyBounds);
-                if (destZoneDataLayer != null) {
-                    destZoneDataLayer.addTo(map);
-                }
-                else {
-                    map.removeLayer(destZoneDataLayer);
-                }
-                zoneDataLayer.addTo(map);
                 countyLayer.addTo(map);
             }).success(function () {
                 console.log(COUNTY_FILE + " second success");
@@ -789,8 +950,17 @@ var chord = (function () {
                 console.log(COUNTY_FILE + " responseText (incoming?)" + jqXHR.responseText);
             }).complete(function () {
                 console.log(COUNTY_FILE + " complete");
+                controlLayer.addOverlay(countyLayer,"Counties");
+                controlLayer.addOverlay(desireLineLayerGroup,"Desire Lines");
+            updateDesireLines();
             });
- $('#chord-chart-map').css("margin-top", $('#chord-dropdown-div').height() +"px");
+            if (!SCENARIO_FOCUS) {
+                $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-dropdown-div').height() / 2 + "px");
+            }
+            if(DESIRELINE_FILE_LOC){
+                $('#' + id + '-chart-map').css("margin-top", $('#' + id + '-chckboxes').height() / 2 + "px");
+
+            }
             //end geoJson of county layer
             function onEachCounty(feature, layer) {
                 layer.on({
@@ -803,8 +973,13 @@ var chord = (function () {
                 var layer = e.target;
                 changeCurrentCounty(layer.feature.properties.NAME);
             }
+        }).complete(function(){
+            zoneDataLayer.addTo(map);
+             controlLayer.addOverlay(zoneDataLayer,"Zones");
         });
+         function getDesireLineLayer(){
 
+         }
         //end geoJson of zone layer
         callback();
     }; //end createMap
@@ -813,4 +988,4 @@ var chord = (function () {
         console.log("Got resize event. Calling createTimeUse");
         createChord();
     });
-}()); //end encapsulating IIFE
+} }; //end encapsulating IIFE

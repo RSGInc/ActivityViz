@@ -1,6 +1,15 @@
 body {
 	padding-top: 50px;
 }
+.dataTables_wrapper {
+	padding-top:10px;
+}
+.collapse {
+	border-top: 1px dashed #333;
+}
+.dataTables_wrapper table {
+	width: auto;
+}
 
 .dynamic-content{
 	display:none;
@@ -8,6 +17,9 @@ body {
 
 .right-border {
 	border-right: 1px dashed #333;
+}
+.left-border {
+	border-left: 1px dashed #333;
 }
 
 .vert-centered {display: table-cell;vertical-align: middle;text-align: center;}
@@ -69,4 +81,21 @@ body {
 .nav-tabs>li a {
 	font-weight:bold;
 	color:black;
+}
+
+#main_div{
+	margin-bottom:25px;
+}
+.footer{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    max-height: 25px;
+    background-color: #222222;
+    color: white;
+    width: 100%;
+    z-index: 999999;
+}
+.datatable-div{
+	margin-top:10px;
 }
