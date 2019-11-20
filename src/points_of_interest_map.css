@@ -5,13 +5,13 @@ Presumably this is because it used the same code as the vertical chart
 li.multiselect-selected a label {
 	background-color:#e09d15;
 }
-#poi-by-group .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
+[charttype$="poimap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
 	font-weight: bold;
 }
 
-#poi-by-group-map div.leaflet-popup-content {
+[selector$="poimap-div"] div.leaflet-popup-content {
 	width: 100%;
 }
-#poi-by-group-tooltable > tbody > tr > td {
+[selector$="poimap-tooltable"] > tbody > tr > td {
 	padding:3px !important;
 }

@@ -1,27 +1,27 @@
-#scatter-chart-container .axis path,
-#scatter-chart-container .axis line {
+[charttype$="scatterchart"] .axis path,
+[charttype$="scatterchart"] .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
-#scatter-chart-container .dot {
+[charttype$="scatterchart"] .dot {
    fill-opacity: .5;
 }
 
-#scatter-chart-container rect {
+[charttype$="scatterchart"] rect {
 fill: transparent;
   shape-rendering: crispEdges;
 }
 
-#scatter-tooltip .tooltip {
+[selector$="scattertooltip"] .tooltip {
   position: absolute;
   width: 200px;
   height: 28px;
   pointer-events: none;
 }
 
-#scatter-chart-container .axisLine {
+[charttype$="scatterchart"] .axisLine {
   fill: none;
   shape-rendering: crispEdges;
   stroke: rgba(0, 0, 0, 0.5);

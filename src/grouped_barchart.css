@@ -2,11 +2,11 @@
 Presumably this is because it used the smae code as the vertical chart
 */
 
-#grouped-barchart-div .nv-x .tick text,#grouped-barchart-div .nv-x .tick foreignObject p {
+[charttype$="groupbarchart"] .nv-x .tick text,#grouped-barchart-div .nv-x .tick foreignObject p {
 	font-size: 15;
 }
 
-#grouped-barchart-div .nv-x .tick text.selected, #grouped-barchart-div .nv-x .tick foreignObject p.selected {
+[charttype$="groupbarchart"] .nv-x .tick text.selected, #grouped-barchart-div .nv-x .tick foreignObject p.selected {
 	font-weight: bold;
 }
 

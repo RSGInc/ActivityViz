@@ -2,10 +2,10 @@
 Presumably this is because it used the same code as the vertical chart
 */
 
-#mode-share-by-county .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text {
+[charttype$="barchartmap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text {
 	font-size: 15;
 }
 
-#mode-share-by-county .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
+[charttype$="barchartmap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
 	font-weight: bold;
 }
