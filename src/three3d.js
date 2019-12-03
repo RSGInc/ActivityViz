@@ -358,6 +358,7 @@ var ThreeDMap = {
             } else {
                 $('#' + id + '-period-id').hide();
             }
+            $('#'+id+'_id .spinner').remove();
         } //end setDataSpecificDOM
 
         function addZoneGeoJSONToMap() {
