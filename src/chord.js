@@ -276,6 +276,7 @@ var ChordChart = {
                     });//end data foreach
                     //create our chart objects
                     var chartDataObject = {};
+                    let chartidx = 0;
                     $.each(legendHeadersShowHide, function (header, val) {
                         if (val) {
                             datamatrix = [];
@@ -300,7 +301,7 @@ var ChordChart = {
                             });
                             let rdr = chordRdr(matrixmap.getMatrix(), matrixmap.getMap());
                             chartDataObject = {
-                                chartId: id + '_' + header,
+                                chartId: id + '_' + "chordchart"+chartidx++,
                                 chartName: header,
                                 dataMatrix: datamatrix,
                                 dataRdr: rdr,
@@ -731,6 +732,9 @@ var ChordChart = {
                             mydiv.css("display", "inline-block");
                         } else if (chartIdx == 2) {
                             mydiv.css("float", "right");
+                        }
+                        if(chartData.length ==2 && chartIdx==1){
+                            $('#' + chart.chartId + "_tooltiptable table").css('margin-left','12%');
                         }
                     }
                 }
