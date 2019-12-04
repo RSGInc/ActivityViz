@@ -86,6 +86,10 @@ body {
 #main_div{
 	margin-bottom:25px;
 }
+
+.datatable-div {
+    margin-top: 10px;
+}
 .footer{
     position: fixed;
     bottom: 0px;
