@@ -219,13 +219,23 @@ var ChordChart = {
 
                         $('#' + id + '-datatable-table').DataTable({
                             dom: 'Bfrtip',
-                            buttons: [
-                                {
-                                    extend: 'csv',
-                                    text: '<span class="glyphicon glyphicon-save"></span>',
-                                    titleAttr: 'Download CSV'
-                                }
-                            ],
+                            buttons: {
+                                dom: {
+                                    button: {
+                                        tag: 'button',
+                                        className: ''
+                                    }
+                                },
+
+                                buttons: [
+                                    {
+                                        extend: 'csv',
+                                        className: 'btn',
+                                        text: '<span class="glyphicon glyphicon-save"></span>',
+                                        titleAttr: 'Download CSV'
+                                    }
+                                ],
+                            },
                             data: data,
                             columns: columnsDT
                         });
