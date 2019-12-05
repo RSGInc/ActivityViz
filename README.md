@@ -22,9 +22,11 @@ support from [Oregon Metro](https://www.oregonmetro.gov/) and others.
 ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region:
 
 1. Fork this repository to your GitHub account
-2. Add the region name and data folder location in the config.json file.  Delete the other existing example regions.
-3. The data location can be anywhere that serves up the files. 
-    For example: The region "rsginc" should have a folder named "rsginc" in the data location "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"  
+2. Edit `config.json` for the desired region and data locations
+3. Data locations can be stored local to the repository or online
+    - Examples for a region named "rsginc":
+        - Local: `"datalocation": "/data/rsginc/"`
+        - Via GitHub: `"datalocation": "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"`
 4. The first region will determine which graphics are shown on the main page.
 5. Copy an existing region.json file into the region folder.
 
@@ -40,7 +42,7 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
   - ChordData.csv: FROM, TO, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ... 
   - Scatter.csv: LABEL, XAXIS, YAXIS, SIZE (YAXIS/XAXIS)
-  - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ...
+  - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTY_1_LABEL>, <QUANTY_2_LABEL>, ...
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
 
 Notes: 
@@ -110,23 +112,27 @@ Each Data/Region folder needs the following:
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CycleMapTools: true/false flag to hide or show the cycle map tools
+        - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" property to link to data set
     - Chord: Chord chart that also displays with a map
+        - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
+        - ExcludeSameOD: Flag to exclude data points that have the same origin and destination
+        - SideBySide: Flag to transform the chord tab into one that has multiple chord charts side by side, this will also remove the map from the page
+        - ChartPerRow: Number of side by side chord charts to show on page.  Setup cannot handle more than 1 row of 2 or 3 charts
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID and that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
-        - ZoneFile: GeoJSON zone file override that will take precedence over the region or scenario level zone file, these zones will appear on the map color coded to the chord chart data points
+        - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" to link to data set, these zones will appear on the map color coded to the chord chart data points
         - LabelSize: the font size in pixels "10" is the default if not specified. 
         - LegendRows: the number of data points per row to be shown in the legend default is 4
         - LegendText: the text to show above the legend for the Chord chart and the title of the chart.
-        - ExcludeSameOD: this flag will tell the Chord chart to exclude the data points that have the same origin and destination in the data. 
     - Scatter: Scatter chart that also shows a 45 degree regression line
     - POIMap: Barchart that displays a map that has points of interest plotted on the page, this chart also allows for a filter on the data not provided to the normal barchart and map 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
         - LegendTitle: Title shown above the legend of the bar chart
         - CenterMap: chart specific center lat/lng override, this will take precedence over the region and scenario level points
+        - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" to link to data set         
 3. Data Folder - Scenario data folder with its name equal to its scenario entry, can either be local or in the cloud. Location of the region's scenario data folder is specified in the main config.json file 
-4. Zones.geojson - Zone polygons with the *id* property equal to the zone number.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
+4. Zones.geojson - Zone polygons with the *id* property equal to the zone number. Polygons also require the *NAME* property to display desire lines and link up with data sets.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
 5. Counties.geojson - County polygons with the *Name* property equal to the county name.
-4. Chord_Zones.geojson - Chord zone polygons with the *NAME* property equal to the origin/destination name. 
 
 # Testing and Publishing 
 
