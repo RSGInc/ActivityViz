@@ -366,7 +366,7 @@ var ChordChart = {
                         var legendOrdinal = container.selectAll('.chordLegend').data(legendHead)
                             .enter().append('g').attr('class', 'chordLegend').attr("transform", function (d, i) {
                                 var calcX = (i % legendRows) * (legendWidth / columns);
-                                xOff = (i % legendRows) * 165;
+                                xOff = (i % legendRows) * 185;
                                 yOff = Math.floor(i / legendRows) * 20
                                 // if (prevLegendLength != 0) {
                                 //   xOff = xOff + (prevLegendLength - 9);
