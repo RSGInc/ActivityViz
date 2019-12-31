@@ -302,9 +302,9 @@ var ChordChart = {
                             chartDataObject = {};
                             matrixmap = undefined;
                             matrixmap = chordMpr(data);
-                            matrixmap.addValuesToMap("FROM")
+                            matrixmap.addValuesToMap(mainGroupColumnName)
                                 .setFilter(function (row, a, b) {
-                                    return (row.FROM === a.name && row.TO === b.name)
+                                    return (row[mainGroupColumnName] === a.name && row[subGroupColumnName] === b.name)
                                 }).setAccessor(function (recs, a, b) {
                                 if (!recs[0]) return 0;
                                 return recs[0][header];
