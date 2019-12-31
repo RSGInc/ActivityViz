@@ -45,12 +45,14 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTY_1_LABEL>, <QUANTY_2_LABEL>, ...
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
 
-Notes: 
+Notes:   
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
 a look at the example data tables to see how each visual is constructed based on the data.  Most of the 
 visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  
-  - The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the next day.  
-  - The TimeUse purposes must be ALLCAPS and must include at least HOME, WORK, SCHOOL.  TimeUse must also include an ALL person types.
+  - Avoid special characters such as space, slash, etc. in table data (column names and data entries).
+  - TimeUse: The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods 
+from 3am to 3am the next day.  The TimeUse purposes must be ALLCAPS and must include at least HOME, WORK, 
+SCHOOL.  TimeUse must also include an ALL person types.
   
 ## Data/Region Folder
 Each Data/Region folder needs the following:
