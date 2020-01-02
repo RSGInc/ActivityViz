@@ -22,9 +22,11 @@ support from [Oregon Metro](https://www.oregonmetro.gov/) and others.
 ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region:
 
 1. Fork this repository to your GitHub account
-2. Add the region name and data folder location in the config.json file.  Delete the other existing example regions.
-3. The data location can be anywhere that serves up the files. 
-    For example: The region "rsginc" should have a folder named "rsginc" in the data location "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"  
+2. Edit `config.json` for the desired region and data locations
+3. Data locations can be stored local to the repository or online
+    - Examples for a region named "rsginc":
+        - Local: `"datalocation": "/data/rsginc/"`
+        - Via GitHub: `"datalocation": "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"`
 4. The first region will determine which graphics are shown on the main page.
 5. Copy an existing region.json file into the region folder.
 
@@ -40,15 +42,17 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - BarChartData.csv: BARGROUP, COLUMNS, QUANTITY, CHART 
   - ChordData.csv: FROM, TO, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ... 
   - Scatter.csv: LABEL, XAXIS, YAXIS, SIZE (YAXIS/XAXIS)
-  - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTITY_1_LABEL>, <QUANTITY_2_LABEL>, ...
+  - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTY_1_LABEL>, <QUANTY_2_LABEL>, ...
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
 
-Notes: 
+Notes:   
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
 a look at the example data tables to see how each visual is constructed based on the data.  Most of the 
 visuals are populated based by what is in the data tables, thereby making the visuals highly customizable.  
-  - The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods from 3am to 3am the next day.  
-  - The TimeUse purposes must be ALLCAPS and must include at least HOME, WORK, SCHOOL.  TimeUse must also include an ALL person types.
+  - Avoid special characters such as space, slash, etc. in table data (column names and data entries).
+  - TimeUse: The PERIOD entries for TimeUse and 3DAnimatedMap are 1 to 48 and represent 30 minute periods 
+from 3am to 3am the next day.  The TimeUse purposes must be ALLCAPS and must include at least HOME, WORK, 
+SCHOOL.  TimeUse must also include an ALL person types.
   
 ## Data/Region Folder
 Each Data/Region folder needs the following:
