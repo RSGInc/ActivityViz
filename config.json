@@ -1,28 +1,25 @@
 {
   "regions":{
     "rsginc":{
-
-      "datalocation":"https://raw.githubusercontent.com/medailey/AVDevRepo/gh-pages/data/rsginc/"
+      "datalocation":"https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/rsginc/"
     },
     "atlanta":{
-       "datalocation":  "https://raw.githubusercontent.com/medailey/AVDevRepo/gh-pages/data/atlanta/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/atlanta/"
     },
     "portland":{
-       "datalocation":  "https://raw.githubusercontent.com/medailey/AVDevRepo/gh-pages/data/portland/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/portland/"
     },
     "sandiego":{
-       "datalocation":  "https://raw.githubusercontent.com/medailey/AVDevRepo/gh-pages/data/sandiego/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/sandiego/"
     },
     "sacramento":{
-       "datalocation":  "https://raw.githubusercontent.com/medailey/AVDevRepo/gh-pages/data/sacramento/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/sacramento/"
     },
     "nebraska":{
-
        "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/nebraska/"
     },
     "charlotte":{
        "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/charlotte/"
-
     }
   }
 }
