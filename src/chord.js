@@ -727,22 +727,24 @@ var ChordChart = {
                 }
 
                 function createToolTipTable(chart, chartIdx) {
+                    if($('#'+id+'-tooltiptablediv').length ==0){
+                        $('#' + id + '-div').append("<div id='" + id+"-tooltiptablediv'   ></div>");
+                    }
+
+
                     if($('#'+chart.chartId+"_tooltiptable").length ==0) {
-                        $('#' + id + '-div').append("<div id='" + chart.chartId + "_tooltiptable' class='chord-tooltiptablediv' ></div>");
+                        $('#' + id+'-tooltiptablediv').append("<div id='" + chart.chartId + "_tooltiptable' class='chord-tooltiptablediv' ></div>");
                         var mydiv = $('#' + chart.chartId + "_tooltiptable");
-                        mydiv.css("width", 100 / numberChordPerRow + "%");
+                        mydiv.css("width", 98 / numberChordPerRow + "%");
                         mydiv.css("visibility","hidden");
-                        $('#' + chart.chartId + "_tooltiptable").append("<table class='table-condensed table-bordered chord-tooltiptable'><thead><tr><th>ORIGIN</th><th>DESTINATION</th><th>DATA</th></tr></thead>" +
+                        mydiv.css("max-width","44%");
+                        $('#' + chart.chartId + "_tooltiptable").append("<table class='table-condensed table-bordered chord-tooltiptable'><thead><tr><th style='width:30%'>ORIGIN</th><th style='width:30%'>DESTINATION</th><th style='width:30%'>DATA</th></tr></thead>" +
                             "<tbody></tbody>" +
                             "</table>");
                         //.attr("transform", "translate(" + ($('#' + id + '-chart-container').width() / (numberChordPerRow * 2) - 25) + ",14)");
-                        if (chartIdx == 0) {
-                            mydiv.css("float", "left");
-                        } else if (chartIdx == 1) {
+
                             mydiv.css("display", "inline-block");
-                        } else if (chartIdx == 2) {
-                            mydiv.css("float", "right");
-                        }
+
                         if(chartData.length ==2 && chartIdx==1){
                             $('#' + chart.chartId + "_tooltiptable table").css('margin-left','12%');
                         }

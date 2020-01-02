@@ -119,7 +119,7 @@ Each Data/Region folder needs the following:
         - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
         - ExcludeSameOD: Flag to exclude data points that have the same origin and destination
         - SideBySide: Flag to transform the chord tab into one that has multiple chord charts side by side, this will also remove the map from the page
-        - ChartPerRow: Number of side by side chord charts to show on page.  Setup cannot handle more than 1 row of 2 or 3 charts
+        - ChartPerRow: Number of side by side chord charts to show on page.  Setup cannot handle more than 1 row of 4 or 5 charts
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID and that contains show/hide filters for each zone to be displayed, the labels of the zones MUST match the data FROM/TO labels
         - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" to link to data set, these zones will appear on the map color coded to the chord chart data points
         - LabelSize: the font size in pixels "10" is the default if not specified. 

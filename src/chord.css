@@ -37,9 +37,16 @@
       }
 
 .chord-tooltiptable {
-    margin-left:auto;
-    margin-right: auto;
+    width:100%;
+    margin-left:3%;
+    font-size:1em;
 
+
+}
+.chord-tooltiptable tr {
+          border-right: 3px solid black;
+    border-left: 3px black solid !important;
+    font-size:1em;
 }
 html {
     overflow-y: scroll;
