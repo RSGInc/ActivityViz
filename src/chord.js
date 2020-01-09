@@ -16,7 +16,7 @@ var ChordChart = {
             var zoneFilterNameCol;
             var width = 600,
                 height = 600;
-            var chartData;
+
             var outerRadius = width / 2,
                 innerRadius = outerRadius - 130;
             var json = null;
@@ -179,6 +179,8 @@ var ChordChart = {
                     });
 
 
+                } else {
+                    return;
                 }
             }
 
@@ -198,7 +200,8 @@ var ChordChart = {
             }
 
             function goThroughChordData() {
-                $('#' + id + '-chart-container').html('');
+                $('#' + id + '-chart-container svg').remove();
+                $('#' + id + '-chart-container div').remove();
                 chartData = [];
                 datamatrix = [];
                 //read in data and create chord when finished
@@ -611,7 +614,7 @@ var ChordChart = {
                     })
                     .attr("d", d3.svg.chord().radius(innerRadius)).on("mouseover", function (d) {
 
-                        d3.selectAll(".chord-tooltip")
+                        d3.selectAll('#' + id + '-chart-container .chord-tooltip')
                             .style("visibility", function(){
                                 var chartIdx = $(this).attr('chartIdx');
                                 var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute("chartIdx")
@@ -974,7 +977,8 @@ var ChordChart = {
                     $('#'+id+'-datatable-div').css("margin-top","-1%");
 
                 }
-                if (map != undefined) {
+                if ($('#'+id + "-by-district-map").children().length >0) {
+                    callback();
                     return;
                 }
                 var tonerLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
@@ -1145,6 +1149,9 @@ var ChordChart = {
                 "use strict";
                 if(sidebyside){
                     return;
+                }
+                if(map == undefined){
+                   // map = L.map('map');
                 }
                 if (map.hasLayer(zoneDataLayer)) {
                     console.log("zone layer on");
