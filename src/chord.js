@@ -472,6 +472,12 @@ var ChordChart = {
                 if(sidebyside){
                     svgWidth = Math.min(svgWidth,40);
                 }
+                if($('#'+chart.chartId + "_svg").length>0){
+                    $('#'+chart.chartId + "_svg").remove();
+                }
+                if($('#'+chart.chartId + "-tooltip").length>0){
+                    $('#'+chart.chartId + "-tooltip").remove();
+                }
                 d3.select("#" + id + "-chart-container").append("div").attr("id", chart.chartId + "-tooltip").attr("class", "chord-tooltip").attr("chartidx", chartData.indexOf(chart));
                 var svg = d3.select("#" + id + "-chart-container").append("svg:svg")
                     .attr("width",svgWidth+"%") //($('#' + id + '-chart-container').width()) / numberChordPerRow)
@@ -978,8 +984,9 @@ var ChordChart = {
 
                 }
                 if ($('#'+id + "-by-district-map").children().length >0) {
-                    callback();
-                    return;
+                    $('#'+id + "-by-district-map").html('');
+                    $('#'+id + "-by-district-map").removeClass();
+                    $('#'+id + "-by-district-map").addClass("col-xs-12");
                 }
                 var tonerLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
                     id: id + "-by-district-map.toner",
@@ -993,8 +1000,8 @@ var ChordChart = {
                     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                 });
 
-
-                map = L.map(id + "-by-district-map", {
+                var container = L.DomUtil.get(id + "-by-district-map"); if(container != null){ container._leaflet_id = null; }
+                map = new L.map(id + "-by-district-map", {
                     minZoom: 6,
                     layers: [tonerLayer]
                 }).setView(CENTER_LOC, 9);
@@ -1151,7 +1158,8 @@ var ChordChart = {
                     return;
                 }
                 if(map == undefined){
-                   // map = L.map('map');
+                    createMap();
+
                 }
                 if (map.hasLayer(zoneDataLayer)) {
                     console.log("zone layer on");
