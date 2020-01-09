@@ -16,7 +16,7 @@ var ChordChart = {
             var zoneFilterNameCol;
             var width = 600,
                 height = 600;
-            var chartData;
+
             var outerRadius = width / 2,
                 innerRadius = outerRadius - 130;
             var json = null;
@@ -179,6 +179,8 @@ var ChordChart = {
                     });
 
 
+                } else {
+                    return;
                 }
             }
 
@@ -198,7 +200,8 @@ var ChordChart = {
             }
 
             function goThroughChordData() {
-                $('#' + id + '-chart-container').html('');
+                $('#' + id + '-chart-container svg').remove();
+                $('#' + id + '-chart-container div').remove();
                 chartData = [];
                 datamatrix = [];
                 //read in data and create chord when finished
@@ -469,6 +472,12 @@ var ChordChart = {
                 if(sidebyside){
                     svgWidth = Math.min(svgWidth,40);
                 }
+                if($('#'+chart.chartId + "_svg").length>0){
+                    $('#'+chart.chartId + "_svg").remove();
+                }
+                if($('#'+chart.chartId + "-tooltip").length>0){
+                    $('#'+chart.chartId + "-tooltip").remove();
+                }
                 d3.select("#" + id + "-chart-container").append("div").attr("id", chart.chartId + "-tooltip").attr("class", "chord-tooltip").attr("chartidx", chartData.indexOf(chart));
                 var svg = d3.select("#" + id + "-chart-container").append("svg:svg")
                     .attr("width",svgWidth+"%") //($('#' + id + '-chart-container').width()) / numberChordPerRow)
@@ -611,7 +620,7 @@ var ChordChart = {
                     })
                     .attr("d", d3.svg.chord().radius(innerRadius)).on("mouseover", function (d) {
 
-                        d3.selectAll(".chord-tooltip")
+                        d3.selectAll('#' + id + '-chart-container .chord-tooltip')
                             .style("visibility", function(){
                                 var chartIdx = $(this).attr('chartIdx');
                                 var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute("chartIdx")
@@ -974,8 +983,10 @@ var ChordChart = {
                     $('#'+id+'-datatable-div').css("margin-top","-1%");
 
                 }
-                if (map != undefined) {
-                    return;
+                if ($('#'+id + "-by-district-map").children().length >0) {
+                    $('#'+id + "-by-district-map").html('');
+                    $('#'+id + "-by-district-map").removeClass();
+                    $('#'+id + "-by-district-map").addClass("col-xs-12");
                 }
                 var tonerLayer = L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
                     id: id + "-by-district-map.toner",
@@ -989,8 +1000,8 @@ var ChordChart = {
                     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                 });
 
-
-                map = L.map(id + "-by-district-map", {
+                var container = L.DomUtil.get(id + "-by-district-map"); if(container != null){ container._leaflet_id = null; }
+                map = new L.map(id + "-by-district-map", {
                     minZoom: 6,
                     layers: [tonerLayer]
                 }).setView(CENTER_LOC, 9);
@@ -1145,6 +1156,10 @@ var ChordChart = {
                 "use strict";
                 if(sidebyside){
                     return;
+                }
+                if(map == undefined){
+                    createMap();
+
                 }
                 if (map.hasLayer(zoneDataLayer)) {
                     console.log("zone layer on");
