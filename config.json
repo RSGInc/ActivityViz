@@ -1,25 +1,28 @@
 {
   "regions":{
     "rsginc":{
-      "datalocation":"https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/rsginc/"
+      "datalocation":"/data/rsginc/"
     },
     "atlanta":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/atlanta/"
+       "datalocation":  "/data/atlanta/"
     },
     "portland":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/portland/"
+       "datalocation":  "/data/portland/"
     },
     "sandiego":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/sandiego/"
+       "datalocation":  "/data/sandiego/"
     },
     "sacramento":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/sacramento/"
+       "datalocation":  "/data/sacramento/"
     },
     "nebraska":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/nebraska/"
+       "datalocation":  "/data/nebraska/"
     },
     "charlotte":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_Data/master/data/charlotte/"
+       "datalocation":  "/data/charlotte/"
+    },
+    "tampa":{
+       "datalocation":  "/data/tampa/"
     }
   }
 }
