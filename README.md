@@ -26,7 +26,7 @@ ActivityViz supports configuration for multiple regions.  To setup ActivityViz i
 3. Data locations can be stored local to the repository or online
     - Examples for a region named "rsginc":
         - Local: `"datalocation": "/data/rsginc/"`
-        - Via GitHub: `"datalocation": "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"`
+        - Via GitHub: `"datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/rsginc/"`
 4. The first region will determine which graphics are shown on the main page.
 5. Copy an existing region.json file into the region folder.
 

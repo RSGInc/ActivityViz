@@ -1,28 +1,28 @@
 {
   "regions":{
     "rsginc":{
-      "datalocation":"https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/rsginc/"
+      "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/rsginc/"
     },
     "atlanta":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/atlanta/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/atlanta/"
     },
     "portland":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/portland/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/portland/"
     },
     "sandiego":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/sandiego/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/sandiego/"
     },
     "sacramento":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/sacramento/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/sacramento/"
     },
     "nebraska":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/nebraska/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/nebraska/"
     },
     "charlotte":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/charlotte/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
     },
     "tampa":{
-       "datalocation":  "https://raw.githubusercontent.com/RSGINC/ActivityViz/master/data/tampa/"
+       "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/tampa/"
     }
   }
 }
