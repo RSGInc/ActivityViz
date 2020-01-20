@@ -10,3 +10,5 @@ data/portland/I205/cocs_old.csv
 *.bak
 .idea/workspace.xml
 .idea/workspace.xml
+/data
+bower_components/d3/d3-waffle.js
