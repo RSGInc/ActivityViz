@@ -4,6 +4,7 @@
 	padding-top: 0;
 }
 
+
 #sunburst-sidebar {
 	padding-left: 30px;
 	display: table;
@@ -76,3 +77,4 @@
 .sunburst-current-node-value {
 	font-size: 1.5em;
 }
+
