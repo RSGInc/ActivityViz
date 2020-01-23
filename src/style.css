@@ -73,6 +73,14 @@ body {
   margin-bottom: 1rem;
 }
 
+#the_tabs {
+  width: 100%;
+}
+
+#leftnavbtn, #rightnavbtn {
+  font-size:25px;
+}
+
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
 	color: white;
 	cursor: default;
