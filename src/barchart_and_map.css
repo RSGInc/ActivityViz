@@ -9,3 +9,18 @@ Presumably this is because it used the same code as the vertical chart
 [charttype$="barchartmap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
 	font-weight: bold;
 }
+
+.mode-share-by-county-trip-mode-bubbles,
+.mode-share-by-county-trip-mode-zones {
+  font-weight: bold;
+}
+
+/*
+ * Implemented this way to make the leaflet map controls consistent with the
+ * bootstrap select menus above the map. TODO: factor this out into more
+ * consistent, more semantic global.css.
+ */
+#poi_FreightFlows-tooltable>tbody>tr>td:nth-child(odd){
+  font-weight: 600;
+  font-size: 14px;
+}

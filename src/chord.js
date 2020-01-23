@@ -126,7 +126,11 @@ var ChordChart = {
                             if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                                 SCENARIO_FOCUS = true;
                                 scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                                $('#' + id + '-by-district-map').before(" Focus Color: <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
+                                $('#' + id + '-by-district-map').before(
+                                  " <span class=\"control-label\">Focus Color</span> <input type='text' id='" + 
+                                  id + 
+                                  "-focus-color' style='display: none;' >  "
+                                );
                             }
                         }
                         var configSettings = data["Chord"][configName];

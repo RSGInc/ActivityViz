@@ -354,7 +354,7 @@ function pointofinterest_and_map (id,indx) {
 
             if(filterSet.size > 1) {
              $('#'+id+'-filters').append(filterColumn);
-             $('#'+id+'-filter-span').append( '<strong>Filter:</strong> <select id="'+id+'-filters" style="width:150px;" multiple="multiple">Corridors </select>');
+             $('#'+id+'-filter-span').append( '<strong>Filter</strong> <select id="'+id+'-filters" style="width:150px;" multiple="multiple">Corridors </select>');
                 var cnt = 0;
             filterSet.forEach(function (filterName) {
                 $('#'+id+'-filters').append('<option>'+filterName+'</option>')
@@ -609,7 +609,7 @@ function pointofinterest_and_map (id,indx) {
                 $("#" + id + "-focus-color").spectrum({
             color: focusColor,
             showInput: true,
-            className: "full-spectrum",
+            className: "full-spectrum ",
             showInitial: false,
             showPalette: true,
             showAlpha: true,
