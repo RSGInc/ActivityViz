@@ -24,3 +24,40 @@ Presumably this is because it used the same code as the vertical chart
   font-weight: 600;
   font-size: 14px;
 }
+
+.bar-chart-map__palette {
+  margin-top:1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bar-chart-map__palette label {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.bar-chart-map__ramp {
+  float: none;
+}
+
+.bar-chart-map__ramps {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.bar-chart-map__select_fields > div {
+  margin-top: 1em;
+}
+  
+.bar-chart-map__filter-color-controls > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+.bar-chart-map__color-controls {
+  margin-top: 1em;
+}
