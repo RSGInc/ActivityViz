@@ -90,6 +90,8 @@ var BarChartMap = {
     var highlightLayer;
     var maxLabelLength = 0;
     var buildChart = $('#'+id+'-chart').children().length ==0;
+    var zoneFilterFeatureCollections = {};
+    var zoneFilterLayers = {};
 
 
     //start off chain of initialization by reading in the data
@@ -215,7 +217,7 @@ var BarChartMap = {
         "use strict";
         zoneDataLayer.setStyle(styleZoneGeoJSONLayer);
         if (Object.keys(zonefilters).length > 1) {
-            highlightLayer.setStyle(styleZoneHightlightLayer);
+            // highlightLayer.setStyle(styleZoneHightlightLayer);
         }
         if (scenarioPolyFile != undefined) {
             focusLayer.setStyle(styleFocusGeoJSONLayer);
@@ -236,11 +238,20 @@ var BarChartMap = {
                     return "filters";
                 }).map(zonecsv);
 
+                
                 $('#' + id + '-checkboxes').append(zonefilterlabel)
                 $('#' + id + '-checkboxes').append("<table style='vertical-align: baseline;display:inline;'><tr>");
                 for (var i = 0; i < zoneheaders.length; i++) {
                     if (zoneheaders[i] in zonefilters) {
-                        $('#' + id + '-checkboxes table tr').append('<td style="padding:3px;vertical-align: baseline"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' + zoneheaders[i] + '" id="' + zoneheaders[i] + '_id" >' + zonefilters[zoneheaders[i]] + '</input></label></td>')
+                      $('#' + id + '-checkboxes table tr')
+                        .append(
+                          '<td style="padding:3px;vertical-align: baseline"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' +
+                          zoneheaders[i] +
+                          '" id="' +
+                          zoneheaders[i] +
+                          '_id" >' +
+                          zonefilters[zoneheaders[i]] +
+                          '</input></label></td>')
                     }
                 }
                 $('#' + id + '-checkboxes').append("</tr></table>");
@@ -643,39 +654,6 @@ var BarChartMap = {
         return (returnStyle);
     }
 
-    function styleZoneHightlightLayer(feature) {
-        var checkedfilters = $('#' + id + '-checkboxes input[type=checkbox]:checked');
-        var highlightHidden = false;
-        var cnttrue = 0;
-        if (feature.zoneData != undefined) {
-            checkedfilters.each(function () {
-                var filtername = this.attributes["colname"];
-                cnttrue += parseFloat(feature.zoneData.FILTERS[filtername.value]);
-                highlightHidden = cnttrue > 0;
-            });
-        }
-
-        var returnStyle = {
-            //all SVG styles allowed
-            fill: false,
-            fillOpacity: 0.0,
-            stroke: true,
-            weight: 0.5,
-            strokeOpacity: 0.5,
-            color: highlightColor
-        };
-        //console.log(isHighlightedVisible);
-        if (highlightHidden == false || feature.zoneData == undefined) {
-            returnStyle = {
-                color: "none",
-                strokeOpacity: 0.0,
-                stroke: false
-            };
-        }
-        return (returnStyle);
-
-    }
-
     //end styleZoneGeoJSONLayer function
     function styleCountyGeoJSONLayer(feature) {
         var returnStyle = {
@@ -726,7 +704,7 @@ var BarChartMap = {
             if (zoneTiles.features.length < Object.keys(zoneData).length) {
                 throw ("Something is wrong! zoneTiles.features.length(" + zoneTiles.features.length + ") < Object.keys(zoneData).length(" + Object.keys(zoneData).length + ").");
             }
-            circleMarkers = [];
+          circleMarkers = [];
             //create circle markers for each zone centroid
             for (var i = 0; i < zoneTiles.features.length; i++) {
                 var feature = zoneTiles.features[i];
@@ -740,17 +718,67 @@ var BarChartMap = {
                     var circleMarker = L.circleMarker(L.latLng(centroid.lng, centroid.lat), circleStyle);
                     circleMarker.zoneData = featureZoneData;
                     feature.zoneData = featureZoneData;
+
+                    // This loop will turn zoneFilterFeatures into an object
+                    // where each key corresponds to the filters in the data
+                    // and each value is an array of features for that filter.
+                    if (featureZoneData.FILTERS) {
+                      for (let filterKey in featureZoneData.FILTERS) {
+
+                        // FILTERS value will be "0" if false, "1" if true
+                        // so we need to parseInt here to interpret 0 as
+                        // falsy. If it's falsy, skip to next filter.
+                        if (!parseInt(featureZoneData.FILTERS[filterKey])) {
+                          continue;
+                        }
+
+                        // If the object does not yet contain a key with the filter
+                        // key value, add it to the object.
+                        if (!zoneFilterFeatureCollections[filterKey]) {
+                          zoneFilterFeatureCollections[filterKey] = {
+                            type: 'FeatureCollection',
+                            features: [feature]
+                          }
+                          continue;
+                        }
+
+                        // If the object already has a property with the name of the
+                        // filter key, push to that array.
+                        if (zoneFilterFeatureCollections[filterKey]) {
+                          zoneFilterFeatureCollections[filterKey].features.push(feature);
+                        } 
+                      }
+                    }
+
+                    
                     circleMarkers.push(circleMarker);
+                  }
                 }
+                console.log(zoneFilterFeatureCollections);
+
+          for (let collectionKey in zoneFilterFeatureCollections) {
+            let layer = L.geoJson(zoneFilterFeatureCollections[collectionKey], {
+              reuseTiles: true,
+              style: {
+                //all SVG styles allowed
+                fill: false,
+                fillOpacity: 0.0,
+                stroke: true,
+                weight: 0.5,
+                strokeOpacity: 0.5,
+                color: highlightColor
+              }
+            });
+            
+            for (let zoneheader of zoneheaders) {
+              if (!(zoneheader in zonefilters) || zoneheader !== collectionKey) continue;
+              controlLayer.addOverlay(layer, zonefilters[zoneheader])              
             }
 
-            highlightLayer = L.geoJson(zoneTiles, {
-                updateWhenIdle: true,
-                unloadInvisibleFiles: true,
-                reuseTiles: true,
-                opacity: 0.5,
-                style: styleZoneHightlightLayer
-            });
+            zoneFilterLayers[collectionKey + '_zone'] = layer;
+            // controlLayer.addOverlay(zoneFilterLayers[zoneheaders[i]], zonefilters[zoneheaders[i]])
+            // controlLayer.addOverlay(layer,collectionKey);
+          }
 
             circlesLayerGroup = L.layerGroup(circleMarkers);
             //http://leafletjs.com/reference.html#tilelayer
@@ -795,7 +823,7 @@ var BarChartMap = {
                 updateBubbleSize();
                 zoneDataLayer.addTo(map);
                countyLayer.addTo(map);
-                highlightLayer.addTo(map);
+                // highlightLayer.addTo(map);
             }).success(function () {
                 console.log(COUNTY_FILE + " second success");
             }).error(function (jqXHR, textStatus, errorThrown) {
