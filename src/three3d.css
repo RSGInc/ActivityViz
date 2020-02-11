@@ -85,6 +85,15 @@
   flex-wrap: wrap;
 }
 
+.three-d-map-controls label {
+  font-weight: bold;
+}
+
+.three-d-map-controls > * {
+  margin-right: 1em;
+  margin-left: 1em;
+}
+
 .three-d-map-controls .ramp {
   float: none;
 }
