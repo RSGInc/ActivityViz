@@ -161,7 +161,6 @@ var BarChartMap = {
                     if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                         SCENARIO_FOCUS = true;
                         scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tools').prepend(" Focus <input type='text' id='" + id + "-focus-color' style='display: none;' >  ");
                     }
                 }
                 var configSettings = data["BarMap"][configName];
@@ -176,6 +175,9 @@ var BarChartMap = {
                         if (opt == "ZoneFilterLabel") {
                             zonefilterlabel = value;
                         }
+                        if (opt == "ZoneFilterColor") {
+                            zoneFilterColor = value;
+                        }
                         if (opt == "ZoneFilters") {
                             $.each(value, function (filtercolumn, filtername) {
                                 zonefilters[filtercolumn] = filtername;
@@ -189,6 +191,9 @@ var BarChartMap = {
                         }
                         if (opt == "CycleMapTools") {
                             showCycleTools = value;
+                        }
+                        if (opt == 'NoValueColor') {
+                          naColor = value;
                         }
                     });
                 }
@@ -232,7 +237,6 @@ var BarChartMap = {
                 }).map(zonecsv);
 
                 $('#' + id + '-checkboxes').append(zonefilterlabel)
-                $('#' + id + '-checkboxes').append(" <input type='text' id='" + id + "-highlight-color' style='display: none;' > ");
                 $('#' + id + '-checkboxes').append("<table style='vertical-align: baseline;display:inline;'><tr>");
                 for (var i = 0; i < zoneheaders.length; i++) {
                     if (zoneheaders[i] in zonefilters) {
@@ -1056,42 +1060,6 @@ var BarChartMap = {
                 naColor = color;
                 redrawMap();
                 updateColors($("#" + id + "-slider").slider("values"));
-            }
-        });
-        $("#" + id + "-highlight-color").spectrum({
-            color: highlightColor,
-            showInput: true,
-            className: "full-spectrum",
-            showInitial: false,
-            showPalette: true,
-            showAlpha: true,
-            showSelectionPalette: true,
-            maxSelectionSize: 10,
-            preferredFormat: "hex",
-            localStorageKey: "spectrum.demo",
-            palette: palette,
-            change: function (color) {
-                highlightColor = color;
-                redrawMap();
-
-            }
-        });
-        $("#" + id + "-focus-color").spectrum({
-            color: focusColor,
-            showInput: true,
-            className: "full-spectrum",
-            showInitial: false,
-            showPalette: true,
-            showAlpha: true,
-            showSelectionPalette: true,
-            maxSelectionSize: 10,
-            preferredFormat: "hex",
-            localStorageKey: "spectrum.demo",
-            palette: palette,
-            change: function (color) {
-                focusColor = color;
-                redrawMap();
-
             }
         });
         $("#" + id + "-bubble-color").spectrum({
