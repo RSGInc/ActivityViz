@@ -155,27 +155,22 @@ var ThreeDMap = {
       $.getJSON(dataLocation + "region.json", function(data) {
         var configName = "Default";
         if (data["scenarios"][scenario].visualizations != undefined) {
-          if (data["scenarios"][scenario].visualizations["3DMap"][indx].file) {
-            fileName =
-              data["scenarios"][scenario].visualizations["3DMap"][indx].file;
+          const threeDMapIndx =
+            data["scenarios"][scenario].visualizations["3DMap"][indx];
+          if (threeDMapIndx.file) {
+            fileName = threeDMapIndx.file;
           }
-          if (data["scenarios"][scenario].visualizations["3DMap"][indx].info) {
+          if (threeDMapIndx.info) {
             var infoBox;
-            infoBox =
-              data["scenarios"][scenario].visualizations["3DMap"][indx].info;
+            infoBox = threeDMapIndx.info;
             $("#" + id + "-div span.glyphicon-info-sign").attr(
               "title",
               infoBox
             );
             $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
           }
-          if (
-            data["scenarios"][scenario].visualizations["3DMap"][indx]
-              .datafilecolumns
-          ) {
-            var datacols =
-              data["scenarios"][scenario].visualizations["3DMap"][indx]
-                .datafilecolumns;
+          if (threeDMapIndx.datafilecolumns) {
+            var datacols = threeDMapIndx.datafilecolumns;
             $.each(datacols, function(key, value) {
               $("#" + id + "-datatable-columns").append(
                 "<p>" + key + ": " + value + "</p>"
@@ -205,6 +200,7 @@ var ThreeDMap = {
             if (opt == "ShowPeriodsAsDropdown") showPeriodsAsDropdown = value;
             if (opt == "ZoneFilterLabel") zonefilterlabel = value;
             if (opt == "DataHasPeriods") DataHasPeriods = value;
+            if (opt == "NoValueColor") naColor = value;
             if (opt == "ZoneFilterFile" && value != "") {
               ZONE_FILTER_LOC = value;
             }
@@ -534,13 +530,11 @@ var ThreeDMap = {
       color = color.toString(); //convert from d3 color to generic since vizicities does not use d3 color object
       //the allowed options are described here: http://leafletjs.com/reference.html#path-options
 
-      var slider = document.getElementById(id + "-opacityRange");
-
       var returnStyle = {
         height: allTimeSqrtScale(periodQuantity) * 5000,
         color: color,
         transparent: true,
-        opacity: slider.value / 100
+        opacity: 100
       };
 
       return returnStyle;
@@ -820,13 +814,13 @@ var ThreeDMap = {
         );
       });
 
-      var slider = document.getElementById(id + "-opacityRange");
-      var output = document.getElementById(id + "-opacityval");
-      output.innerHTML = slider.value;
-      slider.oninput = function() {
-        output.innerHTML = this.value;
-        setTimeout(redrawMap, CSS_UPDATE_PAUSE);
-      };
+      // var slider = document.getElementById(id + "-opacityRange");
+      // var output = document.getElementById(id + "-opacityval");
+      // output.innerHTML = slider.value;
+      // slider.oninput = function() {
+      //   output.innerHTML = this.value;
+      //   setTimeout(redrawMap, CSS_UPDATE_PAUSE);
+      // };
 
       var lastCycleStartTime;
 

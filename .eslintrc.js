@@ -12,7 +12,8 @@ module.exports = {
     abmviz_utilities: "readonly",
     d3: "readonly",
     L: "readonly",
-    geostats: "readonly"
+    geostats: "readonly",
+    VIZI: "readonly"
   },
   parserOptions: {
     ecmaVersion: 2018,

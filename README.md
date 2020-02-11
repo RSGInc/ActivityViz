@@ -108,6 +108,7 @@ Each Data/Region folder needs the following:
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CentroidsOff: sets the default value for the centroids checkbox
+        - NoValueColor: Name, hex, or RGB value of color to use when a data cell does not have a value.
     - BarMap: Barchart that also displays with a map with zones or bubbles 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.

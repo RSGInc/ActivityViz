@@ -50,7 +50,6 @@
 .control button {
   width: 30px;
   height: 30px;
-  margin: 15px 0 0 15px;
   border: 1px solid #999999;
   background: #ffffff;
   opacity: 0.6;
@@ -63,4 +62,29 @@
 .control button:hover {
   opacity: 1;
   cursor: pointer;
+}
+
+.control > .move.forward,
+.control > .tilt.down,
+.control > .rotate.right,
+.control > .move.right {
+  margin-right: 20px;
+}
+
+.three-d-map {
+  width: 100%;
+  height: 50%;
+  margin-bottom: 1em;
+}
+
+.three-d-map-controls {
+  margin-top: 2em;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.three-d-map-controls .ramp {
+  float: none;
 }
