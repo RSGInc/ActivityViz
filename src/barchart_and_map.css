@@ -27,24 +27,18 @@ Presumably this is because it used the same code as the vertical chart
 
 .bar-chart-map__palette {
   margin-top:1em;
-  display: flex;
-  align-items: center;
-  justify-content: end;
+}
+
+.bar-chart-map__control-section label {
+  display: block;
 }
 
 .bar-chart-map__ramp {
   float: none;
 }
 
-.bar-chart-map__select_fields {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .bar-chart-map__select_fields > div {
   margin-top: 1em;
-  flex: 1;
 }
   
 .bar-chart-map__control-section {
@@ -54,10 +48,34 @@ Presumably this is because it used the same code as the vertical chart
 }
 
 .bar-chart-map__control-section > * {
-  flex: 3;
+  flex: 4;
   margin: 1em;
 }
 
 .bar-chart-map__control-section > *:last-child {
-  flex: 2;
+  flex: 3;
+
+}
+
+
+.bar-chart-map__control-grid {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr 1fr;
+  grid-column-gap: 15px; 
+}
+
+.bar-chart-map__control-grid:before {
+  display: none;
+}
+
+.bar-chart-map__control-grid label {
+  margin-top: 20px;
+}
+
+.bar-chart-map__control-grid > .sp-replacer {
+  justify-self: start;
+}
+
+.ramp-palette {
+  grid-area: 2 / 3 / 2 / 5;
 }
