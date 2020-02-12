@@ -97,3 +97,8 @@
 .three-d-map-controls .ramp {
   float: none;
 }
+
+.three-d-map-control-button {
+  width: 12em;
+  margin-bottom: 1em;
+}
