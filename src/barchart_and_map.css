@@ -29,35 +29,35 @@ Presumably this is because it used the same code as the vertical chart
   margin-top:1em;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.bar-chart-map__palette label {
-  margin-bottom: 0;
-  flex: 1;
+  justify-content: end;
 }
 
 .bar-chart-map__ramp {
   float: none;
 }
 
-.bar-chart-map__ramps {
+.bar-chart-map__select_fields {
   display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .bar-chart-map__select_fields > div {
   margin-top: 1em;
+  flex: 1;
 }
   
-.bar-chart-map__filter-color-controls > div {
+.bar-chart-map__control-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5em;
 }
 
-.bar-chart-map__color-controls {
-  margin-top: 1em;
+.bar-chart-map__control-section > * {
+  flex: 3;
+  margin: 1em;
+}
+
+.bar-chart-map__control-section > *:last-child {
+  flex: 2;
 }
