@@ -451,7 +451,6 @@ var ThreeDMap = {
           $("#" + id + "-classification").hide();
           $("#" + id + "-current-period").hide();
           $("#" + id + "-slider-time").hide();
-          $("#" + id + "-slider").hide();
           $("#" + id + "-redraw").hide();
           $("#" + id + "-start-cycle-map").hide();
         }
@@ -691,7 +690,6 @@ var ThreeDMap = {
         //ie
         css = "-ms-linear-gradient(left," + colorStops + ")";
       }
-      $("#" + id + "-slider").css("background-image", css);
     } //end updateColors
 
     function setColorPalette(clickedIndex) {
@@ -711,7 +709,6 @@ var ThreeDMap = {
     } //end setColorPalette
 
     function initializeMuchOfUI() {
-      console.log("three3d initializeMuchOfUI");
       $("#" + id + "-filter-checkboxes").change(function() {
         redrawMap();
       });
@@ -789,7 +786,6 @@ var ThreeDMap = {
       );
       var colorRamps = paletteRamps.on("click", function(d, i) {
         setColorPalette(i);
-        updateColors($("#" + id + "-slider").slider("values"));
         //add delay to redrawMap so css has change to updates
         setTimeout(redrawMap, CSS_UPDATE_PAUSE);
       }); //end on click for ramp/palette
@@ -849,46 +845,9 @@ var ThreeDMap = {
         //no need to do anything since cyclePeriod always reads the current #cycle-frequency
       });
       $("#" + id + "-update-map").click(function() {
-        var sliderValues = $("#" + id + "-slider").slider("values");
-        breakUp[1] = sliderValues[0];
-        breakUp[2] = sliderValues[1];
-        breakUp[3] = sliderValues[2];
         redrawMap();
       });
 
-      function updateSliderTooltip(values) {
-        $("#" + id + "-slider .ui-slider-handle:first").html(
-          '<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-            values[0] +
-            "</div></div>"
-        );
-        $("#" + id + "-slider .ui-slider-handle:eq(1)").html(
-          '<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-            values[1] +
-            "</div></div>"
-        );
-        $("#" + id + "-slider .ui-slider-handle:last").html(
-          '<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-            values[2] +
-            "</div></div>"
-        );
-      } //end updateSliderValues
-      $("#" + id + "-slider").slider({
-        range: false,
-        disabled: $("#" + id + "-classification").val() != "custom",
-        min: 0,
-        max: 100,
-        values: handlers,
-        create: function(event, ui) {
-          updateSliderTooltip(handlers);
-        },
-        change: function(event, ui) {
-          updateSliderTooltip(ui.values);
-          var themax = $("#" + id + "-slider").slider("option", "max");
-          updateColors(ui.values, themax);
-        }
-      });
-      updateColors(handlers, $("#" + id + "-slider").slider("option", "max"));
       $("#" + id + "-classification").change(function() {
         updateCurrentPeriodOrClassification();
       });
@@ -907,7 +866,6 @@ var ThreeDMap = {
         change: function(color) {
           naColor = color;
           redrawMap();
-          updateColors($("#" + id + "-slider").slider("values"));
         }
       });
       //initialize the map palette
@@ -938,10 +896,6 @@ var ThreeDMap = {
       //console.log('updateCurrentPeriodOrClassification: #three3d-period.val()=' + currentPeriod);
       //handle the different classifications
       var classification = $("#" + id + "-classification").val();
-      $("#" + id + "-slider").slider({
-        range: false,
-        disabled: $("#" + id + "-classification").val() != "custom"
-      });
 
       if (classification == "custom") {
         $("#" + id + "-update-map").css("display", "inline");
@@ -960,9 +914,6 @@ var ThreeDMap = {
           parseInt(breakUp[3])
         ];
         //update the slider
-        $("#" + id + "-slider").slider({
-          values: newValues
-        });
         updateColors(newValues, breakUp[4]);
       } //end if !custom
       redrawMap();

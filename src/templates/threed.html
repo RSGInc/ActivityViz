@@ -54,7 +54,24 @@
         </select>
       </fieldset>
 
-      
+      <fieldset id="three3d-redraw">
+        <label>
+          Redraw
+        </label>
+        <select id="three3d-cycle-frequency" class="form-control form-control-inline">
+          <option value="1">every 1 sec</option>
+          <option value="2">every 2 sec</option>
+          <option value="3">every 3 sec</option>
+          <option value="4">every 4 sec</option>
+          <option value="5">every 5 sec</option>
+          <option value="6">every 6 sec</option>
+          <option value="7">every 7 sec</option>
+          <option value="8">every 8 sec</option>
+          <option value="9">every 9 sec</option>
+          <option value="10">every 10 sec</option>
+        </select>
+      </fieldset>
+
     </div>
 
     <label id="three3d-filter-label"></label>
@@ -62,32 +79,21 @@
 
     <div class="col-xs-12" style="margin-top:1em;">
       <div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>
-      <div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider"></div>
       <div class="row">
         <div class="col-xs-6">
-          <button id="three3d-update-map" style="display:none" class="btn three-d-map-control-button">Update Map</button>
+          <button id="three3d-update-map" style="display:none" class="btn three-d-map-control-button">
+            Update Map
+          </button>
           <button id="three3d-start-cycle-map" class="btn three-d-map-control-button">Cycle Through Day</button>
-          <button id="three3d-stop-cycle-map" class="btn three-d-map-control-button" style="display:none">Stop Cycle</button>
-        </div>
-        <div class="col-xs-6" id="three3d-redraw">
-          Redraw
-          <select id="three3d-cycle-frequency" class="form-control form-control-inline">
-            <option value="1">every 1 sec</option>
-            <option value="2">every 2 sec</option>
-            <option value="3">every 3 sec</option>
-            <option value="4">every 4 sec</option>
-            <option value="5">every 5 sec</option>
-            <option value="6">every 6 sec</option>
-            <option value="7">every 7 sec</option>
-            <option value="8">every 8 sec</option>
-            <option value="9">every 9 sec</option>
-            <option value="10">every 10 sec</option>
-          </select>
+          <button id="three3d-stop-cycle-map" class="btn three-d-map-control-button" style="display:none">
+            Stop Cycle
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <button id="collapsebtn" class="btn three-d-map-control-button" data-toggle="collapse" data-target="" style="margin-bottom:10px">
+  <button id="collapsebtn" class="btn three-d-map-control-button" data-toggle="collapse" data-target=""
+    style="margin-bottom:10px">
     Show Data
   </button>
   <div class="datatable-div col-sm-12 " id="datatable-div">
