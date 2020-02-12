@@ -326,24 +326,6 @@ var BarChartMap = {
             })
             .map(zonecsv);
 
-          $("#" + id + "-checkboxes").append(zonefilterlabel);
-          $("#" + id + "-checkboxes").append(
-            "<table style='vertical-align: baseline;display:inline;'><tr>"
-          );
-          for (var i = 0; i < zoneheaders.length; i++) {
-            if (zoneheaders[i] in zonefilters) {
-              $("#" + id + "-checkboxes table tr").append(
-                '<td style="padding:3px;vertical-align: baseline"><label style=\'font-weight:100;font-size:14px; \'> <input type="checkbox" colname="' +
-                  zoneheaders[i] +
-                  '" id="' +
-                  zoneheaders[i] +
-                  '_id" >' +
-                  zonefilters[zoneheaders[i]] +
-                  "</input></label></td>"
-              );
-            }
-          }
-          $("#" + id + "-checkboxes").append("</tr></table>");
         });
         callback();
       } else {
