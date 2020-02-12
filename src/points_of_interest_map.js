@@ -130,7 +130,7 @@ function pointofinterest_and_map (id,indx) {
                 if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
                         SCENARIO_FOCUS = true;
                         scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tooltable tbody tr').append("<td>Focus <input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
+                        $('#' + id + '-tooltable tbody tr').append("<td><label>Focus </label><input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
                     }
 
                 $.each(configSettings, function (opt, value) {
