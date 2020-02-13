@@ -128,10 +128,12 @@ function pointofinterest_and_map (id,indx) {
                 });
                 //go through scenario config level settings
                 if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
-                        SCENARIO_FOCUS = true;
-                        scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tooltable tbody tr').append("<td><label>Focus </label><input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
-                    }
+                  SCENARIO_FOCUS = true;
+                  scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
+                  $('#poi-by-group-tools')
+                    .append("<label class=\"poi-focus-label\">Focus</label><input type='text' id='" +
+                      id + "-focus-color' style='display: none;' >");
+                }
 
                 $.each(configSettings, function (opt, value) {
                     if (opt == "RotateLabels") {
