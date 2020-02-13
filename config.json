@@ -20,6 +20,9 @@
     },
     "charlotte":{
        "datalocation":  "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
+    },
+    "tampa":{
+       "datalocation":  "https://raw.githubusercontent.com/goreaditya/ActivityViz_data/develop/data/tampa/"
     }
   }
 }
