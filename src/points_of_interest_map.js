@@ -611,7 +611,7 @@ function pointofinterest_and_map (id,indx) {
                 $("#" + id + "-focus-color").spectrum({
             color: focusColor,
             showInput: true,
-            className: "full-spectrum ",
+            className: "full-spectrum focus-colorpicker",
             showInitial: false,
             showPalette: true,
             showAlpha: true,
@@ -677,7 +677,7 @@ function pointofinterest_and_map (id,indx) {
         $("#"+id+"-bubble-color").spectrum({
             color: bubbleColor,
             showInput: true,
-            className: "full-spectrum",
+            className: "full-spectrum bubble-colorpicker",
             showInitial: true,
             showPalette: true,
             showAlpha: true,

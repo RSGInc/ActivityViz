@@ -60,7 +60,7 @@ Presumably this is because it used the same code as the vertical chart
 
 .bar-chart-map__control-grid {
   display: grid;
-  grid-template-columns: 3fr 3fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr auto auto;
   grid-column-gap: 15px; 
 }
 

@@ -29,7 +29,7 @@ li.multiselect-selected a label {
 
 @media screen and (min-width: 1000px) {
   #poi-by-group-tools {
-    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr repeat(3, auto);
     grid-template-areas: 
       "point-value-label  point-groups-label  color-label  size-label  focus-label"
       "point-value-select point-groups-select color-select size-select focus-select";
@@ -56,7 +56,7 @@ li.multiselect-selected a label {
   grid-area: color-label;
 }
 
-#poi-by-group-tools > .sp-replacer {
+.bubble-colorpicker {
   grid-area: color-select;
 }
 
@@ -72,6 +72,6 @@ li.multiselect-selected a label {
   grid-area: focus-label;
 }
 
-#poi-by-group-tools > *:last-child {
+.focus-colorpicker {
   grid-area: focus-select;
 }
