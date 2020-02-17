@@ -115,6 +115,15 @@
 
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script type="text/javascript">
+  /**
+   * The DataTable jQuery plugin logs errors by opening alert dialogs.
+   * It's better UX and more effective for the developer to log those messages
+   * to the console and provide a stacktrace.
+   */
+  window.alert = function (message) {
+    console.error(message);
+  }
+
 $(document).ready(function () {
   var shownTabs = $('li[role="presentation"]').children(":visible");
 		if(shownTabs.length>0){}
