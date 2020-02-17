@@ -68,6 +68,19 @@ body {
 .ui-widget-header .ui-state-disabled {
 	opacity: 1;
 }
+
+#thenavbar {
+  margin-bottom: 1rem;
+}
+
+#the_tabs {
+  width: 100%;
+}
+
+#leftnavbtn, #rightnavbtn {
+  font-size:25px;
+}
+
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
 	color: white;
 	cursor: default;
@@ -117,6 +130,10 @@ body {
    border-bottom:6px solid rgba(0,174,239,.15);
    border-top:6px solid rgba(0,174,239,.8);
    border-radius:100%;
+}
+
+.control-label {
+  font-weight: bold;
 }
 
 @-webkit-keyframes rotation {

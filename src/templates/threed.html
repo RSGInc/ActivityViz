@@ -1,196 +1,111 @@
-       <div role="tabpanel" class="tab-pane" id="three3d_tab">
-		   <div id="" class="spinner">
-			</div>
-		<div id="three3d" class="row dynamic-content">
+<div role="tabpanel" class="tab-pane" id="three3d_tab">
+  <div id="" class="spinner">
+  </div>
+  <div id="three3d" class="row dynamic-content">
 
-			<p class="text-center" style="font-size:2em">
-				<strong>
-					<span class="three3d-purpose"></span>
-				</strong>
-				<span id="three3d-current-period"></span>  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title=""></span>
-			</p>
-			<div class="col-xs-12" style="margin-top:1em;">
-				<div class="col-xs-6" style="margin-bottom:1em">
+    <p class="text-center" style="font-size:2em">
+      <strong>
+        <span class="three3d-purpose"></span>
+      </strong>
+      <span id="three3d-current-period"></span> <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip"
+        data-placement="bottom" title=""></span>
+    </p>
 
+    <div id="three3d-map" class="three-d-map col-xs-12"></div>
+    <div class="three-d-map-controls container-fluid form-inline">
 
-					<div class="col-xs-12">
-						<label>
-							<input type="checkbox" id="three3d-controls">Controls
-							</input>
-						</label>
-						<label style="padding-left:10px;">
-							<input type="checkbox" id="three3d-centroids">Centroids
-							</input>
-						</label>
-						<div class="row control">
-							<!-- symbols defined at: https://graphemica.com/ -->
-							<button class="move left" title="move left">&larr;</button>
-							<button class="move right" title="move right">&rarr;</button> &nbsp;&nbsp;&nbsp;
-							<button class="move back" title="move back">&uarr;</button>
-							<button class="move forward" title="move forward">&darr;</button> &nbsp;&nbsp;&nbsp;
-							<!-- north east arrow ? https://graphemica.com/%E2%86%97 -->
-							<button class="tilt up" title="tilt up">&#8599;</button>
-							<button class="tilt down" title="tilt down">&#8601;</button> &nbsp;&nbsp;&nbsp;
-							<button class="rotate left" title="rotate left">&#8635;</button>
-							<button class="rotate right" title="rotate right">&#8634;</button> &nbsp;&nbsp;&nbsp;
-							<button class="zoom in" title="zoom in">&#9547;</button>
-							<button class="zoom out" title="zoom out">&#9473;</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div id="three3d-period-id">
+        <label id="three3d-period-label">Data Selection</label>
+        <select class="form-control" id="three3d-period"></select>
+      </div>
 
+      <fieldset>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="three3d-controls">Controls
+          </input>
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="three3d-centroids">Centroids
+          </input>
+        </label>
+      </fieldset>
 
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-classification-label">Classification</div>
-					<select class="form-control" id="three3d-classification">
-						<option value="quartiles" selected="selected">Quartiles</option>
-						<option value="even-interval">Even interval</option>
-						<option value="custom">Custom</option>
-					</select>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-filter-label"></div>
-					<div id="three3d-filter-checkboxes" class="three3d-filter-checkboxes"></div>
-				</div>
-				<div class="col-xs-2" style="margin-bottom:1em;font-weight:bold">
-					<div id="three3d-period-id">
-						<div id="three3d-period-label">Data Selection</div>
-						<select class="form-control" id="three3d-period">
-
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12" id="three3d-map" style="width: 100%;height:50%;"></div>
-			<div class="col-xs-4" style="margin-top:1em;text-align:right">
-				<table width="100%">
-					<tr>
-						<td rowspan="2">Palette</td>
-						<td>
-							<div class="col-xs-10">
-								<div class="row">
-									<div class="ramp Blues">
-										<svg width="60" height="15">
-											<rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Greens">
-										<svg width="60" height="15">
-											<rect fill="rgb(237,248,233)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(186,228,179)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(116,196,118)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(49,163,84)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Greys">
-										<svg width="60" height="15">
-											<rect fill="rgb(247,247,247)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(204,204,204)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(150,150,150)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(99,99,99)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp RedGreen">
-										<svg width="60" height="15">
-											<rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-xs-10">
-									<div class="ramp Oranges">
-										<svg width="60" height="15">
-											<rect fill="rgb(254,237,222)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(253,190,133)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(253,141,60)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(230,85,13)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Purples">
-										<svg width="60" height="15">
-											<rect fill="rgb(242,240,247)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(203,201,226)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(158,154,200)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(117,107,177)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-									<div class="ramp Reds">
-										<svg width="60" height="15">
-											<rect fill="rgb(254,229,217)" width="15" height="15" x="0"></rect>
-											<rect fill="rgb(252,174,145)" width="15" height="15" x="15"></rect>
-											<rect fill="rgb(251,106,74)" width="15" height="15" x="30"></rect>
-											<rect fill="rgb(222,45,38)" width="15" height="15" x="45"></rect>
-										</svg>
-									</div>
-								</div>
-							</div>
-						</td>
-					</tr>
-				</table>
-
-			</div>
-			<div class="col-xs-2" style="margin-top:1em;text-align:left">
-
-				<input type="range" class="slider" value="100" id="opacityRange" min="1" max="100"/>
-                <p>	Opacity <span id="opacityval"></span></p>
-			</div>
-			<div class="col-xs-6" style="margin-top:1em;text-align:right">
-				No Value
-				<input type="text" id="three3d-naColor" />
+      <div class="control">
+        <!-- symbols defined at: https://graphemica.com/ -->
+        <button class="move left" title="move left">&larr;</button>
+        <button class="move right" title="move right">&rarr;</button>
+        <button class="move back" title="move back">&uarr;</button>
+        <button class="move forward" title="move forward">&darr;</button>
+        <!-- north east arrow ? https://graphemica.com/%E2%86%97 -->
+        <button class="tilt up" title="tilt up">&#8599;</button>
+        <button class="tilt down" title="tilt down">&#8601;</button>
+        <button class="rotate left" title="rotate left">&#8635;</button>
+        <button class="rotate right" title="rotate right">&#8634;</button>
+        <button class="zoom in" title="zoom in">&#9547;</button>
+        <button class="zoom out" title="zoom out">&#9473;</button>
+      </div>
 
 
-			</div>
-			<div class="col-xs-12" style="margin-top:1em;">
-				<div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>
-				<div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider"></div>
-				<div class="row">
-					<div class="col-xs-6">
-						<button id="three3d-update-map" style="display:none" class="btn">Update Map</button>
-						<button id="three3d-start-cycle-map" class="btn">Cycle Through Day</button>
-						<button id="three3d-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
-					</div>
-					<div class="col-xs-6" id="three3d-redraw">
-						Redraw
+      <fieldset>
+        <label id="three3d-classification-label">Classification</label>
+        <select class="form-control" id="three3d-classification">
+          <option value="quartiles" selected="selected">Quartiles</option>
+          <option value="even-interval">Even interval</option>
+        </select>
+      </fieldset>
 
+      <fieldset id="three3d-redraw">
+        <label>
+          Redraw
+        </label>
+        <select id="three3d-cycle-frequency" class="form-control form-control-inline">
+          <option value="1">every 1 sec</option>
+          <option value="2">every 2 sec</option>
+          <option value="3">every 3 sec</option>
+          <option value="4">every 4 sec</option>
+          <option value="5">every 5 sec</option>
+          <option value="6">every 6 sec</option>
+          <option value="7">every 7 sec</option>
+          <option value="8">every 8 sec</option>
+          <option value="9">every 9 sec</option>
+          <option value="10">every 10 sec</option>
+        </select>
+      </fieldset>
 
-						<select id="three3d-cycle-frequency" class="form-control form-control-inline">
-							<option value="1">every 1 sec</option>
-							<option value="2">every 2 sec</option>
-							<option value="3">every 3 sec</option>
-							<option value="4">every 4 sec</option>
-							<option value="5">every 5 sec</option>
-							<option value="6">every 6 sec</option>
-							<option value="7">every 7 sec</option>
-							<option value="8">every 8 sec</option>
-							<option value="9">every 9 sec</option>
-							<option value="10">every 10 sec</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-		   	<div class="datatable-div col-sm-12 " id="datatable-div">
-        <button id="collapsebtn" class="btn" data-toggle="collapse" data-target="" style="margin-bottom:10px">Show Data</button>
-        <div id='datatable-collapse' class="collapse">
-		<table id="datatable-table" style="width:100%">
-			<thead>
-			<tr></tr>
-			</thead>
-		</table>
-                        <div id="datatable-columns" class="col-sm-12">
-            <strong>Data Column Notes:</strong>
-            </div>
+    </div>
+
+    <label id="three3d-filter-label"></label>
+    <div id="three3d-filter-checkboxes" class="three3d-filter-checkboxes"></div>
+
+    <div class="col-xs-12" style="margin-top:1em;">
+      <div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>
+      <div class="row">
+        <div class="col-xs-6">
+          <button id="three3d-update-map" style="display:none" class="btn three-d-map-control-button">
+            Update Map
+          </button>
+          <button id="three3d-start-cycle-map" class="btn three-d-map-control-button">Cycle Through Day</button>
+          <button id="three3d-stop-cycle-map" class="btn three-d-map-control-button" style="display:none">
+            Stop Cycle
+          </button>
         </div>
-	</div>
-       </div>
+      </div>
+    </div>
+  </div>
+  <button id="collapsebtn" class="btn three-d-map-control-button" data-toggle="collapse" data-target=""
+    style="margin-bottom:10px">
+    Show Data
+  </button>
+  <div class="datatable-div col-sm-12 " id="datatable-div">
+    <div id='datatable-collapse' class="collapse">
+      <table id="datatable-table" style="width:100%">
+        <thead>
+          <tr></tr>
+        </thead>
+      </table>
+      <div id="datatable-columns" class="col-sm-12">
+        <strong>Data Column Notes:</strong>
+      </div>
+    </div>
+  </div>
+</div>

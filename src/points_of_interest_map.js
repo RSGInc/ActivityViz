@@ -128,10 +128,12 @@ function pointofinterest_and_map (id,indx) {
                 });
                 //go through scenario config level settings
                 if (data["scenarios"][scenario]["ScenarioFocus"] != undefined) {
-                        SCENARIO_FOCUS = true;
-                        scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
-                        $('#' + id + '-tooltable tbody tr').append("<td>Focus <input type='text' id='" + id + "-focus-color' style='display: none;' > </td> ");
-                    }
+                  SCENARIO_FOCUS = true;
+                  scenarioPolyFile = data["scenarios"][scenario]["ScenarioFocus"];
+                  $('#poi-by-group-tools')
+                    .append("<label class=\"poi-focus-label\">Focus</label><input type='text' id='" +
+                      id + "-focus-color' style='display: none;' >");
+                }
 
                 $.each(configSettings, function (opt, value) {
                     if (opt == "RotateLabels") {
@@ -354,7 +356,7 @@ function pointofinterest_and_map (id,indx) {
 
             if(filterSet.size > 1) {
              $('#'+id+'-filters').append(filterColumn);
-             $('#'+id+'-filter-span').append( '<strong>Filter:</strong> <select id="'+id+'-filters" style="width:150px;" multiple="multiple">Corridors </select>');
+             $('#'+id+'-filter-span').append( '<strong>Filter</strong> <select id="'+id+'-filters" style="width:150px;" multiple="multiple">Corridors </select>');
                 var cnt = 0;
             filterSet.forEach(function (filterName) {
                 $('#'+id+'-filters').append('<option>'+filterName+'</option>')
@@ -609,7 +611,7 @@ function pointofinterest_and_map (id,indx) {
                 $("#" + id + "-focus-color").spectrum({
             color: focusColor,
             showInput: true,
-            className: "full-spectrum",
+            className: "full-spectrum focus-colorpicker",
             showInitial: false,
             showPalette: true,
             showAlpha: true,
@@ -675,7 +677,7 @@ function pointofinterest_and_map (id,indx) {
         $("#"+id+"-bubble-color").spectrum({
             color: bubbleColor,
             showInput: true,
-            className: "full-spectrum",
+            className: "full-spectrum bubble-colorpicker",
             showInitial: true,
             showPalette: true,
             showAlpha: true,

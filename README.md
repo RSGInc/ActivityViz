@@ -108,14 +108,17 @@ Each Data/Region folder needs the following:
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
         - CentroidsOff: sets the default value for the centroids checkbox
+        - NoValueColor: Name, hex, or RGB value of color to use when a data cell does not have a value.
     - BarMap: Barchart that also displays with a map with zones or bubbles 
         - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
         - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
         - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
         - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
         - ZoneFilterLabel: a label to be shown above the list of zone filters
+          - Note: to apply a specific color to these zones, see DefaultHighlightColor under region.json
         - CycleMapTools: true/false flag to hide or show the cycle map tools
         - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" property to link to data set
+        - NoValueColor: Name, hex, or RGB value of color to use when a cell does not have a value.
     - Chord: Chord chart that also displays with a map
         - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
         - ExcludeSameOD: Flag to exclude data points that have the same origin and destination

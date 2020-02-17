@@ -12,7 +12,6 @@
 	<script  src="../bower_components/d3/d3.js"></script>
     <script  src="../bower_components/d3/d3-tip.js"></script>
 
-	<script  src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
 	<script  src="../bower_components/nvd3/build/nv.d3.js"></script>
 	<script  src="../bower_components/underscore/underscore-min.js"></script>
 	<script  src="../bower_components/geostats/lib/geostats.js"></script>
@@ -22,6 +21,7 @@
 	<script  src="../vendor/three.min.js"></script>
 	<script  src="../vendor/TweenMax.min.js"></script>
 	<script  src="../vendor/vizicities.js"></script>
+	<script  src="../vendor/d3-legend.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="../abmviz_utilities.js"></script>
     <script defer type="text/javascript"  src="../bower_components/bootstrap/js/bootstrap-multiselect.js"></script>
 	<script  type="text/javascript" src="grouped_barchart.js"></script>
@@ -91,9 +91,9 @@
 <div id="thenavbar">
 		<ul class="nav nav-tabs" role="tablist" id="the_tabs" style="display:inline-block">
 
-            <button id="leftnavbtn"><span class="glyphicon glyphicon-chevron-left" style="font-size:25px"></span></button>
-            <button id="rightnavbtn"><span class="glyphicon glyphicon-chevron-right" style="font-size:25px"></span></button>
-		</ul>
+      <button id="leftnavbtn"><span class="glyphicon glyphicon-chevron-left"></span></button>
+      <button id="rightnavbtn"><span class="glyphicon glyphicon-chevron-right"></span></button>
+    </ul>
     </div>
 
         <div class="tab-content">
@@ -115,6 +115,15 @@
 
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script type="text/javascript">
+  /**
+   * The DataTable jQuery plugin logs errors by opening alert dialogs.
+   * It's better UX and more effective for the developer to log those messages
+   * to the console and provide a stacktrace.
+   */
+  window.alert = function (message) {
+    console.error(message);
+  }
+
 $(document).ready(function () {
   var shownTabs = $('li[role="presentation"]').children(":visible");
 		if(shownTabs.length>0){}

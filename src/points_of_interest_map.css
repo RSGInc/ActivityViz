@@ -15,3 +15,63 @@ li.multiselect-selected a label {
 [selector$="poimap-tooltable"] > tbody > tr > td {
 	padding:3px !important;
 }
+
+#poi-by-group-tools {
+  display: grid;
+  grid-column-gap: 15px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas: 
+    "point-value-label point-value-label point-groups-label point-groups-label"
+    "point-value-select point-value-select point-groups-select point-groups-select"
+    "color-label size-label focus-label nil"
+    "color-select size-select focus-select nil";
+}
+
+@media screen and (min-width: 1000px) {
+  #poi-by-group-tools {
+    grid-template-columns: 2fr 2fr repeat(3, auto);
+    grid-template-areas: 
+      "point-value-label  point-groups-label  color-label  size-label  focus-label"
+      "point-value-select point-groups-select color-select size-select focus-select";
+  }
+}
+
+.poi-by-group-values {
+  grid-area: point-value-label;
+}
+
+.poi-by-group-select {
+  grid-area: point-value-select;
+}
+
+.poi-by-group-groups {
+  grid-area: point-groups-label;
+}
+
+.poi-by-group-groups-select {
+  grid-area: point-groups-select;
+}
+
+.poi-color-label {
+  grid-area: color-label;
+}
+
+.bubble-colorpicker {
+  grid-area: color-select;
+}
+
+.poi-bubble-size-label {
+  grid-area: size-label;
+}
+
+.poi-bubble-size-select {
+  grid-area: size-select;
+}
+
+.poi-focus-label {
+  grid-area: focus-label;
+}
+
+.focus-colorpicker {
+  grid-area: focus-select;
+}
