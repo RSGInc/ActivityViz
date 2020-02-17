@@ -1028,6 +1028,8 @@ var ChordChart = {
                     for (var i = 0; i < zoneTiles.features.length; i++) {
                         var feature = zoneTiles.features[i];
 
+                      if (!feature.geometry.coordinates) continue;
+                      
                         var centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
 
 
