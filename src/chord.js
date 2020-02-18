@@ -1030,7 +1030,7 @@ var ChordChart = {
 
                       if (!feature.geometry.coordinates) continue;
                       
-                        var centroid = L.latLngBounds(feature.geometry.coordinates[0]).getCenter();
+                        var centroid = L.latLngBounds(feature.geometry.coordinates.flat()).getCenter();
 
 
                         var circleMarker = L.circleMarker(L.latLng(centroid.lng, centroid.lat), circleStyle);
