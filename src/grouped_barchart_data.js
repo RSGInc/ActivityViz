@@ -19,7 +19,6 @@ var BarChartGrp = {
     var defaultMax = 0;
     var region = abmviz_utilities.GetURLParameter("region");
     var dataLocation = localStorage.getItem(region);
-    var configIndx = indx;
     var chartSelector = "#" + id + "_grouped-barchart";
     var showChartOnPage = $("#" + id + "-container").children().length == 0;
     var fileName = "BarChartData.csv";
@@ -42,49 +41,26 @@ var BarChartGrp = {
           var configName = "Default";
 
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["GroupedCharts"][
-                configIndx
-              ].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["GroupedCharts"][
-                  configIndx
-                ].file;
+            var groupedChartsConfig =
+              data["scenarios"][scenario].visualizations["GroupedCharts"][indx];
+
+            if (groupedChartsConfig.file) {
+              fileName = groupedChartsConfig.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["GroupedCharts"][
-                configIndx
-              ].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["GroupedCharts"][
-                  configIndx
-                ].config;
+            if (groupedChartsConfig.config) {
+              configName = groupedChartsConfig.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["GroupedCharts"][indx]
-                .info
-            ) {
+            if (groupedChartsConfig.info) {
               var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["GroupedCharts"][
-                  indx
-                ].info;
+              infoBox = groupedChartsConfig.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
             }
-            if (
-              data["scenarios"][scenario].visualizations["GroupedCharts"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["GroupedCharts"][
-                  indx
-                ].datafilecolumns;
+            if (groupedChartsConfig.datafilecolumns) {
+              var datacols = groupedChartsConfig.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
@@ -116,7 +92,9 @@ var BarChartGrp = {
                 $("#" + id + "-toggle-horizontal")
                   .closest("li")
                   .hide();
-              } else showAsVertical = value;
+              } else {
+                showAsVertical = value;
+              }
             }
             if (
               opt == "ShowAsPercentByDefault" &&

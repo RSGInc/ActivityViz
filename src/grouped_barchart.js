@@ -19,12 +19,10 @@ function grouped_barchart(id, data, options, divid) {
   var minBarWidth = 2;
   var minBarSpacing = 1;
   var marginTopVert = 100;
-  var marginBottomVert = 190;
   var marginLeftVert = 150;
   var marginRightVert = 20;
   var marginTop = 0;
   var marginBottom = 50;
-  var marginLeft = 250;
   var marginRight = 50;
   var barsWrap;
   var barsWrapRect;
@@ -43,6 +41,25 @@ function grouped_barchart(id, data, options, divid) {
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
   var showChartOnPage = true;
+  
+  const maxLabelLength = getMaxLength([options.mainGrpSet, options.subGrpSet]);
+  var marginLeft = maxLabelLength * 10;
+  var marginBottomVert = maxLabelLength * 10;
+  console.log(maxLabelLength, marginLeft)
+
+  /**
+   * For an iterable of sets of strings, get the longest string in any set.
+   * @param {Set[]} sets 
+   */
+  function getMaxLength(sets) {
+    let maxLength = 0;
+    for (let set of sets) {
+      for (let setElement of set.values()) {
+        maxLength = Math.max(maxLength, setElement.length);
+      }
+    }
+    return maxLength;
+  }
 
   //start off chain of initialization by reading in the data
   svgChart = d3.select(id);
@@ -157,22 +174,24 @@ function grouped_barchart(id, data, options, divid) {
   }
   //end updateChartMouseoverRect
   function changeCurrentMainGroup(newCurrentMainGroup) {
-    if (currentMainGroup != newCurrentMainGroup) {
-      console.log(
-        "changing from " + currentMainGroup + " to " + newCurrentMainGroup
+    if (currentMainGroup == newCurrentMainGroup) return;
+
+    console.log(
+      "changing from " + currentMainGroup + " to " + newCurrentMainGroup
+    );
+
+    currentMainGroup = newCurrentMainGroup;
+    var mainGroupLabels = d3.selectAll("#" + divid + "-div .nv-x .tick text");
+    if (showAsVertical)
+      mainGroupLabels = d3.selectAll(
+        "#" + divid + "-div .nv-x .tick foreignObject p"
       );
-      currentMainGroup = newCurrentMainGroup;
-      var mainGroupLabels = d3.selectAll("#" + divid + "-div .nv-x .tick text");
-      if (showAsVertical)
-        mainGroupLabels = d3.selectAll(
-          "#" + divid + "-div .nv-x .tick foreignObject p"
-        );
-      mainGroupLabels.classed("selected", function(d, i) {
-        var setClass = d == currentMainGroup;
-        return setClass;
-      });
-      //end classed of group rect
-    }
+    mainGroupLabels.classed("selected", function(d, i) {
+      var setClass = d == currentMainGroup;
+      return setClass;
+    });
+
+    //end classed of group rect
     //end if mainGroup is changing
   } //end change currentMainGroup
   function createEmptyChart(callback) {
@@ -219,7 +238,6 @@ function grouped_barchart(id, data, options, divid) {
           .stacked(showAsGrouped)
           .showControls(false);
 
-        debugger;
         // if (maxVal != 0 && !showPercentages) {
         //   nvd3Chart.yDomain([minVal, maxVal]);
         //}
@@ -234,7 +252,7 @@ function grouped_barchart(id, data, options, divid) {
         // nvd3Chart.rotateLabels(-90);
         nvd3Chart.xAxis
           .axisLabel(mainGroupColumn)
-          .axisLabelDistance(showAsVertical ? 125 : marginLeft - 100);
+          .axisLabelDistance(showAsVertical ? marginBottomVert - 60 : marginLeft - 85);
 
         if (showAsVertical) {
           nvd3Chart.reduceXTicks(false);
