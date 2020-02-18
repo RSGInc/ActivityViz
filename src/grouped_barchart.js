@@ -219,6 +219,7 @@ function grouped_barchart(id, data, options, divid) {
           .stacked(showAsGrouped)
           .showControls(false);
 
+        debugger;
         // if (maxVal != 0 && !showPercentages) {
         //   nvd3Chart.yDomain([minVal, maxVal]);
         //}
