@@ -325,7 +325,6 @@ var BarChartMap = {
               return "filters";
             })
             .map(zonecsv);
-
         });
         callback();
       } else {
@@ -712,7 +711,9 @@ var BarChartMap = {
           nvd3Chart.yAxis.tickFormat(d3.format(",.0f"));
           nvd3Chart.yAxis.axisLabel(quantityColumn);
           //this is actually for xAxis since basically a sideways column chart
-          nvd3Chart.xAxis.axisLabel(countyColumn).axisLabelDistance(maxLabelLength * 6);
+          nvd3Chart.xAxis
+            .axisLabel(countyColumn)
+            .axisLabelDistance(maxLabelLength * 6);
           //this is actually for yAxis
 
           nv.utils.windowResize(function() {

@@ -9,7 +9,12 @@ var ThreeDMap = {
     var fileName = "3DAnimatedMapData.csv";
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var url = dataLocation + scenario;
-    var colors = ["rgb(239,243,255)", "rgb(189,215,231)", "rgb(107, 174, 214", "rgb(49, 130, 189)"]; //these will be replaced by default palette/ramp colors
+    var colors = [
+      "rgb(239,243,255)",
+      "rgb(189,215,231)",
+      "rgb(107, 174, 214",
+      "rgb(49, 130, 189)"
+    ]; //these will be replaced by default palette/ramp colors
     var selectedColorRampIndex = 0;
     var allTimeSqrtScale;
     var allTimeLinearScale;

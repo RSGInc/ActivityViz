@@ -1,19 +1,21 @@
 <div role="tabpanel" class="tab-pane" id="three3d_tab">
-  <div id="" class="spinner">
-  </div>
+  <div id="" class="spinner"></div>
   <div id="three3d" class="row dynamic-content">
-
     <p class="text-center" style="font-size:2em">
       <strong>
         <span class="three3d-purpose"></span>
       </strong>
-      <span id="three3d-current-period"></span> <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip"
-        data-placement="bottom" title=""></span>
+      <span id="three3d-current-period"></span>
+      <span
+        class="glyphicon glyphicon-info-sign"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title=""
+      ></span>
     </p>
 
     <div id="three3d-map" class="three-d-map col-xs-12"></div>
     <div class="three-d-map-controls container-fluid form-inline">
-
       <div id="three3d-period-id">
         <label id="three3d-period-label">Data Selection</label>
         <select class="form-control" id="three3d-period"></select>
@@ -21,12 +23,10 @@
 
       <fieldset>
         <label class="checkbox-inline">
-          <input type="checkbox" id="three3d-controls">Controls
-          </input>
+          <input type="checkbox" id="three3d-controls" />Controls
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" id="three3d-centroids">Centroids
-          </input>
+          <input type="checkbox" id="three3d-centroids" />Centroids
         </label>
       </fieldset>
 
@@ -45,7 +45,6 @@
         <button class="zoom out" title="zoom out">&#9473;</button>
       </div>
 
-
       <fieldset>
         <label id="three3d-classification-label">Classification</label>
         <select class="form-control" id="three3d-classification">
@@ -58,7 +57,10 @@
         <label>
           Redraw
         </label>
-        <select id="three3d-cycle-frequency" class="form-control form-control-inline">
+        <select
+          id="three3d-cycle-frequency"
+          class="form-control form-control-inline"
+        >
           <option value="1">every 1 sec</option>
           <option value="2">every 2 sec</option>
           <option value="3">every 3 sec</option>
@@ -71,33 +73,53 @@
           <option value="10">every 10 sec</option>
         </select>
       </fieldset>
-
     </div>
 
     <label id="three3d-filter-label"></label>
     <div id="three3d-filter-checkboxes" class="three3d-filter-checkboxes"></div>
 
     <div class="col-xs-12" style="margin-top:1em;">
-      <div style="margin-bottom:1em;margin-top:1.6em;" id="three3d-slider-time"></div>
+      <div
+        style="margin-bottom:1em;margin-top:1.6em;"
+        id="three3d-slider-time"
+      ></div>
       <div class="row">
         <div class="col-xs-6">
-          <button id="three3d-update-map" style="display:none" class="btn three-d-map-control-button">
+          <button
+            id="three3d-update-map"
+            style="display:none"
+            class="btn three-d-map-control-button"
+          >
             Update Map
           </button>
-          <button id="three3d-start-cycle-map" class="btn three-d-map-control-button">Cycle Through Day</button>
-          <button id="three3d-stop-cycle-map" class="btn three-d-map-control-button" style="display:none">
+          <button
+            id="three3d-start-cycle-map"
+            class="btn three-d-map-control-button"
+          >
+            Cycle Through Day
+          </button>
+          <button
+            id="three3d-stop-cycle-map"
+            class="btn three-d-map-control-button"
+            style="display:none"
+          >
             Stop Cycle
           </button>
         </div>
       </div>
     </div>
   </div>
-  <button id="collapsebtn" class="btn three-d-map-control-button" data-toggle="collapse" data-target=""
-    style="margin-bottom:10px">
+  <button
+    id="collapsebtn"
+    class="btn three-d-map-control-button"
+    data-toggle="collapse"
+    data-target=""
+    style="margin-bottom:10px"
+  >
     Show Data
   </button>
   <div class="datatable-div col-sm-12 " id="datatable-div">
-    <div id='datatable-collapse' class="collapse">
+    <div id="datatable-collapse" class="collapse">
       <table id="datatable-table" style="width:100%">
         <thead>
           <tr></tr>

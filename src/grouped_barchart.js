@@ -41,15 +41,15 @@ function grouped_barchart(id, data, options, divid) {
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
   var showChartOnPage = true;
-  
+
   const maxLabelLength = getMaxLength([options.mainGrpSet, options.subGrpSet]);
   var marginLeft = maxLabelLength * 10;
   var marginBottomVert = maxLabelLength * 10;
-  console.log(maxLabelLength, marginLeft)
+  console.log(maxLabelLength, marginLeft);
 
   /**
    * For an iterable of sets of strings, get the longest string in any set.
-   * @param {Set[]} sets 
+   * @param {Set[]} sets
    */
   function getMaxLength(sets) {
     let maxLength = 0;
@@ -252,7 +252,9 @@ function grouped_barchart(id, data, options, divid) {
         // nvd3Chart.rotateLabels(-90);
         nvd3Chart.xAxis
           .axisLabel(mainGroupColumn)
-          .axisLabelDistance(showAsVertical ? marginBottomVert - 60 : marginLeft - 85);
+          .axisLabelDistance(
+            showAsVertical ? marginBottomVert - 60 : marginLeft - 85
+          );
 
         if (showAsVertical) {
           nvd3Chart.reduceXTicks(false);

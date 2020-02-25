@@ -1,33 +1,48 @@
 <div role="tabpanel" class="tab-pane" id="timeuse_tab">
-		<div id="timeuse" class="row dynamic-content">
+  <div id="timeuse" class="row dynamic-content">
+    <p class="text-center" style="font-size:2em">
+      <span class="timeuse-maingroup">TIME USE</span>
+      <span
+        class="glyphicon glyphicon-info-sign"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title=""
+      ></span>
+    </p>
+    <div id="timeuse-sidebar" class="col-xs-2 timeuse-sidebar">
+      <div id="timeuse-text-area" class="timeuse-text-area control-label">
+        Person type and purpose
+      </div>
 
-			<p class="text-center" style="font-size:2em">
-				<span class="timeuse-maingroup">TIME USE</span> <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title=""></span>
-			</p>
-			<div id="timeuse-sidebar" class="col-xs-2 timeuse-sidebar">
-				<div id="timeuse-text-area" class="timeuse-text-area control-label">Person type and purpose</div>
+      <div id="timeuse-legend" class="timeuse-legend"></div>
+    </div>
+    <div id="timeuse-main" class="col-xs-10 timeuse-main">
+      <div id="timeuse-chart" class="timeuse-chart">
+        <svg></svg>
+      </div>
+    </div>
+  </div>
+  <!-- end timeuse -->
+  <div class="datatable-div col-sm-12 " id="datatable-div">
+    <button
+      id="collapsebtn"
+      class="btn"
+      data-toggle="collapse"
+      data-target=""
+      style="margin-bottom:10px"
+    >
+      Show Data
+    </button>
+    <div id="datatable-collapse" class="collapse">
+      <table id="datatable-table" style="width:100%">
+        <thead>
+          <tr></tr>
+        </thead>
+      </table>
 
-				<div id="timeuse-legend" class="timeuse-legend"></div>
-			</div>
-			<div id="timeuse-main" class="col-xs-10 timeuse-main">
-				<div id="timeuse-chart" class="timeuse-chart">
-					<svg></svg>
-				</div>
-			</div>
-		</div>
-		<!-- end timeuse -->
-		<div class="datatable-div col-sm-12 " id="datatable-div">
-        <button id="collapsebtn" class="btn" data-toggle="collapse" data-target="" style="margin-bottom:10px">Show Data</button>
-        <div id='datatable-collapse' class="collapse">
-		<table id="datatable-table" style="width:100%">
-			<thead>
-			<tr></tr>
-			</thead>
-		</table>
-
-            <div id="datatable-columns" class="col-sm-12">
-            <strong>Data Column Notes:</strong>
-            </div>
-        </div>
-	</div>
+      <div id="datatable-columns" class="col-sm-12">
+        <strong>Data Column Notes:</strong>
+      </div>
+    </div>
+  </div>
 </div>

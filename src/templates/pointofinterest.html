@@ -1,26 +1,28 @@
 <div role="tabpanel" class="tab-pane" id="poimap_tab">
   <div id="poi-by-group" class="row dynamic-content" charttype="poimap">
-
     <p class="text-center" style="font-size:2em">
-      <strong>
-        <span class="poi-by-group-group"></span>,</strong> by
-      <span class="poi-by-group-type"></span> <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip"
-        data-placement="bottom" title=""></span>
+      <strong> <span class="poi-by-group-group"></span>,</strong> by
+      <span class="poi-by-group-type"></span>
+      <span
+        class="glyphicon glyphicon-info-sign"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title=""
+      ></span>
     </p>
     <div class="col-xs-6 right-border" style="margin-top:4px">
       <div class="row">
-
         <div class="row" style="margin-top:4px">
           <div class="col-xs-10" style="padding-bottom:8px;">
             <span id="poi-by-group-filter-span" class="col-sm-6"></span>
-            <span style="text-align:center;display:block;font-weight:bold;font-size:16px;"
-              class="legendtitle col-sm-6"></span>
+            <span
+              style="text-align:center;display:block;font-weight:bold;font-size:16px;"
+              class="legendtitle col-sm-6"
+            ></span>
           </div>
           <div class="col-xs-2">
-
             <label>
               <input type="checkbox" checked id="poi-by-group-stacked" />Stacked
-
             </label>
           </div>
         </div>
@@ -30,15 +32,28 @@
       </div>
     </div>
     <div class="col-xs-6">
-      <div id='poi-by-group-tools'>
+      <div id="poi-by-group-tools">
         <div class="poi-by-group-values" style="font-weight:bold"></div>
-        <select class="form-control poi-by-group-select" id="poi-by-group-values-current"></select>
+        <select
+          class="form-control poi-by-group-select"
+          id="poi-by-group-values-current"
+        ></select>
         <div class="poi-by-group-groups" style="font-weight:bold"></div>
-        <select class="form-control poi-by-group-groups-select" id="poi-by-group-groups-current"></select>
+        <select
+          class="form-control poi-by-group-groups-select"
+          id="poi-by-group-groups-current"
+        ></select>
         <label class="poi-color-label">Color</label>
-        <input type="text" id="poi-by-group-bubble-color" class="poi-color-select" />
+        <input
+          type="text"
+          id="poi-by-group-bubble-color"
+          class="poi-color-select"
+        />
         <label class="poi-bubble-size-label">Size</label>
-        <select id="poi-by-group-bubble-size" class="poi-bubble-size-select form-control">
+        <select
+          id="poi-by-group-bubble-size"
+          class="poi-bubble-size-select form-control"
+        >
           <option>1</option>
           <option selected>2</option>
           <option>3</option>
@@ -57,29 +72,37 @@
         </select>
       </div>
 
-
       <table id="poi-by-group-tooltable" selector="poimap-tooltable">
         <tr>
-          <td>
-          </td>
-          <td>
-          </td>
+          <td></td>
+          <td></td>
         </tr>
-
       </table>
 
-      <div class="col-xs-12" id="poi-by-group-map" style="width: 100%;height:60%;" selector="poimap-div"></div>
-      <div class="col-xs-6" id="poi-by-group-pallette" style="margin-top:1em;text-align:right">
-
-      </div>
-
-
+      <div
+        class="col-xs-12"
+        id="poi-by-group-map"
+        style="width: 100%;height:60%;"
+        selector="poimap-div"
+      ></div>
+      <div
+        class="col-xs-6"
+        id="poi-by-group-pallette"
+        style="margin-top:1em;text-align:right"
+      ></div>
     </div>
   </div>
   <div class="datatable-div col-sm-12 " id="datatable-div">
-    <button id="collapsebtn" class="btn" data-toggle="collapse" data-target="" style="margin-bottom:10px">Show
-      Data</button>
-    <div id='datatable-collapse' class="collapse">
+    <button
+      id="collapsebtn"
+      class="btn"
+      data-toggle="collapse"
+      data-target=""
+      style="margin-bottom:10px"
+    >
+      Show Data
+    </button>
+    <div id="datatable-collapse" class="collapse">
       <table id="datatable-table" style="width:100%">
         <thead>
           <tr></tr>

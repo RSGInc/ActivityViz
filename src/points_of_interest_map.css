@@ -3,24 +3,27 @@ Presumably this is because it used the same code as the vertical chart
 */
 
 li.multiselect-selected a label {
-	background-color:#e09d15;
+  background-color: #e09d15;
 }
-[charttype$="poimap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
-	font-weight: bold;
+[charttype$="poimap"]
+  .nvd3.nv-multiBarHorizontalChart
+  .nv-x.nv-axis
+  text.mode-share-by-county-trip-mode-current-county {
+  font-weight: bold;
 }
 
 [selector$="poimap-div"] div.leaflet-popup-content {
-	width: 100%;
+  width: 100%;
 }
 [selector$="poimap-tooltable"] > tbody > tr > td {
-	padding:3px !important;
+  padding: 3px !important;
 }
 
 #poi-by-group-tools {
   display: grid;
   grid-column-gap: 15px;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-areas: 
+  grid-template-areas:
     "point-value-label point-value-label point-groups-label point-groups-label"
     "point-value-select point-value-select point-groups-select point-groups-select"
     "color-label size-label focus-label nil"
@@ -30,7 +33,7 @@ li.multiselect-selected a label {
 @media screen and (min-width: 1000px) {
   #poi-by-group-tools {
     grid-template-columns: 2fr 2fr repeat(3, auto);
-    grid-template-areas: 
+    grid-template-areas:
       "point-value-label  point-groups-label  color-label  size-label  focus-label"
       "point-value-select point-groups-select color-select size-select focus-select";
   }
