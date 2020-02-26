@@ -1,23 +1,30 @@
 <div role="tabpanel" class="tab-pane" id="barchartmap_tab">
-  <div id="mode-share-by-county" class="row dynamic-content" charttype="barchartmap">
+  <div
+    id="mode-share-by-county"
+    class="row dynamic-content"
+    charttype="barchartmap"
+  >
     <p class="text-center" style="font-size:2em">
-      <strong>
-        <span class="mode-share-by-county-trip-mode"></span>,</strong> by
-      <span class="mode-share-by-county-area-type"></span> <span class="glyphicon glyphicon-info-sign"
-        data-toggle="tooltip" data-placement="bottom" title=""></span>
+      <strong> <span class="mode-share-by-county-trip-mode"></span>,</strong> by
+      <span class="mode-share-by-county-area-type"></span>
+      <span
+        class="glyphicon glyphicon-info-sign"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title=""
+      ></span>
     </p>
     <div class="col-xs-6 right-border" style="margin-top:4px">
       <div class="row">
-
-
         <div class="row" style="margin-top:4px">
-          <div class="col-xs-10">
-
-          </div>
+          <div class="col-xs-10"></div>
           <div class="col-xs-2">
             <label>
-              <input type="checkbox" checked id="mode-share-by-county-stacked" />Stacked
-
+              <input
+                type="checkbox"
+                checked
+                id="mode-share-by-county-stacked"
+              />Stacked
             </label>
             <!-- <label><input type="checkbox" checked id="mode-share-by-county-legend-type" />Classic Legend/label>-->
           </div>
@@ -28,30 +35,39 @@
       </div>
     </div>
     <div class="col-xs-6">
+      <div class="col-xs-12"></div>
       <div class="col-xs-12">
-      </div>
-      <div class="col-xs-12">
-        <div class="col-xs-4">
-        </div>
-        <div class="col-xs-4">
-        </div>
-        <div class="col-xs-4">
-        </div>
+        <div class="col-xs-4"></div>
+        <div class="col-xs-4"></div>
+        <div class="col-xs-4"></div>
       </div>
 
-      <div class='col-xs-12' id="mode-share-by-county-checkboxes" style="font-weight: bold;"></div>
-      <div class="col-xs-12" id="mode-share-by-county-map" style="width: 100%;height:50%;"></div>
+      <div
+        class="col-xs-12"
+        id="mode-share-by-county-checkboxes"
+        style="font-weight: bold;"
+      ></div>
+      <div
+        class="col-xs-12"
+        id="mode-share-by-county-map"
+        style="width: 100%;height:50%;"
+      ></div>
 
       <div class="container-fluid bar-chart-map__control-grid">
-
         <label class="mode-share-by-county-trip-mode-zones zone-label"></label>
-        <label id="mode-share-by-county-classification-label" class="classification-label">
+        <label
+          id="mode-share-by-county-classification-label"
+          class="classification-label"
+        >
           Classification
         </label>
         <label class="palette-label">Palette</label>
         <div></div>
 
-        <select class="form-control" id="mode-share-by-county-current-trip-mode-zones"></select>
+        <select
+          class="form-control"
+          id="mode-share-by-county-current-trip-mode-zones"
+        ></select>
         <select class="form-control" id="mode-share-by-county-classification">
           <option value="quartiles" selected="selected">Quartiles</option>
           <option value="jenks">Natural breaks (Jenks)</option>
@@ -73,13 +89,23 @@
         </div>
 
         <div></div>
-        <label class="mode-share-by-county-trip-mode-bubbles" style="font-weight:bold"></label>
+        <label
+          class="mode-share-by-county-trip-mode-bubbles"
+          style="font-weight:bold"
+        ></label>
         <label>Color</label>
         <label>Size</label>
         <div></div>
 
-        <select class="form-control" id="mode-share-by-county-current-trip-mode-bubbles"></select>
-        <input type="text" class="col-xs-8" id="mode-share-by-county-bubble-color" />
+        <select
+          class="form-control"
+          id="mode-share-by-county-current-trip-mode-bubbles"
+        ></select>
+        <input
+          type="text"
+          class="col-xs-8"
+          id="mode-share-by-county-bubble-color"
+        />
         <select id="mode-share-by-county-bubble-size" class="form-control">
           <option>1</option>
           <option>2</option>
@@ -97,25 +123,46 @@
           <option>14</option>
           <option>15</option>
         </select>
-
       </div>
 
-      <div id='mode-share-by-county-tools' class="bar-chart-map__filter-color-controls" style="text-align: right;">
-      </div>
+      <div
+        id="mode-share-by-county-tools"
+        class="bar-chart-map__filter-color-controls"
+        style="text-align: right;"
+      ></div>
 
       <div class="col-xs-12" style="margin-top:1em;">
-        <div style="margin-bottom:1em;margin-top:1.6em;" id="mode-share-by-county-slider"></div>
+        <div
+          style="margin-bottom:1em;margin-top:1.6em;"
+          id="mode-share-by-county-slider"
+        ></div>
         <div class="row">
           <div class="col-xs-6">
-            <button id="mode-share-by-county-update-map" style="display:none" class="btn">Update Map</button>
-            <button id="mode-share-by-county-start-cycle-map" class="btn">Cycle Through Maps</button>
-            <button id="mode-share-by-county-stop-cycle-map" class="btn" style="display:none">Stop Cycle</button>
+            <button
+              id="mode-share-by-county-update-map"
+              style="display:none"
+              class="btn"
+            >
+              Update Map
+            </button>
+            <button id="mode-share-by-county-start-cycle-map" class="btn">
+              Cycle Through Maps
+            </button>
+            <button
+              id="mode-share-by-county-stop-cycle-map"
+              class="btn"
+              style="display:none"
+            >
+              Stop Cycle
+            </button>
           </div>
           <div class="col-xs-6">
             Redraw
 
-
-            <select id="mode-share-by-county-cycle-frequency" class="form-control form-control-inline">
+            <select
+              id="mode-share-by-county-cycle-frequency"
+              class="form-control form-control-inline"
+            >
               <option value="1">every 1 sec</option>
               <option value="2">every 2 sec</option>
               <option value="3">every 3 sec</option>
@@ -130,17 +177,22 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-12" style="margin-top:1em;">
-
-          </div>
+          <div class="col-xs-12" style="margin-top:1em;"></div>
         </div>
       </div>
     </div>
   </div>
   <div class="datatable-div col-sm-12 " id="datatable-div">
-    <button id="collapsebtn" class="btn" data-toggle="collapse" data-target="" style="margin-bottom:10px">Show
-      Data</button>
-    <div id='datatable-collapse' class="collapse">
+    <button
+      id="collapsebtn"
+      class="btn"
+      data-toggle="collapse"
+      data-target=""
+      style="margin-bottom:10px"
+    >
+      Show Data
+    </button>
+    <div id="datatable-collapse" class="collapse">
       <table id="datatable-table" style="width:100%">
         <thead>
           <tr></tr>

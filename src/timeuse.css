@@ -1,84 +1,84 @@
 .timeuse-main {
-	//
-	padding: 0px;
-	padding-left: 0;
-	padding-top: 0;
+  //
+  padding: 0px;
+  padding-left: 0;
+  padding-top: 0;
 }
 
 .timeuse-sidebar {
-	padding-left: 10px;
-	//display: table;
+  padding-left: 10px;
+  //display: table;
 }
 
 .timeuse-text-area {
-	margin-bottom: 30px;
-	text-align:center;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .timeuse-legend {
-	//display: table-cell;
-	vertical-align: middle;
-	cursor: default;
+  //display: table-cell;
+  vertical-align: middle;
+  cursor: default;
 }
 .timeuse-legend svg {
-	margin-left:auto;
-	margin-right:auto;
-	display:block;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .timeuse-legend rect {
-	fill: white;
-	stroke:black;
-	stroke-width:2;
-	opacity: 1.0;
+  fill: white;
+  stroke: black;
+  stroke-width: 2;
+  opacity: 1;
 }
 
 .timeuse-legend rect.timeuse-current-person-type {
-	opacity: 1.0;
-	fill: yellow;
+  opacity: 1;
+  fill: yellow;
 }
 
 .timeuse-legend text {
-	font-weight: 400;
-	fill: black;
+  font-weight: 400;
+  fill: black;
 }
 
 .timeuse-chart {
-	position: relative;
-	padding-left: 0;
-	padding-top: 0;
-	height: 600px;
-	width: 100%;
+  position: relative;
+  padding-left: 0;
+  padding-top: 0;
+  height: 600px;
+  width: 100%;
 }
 
 .timeuse-chart path {
-	stroke: #fff;
+  stroke: #fff;
 }
 
 .timeuse-explanation {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	display: table;
-	color: #666;
-	z-index: -1;
-	padding-left: 0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: table;
+  color: #666;
+  z-index: -1;
+  padding-left: 0px;
 }
 
 .timeuse-explanation p {
-	display: table-cell;
-	vertical-align: middle;
-	text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .timeuse-percentage {
-	font-size: 2.5em;
+  font-size: 2.5em;
 }
 
 .timeuse-current-node {
-	font-size: 2em;
+  font-size: 2em;
 }
 
 .timeuse-current-node-value {
-	font-size: 1.5em;
+  font-size: 1.5em;
 }

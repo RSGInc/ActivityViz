@@ -1,41 +1,62 @@
 <div role="tabpanel" class="tab-pane" id="sunburst_tab">
-		<div id="sunburst" class="row dynamic-content" charttype="sunburstchart">
-
-			<p class="text-center" style="font-size:2em">
-				<span class="sunburst-maingroup">PLACEHOLDER</span>  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title=""></span>
-			</p>
-			<div class="col-xs-2">
-				<div id="sunburst-legend" class="sunburst-legend"></div>
-			</div>
-			<div class="col-xs-10">
-				<div id="sunburst-chart" class="col-xs-7 sunburst-chart"></div>
-				<div class="col-xs-5">
-					<div id="sunburst-text-area" class="sunburst-text-area">
-
-					</div>
-					<div id="sunburst-explanation"  class='sunburst-explanation' style="visibility: hidden;">
-						<p>
-							<span id="sunburst-percentage" class="sunburst-percentage"></span>
-							<br/>
-							<span id="sunburst-current-node" class="sunburst-current-node"></span>
-							<br/>
-							<span id="sunburst-current-node-value" class="sunburst-current-node-value"></span>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="datatable-div col-sm-12 " id="datatable-div">
-        <button id="collapsebtn" class="btn" data-toggle="collapse" data-target="" style="margin-bottom:10px">Show Data</button>
-        <div id='datatable-collapse' class="collapse">
-		<table id="datatable-table" style="width:100%">
-			<thead>
-			<tr></tr>
-			</thead>
-		</table>
-			            <div id="datatable-columns" class="col-sm-12">
-            <strong>Data Column Notes:</strong>
-            </div>
+  <div id="sunburst" class="row dynamic-content" charttype="sunburstchart">
+    <p class="text-center" style="font-size:2em">
+      <span class="sunburst-maingroup">PLACEHOLDER</span>
+      <span
+        class="glyphicon glyphicon-info-sign"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title=""
+      ></span>
+    </p>
+    <div class="col-xs-2">
+      <div id="sunburst-legend" class="sunburst-legend"></div>
+    </div>
+    <div class="col-xs-10">
+      <div id="sunburst-chart" class="col-xs-7 sunburst-chart"></div>
+      <div class="col-xs-5">
+        <div id="sunburst-text-area" class="sunburst-text-area"></div>
+        <div
+          id="sunburst-explanation"
+          class="sunburst-explanation"
+          style="visibility: hidden;"
+        >
+          <p>
+            <span id="sunburst-percentage" class="sunburst-percentage"></span>
+            <br />
+            <span
+              id="sunburst-current-node"
+              class="sunburst-current-node"
+            ></span>
+            <br />
+            <span
+              id="sunburst-current-node-value"
+              class="sunburst-current-node-value"
+            ></span>
+          </p>
         </div>
-	</div>
+      </div>
+    </div>
+  </div>
+  <div class="datatable-div col-sm-12 " id="datatable-div">
+    <button
+      id="collapsebtn"
+      class="btn"
+      data-toggle="collapse"
+      data-target=""
+      style="margin-bottom:10px"
+    >
+      Show Data
+    </button>
+    <div id="datatable-collapse" class="collapse">
+      <table id="datatable-table" style="width:100%">
+        <thead>
+          <tr></tr>
+        </thead>
+      </table>
+      <div id="datatable-columns" class="col-sm-12">
+        <strong>Data Column Notes:</strong>
+      </div>
+    </div>
+  </div>
 </div>

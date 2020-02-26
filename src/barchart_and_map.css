@@ -3,11 +3,14 @@ Presumably this is because it used the same code as the vertical chart
 */
 
 [charttype$="barchartmap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text {
-	font-size: 15;
+  font-size: 15;
 }
 
-[charttype$="barchartmap"] .nvd3.nv-multiBarHorizontalChart .nv-x.nv-axis text.mode-share-by-county-trip-mode-current-county {
-	font-weight: bold;
+[charttype$="barchartmap"]
+  .nvd3.nv-multiBarHorizontalChart
+  .nv-x.nv-axis
+  text.mode-share-by-county-trip-mode-current-county {
+  font-weight: bold;
 }
 
 .mode-share-by-county-trip-mode-bubbles,
@@ -20,13 +23,13 @@ Presumably this is because it used the same code as the vertical chart
  * bootstrap select menus above the map. TODO: factor this out into more
  * consistent, more semantic global.css.
  */
-#poi_FreightFlows-tooltable>tbody>tr>td:nth-child(odd){
+#poi_FreightFlows-tooltable > tbody > tr > td:nth-child(odd) {
   font-weight: 600;
   font-size: 14px;
 }
 
 .bar-chart-map__palette {
-  margin-top:1em;
+  margin-top: 1em;
 }
 
 .bar-chart-map__control-section label {
@@ -40,7 +43,7 @@ Presumably this is because it used the same code as the vertical chart
 .bar-chart-map__select_fields > div {
   margin-top: 1em;
 }
-  
+
 .bar-chart-map__control-section {
   display: flex;
   justify-content: space-between;
@@ -54,14 +57,12 @@ Presumably this is because it used the same code as the vertical chart
 
 .bar-chart-map__control-section > *:last-child {
   flex: 3;
-
 }
-
 
 .bar-chart-map__control-grid {
   display: grid;
   grid-template-columns: 1fr 1fr auto auto;
-  grid-column-gap: 15px; 
+  grid-column-gap: 15px;
 }
 
 .bar-chart-map__control-grid:before {

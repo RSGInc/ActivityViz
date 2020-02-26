@@ -2,17 +2,19 @@
 Presumably this is because it used the smae code as the vertical chart
 */
 
-[charttype$="groupbarchart"] .nv-x .tick text,#grouped-barchart-div .nv-x .tick foreignObject p {
-	font-size: 15;
+[charttype$="groupbarchart"] .nv-x .tick text,
+#grouped-barchart-div .nv-x .tick foreignObject p {
+  font-size: 15;
 }
 
-[charttype$="groupbarchart"] .nv-x .tick text.selected, #grouped-barchart-div .nv-x .tick foreignObject p.selected {
-	font-weight: bold;
+[charttype$="groupbarchart"] .nv-x .tick text.selected,
+#grouped-barchart-div .nv-x .tick foreignObject p.selected {
+  font-weight: bold;
 }
 
-.barcharttitle{
-	text-align:center;
-	font-size: 1.1em;
+.barcharttitle {
+  text-align: center;
+  font-size: 1.1em;
 }
 
 .nvd3 rect[height="1"] {
