@@ -224,581 +224,529 @@
     });
 
     var visuals = data["scenarios"][scenario].visualizations;
-    if (visuals != undefined) {
-      $.each(visuals, function(key, value) {
-        if (key == "GroupedCharts") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "barchart.html",
-              "BarChartGrp.barchart",
-              v.name,
-              k,
-              "bc_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "bc_" + v.name.replace(/\s/g, "");
-                $("#grouped_tab").attr("id", chartname + "_id");
-                $("#grouped-barchart-div").attr("id", chartname + "-div");
-                $("#grouped-barchart-pivot-axes").attr(
-                  "id",
-                  chartname + "-pivot-axes"
-                );
-                $("#grouped-barchart-toggle-percentage").attr(
-                  "id",
-                  chartname + "-toggle-percentage"
-                );
-                $("#grouped-barchart-toggle-horizontal").attr(
-                  "id",
-                  chartname + "-toggle-horizontal"
-                );
-                $("#grouped-barchart-toggle-stacked").attr(
-                  "id",
-                  chartname + "-toggle-stacked"
-                );
-                $("#grouped-barmain").attr("id", chartname + "-barmain");
-                $("#grouped-bar-container").attr(
-                  "id",
-                  chartname + "-container"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+
+    if (!visuals) return;
+
+    // All tabs must be added before first one is clicked.
+    // We'll use an array of promises to track when they are all complete.
+    const tabAddPromises = [];
+
+    $.each(visuals, function(key, value) {
+      const tabAddFunctions = {
+        GroupedCharts: addGroupedChartTab,
+        TimeUse: addTimeUseTab,
+        Sunburst: addSunburst,
+        Scatter: addScatterTab,
+        Chord: addChordTab,
+        POIMap: addPointsOfInterestTab,
+        RadarCharts: addRadarChartsTab,
+        "3DMap": add3DMapTab,
+        BarMap: addBarMapTab
+      };
+
+      for (let k in value) {
+        const v = value[k];
+        // Execute the function and store the promise in the array
+        tabAddPromises.push(tabAddFunctions[key](k, v));
+      }
+
+      function addGroupedChartTab(k, v) {
+        return addMyTab(
+          "barchart.html",
+          "BarChartGrp.barchart",
+          v.name,
+          k,
+          "bc_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "bc_" + v.name.replace(/\s/g, "");
+            $("#grouped_tab").attr("id", chartname + "_id");
+            $("#grouped-barchart-div").attr("id", chartname + "-div");
+            $("#grouped-barchart-pivot-axes").attr(
+              "id",
+              chartname + "-pivot-axes"
             );
-          });
-        }
-        if (key == "TimeUse") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "timeuse.html",
-              "TimeuseChart.timeuse",
-              v.name,
-              k,
-              "tu_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "tu_" + v.name.replace(/\s/g, "");
-                $("#timeuse_tab").attr("id", chartname + "_id");
-                $("#timeuse").attr("id", chartname + "-div");
-                $("#timeuse-sidebar").attr("id", chartname + "-sidebar");
-                $("#timeuse-text-area").attr("id", chartname + "-text-area");
-                $("#timeuse-legend").attr("id", chartname + "-legend");
-                $("#timeuse-main").attr("id", chartname + "-main");
-                $("#timeuse-chart").attr("id", chartname + "-chart");
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#grouped-barchart-toggle-percentage").attr(
+              "id",
+              chartname + "-toggle-percentage"
             );
-          });
-        }
-        if (key == "Sunburst") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "sunburst.html",
-              "SunburstChart.sunburst",
-              v.name,
-              k,
-              "sb_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "sb_" + v.name.replace(/\s/g, "");
-                $("#sunburst_tab").attr("id", chartname + "_id");
-                $("#sunburst").attr("id", chartname + "-div");
-                $("#sunburst-legend").attr("id", chartname + "-legend");
-                $("#sunburst-chart").attr("id", chartname + "-chart");
-                $("#sunburst-text-area").attr("id", chartname + "-text-area");
-                $("#sunburst-explanation").attr(
-                  "id",
-                  chartname + "-explanation"
-                );
-                $("#sunburst-percentage").attr("id", chartname + "-percentage");
-                $("#sunburst-current-node").attr(
-                  "id",
-                  chartname + "-current-node"
-                );
-                $("#sunburst-current-node-value").attr(
-                  "id",
-                  chartname + "-current-node-value"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#grouped-barchart-toggle-horizontal").attr(
+              "id",
+              chartname + "-toggle-horizontal"
             );
-          });
-        }
-        if (key == "Scatter") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "scatter.html",
-              "ScatterChart.scatter",
-              v.name,
-              k,
-              "sc_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "sc_" + v.name.replace(/\s/g, "");
-                $("#scatter_tab").attr("id", chartname + "_id");
-                $("#scatter").attr("id", chartname + "-div");
-                $("#scatter-tooltip").attr("id", chartname + "-tooltip");
-                $("#scatter-main").attr("id", chartname + "-main");
-                $("#scatter-chart-container").attr(
-                  "id",
-                  chartname + "-chart-container"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#grouped-barchart-toggle-stacked").attr(
+              "id",
+              chartname + "-toggle-stacked"
             );
-          });
-        }
-        if (key == "Chord") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "chord.html",
-              "ChordChart.chord",
-              v.name,
-              k,
-              "ch_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "ch_" + v.name.replace(/\s/g, "");
-                $("#chord_tab").attr("id", chartname + "_id");
-                $("#chord").attr("id", chartname + "-div");
-                $("#chord-tooltip").attr("id", chartname + "-tooltip");
-                $("#chord-main").attr("id", chartname + "-main");
-                $("#chord-dropdown-div").attr(
-                  "id",
-                  chartname + "-dropdown-div"
-                );
-                $("#chord-chart-container").attr(
-                  "id",
-                  chartname + "-chart-container"
-                );
-                $("#chord-chart-map").attr("id", chartname + "-chart-map");
-                $("#chord-by-district-map").attr(
-                  "id",
-                  chartname + "-by-district-map"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#grouped-barmain").attr("id", chartname + "-barmain");
+            $("#grouped-bar-container").attr("id", chartname + "-container");
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
             );
-          });
-        }
-        if (key == "POIMap") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "pointofinterest.html",
-              "POIMap.pointofinterest_and_map",
-              v.name,
-              k,
-              "poi_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "poi_" + v.name.replace(/\s/g, "");
-                $("#poimap_tab").attr("id", chartname + "_id");
-                $("#poi-by-group").attr("id", chartname + "-div");
-                $("#poi-by-group-stacked").attr("id", chartname + "-stacked");
-                $("#poi-by-group-chart").attr("id", chartname + "-chart");
-                $("#poi-by-group-values-current").attr(
-                  "id",
-                  chartname + "-values-current"
-                );
-                $("#poi-by-group-groups-current").attr(
-                  "id",
-                  chartname + "-groups-current"
-                );
-                $("#poi-by-group-tooltable").attr(
-                  "id",
-                  chartname + "-tooltable"
-                );
-                $("#poi-by-group-bubble-color").attr(
-                  "id",
-                  chartname + "-bubble-color"
-                );
-                $("#poi-by-group-bubble-size").attr(
-                  "id",
-                  chartname + "-bubble-size"
-                );
-                $("#poi-by-group-emptydiv").attr("id", chartname + "-emptydiv");
-                $("#poi-by-group-map").attr("id", chartname + "-map");
-                $("#poi-by-group-pallette").attr("id", chartname + "-pallette");
-                $("#poi-by-group-filter-span").attr(
-                  "id",
-                  chartname + "-filter-span"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
             );
-          });
-        }
-        if (key == "RadarCharts") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "radar.html",
-              "RadarData.radar",
-              v.name,
-              k,
-              "rc_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "rc_" + v.name.replace(/\s/g, "");
-                $("#radar_tab").attr("id", chartname + "_id");
-                $("#radar").attr("id", chartname + "-div");
-                $("#radar-sidebar").attr("id", chartname + "-sidebar");
-                $("#radar-text-area").attr("id", chartname + "-text-area");
-                $("#radar-legend").attr("id", chartname + "-legend");
-                $("#radar-main").attr("id", chartname + "-main");
-                $("#radar-chart-container").attr(
-                  "id",
-                  chartname + "-chart-container"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
             );
-          });
-        }
-        if (key == "3DMap") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "threed.html",
-              "ThreeDMap.three3dFunction",
-              v.name,
-              k,
-              "td_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "td_" + v.name.replace(/\s/g, "");
-                $("#three3d_tab").attr("id", chartname + "_id");
-                $("#three3d").attr("id", chartname + "-div");
-                $("#three3d-current-period").attr(
-                  "id",
-                  chartname + "-current-period"
-                );
-                $("#three3d-controls").attr("id", chartname + "-controls");
-                $("#three3d-centroids").attr("id", chartname + "-centroids");
-                $("#three3d-classification-label").attr(
-                  "id",
-                  chartname + "-classification-label"
-                );
-                $("#three3d-classification").attr(
-                  "id",
-                  chartname + "-classification"
-                );
-                $("#three3d-period-id").attr("id", chartname + "-period-id");
-                $("#three3d-period-label").attr(
-                  "id",
-                  chartname + "-period-label"
-                );
-                $("#three3d-period").attr("id", chartname + "-period");
-                $("#three3d-map").attr("id", chartname + "-map");
-                $("#opacityRange").attr("id", chartname + "-opacityRange");
-                $("#opacityval").attr("id", chartname + "-opacityval");
-                $("#three3d-naColor").attr("id", chartname + "-naColor");
-                $("#three3d-slider").attr("id", chartname + "-slider");
-                $("#three3d-slider-time").attr(
-                  "id",
-                  chartname + "-slider-time"
-                );
-                $("#three3d-update-map").attr("id", chartname + "-update-map");
-                $("#three3d-start-cycle-map").attr(
-                  "id",
-                  chartname + "-start-cycle-map"
-                );
-                $("#three3d-stop-cycle-map").attr(
-                  "id",
-                  chartname + "-stop-cycle-map"
-                );
-                $("#three3d-redraw").attr("id", chartname + "-redraw");
-                $("#three3d-cycle-frequency").attr(
-                  "id",
-                  chartname + "-cycle-frequency"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addTimeUseTab(k, v) {
+        return addMyTab(
+          "timeuse.html",
+          "TimeuseChart.timeuse",
+          v.name,
+          k,
+          "tu_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "tu_" + v.name.replace(/\s/g, "");
+            $("#timeuse_tab").attr("id", chartname + "_id");
+            $("#timeuse").attr("id", chartname + "-div");
+            $("#timeuse-sidebar").attr("id", chartname + "-sidebar");
+            $("#timeuse-text-area").attr("id", chartname + "-text-area");
+            $("#timeuse-legend").attr("id", chartname + "-legend");
+            $("#timeuse-main").attr("id", chartname + "-main");
+            $("#timeuse-chart").attr("id", chartname + "-chart");
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
             );
-          });
-        }
-        if (key == "BarMap") {
-          $.each(value, function(k, v) {
-            addMyTab(
-              "barchartmap.html",
-              "BarChartMap.barchart_and_map",
-              v.name,
-              k,
-              "bm_" + v.name.replace(/\s/g, ""),
-              function() {
-                var chartname = "bm_" + v.name.replace(/\s/g, "");
-                $("#barchartmap_tab").attr("id", chartname + "_id");
-                $("#mode-share-by-county").attr("id", chartname + "-div");
-                $("#mode-share-by-county-stacked").attr(
-                  "id",
-                  chartname + "-stacked"
-                );
-                $("#mode-share-by-county-chart").attr(
-                  "id",
-                  chartname + "-chart"
-                );
-                $("#mode-share-by-county-classification-label").attr(
-                  "id",
-                  chartname + "-classification-label"
-                );
-                $("#mode-share-by-county-current-trip-mode-zones").attr(
-                  "id",
-                  chartname + "-current-trip-mode-zones"
-                );
-                $("#mode-share-by-county-current-trip-mode-bubbles").attr(
-                  "id",
-                  chartname + "-current-trip-mode-bubbles"
-                );
-                $("#mode-share-by-county-classification").attr(
-                  "id",
-                  chartname + "-classification"
-                );
-                $("#mode-share-by-county-checkboxes").attr(
-                  "id",
-                  chartname + "-checkboxes"
-                );
-                $("#mode-share-by-county-map").attr("id", chartname + "-map");
-                $("#mode-share-by-county-pallette").attr(
-                  "id",
-                  chartname + "-pallette"
-                );
-                $("#mode-share-by-county-tools").attr(
-                  "id",
-                  chartname + "-tools"
-                );
-                $("#mode-share-by-county-zones").attr(
-                  "id",
-                  chartname + "-zones"
-                );
-                $("#mode-share-by-county-bubbles").attr(
-                  "id",
-                  chartname + "-bubbles"
-                );
-                $("#mode-share-by-county-bubble-color").attr(
-                  "id",
-                  chartname + "-bubble-color"
-                );
-                $("#mode-share-by-county-bubble-size").attr(
-                  "id",
-                  chartname + "-bubble-size"
-                );
-                $("#mode-share-by-county-stroke").attr(
-                  "id",
-                  chartname + "-stroke"
-                );
-                $("#mode-share-by-county-naColor").attr(
-                  "id",
-                  chartname + "-naColor"
-                );
-                $("#mode-share-by-county-slider").attr(
-                  "id",
-                  chartname + "-slider"
-                );
-                $("#mode-share-by-county-update-map").attr(
-                  "id",
-                  chartname + "-update-map"
-                );
-                $("#mode-share-by-county-start-cycle-map").attr(
-                  "id",
-                  chartname + "-start-cycle-map"
-                );
-                $("#mode-share-by-county-stop-cycle-map").attr(
-                  "id",
-                  chartname + "-stop-cycle-map"
-                );
-                $("#mode-share-by-county-cycle-frequency").attr(
-                  "id",
-                  chartname + "-cycle-frequency"
-                );
-                $("#datatable-columns").attr(
-                  "id",
-                  chartname + "-datatable-columns"
-                );
-                $("#datatable-div").attr("id", chartname + "-datatable-div");
-                $("#datatable-table").attr(
-                  "id",
-                  chartname + "-datatable-table"
-                );
-                $("#datatable-collapse").attr(
-                  "id",
-                  chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr(
-                  "data-target",
-                  "#" + chartname + "-datatable-collapse"
-                );
-                $("#collapsebtn").attr("id", chartname + "-collapsebtn");
-                $("#" + chartname + "-div").show();
-              }
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
             );
-          });
-        }
-      });
-    }
-  }).done(function() {
-    $("#the_tabs a").on("click", function(link) {
-      eval(link.currentTarget.getAttribute("funct"));
-      console.log(link.currentTarget.getAttribute("funct"));
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addSunburst(k, v) {
+        return addMyTab(
+          "sunburst.html",
+          "SunburstChart.sunburst",
+          v.name,
+          k,
+          "sb_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "sb_" + v.name.replace(/\s/g, "");
+            $("#sunburst_tab").attr("id", chartname + "_id");
+            $("#sunburst").attr("id", chartname + "-div");
+            $("#sunburst-legend").attr("id", chartname + "-legend");
+            $("#sunburst-chart").attr("id", chartname + "-chart");
+            $("#sunburst-text-area").attr("id", chartname + "-text-area");
+            $("#sunburst-explanation").attr("id", chartname + "-explanation");
+            $("#sunburst-percentage").attr("id", chartname + "-percentage");
+            $("#sunburst-current-node").attr("id", chartname + "-current-node");
+            $("#sunburst-current-node-value").attr(
+              "id",
+              chartname + "-current-node-value"
+            );
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addScatterTab(k, v) {
+        return addMyTab(
+          "scatter.html",
+          "ScatterChart.scatter",
+          v.name,
+          k,
+          "sc_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "sc_" + v.name.replace(/\s/g, "");
+            $("#scatter_tab").attr("id", chartname + "_id");
+            $("#scatter").attr("id", chartname + "-div");
+            $("#scatter-tooltip").attr("id", chartname + "-tooltip");
+            $("#scatter-main").attr("id", chartname + "-main");
+            $("#scatter-chart-container").attr(
+              "id",
+              chartname + "-chart-container"
+            );
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addChordTab(k, v) {
+        return addMyTab(
+          "chord.html",
+          "ChordChart.chord",
+          v.name,
+          k,
+          "ch_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "ch_" + v.name.replace(/\s/g, "");
+            $("#chord_tab").attr("id", chartname + "_id");
+            $("#chord").attr("id", chartname + "-div");
+            $("#chord-tooltip").attr("id", chartname + "-tooltip");
+            $("#chord-main").attr("id", chartname + "-main");
+            $("#chord-dropdown-div").attr("id", chartname + "-dropdown-div");
+            $("#chord-chart-container").attr(
+              "id",
+              chartname + "-chart-container"
+            );
+            $("#chord-chart-map").attr("id", chartname + "-chart-map");
+            $("#chord-by-district-map").attr(
+              "id",
+              chartname + "-by-district-map"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addPointsOfInterestTab(k, v) {
+        return addMyTab(
+          "pointofinterest.html",
+          "POIMap.pointofinterest_and_map",
+          v.name,
+          k,
+          "poi_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "poi_" + v.name.replace(/\s/g, "");
+            $("#poimap_tab").attr("id", chartname + "_id");
+            $("#poi-by-group").attr("id", chartname + "-div");
+            $("#poi-by-group-stacked").attr("id", chartname + "-stacked");
+            $("#poi-by-group-chart").attr("id", chartname + "-chart");
+            $("#poi-by-group-values-current").attr(
+              "id",
+              chartname + "-values-current"
+            );
+            $("#poi-by-group-groups-current").attr(
+              "id",
+              chartname + "-groups-current"
+            );
+            $("#poi-by-group-tooltable").attr("id", chartname + "-tooltable");
+            $("#poi-by-group-bubble-color").attr(
+              "id",
+              chartname + "-bubble-color"
+            );
+            $("#poi-by-group-bubble-size").attr(
+              "id",
+              chartname + "-bubble-size"
+            );
+            $("#poi-by-group-emptydiv").attr("id", chartname + "-emptydiv");
+            $("#poi-by-group-map").attr("id", chartname + "-map");
+            $("#poi-by-group-pallette").attr("id", chartname + "-pallette");
+            $("#poi-by-group-filter-span").attr(
+              "id",
+              chartname + "-filter-span"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addRadarChartsTab(k, v) {
+        return addMyTab(
+          "radar.html",
+          "RadarData.radar",
+          v.name,
+          k,
+          "rc_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "rc_" + v.name.replace(/\s/g, "");
+            $("#radar_tab").attr("id", chartname + "_id");
+            $("#radar").attr("id", chartname + "-div");
+            $("#radar-sidebar").attr("id", chartname + "-sidebar");
+            $("#radar-text-area").attr("id", chartname + "-text-area");
+            $("#radar-legend").attr("id", chartname + "-legend");
+            $("#radar-main").attr("id", chartname + "-main");
+            $("#radar-chart-container").attr(
+              "id",
+              chartname + "-chart-container"
+            );
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function add3DMapTab(k, v) {
+        return addMyTab(
+          "threed.html",
+          "ThreeDMap.three3dFunction",
+          v.name,
+          k,
+          "td_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "td_" + v.name.replace(/\s/g, "");
+            $("#three3d_tab").attr("id", chartname + "_id");
+            $("#three3d").attr("id", chartname + "-div");
+            $("#three3d-current-period").attr(
+              "id",
+              chartname + "-current-period"
+            );
+            $("#three3d-controls").attr("id", chartname + "-controls");
+            $("#three3d-centroids").attr("id", chartname + "-centroids");
+            $("#three3d-classification-label").attr(
+              "id",
+              chartname + "-classification-label"
+            );
+            $("#three3d-classification").attr(
+              "id",
+              chartname + "-classification"
+            );
+            $("#three3d-period-id").attr("id", chartname + "-period-id");
+            $("#three3d-period-label").attr("id", chartname + "-period-label");
+            $("#three3d-period").attr("id", chartname + "-period");
+            $("#three3d-map").attr("id", chartname + "-map");
+            $("#opacityRange").attr("id", chartname + "-opacityRange");
+            $("#opacityval").attr("id", chartname + "-opacityval");
+            $("#three3d-naColor").attr("id", chartname + "-naColor");
+            $("#three3d-slider").attr("id", chartname + "-slider");
+            $("#three3d-slider-time").attr("id", chartname + "-slider-time");
+            $("#three3d-update-map").attr("id", chartname + "-update-map");
+            $("#three3d-start-cycle-map").attr(
+              "id",
+              chartname + "-start-cycle-map"
+            );
+            $("#three3d-stop-cycle-map").attr(
+              "id",
+              chartname + "-stop-cycle-map"
+            );
+            $("#three3d-redraw").attr("id", chartname + "-redraw");
+            $("#three3d-cycle-frequency").attr(
+              "id",
+              chartname + "-cycle-frequency"
+            );
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
+
+      function addBarMapTab(k, v) {
+        return addMyTab(
+          "barchartmap.html",
+          "BarChartMap.barchart_and_map",
+          v.name,
+          k,
+          "bm_" + v.name.replace(/\s/g, ""),
+          function() {
+            var chartname = "bm_" + v.name.replace(/\s/g, "");
+            $("#barchartmap_tab").attr("id", chartname + "_id");
+            $("#mode-share-by-county").attr("id", chartname + "-div");
+            $("#mode-share-by-county-stacked").attr(
+              "id",
+              chartname + "-stacked"
+            );
+            $("#mode-share-by-county-chart").attr("id", chartname + "-chart");
+            $("#mode-share-by-county-classification-label").attr(
+              "id",
+              chartname + "-classification-label"
+            );
+            $("#mode-share-by-county-current-trip-mode-zones").attr(
+              "id",
+              chartname + "-current-trip-mode-zones"
+            );
+            $("#mode-share-by-county-current-trip-mode-bubbles").attr(
+              "id",
+              chartname + "-current-trip-mode-bubbles"
+            );
+            $("#mode-share-by-county-classification").attr(
+              "id",
+              chartname + "-classification"
+            );
+            $("#mode-share-by-county-checkboxes").attr(
+              "id",
+              chartname + "-checkboxes"
+            );
+            $("#mode-share-by-county-map").attr("id", chartname + "-map");
+            $("#mode-share-by-county-pallette").attr(
+              "id",
+              chartname + "-pallette"
+            );
+            $("#mode-share-by-county-tools").attr("id", chartname + "-tools");
+            $("#mode-share-by-county-zones").attr("id", chartname + "-zones");
+            $("#mode-share-by-county-bubbles").attr(
+              "id",
+              chartname + "-bubbles"
+            );
+            $("#mode-share-by-county-bubble-color").attr(
+              "id",
+              chartname + "-bubble-color"
+            );
+            $("#mode-share-by-county-bubble-size").attr(
+              "id",
+              chartname + "-bubble-size"
+            );
+            $("#mode-share-by-county-stroke").attr("id", chartname + "-stroke");
+            $("#mode-share-by-county-naColor").attr(
+              "id",
+              chartname + "-naColor"
+            );
+            $("#mode-share-by-county-slider").attr("id", chartname + "-slider");
+            $("#mode-share-by-county-update-map").attr(
+              "id",
+              chartname + "-update-map"
+            );
+            $("#mode-share-by-county-start-cycle-map").attr(
+              "id",
+              chartname + "-start-cycle-map"
+            );
+            $("#mode-share-by-county-stop-cycle-map").attr(
+              "id",
+              chartname + "-stop-cycle-map"
+            );
+            $("#mode-share-by-county-cycle-frequency").attr(
+              "id",
+              chartname + "-cycle-frequency"
+            );
+            $("#datatable-columns").attr(
+              "id",
+              chartname + "-datatable-columns"
+            );
+            $("#datatable-div").attr("id", chartname + "-datatable-div");
+            $("#datatable-table").attr("id", chartname + "-datatable-table");
+            $("#datatable-collapse").attr(
+              "id",
+              chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr(
+              "data-target",
+              "#" + chartname + "-datatable-collapse"
+            );
+            $("#collapsebtn").attr("id", chartname + "-collapsebtn");
+            $("#" + chartname + "-div").show();
+          }
+        );
+      }
     });
-    var shownTabs = $('li[role="presentation"] a');
-    if (shownTabs.length > 0)
-      setTimeout(function() {
-        shownTabs[0].click();
-      }, 100);
+
+    Promise.all(tabAddPromises).then(function() {
+      $('li[role="presentation"] a')[0].click();
+    });
   });
 
   function addMyTab(filename, chartype, name, indx, idname, callback) {
-    var newEl =
-      "<li role='presentation'><a href='#" +
-      idname +
-      "_id' role='tab' data-toggle='tab' funct='" +
-      chartype +
-      '("' +
-      idname +
-      '",' +
-      indx +
-      ")' >" +
-      name +
-      "</a></li>";
-    $(newEl).insertBefore("#leftnavbtn");
-    $.get("templates/" + filename, function(data) {
-      $(".tab-content").append(data);
-    }).complete(function(d) {
-      callback();
+    return new Promise(function(resolve, reject) {
+      var newEl =
+        "<li role='presentation'><a href='#" +
+        idname +
+        "_id' role='tab' data-toggle='tab' onclick='" +
+        chartype +
+        '("' +
+        idname +
+        '",' +
+        indx +
+        ")' >" +
+        name +
+        "</a></li>";
+      $(newEl).insertBefore("#leftnavbtn");
+      $.get("templates/" + filename, function(data) {
+        $(".tab-content").append(data);
+      }).complete(function(d) {
+        callback();
+        resolve();
+      });
     });
   }
+
   $("#leftnavbtn").click(function(d) {
     var shownTabs = $('li[role="presentation"]').children(":visible");
     var i = 0;
@@ -816,6 +764,7 @@
     var nextIdx = activeIdx - 1 < 0 ? shownTabs.length - 1 : activeIdx - 1;
     shownTabs[nextIdx].click();
   });
+
   $("#rightnavbtn").click(function(d) {
     var shownTabs = $('li[role="presentation"]').children(":visible");
     var i = 0;
