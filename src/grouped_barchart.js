@@ -16,17 +16,14 @@ function grouped_barchart(id, data, options, divid) {
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
 
+  const maxLabelLength = getMaxLength(options.mainGrpSet);
   var chartConfig = getChartConfig(options);
+
 
   function getChartConfig(options) {
     let marginLeft = 150;
-    const maxLabelLength = getMaxLength([
-      options.mainGrpSet,
-      options.subGrpSet
-    ]);
-
     if (options.showAsVertical) {
-      const marginBottom = maxLabelLength * 10,
+      const marginBottom = maxLabelLength * 10 + 30,
         marginRight = 20;
 
       return {
@@ -212,7 +209,7 @@ function grouped_barchart(id, data, options, divid) {
 
   function getChart(vertical) {
     return vertical
-      ? nv.models.multiBarChart().staggerLabels(false)
+      ? nv.models.multiBarChart().staggerLabels(false).height(400)
       : nv.models.multiBarHorizontalChart().height(400);
   }
 
@@ -292,15 +289,13 @@ function grouped_barchart(id, data, options, divid) {
 }
 
 /**
- * For an iterable of sets of strings, get the longest string in any set.
- * @param {Set[]} sets
+ * For an iterable of strings, get the length of the longest string
+ * @param {Set} set set of strings
  */
-function getMaxLength(sets) {
+function getMaxLength(set) {
   let maxLength = 0;
-  for (let set of sets) {
-    for (let setElement of set.values()) {
-      maxLength = Math.max(maxLength, setElement.length);
-    }
+  for (let setElement of set.values()) {
+    maxLength = Math.max(maxLength, setElement.length);
   }
   return maxLength;
 }
