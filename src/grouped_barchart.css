@@ -12,9 +12,14 @@ Presumably this is because it used the smae code as the vertical chart
   font-weight: bold;
 }
 
+.grouped-bar-chart__container {
+  height: 550px;
+}
+
 .barcharttitle {
   text-align: center;
   font-size: 1.1em;
+  font-weight: bold;
 }
 
 .nvd3 rect[height="1"] {

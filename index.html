@@ -1,131 +1,203 @@
 <html>
+  <head>
+    <title>ABMVIZ</title>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="" />
+    <link
+      rel="stylesheet"
+      href="bower_components/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/d3/d3.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="bower_components/font-awesome/css/all.min.css"
+    />
 
-<head>
-	<title> ABMVIZ</title>
-		<meta charset="UTF-8">
-	<link rel="shortcut icon" href="">
-	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
-	<script src="bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="bower_components/d3/d3.min.js"></script>
-	    <link rel="stylesheet" href="bower_components/font-awesome/css/all.min.css" />
+    <script type="text/javascript">
+      var sideBarStuff = {};
+      $.getJSON("config.json", function(data) {
+        var defaultRegion = "";
+        $.each(data, function(key, val) {
+          var regiontitle = "";
+          if (key == "regions") {
+            $.each(val, function(k, v, i) {
+              $("#scenarios").append('<div id="' + k + "_id" + '"></div>');
 
-	<script type="text/javascript">
-		var sideBarStuff = {};
-		$.getJSON( "config.json", function (data) {
-            var defaultRegion = "";
-            $.each(data, function (key, val) {
+              if (defaultRegion == "") {
+                defaultRegion = k;
+              }
 
-                var regiontitle = "";
-                if (key == "regions") {
-                    $.each(val, function (k, v, i) {
-                        $('#scenarios').append('<div id="' + k + '_id' + '"></div>');
+              var dataLocation;
+              dataLocation = v.datalocation;
+              localStorage.setItem(k, dataLocation);
+              $.ajax({
+                method: "GET",
+                url: dataLocation + "region.json",
+                dataType: "json",
+                success: function(reg) {
+                  regiontitle = reg.FrontPageTitle;
+                  if (defaultRegion == k) {
+                    var icon = reg.Icon;
+                    var logo = reg.Logo;
+                    var title = reg.Title;
+                    var linkURL = reg.LinkURL;
+                    var navbartitle = reg.NavbarTitle;
+                    $("link[rel*='icon']").attr(
+                      "href",
+                      dataLocation + "img/" + icon + ""
+                    );
+                    $("title").text(title);
+                    $("#title_id").text(navbartitle);
+                    $("#navbarlink").attr("href", linkURL);
+                    $("#logo_id").attr(
+                      "src",
+                      dataLocation + "img/" + logo + ""
+                    );
+                    var sidebarHead = "";
+                    var sidebarImg = "";
+                    var sidebarText = "";
+                    var sideBarID = "";
+                    if ("SideBarTextLeft" in reg) {
+                      $("#sidebarinfoleft P").html(reg.SideBarTextLeft);
+                    }
+                    if ("SideBarTextRight" in reg) {
+                      $("#sidebarinforight P").html(reg.SideBarTextRight);
+                    }
+                    if ("SideBarLogo" in reg && reg.SideBarLogo != "") {
+                      $("#sidebarhead img").attr(
+                        "src",
+                        dataLocation + "img/" + reg.SideBarLogo
+                      );
+                    } else {
+                      $("#sidebarhead img").remove();
+                      $("#sidebarhead").css("min-height", "125px");
+                    }
+                    if ("SideBarImage" in reg && reg.SideBarImage != "") {
+                      $("#sidebarimg  img").attr(
+                        "src",
+                        dataLocation + "img/" + reg.SideBarImage
+                      );
+                    } else {
+                      $("#sidebarimg  img").remove();
+                    }
+                  }
+                  $("#" + k + "_id").append(
+                    "<h4>" +
+                      regiontitle +
+                      "<img style='max-height: 25px;margin-left:2%;'src='" +
+                      dataLocation +
+                      "img/" +
+                      reg.FrontPageGraphic +
+                      "" +
+                      "'/>" +
+                      "</h4>"
+                  );
 
-                        if (defaultRegion == "") {
-                            defaultRegion = k;
-                        }
+                  $("#" + k + "_id").append(
+                    "<ul id='" +
+                      k +
+                      "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>"
+                  );
 
-                        var dataLocation;
-                        dataLocation = v.datalocation;
-                        localStorage.setItem(k, dataLocation);
-                        $.ajax({
-                            method: 'GET',
-                            url: dataLocation + "region.json",
-                            dataType: 'json',
-                            success: function (reg) {
-                                regiontitle = reg.FrontPageTitle;
-                                if (defaultRegion == k) {
+                  $.each(reg.scenarios, function(key, value) {
+                    var label = value.label ? value.label : value.title;
+                    label = label.trim();
+                    if (label[0] === "-") {
+                      label = label.slice(1).trim();
+                    }
 
-                                    var icon = reg.Icon;
-                                    var logo = reg.Logo;
-                                    var title = reg.Title;
-                                    var linkURL = reg.LinkURL;
-                                    var navbartitle = reg.NavbarTitle;
-                                    $("link[rel*='icon']").attr("href", dataLocation + "img/" + icon + "");
-                                    $("title").text(title);
-                                    $('#title_id').text(navbartitle);
-                                    $('#navbarlink').attr("href", linkURL);
-                                    $('#logo_id').attr("src", dataLocation + "img/" + logo + "");
-                                    var sidebarHead = "";
-                                    var sidebarImg = "";
-                                    var sidebarText = "";
-                                    var sideBarID = "";
-                                    if ('SideBarTextLeft' in reg) {
-                                        $('#sidebarinfoleft P').html(reg.SideBarTextLeft);
-                                    }
-                                    if ('SideBarTextRight' in reg) {
-                                        $('#sidebarinforight P').html(reg.SideBarTextRight);
-                                    }
-                                    if ('SideBarLogo' in reg && reg.SideBarLogo !="") {
-                                        $('#sidebarhead img').attr('src',dataLocation + "img/"+reg.SideBarLogo);
-                                    } else {
-                                         $('#sidebarhead img').remove();
-                                         $('#sidebarhead').css("min-height","125px");
-									}
-                                    if ('SideBarImage' in reg && reg.SideBarImage !="") {
-                                        $('#sidebarimg  img').attr('src',dataLocation+"img/"+reg.SideBarImage);
-                                    } else {
-										$('#sidebarimg  img').remove();
-									}
-
-                                }
-                                $('#' + k + '_id').append("<h4>" + regiontitle + "<img style='max-height: 25px;margin-left:2%;'src='" + dataLocation + "img/" + reg.FrontPageGraphic + "" + "'/>" + "</h4>");
-
-                                $('#' + k + '_id').append("<ul id='" + k + "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>");
-
-                                $.each(reg.scenarios, function (key, value) {
-                                    var label = key + value.title;
-                                    if ('label' in value) {
-                                        label = value.label;
-                                    }
-                                    $("#" + k + "_scenarios").append("<li><a class='scenariolink' href='src/index.html?region=" + k + "&scenario=" + key + "'>" + label + "</a></li>");
-                                });
-                            }
-                        });
-
-
-                    });
+                    $("#" + k + "_scenarios").append(
+                      "<li><a class='scenariolink' href='src/index.html?region=" +
+                        k +
+                        "&scenario=" +
+                        key +
+                        "'>" +
+                        label +
+                        "</a></li>"
+                    );
+                  });
                 }
+              });
             });
+          }
         });
+      });
+    </script>
+  </head>
 
-	</script>
-</head>
-
-<body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-header">
-			<a id="navbarlink" href="" style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;" class="pull-left"><img id="logo_id" style='max-height:25px;' width="" height="auto" src=""></a> <a class="navbar-brand" id="title_id" href="#">.</a> </div>
-	</nav>
-	<div id="leftbar" class="col-sm-4" style="margin:5em;">
-	<div id="scenarios" class="col-sm-12" >
- <div id="novizalert" class="alert alert-danger" style="display:none">Please select at least one visualization to display</div>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-header">
+        <a
+          id="navbarlink"
+          href=""
+          style="padding-left:1em;padding-top:1.1em;margin-right:-.5em;"
+          class="pull-left"
+          ><img
+            id="logo_id"
+            style="max-height:25px;"
+            width=""
+            height="auto"
+            src=""
+        /></a>
+        <a class="navbar-brand" id="title_id" href="#">.</a>
+      </div>
+    </nav>
+    <div id="leftbar" class="col-sm-4" style="margin:5em;">
+      <div id="scenarios" class="col-sm-12">
+        <div id="novizalert" class="alert alert-danger" style="display:none">
+          Please select at least one visualization to display
+        </div>
         <h3><p>Please select a scenario for visualization</p></h3>
 
-            <br/>
-		</div>
-			<div class ='col-sm-12' id="sidebarinfoleft"><p>
-		</p>
-</div>
-	</div>
-<div id="sidebar" class="col-sm-6" style="margin-top:6em;">
-	<div class ='col-sm-12' id="sidebarhead"><img style="display:table;margin-left:auto;margin-right:auto;width:33%;margin-bottom:25px;" src=""/></div>
-	<div class ='col-sm-12' id="sidebarimg" style="display:block;"><img src="" style="display:table;margin-left:auto;margin-right:auto; margin-bottom:25px;width:75%;"/></div>
-	<div class ='col-sm-12' id="sidebarinforight"><p style="display:table;margin-left:auto;margin-right:auto; margin-bottom:25px;width:75%;">
-		</p>
-</div>
-</div>
-</body>
-<div class="footer">
-    <div class="container" display="inline" style="position:relative; padding:5px 0px 5px 0px">
-      <span style="color:#9D9D9D; text-align:left"><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
-      <span style="position:absolute;right:0;text-align:right"><a href="https://github.com/rsginc/ActivityViz" style="color:#9D9D9D" target="_blank"><i class="fab fa-github-alt" aria-hidden="true"></i> Source Code</a></span>
+        <br />
+      </div>
+      <div class="col-sm-12" id="sidebarinfoleft"><p></p></div>
     </div>
-
-</div>
+    <div id="sidebar" class="col-sm-6" style="margin-top:6em;">
+      <div class="col-sm-12" id="sidebarhead">
+        <img
+          style="display:table;margin-left:auto;margin-right:auto;width:33%;margin-bottom:25px;"
+          src=""
+        />
+      </div>
+      <div class="col-sm-12" id="sidebarimg" style="display:block;">
+        <img
+          src=""
+          style="display:table;margin-left:auto;margin-right:auto; margin-bottom:25px;width:75%;"
+        />
+      </div>
+      <div class="col-sm-12" id="sidebarinforight">
+        <p
+          style="display:table;margin-left:auto;margin-right:auto; margin-bottom:25px;width:75%;"
+        ></p>
+      </div>
+    </div>
+  </body>
+  <div class="footer">
+    <div
+      class="container"
+      display="inline"
+      style="position:relative; padding:5px 0px 5px 0px"
+    >
+      <span style="color:#9D9D9D; text-align:left"
+        ><i class="far fa-copyright" aria-hidden="true"></i> RSG
+      </span>
+      <span style="position:absolute;right:0;text-align:right"
+        ><a
+          href="https://github.com/rsginc/ActivityViz"
+          style="color:#9D9D9D"
+          target="_blank"
+          ><i class="fab fa-github-alt" aria-hidden="true"></i> Source Code</a
+        ></span
+      >
+    </div>
+  </div>
 </html>
 <style>
-	.footer{
+  .footer {
     position: fixed;
     bottom: 0px;
     left: 0px;
@@ -134,5 +206,5 @@
     color: white;
     width: 100%;
     z-index: 999999;
-}
+  }
 </style>

@@ -346,22 +346,25 @@ var BarChartGrp = {
             ChartWidthOverride[i] != undefined
           )
             widthOfEachCol = ChartWidthOverride[i];
+
           d3.select("#" + id + "-container")
             .select("#" + chart.chartName + "_bar")
             .remove();
+
           d3.select("#" + id + "-container")
             .append("div")
             .attr("id", chart.chartName + "_bar")
-            .style("min-height", "500px")
-            .attr("class", "col-sm-" + widthOfEachCol)
+            .attr(
+              "class",
+              "grouped-bar-chart__container col-sm-" + widthOfEachCol
+            )
             .append("div")
             .attr("class", "barcharttitle")
-            .style("padding-top", "50px")
             .text(chartDataContainer.length > 1 ? chart.chartName : "");
+
           d3.select("#" + chart.chartName + "_bar")
             .append("svg")
-            .attr("id", id + "_grouped-barchart"); //.style('height','400px');
-          //setDataSpecificDOM();
+            .attr("id", id + "_grouped-barchart");
 
           var chartId = "#" + chart.chartName + "_bar " + " svg";
           var options = {
@@ -381,7 +384,6 @@ var BarChartGrp = {
             // minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
           };
           grouped_barchart(chartId, chart.data, options, id);
-          //createEmptyChart(chart);
           initializeMuchOfUI(chart);
 
           setDataSpecificDOM();
