@@ -9,7 +9,6 @@ function grouped_barchart(id, data, options, divid) {
   var barsWrapRectHeight;
   var barsWrapRectWidth;
   var currentMainGroup;
-  var showPercentages = options.showPercentages;
   var showAsVertical = options.showAsVertical;
   var showAsGrouped = options.showAsGrped;
   var BARSPACING = showAsGrouped ? options.barSpacing : 0.2;
@@ -19,11 +18,10 @@ function grouped_barchart(id, data, options, divid) {
   const maxLabelLength = getMaxLength(options.mainGrpSet);
   var chartConfig = getChartConfig(options);
 
-
   function getChartConfig(options) {
     let marginLeft = 150;
     if (options.showAsVertical) {
-      const marginBottom = maxLabelLength * 10 + 30,
+      const marginBottom = maxLabelLength * 10,
         marginRight = 20;
 
       return {
@@ -209,8 +207,8 @@ function grouped_barchart(id, data, options, divid) {
 
   function getChart(vertical) {
     return vertical
-      ? nv.models.multiBarChart().staggerLabels(false).height(400)
-      : nv.models.multiBarHorizontalChart().height(400);
+      ? nv.models.multiBarChart().staggerLabels(false)
+      : nv.models.multiBarHorizontalChart();
   }
 
   function chartGenerator() {
@@ -237,7 +235,7 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     function getYAxisLabels(d) {
-      return showPercentages ? d.percentage : d.value;
+      return options.showPercentages ? d.percentage : d.value;
     }
 
     function getXAxisLabels(d) {
@@ -245,7 +243,7 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     nvd3Chart.yAxis.tickFormat(
-      showPercentages ? d3.format(".0%") : d3.format(",.0f")
+      options.showPercentages ? d3.format(".0%") : d3.format(",.0f")
     );
 
     nvd3Chart.yAxis
