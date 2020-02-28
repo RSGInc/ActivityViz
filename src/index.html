@@ -214,10 +214,15 @@
     $("#title_id").text(navbartitle);
     $("#navbarlink").attr("href", linkURL);
     $("#logo_id").attr("src", dataLocation + "img/" + logo + "");
+
     var label = abmviz_utilities.GetURLParameter("scenario");
-    if ("label" in data["scenarios"][scenario]) {
-      label = data["scenarios"][scenario].label;
+
+    if ("title" in data.scenarios[scenario]) {
+      label = data.scenarios[scenario].title;
+    } else if ("label" in data.scenarios[scenario]) {
+      label = data.scenarios[scenario].label;
     }
+
     $("#scenario-header").html("Scenario " + label);
     $.each(data.colorRamps, function(key, value) {
       if (value == false) $("." + [key]).remove();

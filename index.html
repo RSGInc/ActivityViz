@@ -102,10 +102,12 @@
                   );
 
                   $.each(reg.scenarios, function(key, value) {
-                    var label = key + value.title;
-                    if ("label" in value) {
-                      label = value.label;
+                    var label = value.label ? value.label : value.title;
+                    label = label.trim();
+                    if (label[0] === "-") {
+                      label = label.slice(1).trim();
                     }
+
                     $("#" + k + "_scenarios").append(
                       "<li><a class='scenariolink' href='src/index.html?region=" +
                         k +
