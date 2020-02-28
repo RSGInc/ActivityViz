@@ -21,7 +21,7 @@ function grouped_barchart(id, data, options, divid) {
   function getChartConfig(options) {
     let marginLeft = 150;
     if (options.showAsVertical) {
-      const marginBottom = maxLabelLength * 10,
+      const marginBottom = maxLabelLength * 10 + 10,
         marginRight = 20;
 
       return {
