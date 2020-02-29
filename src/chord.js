@@ -13,6 +13,7 @@ var ChordChart = {
     var quantityColumn;
     var countiesSet;
     var zoneFilterNameCol;
+    var maxLabelLength = 0;
     var width = 600,
       height = 600;
 
@@ -363,6 +364,8 @@ var ChordChart = {
         //setup lookups by name and index for our o/d names
         data.forEach(function(d) {
           if (!(d[mainGroupColumnName] in indexByName)) {
+            maxLabelLength = Math.max(maxLabelLength, d[mainGroupColumnName].length);
+
             nameByIndex[n] = {
               name: d[mainGroupColumnName],
               col: d[mainGroupColumnName],
@@ -563,7 +566,8 @@ var ChordChart = {
       if (numberChordPerRow == 2) {
         tformMulti = 2.5;
       }
-      var outerRadius = totalContainerWidth / tformMulti,
+
+      var outerRadius = totalContainerWidth / tformMulti - Math.max(40, maxLabelLength * 4),
         innerRadius = outerRadius - 100;
       height = Math.max(600, totalContainerWidth - 50);
       if (sidebyside) {
