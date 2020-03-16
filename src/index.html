@@ -149,6 +149,7 @@
         </ul>
       </div>
 
+      <div class="explanation-panel"></div>
       <div class="tab-content"></div>
       <!-- END TAB CONTENT-->
     </div>
@@ -262,6 +263,7 @@
           v.name,
           k,
           "bc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "bc_" + v.name.replace(/\s/g, "");
             $("#grouped_tab").attr("id", chartname + "_id");
@@ -311,6 +313,7 @@
           v.name,
           k,
           "tu_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "tu_" + v.name.replace(/\s/g, "");
             $("#timeuse_tab").attr("id", chartname + "_id");
@@ -347,6 +350,7 @@
           v.name,
           k,
           "sb_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "sb_" + v.name.replace(/\s/g, "");
             $("#sunburst_tab").attr("id", chartname + "_id");
@@ -388,6 +392,7 @@
           v.name,
           k,
           "sc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "sc_" + v.name.replace(/\s/g, "");
             $("#scatter_tab").attr("id", chartname + "_id");
@@ -425,6 +430,7 @@
           v.name,
           k,
           "ch_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "ch_" + v.name.replace(/\s/g, "");
             $("#chord_tab").attr("id", chartname + "_id");
@@ -468,6 +474,7 @@
           v.name,
           k,
           "poi_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "poi_" + v.name.replace(/\s/g, "");
             $("#poimap_tab").attr("id", chartname + "_id");
@@ -525,6 +532,7 @@
           v.name,
           k,
           "rc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "rc_" + v.name.replace(/\s/g, "");
             $("#radar_tab").attr("id", chartname + "_id");
@@ -564,6 +572,7 @@
           v.name,
           k,
           "td_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "td_" + v.name.replace(/\s/g, "");
             $("#three3d_tab").attr("id", chartname + "_id");
@@ -632,6 +641,7 @@
           v.name,
           k,
           "bm_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "bm_" + v.name.replace(/\s/g, "");
             $("#barchartmap_tab").attr("id", chartname + "_id");
@@ -728,21 +738,38 @@
     });
   });
 
-  function addMyTab(filename, chartype, name, indx, idname, callback) {
+  function addMyTab(
+    filename,
+    chartype,
+    name,
+    indx,
+    idname,
+    explanation,
+    callback
+  ) {
     return new Promise(function(resolve, reject) {
-      var newEl =
+      var newEl = $(
         "<li role='presentation'><a href='#" +
-        idname +
-        "_id' role='tab' data-toggle='tab' onclick='" +
-        chartype +
-        '("' +
-        idname +
-        '",' +
-        indx +
-        ")' >" +
-        name +
-        "</a></li>";
-      $(newEl).insertBefore("#leftnavbtn");
+          idname +
+          "_id' role='tab' data-toggle='tab' onclick='" +
+          chartype +
+          '("' +
+          idname +
+          '",' +
+          indx +
+          ")' >" +
+          name +
+          "</a></li>"
+      );
+
+      newEl.insertBefore("#leftnavbtn");
+
+      var nativeEl = newEl[0]; // get the native DOM element
+      debugger;
+      nativeEl.addEventListener("click", function() {
+        updateExplanationPanel(explanation);
+      });
+
       $.get("templates/" + filename, function(data) {
         $(".tab-content").append(data);
       }).complete(function(d) {
@@ -788,4 +815,52 @@
     var nextIdx = activeIdx + 1 >= shownTabs.length ? 0 : activeIdx + 1;
     shownTabs[nextIdx].click();
   });
+
+  function updateExplanationPanel(explanation) {
+    var explanationPanel = document.querySelector(".explanation-panel");
+    if (!explanation) {
+      explanationPanel.innerHTML = "";
+      return;
+    }
+
+    for (var section of explanation) {
+      var sectionHeader = document.createElement("h3");
+      sectionHeader.innerText = section.header;
+      explanationPanel.appendChild(sectionHeader);
+      for (let contentList of section.body) {
+        explanationPanel.appendChild(getContentList(contentList));
+      }
+    }
+
+    function getContentList(subsection) {
+      switch (subsection.type) {
+        case "orderedList":
+          return nestedElementsFromStringArray("ol", "li", subsection.content);
+
+        case "unorderedList":
+          return nestedElementsFromStringArray("ul", "li", subsection.content);
+
+        default:
+          return nestedElementsFromStringArray(
+            "section",
+            "p",
+            subsection.content
+          );
+      }
+    }
+
+    function nestedElementsFromStringArray(
+      containerTag,
+      listItemTag,
+      stringContentArray
+    ) {
+      var containerElement = document.createElement(containerTag);
+      for (var stringContent of stringContentArray) {
+        var listItem = document.createElement(listItemTag);
+        listItem.innerText = stringContent;
+        containerElement.appendChild(listItem);
+      }
+      return containerElement;
+    }
+  }
 </script>
