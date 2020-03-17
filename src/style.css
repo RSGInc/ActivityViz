@@ -4,8 +4,10 @@ body {
 
 .explanation-panel {
   padding: 1.25em;
-  background-color: black;
+  background-color: #222222;
   color: white;
+  height: 100%;
+  margin-top: -10px;
 }
 
 .pl-2 {
