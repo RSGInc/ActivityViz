@@ -149,8 +149,10 @@
         </ul>
       </div>
 
-      <div class="explanation-panel"></div>
-      <div class="tab-content"></div>
+      <main class="container-fluid row">
+        <div class="explanation-panel col-xs-2"></div>
+        <div class="tab-content col-xs-10"></div>
+      </main>
       <!-- END TAB CONTENT-->
     </div>
     <!-- END MAIN CONTENT-->
@@ -765,7 +767,6 @@
       newEl.insertBefore("#leftnavbtn");
 
       var nativeEl = newEl[0]; // get the native DOM element
-      debugger;
       nativeEl.addEventListener("click", function() {
         updateExplanationPanel(explanation);
       });
@@ -818,10 +819,21 @@
 
   function updateExplanationPanel(explanation) {
     var explanationPanel = document.querySelector(".explanation-panel");
+    var tabContent = document.querySelector(".tab-content");
+
     if (!explanation) {
       explanationPanel.innerHTML = "";
+      explanationPanel.classList.add("none");
+      tabContent.classList.remove("col-xs-10");
+      tabContent.classList.remove("pl-2");
+      tabContent.classList.add("col-xs-12");
       return;
     }
+
+    explanationPanel.classList.remove("none");
+    tabContent.classList.remove("col-xs-12");
+    tabContent.classList.add("col-xs-10");
+    tabContent.classList.add("pl-2");
 
     for (var section of explanation) {
       var sectionHeader = document.createElement("h3");

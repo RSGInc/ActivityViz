@@ -1,6 +1,30 @@
 body {
   padding-top: 50px;
 }
+
+.explanation-panel {
+  padding: 1.25em;
+  background-color: black;
+  color: white;
+}
+
+.pl-2 {
+  padding-left: 2em;
+}
+
+.explanation-panel > h3 {
+  margin-top: 0;
+}
+
+.explanation-panel > ul,
+.explanation-panel > ol {
+  padding-left: 1em;
+}
+
+.none {
+  display: none;
+}
+
 .dataTables_wrapper {
   padding-top: 10px;
 }
