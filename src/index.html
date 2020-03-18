@@ -820,9 +820,9 @@
   function updateExplanationPanel(explanation) {
     var explanationPanels = document.querySelector(".explanation-panels");
     var tabContent = document.querySelector(".tab-content");
+    explanationPanels.innerHTML = "";
 
     if (!explanation) {
-      explanationPanels.innerHTML = "";
       explanationPanels.classList.add("none");
       tabContent.classList.remove("col-xs-10");
       tabContent.classList.remove("pl-2");
