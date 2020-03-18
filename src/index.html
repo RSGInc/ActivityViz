@@ -150,7 +150,7 @@
       </div>
 
       <main class="container-fluid row">
-        <div class="explanation-panel col-xs-2 none"></div>
+        <div class="explanation-panels col-xs-2 none"></div>
         <div class="tab-content col-xs-10"></div>
       </main>
       <!-- END TAB CONTENT-->
@@ -818,29 +818,45 @@
   });
 
   function updateExplanationPanel(explanation) {
-    var explanationPanel = document.querySelector(".explanation-panel");
+    var explanationPanels = document.querySelector(".explanation-panels");
     var tabContent = document.querySelector(".tab-content");
 
     if (!explanation) {
-      explanationPanel.innerHTML = "";
-      explanationPanel.classList.add("none");
+      explanationPanels.innerHTML = "";
+      explanationPanels.classList.add("none");
       tabContent.classList.remove("col-xs-10");
       tabContent.classList.remove("pl-2");
       tabContent.classList.add("col-xs-12");
       return;
     }
 
-    explanationPanel.classList.remove("none");
+    explanationPanels.classList.remove("none");
     tabContent.classList.remove("col-xs-12");
     tabContent.classList.add("col-xs-10");
     tabContent.classList.add("pl-2");
 
     for (var section of explanation) {
-      var sectionHeader = document.createElement("h3");
-      sectionHeader.innerText = section.header;
-      explanationPanel.appendChild(sectionHeader);
+      var panel = document.createElement("article");
+      panel.classList.add("panel");
+      panel.classList.add("panel-dark");
+      explanationPanels.appendChild(panel);
+
+      var sectionHeader = document.createElement("header");
+      sectionHeader.classList.add("panel-header");
+      sectionHeader.classList.add("panel-heading");
+      panel.appendChild(sectionHeader);
+
+      var sectionTitle = document.createElement("h3");
+      sectionTitle.classList.add("panel-title");
+      sectionTitle.innerText = section.header;
+      sectionHeader.appendChild(sectionTitle);
+
+      var panelBody = document.createElement("div");
+      panelBody.classList.add("panel-body");
+      panel.appendChild(panelBody);
+
       for (let contentList of section.body) {
-        explanationPanel.appendChild(getContentList(contentList));
+        panelBody.appendChild(getContentList(contentList));
       }
     }
 
