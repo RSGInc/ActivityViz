@@ -107,11 +107,15 @@ body {
 
 #the_tabs {
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 #leftnavbtn,
 #rightnavbtn {
   font-size: 25px;
+  padding: 5px 8px;
+  margin-top: 2px;
 }
 
 .nav-tabs > li.active > a,

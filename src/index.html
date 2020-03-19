@@ -134,20 +134,18 @@
       <!-- end nav -->
 
       <div id="thenavbar">
-        <ul
-          class="nav nav-tabs"
-          role="tablist"
-          id="the_tabs"
-          style="display:inline-block"
-        >
-          <button id="leftnavbtn">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-          </button>
-          <button id="rightnavbtn">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-          </button>
+        <ul class="nav nav-tabs" role="tablist" id="the_tabs">
+          <li>
+            <button id="leftnavbtn">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button id="rightnavbtn">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </li>
         </ul>
       </div>
+      <div></div>
 
       <main class="container-fluid row">
         <div class="explanation-panels col-xs-2 none"></div>
@@ -764,7 +762,8 @@
           "</a></li>"
       );
 
-      newEl.insertBefore("#leftnavbtn");
+      var theTabs = $("#the_tabs");
+      theTabs.prepend(newEl);
 
       var nativeEl = newEl[0]; // get the native DOM element
       nativeEl.addEventListener("click", function() {
