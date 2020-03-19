@@ -364,7 +364,10 @@ var ChordChart = {
         //setup lookups by name and index for our o/d names
         data.forEach(function(d) {
           if (!(d[mainGroupColumnName] in indexByName)) {
-            maxLabelLength = Math.max(maxLabelLength, d[mainGroupColumnName].length);
+            maxLabelLength = Math.max(
+              maxLabelLength,
+              d[mainGroupColumnName].length
+            );
 
             nameByIndex[n] = {
               name: d[mainGroupColumnName],
@@ -562,17 +565,29 @@ var ChordChart = {
         ($("#" + id + "-chart-container").width() -
           $("#" + id + "-chart-container").width() * 0.2) /
         numberChordPerRow;
+
       let tformMulti = 2;
       if (numberChordPerRow == 2) {
         tformMulti = 2.5;
       }
 
-      var outerRadius = totalContainerWidth / tformMulti - Math.max(40, maxLabelLength * 4),
-        innerRadius = outerRadius - 100;
-      height = Math.max(600, totalContainerWidth - 50);
+      // add a label length adjustment for sizing longer labels appropriately.
+      // effectively the slope of a line - (a = mx + b).
+      var labelLengthAdjustment = maxLabelLength * 6.6 - 55;
+
+      var innerRadius =
+        totalContainerWidth / tformMulti -
+        Math.max(40, labelLengthAdjustment) -
+        75;
+
+      var outerRadius = innerRadius + 20;
+
+      height = Math.min(600, totalContainerWidth + 50);
+
       if (sidebyside) {
         height = Math.min(height, 600);
       }
+
       width = totalContainerWidth - 50;
 
       var r1 = height / 2,
@@ -584,30 +599,34 @@ var ChordChart = {
       var arc = d3.svg
         .arc()
         .innerRadius(innerRadius)
-        .outerRadius(innerRadius + 20);
-      var windwidth = totalContainerWidth;
+        .outerRadius(outerRadius);
 
       var transForm =
         $("#" + id + "-chart-container").width() / 2 / numberChordPerRow;
       let svgWidth = 100 / numberChordPerRow;
+
       if (sidebyside) {
-        svgWidth = Math.min(svgWidth, 40);
+        svgWidth = Math.min(svgWidth, 50);
       }
+
       if ($("#" + chart.chartId + "_svg").length > 0) {
         $("#" + chart.chartId + "_svg").remove();
       }
+
       if ($("#" + chart.chartId + "-tooltip").length > 0) {
         $("#" + chart.chartId + "-tooltip").remove();
       }
+
       d3.select("#" + id + "-chart-container")
         .append("div")
         .attr("id", chart.chartId + "-tooltip")
         .attr("class", "chord-tooltip")
         .attr("chartidx", chartData.indexOf(chart));
+
       var svg = d3
         .select("#" + id + "-chart-container")
         .append("svg:svg")
-        .attr("width", svgWidth + "%") //($('#' + id + '-chart-container').width()) / numberChordPerRow)
+        .attr("width", svgWidth + "%")
         .attr("height", height)
         .attr("chartIdx", chartData.indexOf(chart))
         .attr("id", chart.chartId + "_svg")
@@ -615,6 +634,7 @@ var ChordChart = {
         .attr("id", chart.chartId + "_circle")
         .attr("selector", "chordcircle")
         .attr("transform", "translate(" + transForm + "," + height / 2 + ")");
+
       svg.append("circle").attr("r", r0);
 
       if (sidebyside) {
