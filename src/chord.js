@@ -563,6 +563,7 @@ var ChordChart = {
 
       var chartContainer = $("#" + id + "-chart-container");
       var widthPerChart = chartContainer.width() / numberChordPerRow - 10;
+      var height = chartContainer.height();
       var halfOfChart = widthPerChart / 2;
 
       // radius of entire chord diagram
@@ -596,7 +597,7 @@ var ChordChart = {
         .select("#" + id + "-chart-container")
         .append("svg:svg")
         .attr("width", widthPerChart)
-        .attr("height", widthPerChart)
+        .attr("height", height)
         .attr("chartIdx", chartData.indexOf(chart))
         .attr("id", chart.chartId + "_svg");
 
@@ -604,10 +605,7 @@ var ChordChart = {
         .append("svg:g")
         .attr("id", chart.chartId + "_circle")
         .attr("selector", "chordcircle")
-        .attr(
-          "transform",
-          "translate(" + halfOfChart + "," + halfOfChart + ")"
-        );
+        .attr("transform", "translate(" + halfOfChart + "," + height / 2 + ")");
 
       // Add Chord Diagram Titles for side-by-side layout
       if (sidebyside) {
@@ -627,6 +625,15 @@ var ChordChart = {
         );
 
         createToolTipTable(chart, chartData.indexOf(chart));
+      } else {
+        var interval = setInterval(function() {
+          var mapHeight = $("#" + id + "-by-district-map").height();
+          if (mapHeight) {
+            chartContainer.css("height", mapHeight);
+            clearInterval(interval);
+            CreateChord(id, data, chart, maxTextHeightOrWidth);
+          }
+        }, 50);
       }
 
       var chordGroups = circle
@@ -1275,7 +1282,6 @@ var ChordChart = {
         return;
       } else {
         $("#" + id + "-div .chordchartdiv").addClass("col-sm-6");
-
         $("#" + id + "-datatable-div").css("margin-top", "-1%");
       }
       if ($("#" + id + "-by-district-map").children().length > 0) {
