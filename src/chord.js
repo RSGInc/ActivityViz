@@ -152,7 +152,6 @@ var ChordChart = {
     var matrixmap;
     var sidebyside = false;
     var chartData = [];
-    var maxRadialLabelDimension = 0;
 
     function getConfigSettings(callback) {
       if (chartOnPage) {
@@ -520,7 +519,7 @@ var ChordChart = {
           });
         }
         $.each(chartData, function(indx, chart) {
-          CreateChord(id, data, chart, maxRadialLabelDimension);
+          CreateChord(id, data, chart);
         });
       });
 
@@ -753,7 +752,6 @@ var ChordChart = {
           d.angle = (d.startAngle + d.endAngle) / 2;
         })
         .attr("dy", ".35em")
-        .attr("transform", rotateLabels)
         .style("text-anchor", function(d) {
           return d.angle > Math.PI ? "end" : null;
         })
@@ -761,6 +759,14 @@ var ChordChart = {
         .text(function(d) {
           return nameByIndex[d.index].name;
         });
+
+      if (!maxTextHeightOrWidth) {
+        maxTextHeightOrWidth = maxHeightOrWidth(groupText);
+        // Still need to check, since this could be zero, which results in infinite recursion
+        if (maxTextHeightOrWidth) {
+          CreateChord(id, data, chart, maxTextHeightOrWidth);
+        }
+      }
 
       function rotateLabels(d) {
         return (
@@ -773,12 +779,8 @@ var ChordChart = {
           (d.angle > Math.PI ? "rotate(180)" : "")
         );
       }
-
+      groupText.attr("transform", rotateLabels);
       groupText.filter(labelsThatDontFit).remove();
-
-      if (!maxTextHeightOrWidth) {
-        CreateChord(id, data, chart, maxHeightOrWidth(groupText));
-      }
 
       function labelsThatDontFit(d, i) {
         var check = groupPath[0][i];
