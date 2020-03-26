@@ -152,6 +152,7 @@ var ChordChart = {
     var matrixmap;
     var sidebyside = false;
     var chartData = [];
+    var maxRadialLabelDimension = 0;
 
     function getConfigSettings(callback) {
       if (chartOnPage) {
@@ -364,11 +365,6 @@ var ChordChart = {
         //setup lookups by name and index for our o/d names
         data.forEach(function(d) {
           if (!(d[mainGroupColumnName] in indexByName)) {
-            maxLabelLength = Math.max(
-              maxLabelLength,
-              d[mainGroupColumnName].length
-            );
-
             nameByIndex[n] = {
               name: d[mainGroupColumnName],
               col: d[mainGroupColumnName],
@@ -494,6 +490,7 @@ var ChordChart = {
               prevLegendLength = d.length;
               return "translate(" + xOff + "," + yOff + ")";
             });
+
           var circles = legendOrdinal
             .append("circle")
             .attr("cx", 10)
@@ -503,17 +500,18 @@ var ChordChart = {
             .style("fill", function(d, i) {
               return legendHeadersShowHide[d] ? "black" : "white";
             });
+
           var texts = legendOrdinal
             .append("text")
             .attr("x", 20)
             .attr("y", 12)
-            //.attr("dy", ".35em")
             .text(function(d, i) {
               return d;
             })
             .attr("class", "textselected")
             .style("text-anchor", "start")
             .style("font-size", 15);
+
           circles.on("click", function(d) {
             showHideBlobs(d);
           });
@@ -522,7 +520,7 @@ var ChordChart = {
           });
         }
         $.each(chartData, function(indx, chart) {
-          CreateChord(id, data, chart);
+          CreateChord(id, data, chart, maxRadialLabelDimension);
         });
       });
 
@@ -560,35 +558,22 @@ var ChordChart = {
       });
     }
 
-    function CreateChord(id, data, chart) {
-      var totalContainerWidth =
-        ($("#" + id + "-chart-container").width() -
-          $("#" + id + "-chart-container").width() * 0.2) /
-        numberChordPerRow;
+    function CreateChord(id, data, chart, maxTextHeightOrWidth = 0) {
+      var chartContainer = $("#" + id + "-chart-container");
+      var totalContainerWidth = chartContainer.width() / numberChordPerRow;
+      var containerHeight = chartContainer.height();
 
-      let tformMulti = 2;
-      if (numberChordPerRow == 2) {
-        tformMulti = 2.5;
-      }
+      width = totalContainerWidth;
+      height = Math.min(600, totalContainerWidth);
 
-      // add a label length adjustment for sizing longer labels appropriately.
-      // effectively the slope of a line - (a = mx + b).
-      var labelLengthAdjustment = maxLabelLength * 6.6 - 55;
+      var radiusBase = Math.min(totalContainerWidth, containerHeight);
 
-      var innerRadius =
-        totalContainerWidth / tformMulti -
-        Math.max(40, labelLengthAdjustment) -
-        75;
+      console.log("maxDim", maxTextHeightOrWidth);
+      var outerRadius = maxTextHeightOrWidth
+        ? radiusBase - 2 * maxTextHeightOrWidth
+        : radiusBase / 2 - 55;
 
-      var outerRadius = innerRadius + 20;
-
-      height = Math.min(600, totalContainerWidth + 50);
-
-      if (sidebyside) {
-        height = Math.min(height, 600);
-      }
-
-      width = totalContainerWidth - 50;
+      var innerRadius = outerRadius - 10;
 
       var r1 = height / 2,
         r0 = r1 / 2;
@@ -603,6 +588,7 @@ var ChordChart = {
 
       var transForm =
         $("#" + id + "-chart-container").width() / 2 / numberChordPerRow;
+
       let svgWidth = 100 / numberChordPerRow;
 
       if (sidebyside) {
@@ -655,105 +641,103 @@ var ChordChart = {
 
         createToolTipTable(chart, chartData.indexOf(chart));
       }
-      var g = svg
+
+      var chordGroups = svg
         .selectAll("#" + chart.chartId + "_circle g.group")
         .data(chord.groups())
         .enter()
         .append("g")
         .attr("class", "group")
-        .on("mouseover", function(d, i) {
-          var name = nameByIndex[i].col;
-          if (nameByIndex != undefined) {
-            changeCurrentDistrict(nameByIndex[i].col);
-          }
-          var allChordPaths = d3.selectAll(
-            "#" + id + "-chart-container .chord"
-          );
-          $('g[selector="chordcircle"]').toggleClass("hover");
-          console.log("source" + nameByIndex[i].col);
-          d3.selectAll("#" + id + "-chart-container .chord-tooltip")
-            .style("visibility", function(d, i) {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-              if (eventTarget == chartIdx) {
-                return "visible";
-              }
-            })
-            .html(function(idx) {
-              let chartIdx = $(this).attr("chartIdx");
-              let eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-              let sum = chartData[$(this).attr("chartIdx")].dataMatrix[
-                i
-              ].reduce(function(acc, val) {
+        .on("mouseover", chordGroupsMouseover)
+        .on("mouseout", chordGroupsMouseout);
+
+      function chordGroupsMouseover(d, i) {
+        var name = nameByIndex[i].col;
+        if (nameByIndex != undefined) {
+          changeCurrentDistrict(nameByIndex[i].col);
+        }
+        var allChordPaths = d3.selectAll("#" + id + "-chart-container .chord");
+        $('g[selector="chordcircle"]').toggleClass("hover");
+        console.log("source" + nameByIndex[i].col);
+        d3.selectAll("#" + id + "-chart-container .chord-tooltip")
+          .style("visibility", function(d, i) {
+            var chartIdx = $(this).attr("chartIdx");
+            var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
+              "chartIdx"
+            );
+            if (eventTarget == chartIdx) {
+              return "visible";
+            }
+          })
+          .html(function(idx) {
+            let chartIdx = $(this).attr("chartIdx");
+            let eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
+              "chartIdx"
+            );
+            let sum = chartData[$(this).attr("chartIdx")].dataMatrix[i].reduce(
+              function(acc, val) {
                 return acc + val;
-              }, 0);
-              if (sidebyside) {
-                addGroupToolTipTable(
-                  chartData[$(this).attr("chartIdx")],
-                  d,
-                  sum
-                );
-              }
-              if (eventTarget == chartIdx) {
-                return groupTip(
-                  chartData[$(this).attr("chartIdx")].dataRdr(d),
-                  sum,
-                  chartData[$(this).attr("chartIdx")].chartTotal
-                );
-              } else {
-                return "";
-              }
-            })
-            .style("top", function() {
-              var x, y;
-
-              if (d3.event.pageY > height) {
-                return height / 2 + "px";
-              }
-              return d3.event.pageY - 80 + "px";
-            })
-            .style("left", function(d, i) {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
+              },
+              0
+            );
+            if (sidebyside) {
+              addGroupToolTipTable(chartData[$(this).attr("chartIdx")], d, sum);
+            }
+            if (eventTarget == chartIdx) {
+              return groupTip(
+                chartData[$(this).attr("chartIdx")].dataRdr(d),
+                sum,
+                chartData[$(this).attr("chartIdx")].chartTotal
               );
-              var xpos = width / numberChordPerRow;
-              if (eventTarget == chartIdx) {
-                if (d3.event.pageX - 50 > 0 || d3.event.pageX - 50 > width) {
-                  return d3.event.pageX - 50 + "px";
-                } else {
-                  return 0 + "px";
-                }
+            } else {
+              return "";
+            }
+          })
+          .style("top", function() {
+            var x, y;
+
+            if (d3.event.pageY > height) {
+              return height / 2 + "px";
+            }
+            return d3.event.pageY - 80 + "px";
+          })
+          .style("left", function(d, i) {
+            var chartIdx = $(this).attr("chartIdx");
+            var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
+              "chartIdx"
+            );
+            var xpos = width / numberChordPerRow;
+            if (eventTarget == chartIdx) {
+              if (d3.event.pageX - 50 > 0 || d3.event.pageX - 50 > width) {
+                return d3.event.pageX - 50 + "px";
               } else {
-                var chartNum = +chartIdx;
-                return (
-                  ($("#" + id + "-chart-container").width() /
-                    numberChordPerRow) *
-                    (chartNum + 1) -
-                  166 +
-                  "px"
-                );
+                return 0 + "px";
               }
-            });
-
-          allChordPaths.classed("faded", function(p) {
-            return p.source.index != i && p.target.index != i;
+            } else {
+              var chartNum = +chartIdx;
+              return (
+                ($("#" + id + "-chart-container").width() / numberChordPerRow) *
+                  (chartNum + 1) -
+                166 +
+                "px"
+              );
+            }
           });
-        })
-        .on("mouseout", function(d) {
-          //d3.selectAll('#' + id + '-div .chord-tooltiptablediv').style("visibility", "hidden").style('height','0px');
-          d3.select("#" + chart.chartId + "-tooltip").style(
-            "visibility",
-            "hidden"
-          );
-          $('g[selector="chordcircle"]').toggleClass("hover");
-        });
 
-      var groupPath = g
+        allChordPaths.classed("faded", function(p) {
+          return p.source.index != i && p.target.index != i;
+        });
+      }
+
+      function chordGroupsMouseout(d) {
+        d3.select("#" + chart.chartId + "-tooltip").style(
+          "visibility",
+          "hidden"
+        );
+        $('g[selector="chordcircle"]').toggleClass("hover");
+      }
+
+      var groupPath = chordGroups
         .append("path")
         .style("fill", function(d) {
           return fill(d.index);
@@ -763,23 +747,13 @@ var ChordChart = {
         })
         .attr("d", arc);
 
-      var groupText = g
+      var groupText = chordGroups
         .append("text")
         .each(function(d) {
           d.angle = (d.startAngle + d.endAngle) / 2;
         })
         .attr("dy", ".35em")
-        .attr("transform", function(d) {
-          return (
-            "rotate(" +
-            ((d.angle * 180) / Math.PI - 90) +
-            ")" +
-            "translate(" +
-            (innerRadius + 26) +
-            ")" +
-            (d.angle > Math.PI ? "rotate(180)" : "")
-          );
-        })
+        .attr("transform", rotateLabels)
         .style("text-anchor", function(d) {
           return d.angle > Math.PI ? "end" : null;
         })
@@ -787,18 +761,33 @@ var ChordChart = {
         .text(function(d) {
           return nameByIndex[d.index].name;
         });
-      // Remove the labels that don't fit. :(
-      groupText
-        .filter(function(d, i) {
-          var check = groupPath[0][i];
-          //console.log("Group name:" + groupPath[0][i].nextSibling.innerHTML + " length:" + indexByName[groupPath[0][i].nextSibling.innerHTML].grptotal);
-          let idx = indexByName[groupPath[0][i].nextSibling.innerHTML].index;
-          let sum = chart.dataMatrix[idx].reduce(function(acc, val) {
-            return acc + val;
-          }, 0);
-          return (sum / chart.chartTotal) * 100 < 1.5;
-        })
-        .remove();
+
+      function rotateLabels(d) {
+        return (
+          "rotate(" +
+          ((d.angle * 180) / Math.PI - 90) +
+          ")" +
+          "translate(" +
+          (outerRadius + 2) +
+          ")" +
+          (d.angle > Math.PI ? "rotate(180)" : "")
+        );
+      }
+
+      groupText.filter(labelsThatDontFit).remove();
+
+      if (!maxTextHeightOrWidth) {
+        CreateChord(id, data, chart, maxHeightOrWidth(groupText));
+      }
+
+      function labelsThatDontFit(d, i) {
+        var check = groupPath[0][i];
+        let idx = indexByName[groupPath[0][i].nextSibling.innerHTML].index;
+        let sum = chart.dataMatrix[idx].reduce(function(acc, val) {
+          return acc + val;
+        }, 0);
+        return (sum / chart.chartTotal) * 100 < 1.5;
+      }
 
       var chordPaths = svg
         .selectAll("#" + chart.chartId + "_circle .chord")
@@ -813,80 +802,83 @@ var ChordChart = {
           return fill(d.source.index);
         })
         .attr("d", d3.svg.chord().radius(innerRadius))
-        .on("mouseover", function(d) {
-          d3.selectAll("#" + id + "-chart-container .chord-tooltip")
-            .style("visibility", function() {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-              if (eventTarget == chartIdx) {
-                return "visible";
-              }
-            })
-            .html(function() {
-              var sourceVal =
-                chartData[$(this).attr("chartIdx")].dataMatrix[d.source.index][
-                  d.target.index
-                ];
-              var targetVal =
-                chartData[$(this).attr("chartIdx")].dataMatrix[d.target.index][
-                  d.source.index
-                ];
-              let chart = chartData[$(this).attr("chartIdx")];
-              if (sidebyside) {
-                addPathToolTipTable(
-                  sourceVal,
-                  targetVal,
-                  chart.dataRdr(d),
-                  chart
-                );
-              }
-              return chordTip(
+        .on("mouseover", chordPathMousover)
+        .on("mouseout", chordPathMousout);
+
+      function chordPathMousover(d) {
+        d3.selectAll("#" + id + "-chart-container .chord-tooltip")
+          .style("visibility", function() {
+            var chartIdx = $(this).attr("chartIdx");
+            var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
+              "chartIdx"
+            );
+            if (eventTarget == chartIdx) {
+              return "visible";
+            }
+          })
+          .html(function() {
+            var sourceVal =
+              chartData[$(this).attr("chartIdx")].dataMatrix[d.source.index][
+                d.target.index
+              ];
+            var targetVal =
+              chartData[$(this).attr("chartIdx")].dataMatrix[d.target.index][
+                d.source.index
+              ];
+            let chart = chartData[$(this).attr("chartIdx")];
+            if (sidebyside) {
+              addPathToolTipTable(
                 sourceVal,
                 targetVal,
                 chart.dataRdr(d),
-                chart.chartTotal
+                chart
               );
-            })
-            .style("top", function() {
-              if (d3.event.pageY > height) {
-                return height / 2 + "px";
-              }
-              return d3.event.pageY - 80 + "px";
-            })
-            .style("left", function() {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-              if (eventTarget == chartIdx) {
-                if (d3.event.pageX - 50 > 0 || d3.event.pageX - 50 > width) {
-                  return d3.event.pageX - 50 + "px";
-                } else {
-                  return 0 + "px";
-                }
+            }
+            return chordTip(
+              sourceVal,
+              targetVal,
+              chart.dataRdr(d),
+              chart.chartTotal
+            );
+          })
+          .style("top", function() {
+            if (d3.event.pageY > height) {
+              return height / 2 + "px";
+            }
+            return d3.event.pageY - 80 + "px";
+          })
+          .style("left", function() {
+            var chartIdx = $(this).attr("chartIdx");
+            var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
+              "chartIdx"
+            );
+            if (eventTarget == chartIdx) {
+              if (d3.event.pageX - 50 > 0 || d3.event.pageX - 50 > width) {
+                return d3.event.pageX - 50 + "px";
               } else {
-                var chartNum = +chartIdx;
-                return (
-                  ($("#" + id + "-chart-container").width() /
-                    numberChordPerRow) *
-                    (chartNum + 1) -
-                  166 +
-                  "px"
-                );
+                return 0 + "px";
               }
-            });
-          $('g[selector="chordcircle"]').toggleClass("hover");
-        })
-        .on("mouseout", function(d) {
-          // d3.selectAll('#' + id + '-div .chord-tooltiptablediv').style("visibility", "hidden").style('height','0px');
-          $('g[selector="chordcircle"]').toggleClass("hover");
-          d3.select("#" + chart.chartId + "-tooltip").style(
-            "visibility",
-            "hidden"
-          );
-        });
+            } else {
+              var chartNum = +chartIdx;
+              return (
+                ($("#" + id + "-chart-container").width() / numberChordPerRow) *
+                  (chartNum + 1) -
+                166 +
+                "px"
+              );
+            }
+          });
+        $('g[selector="chordcircle"]').toggleClass("hover");
+      }
+
+      function chordPathMousout(d) {
+        // d3.selectAll('#' + id + '-div .chord-tooltiptablediv').style("visibility", "hidden").style('height','0px');
+        $('g[selector="chordcircle"]').toggleClass("hover");
+        d3.select("#" + chart.chartId + "-tooltip").style(
+          "visibility",
+          "hidden"
+        );
+      }
 
       function chordTip(sourceVal, targetVal, d, chartTotal) {
         var otherdist = indexByName[d.sname];
@@ -1008,6 +1000,7 @@ var ChordChart = {
             "</tr>"
         );
       }
+
       function groupTip(d, total, chartTotal) {
         var p = d3.format(".2%"),
           q = d3.format(",.0f");
@@ -1482,7 +1475,7 @@ var ChordChart = {
       //end geoJson of zone layer
       callback();
     } //end createMap
-    //goThroughChordData();
+
     window.addEventListener("resize", function() {
       console.log("Got resize event. Calling createTimeUse");
       goThroughChordData();
@@ -1520,6 +1513,24 @@ var ChordChart = {
           $("#" + id + "-dropdown-div").height() / 2 + "px"
         );
       }
+    }
+
+    /**
+     * Takes a d3 selection, iterates over the elements in the selection, and
+     * returns an object with the max height and width of any elements in the
+     * selection
+     */
+    function maxHeightOrWidth(selection) {
+      var maxDimenstion = 0;
+      selection.each(function() {
+        var textRectangle = this.getBoundingClientRect();
+        maxDimenstion = Math.max(
+          maxDimenstion,
+          textRectangle.width,
+          textRectangle.height
+        );
+      });
+      return maxDimenstion;
     }
   }
 };
