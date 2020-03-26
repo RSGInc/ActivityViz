@@ -1476,10 +1476,15 @@ var ChordChart = {
       callback();
     } //end createMap
 
-    window.addEventListener("resize", function() {
-      console.log("Got resize event. Calling createTimeUse");
+    function resizeListener() {
+      console.log("Got resize event. Calling goThroughChordData");
       goThroughChordData();
-    });
+    }
+
+    window.addEventListener(
+      "resize",
+      abmviz_utilities.debounce(resizeListener, 250, true)
+    );
 
     function redrawMap() {
       "use strict";
