@@ -553,6 +553,7 @@ var ChordChart = {
     }
 
     function CreateChord(id, data, chart, maxTextHeightOrWidth = 0) {
+      var MINIMUM_RADIUS = 35;
       // clean up any existing elements
       ["#" + chart.chartId + "_svg", "#" + chart.chartId + "-tooltip"].forEach(
         function(selector) {
@@ -561,18 +562,17 @@ var ChordChart = {
       );
 
       var chartContainer = $("#" + id + "-chart-container");
-
       var widthPerChart = chartContainer.width() / numberChordPerRow - 10;
       var halfOfChart = widthPerChart / 2;
 
       // radius of entire chord diagram
       var outerRadius = maxTextHeightOrWidth
-        ? widthPerChart - 2 * maxTextHeightOrWidth
+        ? (widthPerChart - 2 * maxTextHeightOrWidth) / 2
         : widthPerChart / 2 - 55;
 
       // The smallest it's going to get should be 30.
       // Otherwise the chord diagrams filp in on themselves.
-      outerRadius = Math.max(outerRadius, 30);
+      outerRadius = Math.max(outerRadius, MINIMUM_RADIUS);
 
       // radius of inner circle, on which chords will be drawn
       var innerRadius = outerRadius - 10;
@@ -611,18 +611,26 @@ var ChordChart = {
 
       // Add Chord Diagram Titles for side-by-side layout
       if (sidebyside) {
-        d3.select("#" + chart.chartId + "_svg")
+        var titleFontSize = "19";
+        var chartTitle = svg
           .append("text")
           .text(chart.chartName)
-          .style("font-size", "19px")
+          .style("font-size", titleFontSize)
           .style("font-weight", "bold")
-          .attr("transform", "translate(" + widthPerChart + ",14)");
+          .style("text-align", "center");
+
+        var titleWidth = maxHeightOrWidth(chartTitle);
+        var offsetToCenterTitle = widthPerChart / 2 - titleWidth / 2;
+        chartTitle.attr(
+          "transform",
+          "translate(" + offsetToCenterTitle + "," + titleFontSize + ")"
+        );
 
         createToolTipTable(chart, chartData.indexOf(chart));
       }
 
       var chordGroups = circle
-        .selectAll("#" + chart.chartId + "_circle g.group")
+        .selectAll("g.group")
         .data(chord.groups())
         .enter()
         .append("g")
@@ -747,6 +755,7 @@ var ChordChart = {
         maxTextHeightOrWidth = maxHeightOrWidth(groupText);
         // Still need to check, since this could be zero, which results in infinite recursion
         if (maxTextHeightOrWidth) {
+          if (sidebyside) maxTextHeightOrWidth += 19; // for title offset
           CreateChord(id, data, chart, maxTextHeightOrWidth);
         }
       }
@@ -857,7 +866,6 @@ var ChordChart = {
           $('g[selector="chordcircle"]').toggleClass("hover");
         })
         .on("mouseout", function chordPathMousout(d) {
-          // d3.selectAll('#' + id + '-div .chord-tooltiptablediv').style("visibility", "hidden").style('height','0px');
           $('g[selector="chordcircle"]').toggleClass("hover");
           d3.select("#" + chart.chartId + "-tooltip").style(
             "visibility",
