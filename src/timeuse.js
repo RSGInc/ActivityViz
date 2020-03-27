@@ -342,7 +342,7 @@ var TimeuseChart = {
               return abmviz_utilities.halfHourTimePeriodToTimeString(d);
             });
             chart.yAxis.tickFormat(d3.format("0,000"));
-            //nv.utils.windowResize(chart.update);
+            nv.utils.windowResize(createTimeUse);
             chart.legend.vers("classic");
             return chart;
           },
