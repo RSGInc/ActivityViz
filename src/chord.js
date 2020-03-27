@@ -611,7 +611,6 @@ var ChordChart = {
 
       circle.append("circle").attr("r", r0);
 
-      var resizeInterval;
       // Add Chord Diagram Titles for side-by-side layout
       if (sidebyside) {
         var titleFontSize = "19";
@@ -630,24 +629,6 @@ var ChordChart = {
         );
 
         createToolTipTable(chart, chartData.indexOf(chart));
-      } else {
-        resizeInterval = setInterval(
-          setChordHeightWhenReady(resizeInterval),
-          100
-        );
-      }
-
-      function setChordHeightWhenReady(interval) {
-        return function() {
-          var mapHeight = $("#" + id + "-chart-map").height();
-          if (mapHeight && mapHeight !== chartContainer.height()) {
-            chartContainer.css("height", mapHeight);
-            CreateChord(id, data, chart, maxTextHeightOrWidth);
-            clearInterval(interval);
-            return mapHeight;
-          }
-          return 0;
-        };
       }
 
       var chordGroups = circle
@@ -1492,6 +1473,23 @@ var ChordChart = {
 
     function resizeListener() {
       console.log("Got resize event. Calling goThroughChordData");
+
+      function setChordHeightWhenReady(timeoutAlreadySet) {
+        console.log("settingChordHeight?");
+        var mapHeight = $("#" + id + "-by-chart-map").height();
+        var chartContainer = $("#" + id + "-chart-container");
+        if (!mapHeight && !timeoutAlreadySet) {
+          setTimeout(function() {
+            setChordHeightWhenReady(true);
+            goThroughChordData();
+          }, 500);
+        } else if (mapHeight && mapHeight !== chartContainer.height()) {
+          $("").css("height", mapHeight);
+        }
+      }
+      if (!sidebyside) {
+        setChordHeightWhenReady();
+      }
       goThroughChordData();
     }
 
