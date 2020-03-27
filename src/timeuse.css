@@ -36,7 +36,7 @@
 
 .timeuse-legend rect.timeuse-current-person-type {
   opacity: 1;
-  fill: yellow;
+  fill: #e09d15;
 }
 
 .timeuse-legend text {
