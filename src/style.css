@@ -1,6 +1,34 @@
 body {
   padding-top: 50px;
 }
+
+.explanation-panels {
+  padding: 0;
+}
+
+.panel-dark {
+  border-color: #222222;
+}
+
+.panel-dark > .panel-heading {
+  color: white;
+  background-color: #222222;
+  border-color: #222222;
+}
+
+.pl-2 {
+  padding-left: 2em;
+}
+
+.explanation-panels ul,
+.explanation-panels ol {
+  padding-left: 1em;
+}
+
+.none {
+  display: none;
+}
+
 .dataTables_wrapper {
   padding-top: 10px;
 }
@@ -79,11 +107,15 @@ body {
 
 #the_tabs {
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 #leftnavbtn,
 #rightnavbtn {
   font-size: 25px;
+  padding: 5px 8px;
+  margin-top: 2px;
 }
 
 .nav-tabs > li.active > a,
