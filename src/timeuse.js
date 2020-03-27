@@ -242,7 +242,7 @@ var TimeuseChart = {
       } //end if chartData === undefined
       else {
         //if just a window resize, don't re-read data
-        //createEmptyChart(updateChart);
+        createEmptyChart(updateChart);
       }
 
       function turnOffAreaClick() {
@@ -407,11 +407,12 @@ var TimeuseChart = {
       $("#" + id + "-div").show();
       console.log($("#" + id + "-div").is(":visible"));
       createTimeUse();
-      window.addEventListener("resize", function() {
-        console.log("Got resize event. Calling createTimeUse");
-        createTimeUse();
-      });
+      window.addEventListener(
+        "resize",
+        abmviz_utilities.debounce(createTimeUse, 250, true)
+      );
     }
+
     //return only the parts that need to be global
     return {};
   }
