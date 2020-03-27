@@ -763,7 +763,10 @@
       );
 
       var theTabs = $("#the_tabs");
-      theTabs.prepend(newEl);
+      // hack to put the tabs in the correct order, with the buttons at the end
+      theTabs.append(newEl); // without this line, tabs are in opposite order
+      theTabs.append($("#leftnavbtn")); // without these two lines, buttons will be at beginning
+      theTabs.append($("#rightnavbtn"));
 
       var nativeEl = newEl[0]; // get the native DOM element
       nativeEl.addEventListener("click", function() {
