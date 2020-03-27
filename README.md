@@ -14,11 +14,13 @@ ActivityViz was initially funded by the [Atlanta Regional Commission](https://at
 support from [Oregon Metro](https://www.oregonmetro.gov/) and others.
 
 ## Collaborating on this Project
+
 1. The master branch is the release / stable version, the develop branch is for development, and gh-pages is the current published demo
 2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
 3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
 
 # Adding a New Region or New Scenario Data
+
 ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region:
 
 1. Fork this repository to your GitHub account
@@ -31,6 +33,7 @@ ActivityViz supports configuration for multiple regions.  To setup ActivityViz i
 5. Copy an existing region.json file into the region folder.
 
 ## Adding New Scenario Data
+
 Each region supports data for multiple scenarios.  Do the following to add scenario data:
 
 1. Create a new folder in the region specific folder with the scenario name
@@ -55,7 +58,9 @@ from 3am to 3am the next day.  The TimeUse purposes must be ALLCAPS and must inc
 SCHOOL.  TimeUse must also include an ALL person types.
   
 ## Data/Region Folder
+
 Each Data/Region folder needs the following:
+
 1. region.json - Region specific config file:
     - Title: Title that shows up in tab of web page
     - CountyFile: Name of the geojson file with region counties
@@ -81,11 +86,11 @@ Each Data/Region folder needs the following:
         - visualizations: set of visuals to be display on the scenario specific page, the order they are defined will determine the order of the tab
             - visuals are Sunburst, 3DMap, GroupedCharts (standard barcharts), TimeUse, RadarCharts, BarMap (barchart with map), Chord, and POIMap (barchart with POIs instead of zones)
             - Each visual title allows for an array of multiple charts. Each entry will be it's own tab on the scenario specific page.
-            - Each chart object requires a "name", "config" (name of configuration set to use) and a "file" (filename that will contain the data). 
+            - Each chart object requires a "name", "config" (name of configuration set to use) and a "file" (filename that will contain the data).
+            - `explanation` Optional - JSON object which configures an explanatory panel to the left of the visual (see [Visualization Explanations](#visualization-explanations) below).
             - Optional chart properties: "info" - is is a tooltip to appear next to the chart title, "datafilecolumns" - a key/value object that will display underneath the data table on the bottom of the chart tab
             - Example of multiple visuals for single chart type:  "GroupedCharts": [{"name":"GroupedCharts","config":"Default", "file":"BarChartData.csv"},{"name":"GroupedCharts2","config":"Default", "file":"BarChartData2.csv"}],
-    
-    - Each chart type has a different entry for their specific configuration settings. You can set up several different configuration entries for each chart type. This lets you customize the each chart tab 
+    - Each chart type has a different entry for their specific configuration settings. You can set up several different configuration entries for each chart type. This lets you customize the each chart tab
         The property entry is the name of the configuration, each chart needs to have at a minimum an empty (example: "BarMap": { "Default": {}  } ) configuration.
     - RadarCharts: Radar Chart specific configurations:
         - NumberColsRadar: Number of radar chart columns that should appear per row (up to 4)
@@ -140,10 +145,70 @@ Each Data/Region folder needs the following:
         - ChartType: Determines which chart is shown on page, 1 for Sunburst, 2 for Pie Chart and 3 for Waffle Pie Chart
         - WaffleRow: Number of rows the waffle chart should have (default is 10)
         - WaffleColumn: Number of columns the waffle chart should have (default is 10 for 10x10 block)
-        - BlockSize: Number of pixels each block in the waffle chart should have (default is 30)         
-3. Data Folder - Scenario data folder with its name equal to its scenario entry, can either be local or in the cloud. Location of the region's scenario data folder is specified in the main config.json file 
-4. Zones.geojson - Zone polygons with the *id* property equal to the zone number. Polygons also require the *NAME* property to display desire lines and link up with data sets.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
-5. Counties.geojson - County polygons with the *Name* property equal to the county name.
+        - BlockSize: Number of pixels each block in the waffle chart should have (default is 30)
+2. Data Folder - Scenario data folder with its name equal to its scenario entry, can either be local or in the cloud. Location of the region's scenario data folder is specified in the main config.json file
+3. Zones.geojson - Zone polygons with the *id* property equal to the zone number. Polygons also require the *NAME* property to display desire lines and link up with data sets.  The open source [mapshaper](http://www.mapshaper.org) will convert and simplify a shapefile to geojson.
+4. Counties.geojson - County polygons with the *Name* property equal to the county name.
+
+### Visualization Explanations
+
+Each `visualization` object supports an `explanations` property. This property is a list of `Explanation` objects.
+
+#### `Explanation`
+
+| Property | Type               |
+| :------- | :----------------- |
+| `header` | `string`           |
+| `body`   | `ContentSection[]` |
+
+The `header` property populates a header at the top of the explanation. The `body` property is the contents of the explanation - it is a list of `ContentSection`s
+
+#### `ContentSection`
+
+| Property  | Type            |
+| :-------- | :-------------- |
+| `type`    | `string (enum)` |
+| `content` | `string[]`      |
+
+The `type` property may be one of the following:
+
+- `"paragraph"` - creates a list of paragraphs of the strings in content
+- `"orderedList"` - creates a numbered list of the strings in `content`
+- `"unorderedList"` - creates a bulleted list of the strings in `content
+
+Example of how this would look in the demo RSG BarMap visualization:
+
+```json
+{
+  "BarMap": [
+    {
+      "name": "Daily Truck Trips",
+      "file": "BarChartAndMapData.csv",
+      "config": "Default",
+      "info": "Truck trips by zone and county",
+      "explanation": [
+        {
+          "header": "Explanation",
+          "body": [
+            {
+              "type": "orderedList",
+              "content": ["one li", "two li", "red li", "blue li"]
+            },
+            {
+              "type": "unorderedList",
+              "content": ["one li", "two li", "red li", "blue li"]
+            },
+            {
+              "type": "paragraph",
+              "content": ["one p", "two p", "red p", "blue p"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 # Testing and Publishing 
 

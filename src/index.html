@@ -134,22 +134,23 @@
       <!-- end nav -->
 
       <div id="thenavbar">
-        <ul
-          class="nav nav-tabs"
-          role="tablist"
-          id="the_tabs"
-          style="display:inline-block"
-        >
-          <button id="leftnavbtn">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-          </button>
-          <button id="rightnavbtn">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-          </button>
+        <ul class="nav nav-tabs" role="tablist" id="the_tabs">
+          <li>
+            <button id="leftnavbtn">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button id="rightnavbtn">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </li>
         </ul>
       </div>
+      <div></div>
 
-      <div class="tab-content"></div>
+      <main class="container-fluid row">
+        <div class="explanation-panels col-xs-2 none"></div>
+        <div class="tab-content col-xs-10"></div>
+      </main>
       <!-- END TAB CONTENT-->
     </div>
     <!-- END MAIN CONTENT-->
@@ -262,6 +263,7 @@
           v.name,
           k,
           "bc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "bc_" + v.name.replace(/\s/g, "");
             $("#grouped_tab").attr("id", chartname + "_id");
@@ -311,6 +313,7 @@
           v.name,
           k,
           "tu_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "tu_" + v.name.replace(/\s/g, "");
             $("#timeuse_tab").attr("id", chartname + "_id");
@@ -347,6 +350,7 @@
           v.name,
           k,
           "sb_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "sb_" + v.name.replace(/\s/g, "");
             $("#sunburst_tab").attr("id", chartname + "_id");
@@ -388,6 +392,7 @@
           v.name,
           k,
           "sc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "sc_" + v.name.replace(/\s/g, "");
             $("#scatter_tab").attr("id", chartname + "_id");
@@ -425,6 +430,7 @@
           v.name,
           k,
           "ch_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "ch_" + v.name.replace(/\s/g, "");
             $("#chord_tab").attr("id", chartname + "_id");
@@ -468,6 +474,7 @@
           v.name,
           k,
           "poi_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "poi_" + v.name.replace(/\s/g, "");
             $("#poimap_tab").attr("id", chartname + "_id");
@@ -525,6 +532,7 @@
           v.name,
           k,
           "rc_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "rc_" + v.name.replace(/\s/g, "");
             $("#radar_tab").attr("id", chartname + "_id");
@@ -564,6 +572,7 @@
           v.name,
           k,
           "td_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "td_" + v.name.replace(/\s/g, "");
             $("#three3d_tab").attr("id", chartname + "_id");
@@ -632,6 +641,7 @@
           v.name,
           k,
           "bm_" + v.name.replace(/\s/g, ""),
+          v.explanation,
           function() {
             var chartname = "bm_" + v.name.replace(/\s/g, "");
             $("#barchartmap_tab").attr("id", chartname + "_id");
@@ -728,21 +738,41 @@
     });
   });
 
-  function addMyTab(filename, chartype, name, indx, idname, callback) {
+  function addMyTab(
+    filename,
+    chartype,
+    name,
+    indx,
+    idname,
+    explanation,
+    callback
+  ) {
     return new Promise(function(resolve, reject) {
-      var newEl =
+      var newEl = $(
         "<li role='presentation'><a href='#" +
-        idname +
-        "_id' role='tab' data-toggle='tab' onclick='" +
-        chartype +
-        '("' +
-        idname +
-        '",' +
-        indx +
-        ")' >" +
-        name +
-        "</a></li>";
-      $(newEl).insertBefore("#leftnavbtn");
+          idname +
+          "_id' role='tab' data-toggle='tab' onclick='" +
+          chartype +
+          '("' +
+          idname +
+          '",' +
+          indx +
+          ")' >" +
+          name +
+          "</a></li>"
+      );
+
+      var theTabs = $("#the_tabs");
+      // hack to put the tabs in the correct order, with the buttons at the end
+      theTabs.append(newEl); // without this line, tabs are in opposite order
+      theTabs.append($("#leftnavbtn")); // without these two lines, buttons will be at beginning
+      theTabs.append($("#rightnavbtn"));
+
+      var nativeEl = newEl[0]; // get the native DOM element
+      nativeEl.addEventListener("click", function() {
+        updateExplanationPanel(explanation);
+      });
+
       $.get("templates/" + filename, function(data) {
         $(".tab-content").append(data);
       }).complete(function(d) {
@@ -788,4 +818,79 @@
     var nextIdx = activeIdx + 1 >= shownTabs.length ? 0 : activeIdx + 1;
     shownTabs[nextIdx].click();
   });
+
+  function updateExplanationPanel(explanation) {
+    var explanationPanels = document.querySelector(".explanation-panels");
+    var tabContent = document.querySelector(".tab-content");
+    explanationPanels.innerHTML = "";
+
+    if (!explanation) {
+      explanationPanels.classList.add("none");
+      tabContent.classList.remove("col-xs-10");
+      tabContent.classList.remove("pl-2");
+      tabContent.classList.add("col-xs-12");
+      return;
+    }
+
+    explanationPanels.classList.remove("none");
+    tabContent.classList.remove("col-xs-12");
+    tabContent.classList.add("col-xs-10");
+    tabContent.classList.add("pl-2");
+
+    for (var section of explanation) {
+      var panel = document.createElement("article");
+      panel.classList.add("panel");
+      panel.classList.add("panel-dark");
+      explanationPanels.appendChild(panel);
+
+      var sectionHeader = document.createElement("header");
+      sectionHeader.classList.add("panel-header");
+      sectionHeader.classList.add("panel-heading");
+      panel.appendChild(sectionHeader);
+
+      var sectionTitle = document.createElement("h3");
+      sectionTitle.classList.add("panel-title");
+      sectionTitle.innerText = section.header;
+      sectionHeader.appendChild(sectionTitle);
+
+      var panelBody = document.createElement("div");
+      panelBody.classList.add("panel-body");
+      panel.appendChild(panelBody);
+
+      for (let contentList of section.body) {
+        panelBody.appendChild(getContentList(contentList));
+      }
+    }
+
+    function getContentList(subsection) {
+      switch (subsection.type) {
+        case "orderedList":
+          return nestedElementsFromStringArray("ol", "li", subsection.content);
+
+        case "unorderedList":
+          return nestedElementsFromStringArray("ul", "li", subsection.content);
+
+        default:
+          return nestedElementsFromStringArray(
+            "section",
+            "p",
+            subsection.content
+          );
+      }
+    }
+
+    function nestedElementsFromStringArray(
+      containerTag,
+      listItemTag,
+      stringContentArray
+    ) {
+      var containerElement = document.createElement(containerTag);
+      for (var stringContent of stringContentArray) {
+        var listItem = document.createElement(listItemTag);
+        listItem.innerText = stringContent;
+        containerElement.appendChild(listItem);
+      }
+      return containerElement;
+    }
+  }
 </script>

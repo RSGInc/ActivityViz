@@ -1,13 +1,17 @@
+.time-use-visualization {
+  display: flex;
+  justify-content: stretch;
+}
+
 .timeuse-main {
-  //
   padding: 0px;
   padding-left: 0;
   padding-top: 0;
+  flex: 1 1 70%;
 }
 
 .timeuse-sidebar {
   padding-left: 10px;
-  //display: table;
 }
 
 .timeuse-text-area {
@@ -16,7 +20,6 @@
 }
 
 .timeuse-legend {
-  //display: table-cell;
   vertical-align: middle;
   cursor: default;
 }
@@ -35,7 +38,7 @@
 
 .timeuse-legend rect.timeuse-current-person-type {
   opacity: 1;
-  fill: yellow;
+  fill: #e09d15;
 }
 
 .timeuse-legend text {
