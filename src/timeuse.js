@@ -334,6 +334,7 @@ var TimeuseChart = {
               .useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
               .showControls(true)
               .style(chartStyle); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+
             //How to Remove control options from NVD3.js Stacked Area Chart
             //http://www.bainweb.com/2015/09/how-to-remove-control-options-from.html
             chart._options.controlOptions = ["Stacked", "Expanded"];
@@ -342,7 +343,6 @@ var TimeuseChart = {
               return abmviz_utilities.halfHourTimePeriodToTimeString(d);
             });
             chart.yAxis.tickFormat(d3.format("0,000"));
-            nv.utils.windowResize(createTimeUse);
             chart.legend.vers("classic");
             return chart;
           },
@@ -355,6 +355,7 @@ var TimeuseChart = {
           } //end callback function
         }); //end nv.addGraph
       } //end createEmptyChart
+
       function drawLegend(personTypes) {
         d3.select("#" + id + "-legend svg").remove(); //remove in case this is a window resize event
         //for height leave an extra slot so that when showing active nodes at top can have a space separating from rest of legend
@@ -403,7 +404,6 @@ var TimeuseChart = {
       } //end drawLegend
     } //end createTimeUse
     if (showChartOnPage) {
-      //&& $('#timeuse').is(':visible')===true ){
       $("#" + id + "-div").show();
       console.log($("#" + id + "-div").is(":visible"));
       createTimeUse();
