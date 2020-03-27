@@ -611,6 +611,7 @@ var ChordChart = {
 
       circle.append("circle").attr("r", r0);
 
+      var resizeInterval;
       // Add Chord Diagram Titles for side-by-side layout
       if (sidebyside) {
         var titleFontSize = "19";
@@ -630,18 +631,23 @@ var ChordChart = {
 
         createToolTipTable(chart, chartData.indexOf(chart));
       } else {
-        setChordHeightWhenReady();
+        resizeInterval = setInterval(
+          setChordHeightWhenReady(resizeInterval),
+          100
+        );
       }
 
-      function setChordHeightWhenReady() {
-        var mapHeight = $("#" + id + "-chart-map").height();
-        if (mapHeight && mapHeight !== chartContainer.height()) {
-          chartContainer.css("height", mapHeight);
-          CreateChord(id, data, chart, maxTextHeightOrWidth);
-          return mapHeight;
-        }
-        setTimeout(setChordHeightWhenReady, 100);
-        return 0;
+      function setChordHeightWhenReady(interval) {
+        return function() {
+          var mapHeight = $("#" + id + "-chart-map").height();
+          if (mapHeight && mapHeight !== chartContainer.height()) {
+            chartContainer.css("height", mapHeight);
+            CreateChord(id, data, chart, maxTextHeightOrWidth);
+            clearInterval(interval);
+            return mapHeight;
+          }
+          return 0;
+        };
       }
 
       var chordGroups = circle
