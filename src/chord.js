@@ -634,7 +634,7 @@ var ChordChart = {
       }
 
       function setChordHeightWhenReady() {
-        var mapHeight = $("#" + id + "-by-district-map").height();
+        var mapHeight = $("#" + id + "-chart-map").height();
         if (mapHeight && mapHeight !== chartContainer.height()) {
           chartContainer.css("height", mapHeight);
           CreateChord(id, data, chart, maxTextHeightOrWidth);
