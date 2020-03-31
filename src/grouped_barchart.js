@@ -18,13 +18,14 @@ function grouped_barchart(id, data, options, divid) {
   const maxLabelLength = getMaxLength(options.mainGrpSet);
   var chartConfig = getChartConfig(options);
 
-  function getChartConfig(options) {
+  function getChartConfig(options, maxTextWidth) {
     let marginLeft = 150;
     if (options.showAsVertical) {
       const marginBottom = Math.max(maxLabelLength * 10 + 10, 120),
         marginRight = 20;
 
       return {
+        maxTextWidth,
         barOffset: 0,
         yAxisLabelDistance: 50,
         xAxisLabelDistance: marginBottom - 60,
@@ -43,11 +44,17 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     // If it is not vertical, return horizontal config as default.
-    marginLeft = Math.max(maxLabelLength * 12, 120);
+    console.log("maxTextWidth", maxTextWidth);
+    marginLeft = maxTextWidth
+      ? maxTextWidth * 1.1 + 50
+      : Math.max(maxLabelLength * 12, 120);
+    console.log("marginLeft", marginLeft);
+
     return {
+      maxTextWidth,
       barOffset: -marginLeft,
       yAxisLabelDistance: 0,
-      xAxisLabelDistance: marginLeft - 95,
+      xAxisLabelDistance: marginLeft - 75,
       innerContainer: {
         selector: ".nvd3.nv-wrap.nv-multibarHorizontal",
         width: marginLeft,
@@ -63,9 +70,23 @@ function grouped_barchart(id, data, options, divid) {
   }
 
   svgChart = d3.select(id);
-  createEmptyChart(runAfterChartCreated);
 
-  function runAfterChartCreated() {
+  createEmptyChart(chartConfig);
+
+  function measureTextWidthAndSetConfig() {
+    // find the max width of labels after we draw them on the svg
+    let maxTextWidth = 0;
+    var element = document.getElementById(divid + "_grouped-barchart");
+    var textElements = element.querySelectorAll(".nv-axis text");
+    for (let t of textElements) {
+      maxTextWidth = Math.max(t.getBoundingClientRect().width, maxTextWidth);
+    }
+
+    chartConfig = getChartConfig(options, maxTextWidth);
+    return chartConfig;
+  }
+
+  function rotateYAxisLabel() {
     if ($("#" + divid + "-toggle-horizontal").prop("checked")) {
       $("#" + divid + "-div .nv-x .nv-axis text")
         .not(".nv-axislabel")
@@ -159,7 +180,7 @@ function grouped_barchart(id, data, options, divid) {
         tryAgain = false;
       }
 
-      runAfterChartCreated();
+      rotateYAxisLabel();
     }
 
     if (tryAgain) {
@@ -185,19 +206,17 @@ function grouped_barchart(id, data, options, divid) {
     });
   }
 
-  function createEmptyChart() {
+  function createEmptyChart(config) {
     nv.addGraph({
-      generate: chartGenerator, //end generate
+      generate: getChartGenerator(config), //end generate
       callback: function(newGraph) {
         extNvd3Chart = newGraph;
         extNvd3Chart.dispatch.on("renderEnd", function() {
-          if ($("#" + divid + "-toggle-horizontal").prop("checked")) {
-            $("#" + divid + "-div .nv-x .nv-axis text")
-              .not(".nv-axislabel")
-              .css("transform", "rotate(-90deg)")
-              .css("text-anchor", "end")
-              .attr("y", "-7");
+          if (!config.maxTextWidth) {
+            createEmptyChart(measureTextWidthAndSetConfig());
+            return;
           }
+          rotateYAxisLabel();
         });
 
         updateChart(function() {});
@@ -211,74 +230,76 @@ function grouped_barchart(id, data, options, divid) {
       : nv.models.multiBarHorizontalChart();
   }
 
-  function chartGenerator() {
-    var colorScale = d3.scale.category20();
-    var obj = $(id + " .nv-controlsWrap .nv-legend-symbol")[0];
-    var shwBarSpace = $(obj).css("fill-opacity") == 0;
+  function getChartGenerator(chartConfig) {
+    return function chartGenerator() {
+      var colorScale = d3.scale.category20();
+      var obj = $(id + " .nv-controlsWrap .nv-legend-symbol")[0];
+      var shwBarSpace = $(obj).css("fill-opacity") == 0;
 
-    var nvd3Chart = getChart(showAsVertical).groupSpacing(
-      shwBarSpace ? 0.2 : BARSPACING
-    );
+      var nvd3Chart = getChart(showAsVertical).groupSpacing(
+        shwBarSpace ? 0.2 : BARSPACING
+      );
 
-    nvd3Chart
-      .x(getXAxisLabels)
-      .y(getYAxisLabels)
-      .color(getColorScale)
-      .duration(0)
-      .margin(chartConfig.margins)
-      .id(divid + "-multiBarHorizontalChart")
-      .stacked(showAsGrouped)
-      .showControls(false);
+      nvd3Chart
+        .x(getXAxisLabels)
+        .y(getYAxisLabels)
+        .color(getColorScale)
+        .duration(0)
+        .margin(chartConfig.margins)
+        .id(divid + "-multiBarHorizontalChart")
+        .stacked(showAsGrouped)
+        .showControls(false);
 
-    function getColorScale(d, i) {
-      return colorScale(i);
-    }
+      function getColorScale(d, i) {
+        return colorScale(i);
+      }
 
-    function getYAxisLabels(d) {
-      return options.showPercentages ? d.percentage : d.value;
-    }
+      function getYAxisLabels(d) {
+        return options.showPercentages ? d.percentage : d.value;
+      }
 
-    function getXAxisLabels(d) {
-      return d.label;
-    }
+      function getXAxisLabels(d) {
+        return d.label;
+      }
 
-    nvd3Chart.yAxis.tickFormat(
-      options.showPercentages ? d3.format(".0%") : d3.format(",.0f")
-    );
+      nvd3Chart.yAxis.tickFormat(
+        options.showPercentages ? d3.format(".0%") : d3.format(",.0f")
+      );
 
-    nvd3Chart.yAxis
-      .axisLabel(quantityColumn)
-      .axisLabelDistance(chartConfig.yAxisLabelDistance);
+      nvd3Chart.yAxis
+        .axisLabel(quantityColumn)
+        .axisLabelDistance(chartConfig.yAxisLabelDistance);
 
-    nvd3Chart.xAxis
-      .axisLabel(mainGroupColumn)
-      .axisLabelDistance(chartConfig.xAxisLabelDistance);
+      nvd3Chart.xAxis
+        .axisLabel(mainGroupColumn)
+        .axisLabelDistance(chartConfig.xAxisLabelDistance);
 
-    if (showAsVertical) {
-      nvd3Chart.reduceXTicks(false);
-    } //this is actually for yAxis
+      if (showAsVertical) {
+        nvd3Chart.reduceXTicks(false);
+      } //this is actually for yAxis
 
-    nvd3Chart.legend.width(900);
-    nv.utils.windowResize(function() {
-      //reset marginTop in case legend has gotten less tall
-      nvd3Chart.margin({
-        top: chartConfig.margins.top
+      nvd3Chart.legend.width(900);
+      nv.utils.windowResize(function() {
+        //reset marginTop in case legend has gotten less tall
+        nvd3Chart.margin({
+          top: chartConfig.margins.top
+        });
+        updateChart(function() {
+          console.log("updateChart callback after windowResize");
+        });
       });
-      updateChart(function() {
-        console.log("updateChart callback after windowResize");
+
+      nvd3Chart.multibar.dispatch.on("elementMouseover", function(d) {
+        var mainGroupUnderMouse = d.value;
+        changeCurrentMainGroup(mainGroupUnderMouse);
       });
-    });
 
-    nvd3Chart.multibar.dispatch.on("elementMouseover", function(d) {
-      var mainGroupUnderMouse = d.value;
-      changeCurrentMainGroup(mainGroupUnderMouse);
-    });
+      nvd3Chart.legend.margin({ top: 10, right: 0, left: -75, bottom: 20 });
 
-    nvd3Chart.legend.margin({ top: 10, right: 0, left: -75, bottom: 20 });
+      nvd3Chart.xAxis.rotateLabels(-90);
 
-    nvd3Chart.xAxis.rotateLabels(-90);
-
-    return nvd3Chart;
+      return nvd3Chart;
+    };
   }
   //WARNING -- this canbe called more than once because of PIVOT reload kluge
   //end initializeMuchOfUI
