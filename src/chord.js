@@ -697,7 +697,7 @@ var ChordChart = {
               }
             })
             .style("left", mousePosition[0])
-            .style("top", mousePosition[1]);
+            .style("top", mousePosition[1] + 10);
 
           allChordPaths.classed("faded", function(p) {
             return p.source.index != i && p.target.index != i;
@@ -821,8 +821,9 @@ var ChordChart = {
                 chart.chartTotal
               );
             })
-            .style("top", mousePosition[1])
+            .style("top", mousePosition[1] + 10)
             .style("left", mousePosition[0]);
+
           $('g[selector="chordcircle"]').toggleClass("hover");
         })
         .on("mouseout", function(d) {
