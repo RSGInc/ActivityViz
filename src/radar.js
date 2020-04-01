@@ -87,10 +87,7 @@ var RadarData = {
             url += "/" + fileName;
           }
 
-          if (
-            chartData === undefined &&
-            $("#" + id + "_id div.lbltooltip").length == 0
-          ) {
+          if (!chartData) {
             d3.text(
               dataLocation +
                 abmviz_utilities.GetURLParameter("scenario") +
