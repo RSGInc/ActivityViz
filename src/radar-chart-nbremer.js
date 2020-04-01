@@ -467,7 +467,7 @@ function RadarChart(id, data, options) {
       var text = d3.select(this),
         words = text
           .text()
-          .split(/\s+/)
+          .split(/[\s_]+/)
           .reverse(),
         word,
         line = [],
