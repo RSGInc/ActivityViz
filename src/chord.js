@@ -10,6 +10,7 @@ var ChordChart = {
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var mainGroupColumnName;
     var subGroupColumnName;
+    var csvData;
     var quantityColumn;
     var countiesSet;
     var zoneFilterNameCol;
@@ -296,7 +297,14 @@ var ChordChart = {
       datamatrix = [];
       //read in data and create chord when finished
       wholeDataTotal = 0;
-      d3.csv(url, function(error, data) {
+
+      if (csvData) {
+        getAndProcessCsvData(null, csvData);
+        return;
+      }
+
+      d3.csv(url, getAndProcessCsvData);
+      function getAndProcessCsvData(error, data) {
         "use strict";
         if (error) {
           $("#chord").html(
@@ -515,11 +523,12 @@ var ChordChart = {
             showHideBlobs(d);
           });
         }
+
+        csvData = data;
         $.each(chartData, function(indx, chart) {
           CreateChord(id, data, chart);
         });
-      });
-
+      }
       //end d3.csv
 
       function showHideBlobs(d) {
@@ -1417,31 +1426,12 @@ var ChordChart = {
         controlLayer.addOverlay(zoneDataLayer, "Zones");
       });
 
-      function getDesireLineLayer() {}
-
       //end geoJson of zone layer
       callback();
     } //end createMap
 
     function resizeListener() {
       console.log("Got resize event. Calling goThroughChordData");
-
-      function setChordHeightWhenReady(timeoutAlreadySet) {
-        console.log("settingChordHeight?");
-        var mapHeight = $("#" + id + "-by-chart-map").height();
-        var chartContainer = $("#" + id + "-chart-container");
-        if (!mapHeight && !timeoutAlreadySet) {
-          setTimeout(function() {
-            setChordHeightWhenReady(true);
-            goThroughChordData();
-          }, 500);
-        } else if (mapHeight && mapHeight !== chartContainer.height()) {
-          $("").css("height", mapHeight);
-        }
-      }
-      if (!sidebyside) {
-        setChordHeightWhenReady();
-      }
       goThroughChordData();
     }
 
@@ -1500,10 +1490,6 @@ var ChordChart = {
         );
       });
       return maxDimenstion;
-    }
-
-    function mouseoverOrMouseout(fn) {
-      return abmviz_utilities.debounce(fn, 100, true);
     }
   }
 };
