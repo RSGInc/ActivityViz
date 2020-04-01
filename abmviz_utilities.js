@@ -39,12 +39,7 @@ var abmviz_utilities = (function() {
       }
     }
   }
-  //from http://stackoverflow.com/a/2901298/283973
-  function numberWithCommas(x) {
-    var parts = x.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
-  }
+
   //from http://stackoverflow.com/a/12190006/283973
   function insertArrayAt(array, index, arrayToInsert) {
     Array.prototype.splice.apply(array, [index, 0].concat(arrayToInsert));
@@ -96,7 +91,6 @@ var abmviz_utilities = (function() {
     GetURLParameter: GetURLParameter,
     poll: poll,
     insertArrayAt: insertArrayAt,
-    numberWithCommas: numberWithCommas,
     halfHourTimePeriodToTimeString: halfHourTimePeriodToTimeString,
     debounce: debounce
   };
