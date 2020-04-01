@@ -154,7 +154,7 @@ function grouped_barchart(id, data, options, divid) {
             changeCurrentMainGroup(newMainGroup);
           }
         });
-      setTimeout(updateChartMouseoverRect, 1000);
+      abmviz_utilities.debounce(updateChartMouseoverRect, 300, true);
     }
 
     function handlePollError() {
@@ -186,7 +186,7 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     if (tryAgain) {
-      setTimeout(updateChartMouseoverRect, 500);
+      setTimeout(updateChartMouseoverRect, 300);
     }
   }
 

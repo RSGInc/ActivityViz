@@ -147,6 +147,8 @@ var ChordChart = {
     var matrixmap;
     var sidebyside = false;
     var chartData = [];
+    var chordTabSelector = "#" + id + "_id";
+    var chartContainerSelector = "#" + id + "-chart-container";
 
     function getConfigSettings(callback) {
       if (chartOnPage) {
@@ -561,7 +563,10 @@ var ChordChart = {
       if ($("#" + chart.chartId + "-tooltip").length > 0)
         $("#" + chart.chartId + "-tooltip").remove();
 
-      var chartContainer = $("#" + id + "-chart-container");
+      var chartContainer = $(chartContainerSelector);
+      var chartContainerSelection = d3.select(chartContainerSelector);
+      var chartTooltipId = chart.chartId + "-tooltip";
+      var chartTooltipSelector = "#" + chartTooltipId;
       var widthPerChart = chartContainer.width() / numberChordPerRow - 10;
       var height = chartContainer.height();
       var r0 = height / 4;
@@ -589,14 +594,15 @@ var ChordChart = {
         .innerRadius(innerRadius)
         .outerRadius(outerRadius);
 
-      d3.select("#" + id + "-chart-container")
+      var chartTooltip = d3
+        .select(chordTabSelector)
         .append("div")
-        .attr("id", chart.chartId + "-tooltip")
+        .attr("id", chartTooltipId)
         .attr("class", "chord-tooltip")
         .attr("chartidx", chartData.indexOf(chart));
 
       var svg = d3
-        .select("#" + id + "-chart-container")
+        .select(chartContainerSelector)
         .append("svg:svg")
         .attr("width", widthPerChart)
         .attr("height", height)
@@ -638,16 +644,22 @@ var ChordChart = {
         .append("g")
         .attr("class", "group")
         .on("mouseover", function(d, i) {
-          var name = nameByIndex[i].col;
+          // pointer position relative to the SVG
+          var mousePosition = d3.mouse(
+            d3.select(chartTooltipSelector)[0][0].parentNode
+          );
+
           if (nameByIndex != undefined) {
             changeCurrentDistrict(nameByIndex[i].col);
           }
+
           var allChordPaths = d3.selectAll(
             "#" + id + "-chart-container .chord"
           );
+
           $('g[selector="chordcircle"]').toggleClass("hover");
-          console.log("source" + nameByIndex[i].col);
-          d3.selectAll("#" + id + "-chart-container .chord-tooltip")
+
+          d3.select(chartTooltipSelector)
             .style("visibility", function(d, i) {
               var chartIdx = $(this).attr("chartIdx");
               var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
@@ -684,48 +696,15 @@ var ChordChart = {
                 return "";
               }
             })
-            .style("top", function() {
-              var x, y;
-
-              if (d3.event.pageY > height) {
-                return height / 2 + "px";
-              }
-              return d3.event.pageY - 80 + "px";
-            })
-            .style("left", function(d, i) {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-
-              if (eventTarget == chartIdx) {
-                var tooltipX = d3.event.pageX - 50;
-                if (tooltipX > 0 || tooltipX > widthPerChart) {
-                  return tooltipX + "px";
-                } else {
-                  return 0 + "px";
-                }
-              } else {
-                var chartNum = +chartIdx;
-                return (
-                  ($("#" + id + "-chart-container").width() /
-                    numberChordPerRow) *
-                    (chartNum + 1) -
-                  166 +
-                  "px"
-                );
-              }
-            });
+            .style("left", mousePosition[0])
+            .style("top", mousePosition[1] + 10);
 
           allChordPaths.classed("faded", function(p) {
             return p.source.index != i && p.target.index != i;
           });
         })
         .on("mouseout", function(d) {
-          d3.select("#" + chart.chartId + "-tooltip").style(
-            "visibility",
-            "hidden"
-          );
+          d3.select(chartTooltipSelector).style("visibility", "hidden");
           $('g[selector="chordcircle"]').toggleClass("hover");
         });
 
@@ -801,7 +780,11 @@ var ChordChart = {
         })
         .attr("d", d3.svg.chord().radius(innerRadius))
         .on("mouseover", function(d) {
-          d3.selectAll("#" + id + "-chart-container .chord-tooltip")
+          var mousePosition = d3.mouse(
+            d3.select(chartTooltipSelector)[0][0].parentNode
+          );
+
+          d3.select(chartTooltipSelector)
             .style("visibility", function() {
               var chartIdx = $(this).attr("chartIdx");
               var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
@@ -838,45 +821,14 @@ var ChordChart = {
                 chart.chartTotal
               );
             })
-            .style("top", function() {
-              if (d3.event.pageY > height) {
-                return height / 2 + "px";
-              }
-              return d3.event.pageY - 80 + "px";
-            })
-            .style("left", function() {
-              var chartIdx = $(this).attr("chartIdx");
-              var eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
-                "chartIdx"
-              );
-              if (eventTarget == chartIdx) {
-                if (
-                  d3.event.pageX - 50 > 0 ||
-                  d3.event.pageX - 50 > chartContainer.width()
-                ) {
-                  return d3.event.pageX - 50 + "px";
-                } else {
-                  return 0 + "px";
-                }
-              } else {
-                var chartNum = +chartIdx;
-                return (
-                  ($("#" + id + "-chart-container").width() /
-                    numberChordPerRow) *
-                    (chartNum + 1) -
-                  166 +
-                  "px"
-                );
-              }
-            });
+            .style("top", mousePosition[1] + 10)
+            .style("left", mousePosition[0]);
+
           $('g[selector="chordcircle"]').toggleClass("hover");
         })
         .on("mouseout", function(d) {
           $('g[selector="chordcircle"]').toggleClass("hover");
-          d3.select("#" + chart.chartId + "-tooltip").style(
-            "visibility",
-            "hidden"
-          );
+          d3.select(chartTooltipSelector).style("visibility", "hidden");
         });
 
       function chordTip(sourceVal, targetVal, d, chartTotal) {
@@ -1520,7 +1472,7 @@ var ChordChart = {
         updateDesireLines();
       }
       //zoneDataLayer.addTo(map);
-      if (scenarioPolyFile != undefined) {
+      if (focusLayer && scenarioPolyFile) {
         focusLayer.setStyle(styleFocusGeoJSONLayer);
         focusLayer.bringToBack();
       }
