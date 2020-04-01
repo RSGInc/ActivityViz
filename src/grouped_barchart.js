@@ -44,11 +44,9 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     // If it is not vertical, return horizontal config as default.
-    console.log("maxTextWidth", maxTextWidth);
     marginLeft = maxTextWidth
       ? maxTextWidth * 1.1 + 50
       : Math.max(maxLabelLength * 12, 120);
-    console.log("marginLeft", marginLeft);
 
     return {
       maxTextWidth,
@@ -71,7 +69,7 @@ function grouped_barchart(id, data, options, divid) {
 
   svgChart = d3.select(id);
 
-  createEmptyChart(chartConfig);
+  createEmptyChart();
 
   function measureTextWidthAndSetConfig() {
     // find the max width of labels after we draw them on the svg
@@ -81,7 +79,9 @@ function grouped_barchart(id, data, options, divid) {
     for (let t of textElements) {
       maxTextWidth = Math.max(t.getBoundingClientRect().width, maxTextWidth);
     }
-
+    if (!maxTextWidth) {
+      return chartConfig;
+    }
     chartConfig = getChartConfig(options, maxTextWidth);
     return chartConfig;
   }
@@ -97,8 +97,10 @@ function grouped_barchart(id, data, options, divid) {
   }
 
   function updateChart(callback) {
-    "use strict";
-    updateChartNVD3(callback);
+    if (!chartConfig.maxTextWidth) {
+      chartConfig = measureTextWidthAndSetConfig();
+    }
+    return updateChartNVD3(callback);
   }
 
   function updateChartNVD3(callback) {
@@ -206,16 +208,12 @@ function grouped_barchart(id, data, options, divid) {
     });
   }
 
-  function createEmptyChart(config) {
+  function createEmptyChart() {
     nv.addGraph({
-      generate: getChartGenerator(config), //end generate
+      generate: getChartGenerator(chartConfig), //end generate
       callback: function(newGraph) {
         extNvd3Chart = newGraph;
         extNvd3Chart.dispatch.on("renderEnd", function() {
-          if (!config.maxTextWidth) {
-            createEmptyChart(measureTextWidthAndSetConfig());
-            return;
-          }
           rotateYAxisLabel();
         });
 
@@ -279,15 +277,22 @@ function grouped_barchart(id, data, options, divid) {
       } //this is actually for yAxis
 
       nvd3Chart.legend.width(900);
-      nv.utils.windowResize(function() {
-        //reset marginTop in case legend has gotten less tall
-        nvd3Chart.margin({
-          top: chartConfig.margins.top
-        });
-        updateChart(function() {
-          console.log("updateChart callback after windowResize");
-        });
-      });
+      nv.utils.windowResize(
+        abmviz_utilities.debounce(
+          function() {
+            //reset marginTop in case legend has gotten less tall
+            nvd3Chart.margin({
+              top: chartConfig.margins.top
+            });
+
+            updateChart(function() {
+              console.log("updateChart callback after windowResize");
+            });
+          },
+          100,
+          true
+        )
+      );
 
       nvd3Chart.multibar.dispatch.on("elementMouseover", function(d) {
         var mainGroupUnderMouse = d.value;
