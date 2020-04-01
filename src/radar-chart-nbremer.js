@@ -240,8 +240,9 @@ function RadarChart(id, data, options) {
     })
     .call(wrap, cfg.wrapWidth)
     .on("mouseover", function(d, i, j) {
-      var newx = d3.event.pageX; //parseFloat(d3.select(this).attr('x')) - 10;
-      var newy = d3.event.pageY; //parseFloat(d3.select(this).attr('y')) + 20;
+      var mousePosition = d3.mouse(labelTooltip[0][0].parentNode);
+      var newx = mousePosition[0]; //parseFloat(d3.select(this).attr('x')) - 10;
+      var newy = mousePosition[1]; //parseFloat(d3.select(this).attr('y')) + 20;
       var text = "<table><tbody>";
       data.forEach(function(d, idx) {
         if (d["active"] == true) {
@@ -436,20 +437,6 @@ function RadarChart(id, data, options) {
     .style("fill", "none")
     .style("pointer-events", "all")
     .on("mouseover", function(d, i) {
-      newX = parseFloat(d3.select(this).attr("cx")) - 10;
-      newY = parseFloat(d3.select(this).attr("cy")) - 10;
-      tooltip
-        .attr("x", newX)
-        .attr("y", newY)
-        .text(
-          Format(cfg.convertAxesToPercent ? d.value : d.originalValue) +
-            " (" +
-            cfg.tooltipFormatValue(d.originalValue) +
-            ")"
-        )
-        .transition()
-        .duration(200)
-        .style("opacity", 1);
       d3.selectAll(".radarArea")
         .transition()
         .duration(200)
@@ -464,20 +451,11 @@ function RadarChart(id, data, options) {
         .style("fill-opacity", 0.7);
     })
     .on("mouseout", function() {
-      tooltip
-        .transition()
-        .duration(200)
-        .style("opacity", 0);
       d3.selectAll(".radarArea")
         .transition()
         .duration(200)
         .style("fill-opacity", 0.1);
     });
-  //Set up the small tooltip for when you hover over a circle
-  var tooltip = g
-    .append("text")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
 
   /////////////////////////////////////////////////////////
   /////////////////// Helper Function /////////////////////
@@ -489,7 +467,7 @@ function RadarChart(id, data, options) {
       var text = d3.select(this),
         words = text
           .text()
-          .split(/\s+/)
+          .split(/[\s_]+/)
           .reverse(),
         word,
         line = [],
