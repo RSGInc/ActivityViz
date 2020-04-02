@@ -473,7 +473,7 @@ var RadarData = {
             left: marginLeft[numColumns - 1]
           },
           legendPosition: { x: 25, y: 25 },
-          tooltipFormatValue: abmviz_utilities.numberWithCommas,
+          tooltipFormatValue: d3.format(",f"),
           strokeWidth: 2,
           maxValue: 1.0,
           minValue: 0,
@@ -487,8 +487,6 @@ var RadarData = {
           convertAxesToPercent: convertAxesToPercent,
           // strokeWidth: 0,
           color: chartColor
-          //,
-          // tooltipFormatValue: abmviz_utilities.numberWithCommas
         };
         var chartId = 1;
         for (var columnIndex = 0; columnIndex < numColumns; ++columnIndex) {

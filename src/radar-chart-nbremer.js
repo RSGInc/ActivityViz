@@ -25,10 +25,7 @@ function RadarChart(id, data, options) {
     strokeWidth: 2, //The width of the stroke around each blob
     roundStrokes: false, //If true the area and stroke will follow a round path (cardinal-closed)
 
-    tooltipFormatValue: function(d) {
-      return d;
-    },
-
+    tooltipFormatValue: d3.format(",.3f"),
     axisName: "axis",
     areaName: "areaName",
     color: d3.scale.category10() //Color function
