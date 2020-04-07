@@ -269,6 +269,17 @@ var TimeuseChart = {
             return extNvd3Chart != undefined;
           },
           function() {
+            // Check for all, select first person type if not found.
+            var availablePersonTypes = Object.keys(chartData);
+            var selectedPersonTypeIsInData = availablePersonTypes.includes(
+              personType
+            );
+            if (!selectedPersonTypeIsInData) {
+              // pick the first available person type if
+              // the selected type is not in the data provided.
+              personType = availablePersonTypes[0];
+              drawLegend(availablePersonTypes);
+            }
             var currentPersonTypeData = chartData[personType];
             svgElement.datum(currentPersonTypeData).call(extNvd3Chart);
             //kluge - should not need to call nvd3 update here but occassionally in some window positions
