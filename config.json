@@ -22,7 +22,7 @@
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
     },
     "nyc": {
-      "datalocation": "http://localhost:8001/data/nyc/"
+      "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/nyc/"
     }
   }
 }
