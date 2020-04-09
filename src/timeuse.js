@@ -10,6 +10,7 @@ var TimeuseChart = {
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var svgSelector = "#" + id + "-chart svg";
     var svgElement = d3.select(svgSelector);
+    var pageHeader = $("#" + id + "-maingroup");
     var extNvd3Chart;
     var legendBoxWidth = 240;
     var nodeVisuals;
@@ -38,45 +39,32 @@ var TimeuseChart = {
         $.getJSON(dataLocation + "region.json", function(data) {
           var configName = "Default";
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .file;
+            var thisTimeUseChart =
+              data["scenarios"][scenario].visualizations["TimeUse"][indx];
+            if (thisTimeUseChart.file) {
+              fileName = thisTimeUseChart.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .config;
+            if (thisTimeUseChart.config) {
+              configName = thisTimeUseChart.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .datafilecolumns;
+            if (thisTimeUseChart.datafilecolumns) {
+              var datacols = thisTimeUseChart.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].info
-            ) {
-              var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .info;
+            if (thisTimeUseChart.info) {
+              var infoBox = thisTimeUseChart.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
+            }
+            if (thisTimeUseChart.title) {
+              pageHeader.text(thisTimeUseChart.title);
             }
           }
         }).complete(function() {

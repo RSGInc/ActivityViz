@@ -197,38 +197,26 @@ var BarChartMap = {
         $.getJSON(dataLocation + "region.json", function(data) {
           var configName = "Default";
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["BarMap"][indx].file;
+            var thisBarMap =
+              data["scenarios"][scenario].visualizations["BarMap"][indx];
+
+            if (thisBarMap.file) {
+              fileName = thisBarMap.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["BarMap"][indx]
-                  .config;
+            if (thisBarMap.config) {
+              configName = thisBarMap.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].info
-            ) {
+            if (thisBarMap.info) {
               var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["BarMap"][indx].info;
+              infoBox = thisBarMap.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["BarMap"][indx]
-                  .datafilecolumns;
+            if (thisBarMap.datafilecolumns) {
+              var datacols = thisBarMap.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
