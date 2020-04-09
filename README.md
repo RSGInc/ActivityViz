@@ -129,7 +129,10 @@ Each Data/Region folder needs the following:
           - If the value is "zones", the default selected map layers are "Counties" and "Zones".
           - If the value is "bubbles" the default selected map layer is "Bubbles", and "Counties" and "Zones" are deselected.
         - DefaultBubbleSize: Number from 1 to 10. Default: 5.
-          - Determines the selected value of the "Size" select field when the page is first loaded. 
+          - Determines the selected value of the "Size" select field when the page is first loaded.
+        - StackAllChartsByDefault
+          - Boolean: defaults to true.
+          - Determines whether bars in the bar chart should be stacked. If values is false, they appear side-by-side.
     - Chord: Chord chart that also displays with a map
         - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
         - ExcludeSameOD: Flag to exclude data points that have the same origin and destination

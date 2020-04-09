@@ -109,7 +109,8 @@ var BarChartMap = {
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
     var chartSelector = "#" + id + "-chart";
-    var bubbleSizeDropdownSelector = "#" + id + "-bubble-size";
+    var stackChartsCheckbox = $("#" + id + "-stacked");
+    var bubbleSizeDropdown = $("#" + id + "-bubble-size");
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
@@ -163,6 +164,7 @@ var BarChartMap = {
       bubbles: "bubbles",
       zones: "zones"
     };
+    var STACK_CHARTS_BY_DEFAULT = true;
     var showCycleTools = true;
     var highlightLayer;
     var maxLabelLength = 0;
@@ -292,7 +294,11 @@ var BarChartMap = {
                 DEFAULT_MAP_DISPLAY = value;
               }
               if (opt == "DefaultBubbleSize") {
-                $(bubbleSizeDropdownSelector).val(value);
+                bubbleSizeDropdown.val(value);
+              }
+              if (opt == "StackAllChartsByDefault") {
+                STACK_CHARTS_BY_DEFAULT = value;
+                stackChartsCheckbox.prop("checked", value);
               }
             });
           }
@@ -686,7 +692,7 @@ var BarChartMap = {
           //console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
           var colorScale = d3.scale.category20();
           var nvd3Chart = nv.models.multiBarHorizontalChart();
-          if ($("#" + id + "-stacked").is(":checked")) {
+          if (stackChartsCheckbox.is(":checked")) {
             nvd3Chart = nv.models
               .multiBarHorizontalChart()
               .groupSpacing(BARSPACING);
@@ -716,7 +722,7 @@ var BarChartMap = {
               bottom: marginBottom
             })
             .id(id + "-multiBarHorizontalChart")
-            .stacked(true)
+            .stacked(STACK_CHARTS_BY_DEFAULT)
             .showControls(false);
           marginLeft = Math.max(110 + (maxLabelLength - 5) * 5, 110);
           nvd3Chart.yAxis.tickFormat(d3.format(",.0f"));
@@ -1098,7 +1104,7 @@ var BarChartMap = {
       });
     } //end setColorPalette
     function initializeMuchOfUI() {
-      $("#" + id + "-stacked").click(function() {
+      stackChartsCheckbox.click(function() {
         extNvd3Chart.stacked(this.checked);
         var test = extNvd3Chart.groupSpacing();
         if (this.checked) {
@@ -1121,11 +1127,11 @@ var BarChartMap = {
       function updateMapUI() {
         bubblesShowing = $("#" + id + "-bubbles").is(":checked");
         zonesShowing = $("#" + id + "-zones").is(":checked");
-        $(bubbleSizeDropdownSelector).spectrum(
+        bubbleSizeDropdown.spectrum(
           bubblesShowing ? "enable" : "disable",
           true
         );
-        $(bubbleSizeDropdownSelector).prop("disabled", !bubblesShowing);
+        bubbleSizeDropdown.prop("disabled", !bubblesShowing);
         if (bubblesShowing) {
           updateBubbleColor();
           updateBubbleSize();
@@ -1139,7 +1145,7 @@ var BarChartMap = {
           .closest("div")
           .hide();
       }
-      $(bubbleSizeDropdownSelector).change(updateBubbleSize);
+      bubbleSizeDropdown.change(updateBubbleSize);
       $("#" + id + "-legend-type").click(function() {
         extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
         extNvd3Chart.update();
@@ -1371,7 +1377,7 @@ var BarChartMap = {
       var mapCenter = map.getCenter();
       var eastBound = map.getBounds().getEast();
       var centerEast = L.latLng(mapCenter.lat, eastBound);
-      var bubbleMultiplier = parseInt($(bubbleSizeDropdownSelector).val());
+      var bubbleMultiplier = parseInt(bubbleSizeDropdown.val());
       var mapBounds = d3
         .select("#" + id + "-map")
         .node()
