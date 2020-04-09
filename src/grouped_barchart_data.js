@@ -457,15 +457,25 @@ var BarChartGrp = {
       }
 
       function setDataSpecificDOM() {
-        d3.selectAll("#" + id + "-div .grouped-barchart-main-group").html(
-          mainGroupColumn
+        var mainGroupInTitle = d3.selectAll(
+          "#" + id + "-div .grouped-barchart-main-group"
         );
-        d3.selectAll("#" + id + "-div .grouped-barchart-sub-group").html(
-          subGroupColumn
+        var subGroupInTitle = d3.selectAll(
+          "#" + id + "-div .grouped-barchart-sub-group"
         );
+        if (pivotData) {
+          mainGroupInTitle.html(subGroupColumn);
+          subGroupInTitle.html(mainGroupColumn);
+        } else {
+          mainGroupInTitle.html(mainGroupColumn);
+          subGroupInTitle.html(subGroupColumn);
+        }
+
+        var exampleIndex = pivotData ? 1 : 0;
+
         d3.selectAll(
           "#" + id + "-div .grouped-barchart-sub-group-example"
-        ).html(chartData[0].key);
+        ).html(chartData[exampleIndex].key);
       }
     } //end createGrouped
     createGrouped();
