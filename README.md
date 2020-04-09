@@ -124,6 +124,12 @@ Each Data/Region folder needs the following:
         - CycleMapTools: true/false flag to hide or show the cycle map tools
         - ZoneFile: Name of the GeoJSON file with the zone data to display on map requires each feature to have a "NAME" property to link to data set
         - NoValueColor: Name, hex, or RGB value of color to use when a cell does not have a value.
+        - DefaultMapDisplay
+          - May be either `"zones"` or `"bubbles"`. Defaults to "zones" when no value is provided.
+          - If the value is "zones", the default selected map layers are "Counties" and "Zones".
+          - If the value is "bubbles" the default selected map layer is "Bubbles", and "Counties" and "Zones" are deselected.
+        - DefaultBubbleSize: Number from 1 to 10. Default: 5.
+          - Determines the selected value of the "Size" select field when the page is first loaded. 
     - Chord: Chord chart that also displays with a map
         - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
         - ExcludeSameOD: Flag to exclude data points that have the same origin and destination

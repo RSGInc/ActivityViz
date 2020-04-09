@@ -109,6 +109,7 @@ var BarChartMap = {
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
     var chartSelector = "#" + id + "-chart";
+    var bubbleSizeDropdownSelector = "#" + id + "-bubble-size";
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
@@ -157,6 +158,11 @@ var BarChartMap = {
     var SCENARIO_FOCUS = false;
     var ROTATELABEL = 0;
     var BARSPACING = 0.2;
+    var DEFAULT_MAP_DISPLAY = "zones";
+    var MAP_DISPLAY_OPTIONS = {
+      bubbles: "bubbles",
+      zones: "zones"
+    };
     var showCycleTools = true;
     var highlightLayer;
     var maxLabelLength = 0;
@@ -282,6 +288,12 @@ var BarChartMap = {
               if (opt == "NoValueColor") {
                 naColor = value;
               }
+              if (opt == "DefaultMapDisplay") {
+                DEFAULT_MAP_DISPLAY = value;
+              }
+              if (opt == "DefaultBubbleSize") {
+                $(bubbleSizeDropdownSelector).val(value);
+              }
             });
           }
         }).complete(function() {
@@ -290,7 +302,6 @@ var BarChartMap = {
             url += "/" + fileName;
           }
           callback();
-          ZONE_FILTER_LOC = ZONE_FILTER_LOC;
         });
       }
     }
@@ -443,7 +454,7 @@ var BarChartMap = {
           //end if keeping this object
           return keepThisObject;
         });
-        //end filtering and other data prep
+
         modes = Object.keys(modeData);
         data = null;
         zoneFilterData = null;
@@ -853,61 +864,59 @@ var BarChartMap = {
             Object.keys(zoneData).length +
             ").";
         }
+
         circleMarkers = [];
         //create circle markers for each zone centroid
-        for (var i = 0; i < zoneTiles.features.length; i++) {
-          var feature = zoneTiles.features[i];
+        for (var feature of zoneTiles.features) {
           var featureZoneData = zoneData[feature.properties.id];
 
           if (featureZoneData == undefined) {
-            //missing data for this zone
-          } else {
-            //WARNING: center coordinates seem to have lat and lng reversed!
-            var centroid = L.latLngBounds(
-              feature.geometry.coordinates[0]
-            ).getCenter();
-            //REORDER lat and lng
-            var circleMarker = L.circleMarker(
-              L.latLng(centroid.lng, centroid.lat),
-              circleStyle
-            );
-            circleMarker.zoneData = featureZoneData;
-            feature.zoneData = featureZoneData;
+            continue;
+          }
 
-            // This loop will turn zoneFilterFeatures into an object
-            // where each key corresponds to the filters in the data
-            // and each value is an array of features for that filter.
-            if (featureZoneData.FILTERS) {
-              for (let filterKey in featureZoneData.FILTERS) {
-                // FILTERS value will be "0" if false, "1" if true
-                // so we need to parseInt here to interpret 0 as
-                // falsy. If it's falsy, skip to next filter.
-                if (!parseInt(featureZoneData.FILTERS[filterKey])) {
-                  continue;
-                }
+          //WARNING: center coordinates seem to have lat and lng reversed!
+          var centroid = L.latLngBounds(
+            feature.geometry.coordinates[0]
+          ).getCenter();
+          //REORDER lat and lng
+          var circleMarker = L.circleMarker(
+            L.latLng(centroid.lng, centroid.lat),
+            circleStyle
+          );
+          circleMarker.zoneData = featureZoneData;
+          feature.zoneData = featureZoneData;
 
-                // If the object does not yet contain a key with the filter
-                // key value, add it to the object.
-                if (!zoneFilterFeatureCollections[filterKey]) {
-                  zoneFilterFeatureCollections[filterKey] = {
-                    type: "FeatureCollection",
-                    features: [feature]
-                  };
-                  continue;
-                }
+          // This loop will turn zoneFilterFeatures into an object
+          // where each key corresponds to the filters in the data
+          // and each value is an array of features for that filter.
+          if (featureZoneData.FILTERS) {
+            for (let filterKey in featureZoneData.FILTERS) {
+              // FILTERS value will be "0" if false, "1" if true
+              // so we need to parseInt here to interpret 0 as
+              // falsy. If it's falsy, skip to next filter.
+              if (!parseInt(featureZoneData.FILTERS[filterKey])) {
+                continue;
+              }
 
-                // If the object already has a property with the name of the
-                // filter key, push to that array.
-                if (zoneFilterFeatureCollections[filterKey]) {
-                  zoneFilterFeatureCollections[filterKey].features.push(
-                    feature
-                  );
-                }
+              // If the object does not yet contain a key with the filter
+              // key value, add it to the object.
+              if (!zoneFilterFeatureCollections[filterKey]) {
+                zoneFilterFeatureCollections[filterKey] = {
+                  type: "FeatureCollection",
+                  features: [feature]
+                };
+                continue;
+              }
+
+              // If the object already has a property with the name of the
+              // filter key, push to that array.
+              if (zoneFilterFeatureCollections[filterKey]) {
+                zoneFilterFeatureCollections[filterKey].features.push(feature);
               }
             }
-
-            circleMarkers.push(circleMarker);
           }
+
+          circleMarkers.push(circleMarker);
         }
         console.log(zoneFilterFeatureCollections);
 
@@ -932,8 +941,6 @@ var BarChartMap = {
           }
 
           zoneFilterLayers[collectionKey + "_zone"] = layer;
-          // controlLayer.addOverlay(zoneFilterLayers[zoneheaders[i]], zonefilters[zoneheaders[i]])
-          // controlLayer.addOverlay(layer,collectionKey);
         }
 
         circlesLayerGroup = L.layerGroup(circleMarkers);
@@ -992,6 +999,13 @@ var BarChartMap = {
             controlLayer.addOverlay(countyLayer, "Counties");
             controlLayer.addOverlay(zoneDataLayer, "Zones");
             controlLayer.addOverlay(circlesLayerGroup, "Bubbles");
+
+            if (DEFAULT_MAP_DISPLAY === MAP_DISPLAY_OPTIONS.bubbles) {
+              countyLayer.removeFrom(map);
+              zoneDataLayer.removeFrom(map);
+              circlesLayerGroup.addTo(map);
+            }
+
             console.log(COUNTY_FILE + " complete");
           });
 
@@ -1107,36 +1121,14 @@ var BarChartMap = {
       function updateMapUI() {
         bubblesShowing = $("#" + id + "-bubbles").is(":checked");
         zonesShowing = $("#" + id + "-zones").is(":checked");
-        console.log("updateBubbles: bubblesShowing=" + bubblesShowing);
-        console.log(
-          '$("#' +
-            id +
-            '-bubble-size").prop("disabled"): ' +
-            $("#" + id + "-bubble-size").prop("disabled")
-        );
-        $("#" + id + "-bubble-color").spectrum(
+        $(bubbleSizeDropdownSelector).spectrum(
           bubblesShowing ? "enable" : "disable",
           true
         );
-        //$("#mode-share-by-county-bubble-color").spectrum("disable", !bubblesShowing);
-        $("#" + id + "-bubble-size").prop("disabled", !bubblesShowing);
-        console.log(
-          '$("#' +
-            id +
-            '-bubble-size").prop("disabled"): ' +
-            $("#" + id + "-bubble-size").prop("disabled")
-        );
+        $(bubbleSizeDropdownSelector).prop("disabled", !bubblesShowing);
         if (bubblesShowing) {
           updateBubbleColor();
           updateBubbleSize();
-          //circlesLayerGroup.addTo(map);
-        } else {
-          // circlesLayerGroup.removeFrom(map);
-        }
-        if (zonesShowing) {
-          //  zoneDataLayer.addTo(map);
-        } else {
-          //zoneDataLayer.removeFrom(map);
         }
       }
 
@@ -1147,7 +1139,7 @@ var BarChartMap = {
           .closest("div")
           .hide();
       }
-      $("#" + id + "-bubble-size").change(updateBubbleSize);
+      $(bubbleSizeDropdownSelector).change(updateBubbleSize);
       $("#" + id + "-legend-type").click(function() {
         extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
         extNvd3Chart.update();
@@ -1158,6 +1150,7 @@ var BarChartMap = {
         //add delay to redrawMap so css has change to updates
         setTimeout(redrawMap, CSS_UPDATE_PAUSE);
       });
+
       //end on click for ramp/palette
       if ($("#" + id + "-classification").val() == "custom") {
         $("#" + id + "-update-map").css("display", "inline");
@@ -1378,7 +1371,7 @@ var BarChartMap = {
       var mapCenter = map.getCenter();
       var eastBound = map.getBounds().getEast();
       var centerEast = L.latLng(mapCenter.lat, eastBound);
-      var bubbleMultiplier = parseInt($("#" + id + "-bubble-size").val());
+      var bubbleMultiplier = parseInt($(bubbleSizeDropdownSelector).val());
       var mapBounds = d3
         .select("#" + id + "-map")
         .node()
@@ -1396,16 +1389,8 @@ var BarChartMap = {
         var zoneData = circleMarker.zoneData;
         var zoneTripData = zoneData[currentTripModeBubble];
         var sqrtRadius = 0;
-        var checkedfilters = $(
-          "#" + id + "-checkboxes input[type=checkbox]:checked"
-        );
-        var cnttrue = 0;
         var isZoneVisible = true;
-        /* checkedfilters.each(function () {
-                 var filtername = this.attributes["colname"];
-                 cnttrue += parseInt(zoneData.FILTERS[filtername.value]);
-                 isZoneVisible = cnttrue > 0;
-             });*/
+
         if (zoneTripData != undefined && isZoneVisible) {
           var quantity = zoneTripData.QUANTITY;
           var sqrtRadius = scaleSqrt(quantity);
