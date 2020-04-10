@@ -164,6 +164,11 @@ var BarChartMap = {
       bubbles: "bubbles",
       zones: "zones"
     };
+    var AGGREGATION_METHOD_OPTIONS = {
+      sum: "sum",
+      average: "average"
+    };
+    var AGGREGATION_METHOD = "sum";
     var STACK_CHARTS_BY_DEFAULT = true;
     var showCycleTools = true;
     var highlightLayer;
@@ -222,6 +227,9 @@ var BarChartMap = {
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
+            }
+            if (thisBarMap.aggregationMethod) {
+              AGGREGATION_METHOD = thisBarMap.aggregationMethod;
             }
           }
           //GO THROUGH region level configuration settings
@@ -443,7 +451,17 @@ var BarChartMap = {
               }
             }
             modeData[modeName].serie.push(quantity);
-            rawChartData[countyName][modeName] += quantity;
+            console.log("aggMethod", AGGREGATION_METHOD);
+            if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.average) {
+              rawChartData[countyName][modeName] =
+                (rawChartData[countyName][modeName] + quantity) / 2;
+            } else if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.sum) {
+              rawChartData[countyName][modeName] += quantity;
+            } else {
+              console.error(
+                "Configuration error: Invalid AggrationMethod\n  Valid values are: ['sum', 'average']"
+              );
+            }
           }
           //end if keeping this object
           return keepThisObject;
