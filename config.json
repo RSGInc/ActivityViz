@@ -21,8 +21,8 @@
     "charlotte": {
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
     },
-    "nyc": {
-      "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/nyc/"
+    "covid19": {
+      "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/covid19/"
     }
   }
 }
