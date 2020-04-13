@@ -401,6 +401,7 @@ var BarChartMap = {
         quantityColumn = headers[3];
         var rawChartData = new Map([]);
         //run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
+        var seriesLengths = {};
         zoneData = {};
         countiesSet = new Set();
 
@@ -437,11 +438,13 @@ var BarChartMap = {
             if (rawChartData[countyName] == undefined) {
               rawChartData[countyName] = {};
               countiesSet.add(countyName);
+              seriesLengths[countyName] = {};
               maxLabelLength = Math.max(countyName.length, maxLabelLength);
             }
 
             if (rawChartData[countyName][modeName] == undefined) {
               rawChartData[countyName][modeName] = 0;
+              seriesLengths[countyName][modeName] = 0;
               //keep track of counts for each mode
               //don't actually care about counts but this also implicitly keeps a list of all modes
               //in the order they were encountered because properties are ordered
@@ -452,21 +455,25 @@ var BarChartMap = {
                 };
               }
             }
+
             modeData[modeName].serie.push(quantity);
-            if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.average) {
-              rawChartData[countyName][modeName] =
-                (rawChartData[countyName][modeName] + quantity) / 2;
-            } else if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.sum) {
-              rawChartData[countyName][modeName] += quantity;
-            } else {
-              console.error(
-                "Configuration error: Invalid AggrationMethod\n  Valid values are: ['sum', 'average']"
-              );
-            }
+            rawChartData[countyName][modeName] += quantity;
+            seriesLengths[countyName][modeName] += 1;
           }
           //end if keeping this object
           return keepThisObject;
         });
+
+        if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.average) {
+          for (var majorGroup in rawChartData) {
+            for (var minorGroup in rawChartData[majorGroup]) {
+              var average =
+                rawChartData[majorGroup][minorGroup] /
+                seriesLengths[majorGroup][minorGroup];
+            }
+            rawChartData[majorGroup][minorGroup] = average;
+          }
+        }
 
         modes = Object.keys(modeData);
         data = null;
