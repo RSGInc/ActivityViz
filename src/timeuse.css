@@ -23,13 +23,12 @@
 .timeuse-legend-items {
   display: flex;
   flex-wrap: wrap;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   justify-content: center;
 }
 
 .timeuse-legend-item {
   border: 2px solid black;
+  min-width: 250px;
   text-align: center;
   border-radius: 10px;
   padding: 0 0.5em;
