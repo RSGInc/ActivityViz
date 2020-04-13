@@ -401,6 +401,9 @@ var BarChartMap = {
         quantityColumn = headers[3];
         var rawChartData = new Map([]);
         //run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
+
+        // Keep track of the lengths of the nested series
+        // in order to calculate averages.
         var seriesLengths = {};
         zoneData = {};
         countiesSet = new Set();
@@ -470,8 +473,8 @@ var BarChartMap = {
               var average =
                 rawChartData[majorGroup][minorGroup] /
                 seriesLengths[majorGroup][minorGroup];
+              rawChartData[majorGroup][minorGroup] = average;
             }
-            rawChartData[majorGroup][minorGroup] = average;
           }
         }
 
