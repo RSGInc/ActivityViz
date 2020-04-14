@@ -721,7 +721,7 @@ var BarChartMap = {
         countyLayer.setStyle(function(feature) {
           var style = {};
           if (feature.properties.NAME == currentCounty) {
-            style.weight = 2;
+            style.weight = 4;
           } else {
             style.weight = 1;
           }
@@ -973,7 +973,7 @@ var BarChartMap = {
               fill: false,
               fillOpacity: 0.0,
               stroke: true,
-              weight: 1,
+              weight: 0.5,
               strokeOpacity: 0.5,
               color: highlightColor
             }
@@ -1412,12 +1412,10 @@ var BarChartMap = {
       var maxBubbleSize = bubbleMultiplier * maxBubbleRadiusInPixels;
       var serie = new geostats(modeData[currentTripModeBubble].serie);
       maxFeature = serie.max();
-      var minFeature = serie.min();
       var scaleSqrt = d3.scale
         .sqrt()
-        .domain([minFeature, maxFeature])
-        .range([5, maxBubbleSize]);
-
+        .domain([0, maxFeature])
+        .range([0, maxBubbleSize]);
       circleMarkers.forEach(function(circleMarker) {
         var zoneData = circleMarker.zoneData;
         var zoneTripData = zoneData[currentTripModeBubble];
