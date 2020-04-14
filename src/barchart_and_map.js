@@ -1042,7 +1042,6 @@ var BarChartMap = {
             controlLayer.addOverlay(circlesLayerGroup, "Bubbles");
 
             if (DEFAULT_MAP_DISPLAY === MAP_DISPLAY_OPTIONS.bubbles) {
-              countyLayer.removeFrom(map);
               zoneDataLayer.removeFrom(map);
               circlesLayerGroup.addTo(map);
             }
