@@ -922,7 +922,7 @@ var BarChartMap = {
 
           //WARNING: center coordinates seem to have lat and lng reversed!
           var centroid = L.latLngBounds(
-            feature.geometry.coordinates[0]
+            feature.geometry.coordinates.flat()
           ).getCenter();
           //REORDER lat and lng
           var circleMarker = L.circleMarker(

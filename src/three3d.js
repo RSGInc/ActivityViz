@@ -593,7 +593,7 @@ var ThreeDMap = {
         zoneGeoJSON.features.forEach(function(feature) {
           var id = feature.properties.id;
           var zoneDatum = zoneData[id];
-          var latLngs = feature.geometry.coordinates[0];
+          var latLngs = feature.geometry.coordinates.flat();
           var centroid = L.latLngBounds(latLngs).getCenter();
           var squareLength = 0.001;
 
