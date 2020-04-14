@@ -168,7 +168,19 @@ var BarChartMap = {
       sum: "sum",
       average: "average"
     };
-    var AGGREGATION_METHOD = "sum";
+    var AGGREGATION_METHOD = AGGREGATION_METHOD_OPTIONS.sum;
+
+    /**
+     * Grouped bar charts are sortable in two ways.
+     * 1. Alphabetically by the labels of the major groups.
+     * 2. Quantitatively by the values of the first bar in each group.
+     */
+    var BAR_GROUP_SORT_METHOD_OPTIONS = {
+      alphabetical: "alphabetical",
+      firstBar: "firstBar"
+    };
+    var BAR_GROUP_SORT_METHOD = BAR_GROUP_SORT_METHOD_OPTIONS.alphabetical;
+
     var STACK_CHARTS_BY_DEFAULT = true;
     var showCycleTools = true;
     var highlightLayer;
@@ -231,7 +243,11 @@ var BarChartMap = {
             if (thisBarMap.aggregationMethod) {
               AGGREGATION_METHOD = thisBarMap.aggregationMethod;
             }
+            if (thisBarMap.barGroupSortMethod) {
+              BAR_GROUP_SORT_METHOD = thisBarMap.barGroupSortMethod;
+            }
           }
+
           //GO THROUGH region level configuration settings
           $.each(data, function(key, val) {
             if (key == "CountyFile") COUNTY_FILE = val;
@@ -506,6 +522,33 @@ var BarChartMap = {
           });
           //end modes foreach
         });
+
+
+        
+        if (BAR_GROUP_SORT_METHOD === BAR_GROUP_SORT_METHOD_OPTIONS.firstBar) {
+          chartData.sort(compareFirstBar);
+        }
+
+        function compareFirstBar(groupA, groupB) {
+          // If the groups don't have correct data format, don't sort them.
+          for (let group of [groupA, groupB]) {
+            if (
+              !group.subgroups ||
+              !group.subgroups.length ||
+              group.subgroups[0].value === undefined
+            ) {
+              return 0;
+            }
+          }
+
+          if (groupA.subgroups[0].value < groupB.subgroups[0].value) {
+            return 1;
+          } else if (groupA.subgroups[0].value > groupB.subgroups[0].value) {
+            return -1;
+          } else {
+            return 0;
+          }
+        }
 
         //end countiesSet forEach
         rawChartData = null;
