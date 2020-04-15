@@ -12,6 +12,7 @@ function grouped_barchart(id, data, options, divid) {
   var showAsVertical = options.showAsVertical;
   var showAsGrouped = options.showAsGrped;
   var BARSPACING = showAsGrouped ? options.barSpacing : 0.2;
+  var thisTab = $("#" + divid + "_id");
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
 
@@ -277,22 +278,20 @@ function grouped_barchart(id, data, options, divid) {
       } //this is actually for yAxis
 
       nvd3Chart.legend.width(900);
-      nv.utils.windowResize(
-        abmviz_utilities.debounce(
-          function() {
-            //reset marginTop in case legend has gotten less tall
-            nvd3Chart.margin({
-              top: chartConfig.margins.top
-            });
+      nv.utils.windowResize(function() {
+        if (!thisTab.is(":visible")) {
+          return;
+        }
 
-            updateChart(function() {
-              console.log("updateChart callback after windowResize");
-            });
-          },
-          100,
-          true
-        )
-      );
+        //reset marginTop in case legend has gotten less tall
+        nvd3Chart.margin({
+          top: chartConfig.margins.top
+        });
+
+        updateChart(function() {
+          console.log("updateChart callback after windowResize");
+        });
+      });
 
       nvd3Chart.multibar.dispatch.on("elementMouseover", function(d) {
         var mainGroupUnderMouse = d.value;

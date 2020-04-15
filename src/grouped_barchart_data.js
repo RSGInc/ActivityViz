@@ -21,6 +21,7 @@ var BarChartGrp = {
     var dataLocation = localStorage.getItem(region);
     var chartSelector = "#" + id + "_grouped-barchart";
     var showChartOnPage = $("#" + id + "-container").children().length == 0;
+    var thisTab = $("#" + id + "_id");
     var fileName = "BarChartData.csv";
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var url = dataLocation + scenario;
@@ -479,10 +480,6 @@ var BarChartGrp = {
       }
     } //end createGrouped
     createGrouped();
-    window.addEventListener("resize", function() {
-      console.log("Got resize event. Calling grouped");
-      createGrouped();
-    });
     return {};
   }
 }; //end encapsulating IIFEE

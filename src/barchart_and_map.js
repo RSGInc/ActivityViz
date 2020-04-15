@@ -109,6 +109,7 @@ var BarChartMap = {
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
     var chartSelector = "#" + id + "-chart";
+    var thisTab = $("#" + id + "_id");
     var stackChartsCheckbox = $("#" + id + "-stacked");
     var bubbleSizeDropdown = $("#" + id + "-bubble-size");
     var svgChart;
@@ -672,13 +673,9 @@ var BarChartMap = {
       //end call to poll
       callback();
     } //end updateChartNVD3
+
     function updateChartMouseoverRect() {
-      var shownTabs = $('li[role="presentation"]').children(":visible");
-      if (
-        shownTabs.length == 0 ||
-        ($('li[role="presentation"]').children(":visible").length > 1 &&
-          $("#thenavbar li.active").text() === "BarChart and Map")
-      ) {
+      if (thisTab.is(':visible')) {
         var innerContainer = svgChart.select(
           ".nvd3.nv-wrap.nv-multibarHorizontal"
         );
@@ -777,6 +774,9 @@ var BarChartMap = {
           //this is actually for yAxis
 
           nv.utils.windowResize(function() {
+            if (!thisTab.is(':visible')) {
+              return;
+            }
             //reset marginTop in case legend has gotten less tall
             nvd3Chart.margin({
               top: marginTop

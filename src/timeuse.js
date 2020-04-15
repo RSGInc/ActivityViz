@@ -8,6 +8,7 @@ var TimeuseChart = {
     var fileName = "TimeUseData.csv";
     var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
     var scenario = abmviz_utilities.GetURLParameter("scenario");
+    var thisTab = $('#' + id + '_id');
     var svgSelector = "#" + id + "-chart svg";
     var svgElement = d3.select(svgSelector);
     var pageHeader = $("#" + id + "-maingroup");
@@ -398,7 +399,12 @@ var TimeuseChart = {
       createTimeUse();
       window.addEventListener(
         "resize",
-        abmviz_utilities.debounce(createTimeUse, 250, true)
+        abmviz_utilities.debounce(function () {
+          if (!thisTab.is(':visible')) {
+            return;
+          }
+          createTimeUse();
+        }, 250, true)
       );
     }
 
