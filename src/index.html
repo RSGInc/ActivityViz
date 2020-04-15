@@ -885,7 +885,7 @@
       var containerElement = document.createElement(containerTag);
       for (var stringContent of stringContentArray) {
         var listItem = document.createElement(listItemTag);
-        listItem.innerText = stringContent;
+        listItem.innerHTML = stringContent;
         containerElement.appendChild(listItem);
       }
       return containerElement;
