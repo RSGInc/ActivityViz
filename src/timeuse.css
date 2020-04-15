@@ -1,13 +1,7 @@
-.time-use-visualization {
-  display: flex;
-  justify-content: stretch;
-}
-
 .timeuse-main {
   padding: 0px;
   padding-left: 0;
   padding-top: 0;
-  flex: 1 1 70%;
 }
 
 .timeuse-sidebar {
@@ -15,35 +9,36 @@
 }
 
 .timeuse-text-area {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
 .timeuse-legend {
   vertical-align: middle;
   cursor: default;
-}
-.timeuse-legend svg {
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+  margin-left: 40px;
+  margin-right: 20px;
 }
 
-.timeuse-legend rect {
-  fill: white;
-  stroke: black;
-  stroke-width: 2;
+.timeuse-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timeuse-legend-item {
+  border: 2px solid black;
+  text-align: center;
+  border-radius: 10px;
+  padding: 0 0.5em;
+  margin: 0.2em;
+}
+
+.timeuse-current-person-type {
   opacity: 1;
-}
-
-.timeuse-legend rect.timeuse-current-person-type {
-  opacity: 1;
-  fill: #e09d15;
-}
-
-.timeuse-legend text {
+  background-color: #e09d15;
   font-weight: 400;
-  fill: black;
+  color: black;
 }
 
 .timeuse-chart {

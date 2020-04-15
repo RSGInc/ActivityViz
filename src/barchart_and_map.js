@@ -3,6 +3,16 @@
 var BarChartMap = {
   barchart_and_map: function barchart_and_map(id, indx) {
     "use strict";
+
+    /**
+     * Hack workaround for a bug where going to a different tab, resizing the 
+     * window, and coming back to this one breaks the Leaflet map until the 
+     * window is resized again on this tab. Long-term solution is to introduce
+     * a 3rd party client=side routing library and retire the home-grown
+     * implementation.
+     */
+    window.dispatchEvent(new Event("resize"));
+
     var naColor = "White";
     var highlightColor = "Yellow";
     var focusColor = "Yellow";
@@ -109,6 +119,9 @@ var BarChartMap = {
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
     var chartSelector = "#" + id + "-chart";
+    var thisTab = $("#" + id + "_id");
+    var stackChartsCheckbox = $("#" + id + "-stacked");
+    var bubbleSizeDropdown = $("#" + id + "-bubble-size");
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
@@ -157,6 +170,29 @@ var BarChartMap = {
     var SCENARIO_FOCUS = false;
     var ROTATELABEL = 0;
     var BARSPACING = 0.2;
+    var DEFAULT_MAP_DISPLAY = "zones";
+    var MAP_DISPLAY_OPTIONS = {
+      bubbles: "bubbles",
+      zones: "zones"
+    };
+    var AGGREGATION_METHOD_OPTIONS = {
+      sum: "sum",
+      average: "average"
+    };
+    var AGGREGATION_METHOD = AGGREGATION_METHOD_OPTIONS.sum;
+
+    /**
+     * Grouped bar charts are sortable in two ways.
+     * 1. Alphabetically by the labels of the major groups.
+     * 2. Quantitatively by the values of the first bar in each group.
+     */
+    var BAR_GROUP_SORT_METHOD_OPTIONS = {
+      alphabetical: "alphabetical",
+      firstBar: "firstBar"
+    };
+    var BAR_GROUP_SORT_METHOD = BAR_GROUP_SORT_METHOD_OPTIONS.alphabetical;
+
+    var STACK_CHARTS_BY_DEFAULT = true;
     var showCycleTools = true;
     var highlightLayer;
     var maxLabelLength = 0;
@@ -189,45 +225,40 @@ var BarChartMap = {
         $.getJSON(dataLocation + "region.json", function(data) {
           var configName = "Default";
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["BarMap"][indx].file;
+            var thisBarMap =
+              data["scenarios"][scenario].visualizations["BarMap"][indx];
+
+            if (thisBarMap.file) {
+              fileName = thisBarMap.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["BarMap"][indx]
-                  .config;
+            if (thisBarMap.config) {
+              configName = thisBarMap.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx].info
-            ) {
+            if (thisBarMap.info) {
               var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["BarMap"][indx].info;
+              infoBox = thisBarMap.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
             }
-            if (
-              data["scenarios"][scenario].visualizations["BarMap"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["BarMap"][indx]
-                  .datafilecolumns;
+            if (thisBarMap.datafilecolumns) {
+              var datacols = thisBarMap.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
             }
+            if (thisBarMap.aggregationMethod) {
+              AGGREGATION_METHOD = thisBarMap.aggregationMethod;
+            }
+            if (thisBarMap.barGroupSortMethod) {
+              BAR_GROUP_SORT_METHOD = thisBarMap.barGroupSortMethod;
+            }
           }
+
           //GO THROUGH region level configuration settings
           $.each(data, function(key, val) {
             if (key == "CountyFile") COUNTY_FILE = val;
@@ -282,15 +313,23 @@ var BarChartMap = {
               if (opt == "NoValueColor") {
                 naColor = value;
               }
+              if (opt == "DefaultMapDisplay") {
+                DEFAULT_MAP_DISPLAY = value;
+              }
+              if (opt == "DefaultBubbleSize") {
+                bubbleSizeDropdown.val(value);
+              }
+              if (opt == "StackAllChartsByDefault") {
+                STACK_CHARTS_BY_DEFAULT = value;
+                stackChartsCheckbox.prop("checked", value);
+              }
             });
           }
         }).complete(function() {
           if (url.indexOf(fileName) == -1) {
-            console.log("here");
             url += "/" + fileName;
           }
           callback();
-          ZONE_FILTER_LOC = ZONE_FILTER_LOC;
         });
       }
     }
@@ -389,8 +428,13 @@ var BarChartMap = {
         quantityColumn = headers[3];
         var rawChartData = new Map([]);
         //run through data. Filter out 'total' pseudo-mode, convert quantity to int, create zoneData
+
+        // Keep track of the lengths of the nested series
+        // in order to calculate averages.
+        var seriesLengths = {};
         zoneData = {};
         countiesSet = new Set();
+
         data.forEach(function(d) {
           var modeName = d[modeColumn];
           var keepThisObject = modeName != "TOTAL";
@@ -420,13 +464,17 @@ var BarChartMap = {
                 }
               }
             }
+
             if (rawChartData[countyName] == undefined) {
               rawChartData[countyName] = {};
               countiesSet.add(countyName);
+              seriesLengths[countyName] = {};
               maxLabelLength = Math.max(countyName.length, maxLabelLength);
             }
+
             if (rawChartData[countyName][modeName] == undefined) {
               rawChartData[countyName][modeName] = 0;
+              seriesLengths[countyName][modeName] = 0;
               //keep track of counts for each mode
               //don't actually care about counts but this also implicitly keeps a list of all modes
               //in the order they were encountered because properties are ordered
@@ -437,13 +485,26 @@ var BarChartMap = {
                 };
               }
             }
+
             modeData[modeName].serie.push(quantity);
             rawChartData[countyName][modeName] += quantity;
+            seriesLengths[countyName][modeName] += 1;
           }
           //end if keeping this object
           return keepThisObject;
         });
-        //end filtering and other data prep
+
+        if (AGGREGATION_METHOD === AGGREGATION_METHOD_OPTIONS.average) {
+          for (var majorGroup in rawChartData) {
+            for (var minorGroup in rawChartData[majorGroup]) {
+              var average =
+                rawChartData[majorGroup][minorGroup] /
+                seriesLengths[majorGroup][minorGroup];
+              rawChartData[majorGroup][minorGroup] = average;
+            }
+          }
+        }
+
         modes = Object.keys(modeData);
         data = null;
         zoneFilterData = null;
@@ -472,6 +533,31 @@ var BarChartMap = {
           });
           //end modes foreach
         });
+
+        if (BAR_GROUP_SORT_METHOD === BAR_GROUP_SORT_METHOD_OPTIONS.firstBar) {
+          chartData.sort(compareFirstBar);
+        }
+
+        function compareFirstBar(groupA, groupB) {
+          // If the groups don't have correct data format, don't sort them.
+          for (let group of [groupA, groupB]) {
+            if (
+              !group.subgroups ||
+              !group.subgroups.length ||
+              group.subgroups[0].value === undefined
+            ) {
+              return 0;
+            }
+          }
+
+          if (groupA.subgroups[0].value < groupB.subgroups[0].value) {
+            return 1;
+          } else if (groupA.subgroups[0].value > groupB.subgroups[0].value) {
+            return -1;
+          } else {
+            return 0;
+          }
+        }
 
         //end countiesSet forEach
         rawChartData = null;
@@ -578,7 +664,6 @@ var BarChartMap = {
             .attr("x", -marginLeft)
             .attr("fill-opacity", "0.0")
             .on("mousemove", function(event) {
-              //console.log('barsWrap mousemove');
               var mouseY = d3.mouse(this)[1];
               var numCounties = enabledCounties.length;
               var heightPerGroup = barsWrapRectHeight / numCounties;
@@ -596,13 +681,9 @@ var BarChartMap = {
       //end call to poll
       callback();
     } //end updateChartNVD3
+
     function updateChartMouseoverRect() {
-      var shownTabs = $('li[role="presentation"]').children(":visible");
-      if (
-        shownTabs.length == 0 ||
-        ($('li[role="presentation"]').children(":visible").length > 1 &&
-          $("#thenavbar li.active").text() === "BarChart and Map")
-      ) {
+      if (thisTab.is(":visible")) {
         var innerContainer = svgChart.select(
           ".nvd3.nv-wrap.nv-multibarHorizontal"
         );
@@ -613,12 +694,6 @@ var BarChartMap = {
           var width = bounds.width + marginLeft;
           barsWrapRectHeight = bounds.height;
           if (barsWrapRectHeight > 0) {
-            console.log(
-              "barsWrap setting  width=" +
-                width +
-                ", height=" +
-                barsWrapRectHeight
-            );
             barsWrap
               .select(barsWrapRectSelector)
               .attr("width", width)
@@ -628,9 +703,6 @@ var BarChartMap = {
         }
         //end if innerContainerNode exists
         if (tryAgain) {
-          console.log(
-            "updateChartMouseoverRect called but innerContainerNode is null so will try again shortly"
-          );
           setTimeout(updateChartMouseoverRect, 500);
         }
       }
@@ -639,9 +711,6 @@ var BarChartMap = {
     //end updateChartMouseoverRect
     function changeCurrentCounty(newCurrentCounty) {
       if (currentCounty != newCurrentCounty) {
-        console.log(
-          "changing from " + currentCounty + " to " + newCurrentCounty
-        );
         currentCounty = newCurrentCounty;
         var countyLabels = d3.selectAll(
           ".nvd3.nv-multiBarHorizontalChart .nv-x text "
@@ -672,18 +741,15 @@ var BarChartMap = {
     function createEmptyChart() {
       nv.addGraph({
         generate: function chartGenerator() {
-          //console.log('chartGenerator being called. nvd3Chart=' + nvd3Chart);
           var colorScale = d3.scale.category20();
           var nvd3Chart = nv.models.multiBarHorizontalChart();
-          if ($("#" + id + "-stacked").is(":checked")) {
+          if (stackChartsCheckbox.is(":checked")) {
             nvd3Chart = nv.models
               .multiBarHorizontalChart()
               .groupSpacing(BARSPACING);
           } else {
             nvd3Chart = nv.models.multiBarHorizontalChart();
           }
-
-          //console.log('chartGenerator being called. nvd3Chart set to:' + nvd3Chart);
 
           nvd3Chart
             .x(function(d, i) {
@@ -694,7 +760,6 @@ var BarChartMap = {
             })
             .color(function(d, i) {
               var color = colorScale(i);
-              //console.log('barColor i=' + i + ' modeColorIndex=' + modeColorIndex + ' mode=' + d.key + ' county=' + d.label + ' count=' + d.value + ' color=' + color);
               return color;
             })
             .duration(250)
@@ -705,7 +770,7 @@ var BarChartMap = {
               bottom: marginBottom
             })
             .id(id + "-multiBarHorizontalChart")
-            .stacked(true)
+            .stacked(STACK_CHARTS_BY_DEFAULT)
             .showControls(false);
           marginLeft = Math.max(110 + (maxLabelLength - 5) * 5, 110);
           nvd3Chart.yAxis.tickFormat(d3.format(",.0f"));
@@ -717,6 +782,9 @@ var BarChartMap = {
           //this is actually for yAxis
 
           nv.utils.windowResize(function() {
+            if (!thisTab.is(":visible")) {
+              return;
+            }
             //reset marginTop in case legend has gotten less tall
             nvd3Chart.margin({
               top: marginTop
@@ -727,7 +795,6 @@ var BarChartMap = {
           });
           nvd3Chart.legend.dispatch.on("legendDblclick", function(event) {
             var newTripMode = event.key;
-            console.log("legend legendDblclick on trip mode: " + newTripMode);
             $("#" + id + "-current-trip-mode-zones").val(newTripMode);
             updateCurrentTripModeOrClassification();
             redrawMap();
@@ -741,7 +808,6 @@ var BarChartMap = {
           return nvd3Chart;
         }, //end generate
         callback: function(newGraph) {
-          console.log("nv.addGraph callback called");
           extNvd3Chart = newGraph;
 
           updateChart(function() {
@@ -839,7 +905,6 @@ var BarChartMap = {
       map.on("zoomend", function(type, target) {
         var zoomLevel = map.getZoom();
         var zoomScale = map.getZoomScale();
-        console.log("zoomLevel: ", zoomLevel, " zoomScale: ", zoomScale);
       });
 
       $.getJSON(dataLocation + ZONE_FILE_LOC, function(zoneTiles) {
@@ -853,63 +918,60 @@ var BarChartMap = {
             Object.keys(zoneData).length +
             ").";
         }
+
         circleMarkers = [];
         //create circle markers for each zone centroid
-        for (var i = 0; i < zoneTiles.features.length; i++) {
-          var feature = zoneTiles.features[i];
+        for (var feature of zoneTiles.features) {
           var featureZoneData = zoneData[feature.properties.id];
 
           if (featureZoneData == undefined) {
-            //missing data for this zone
-          } else {
-            //WARNING: center coordinates seem to have lat and lng reversed!
-            var centroid = L.latLngBounds(
-              feature.geometry.coordinates[0]
-            ).getCenter();
-            //REORDER lat and lng
-            var circleMarker = L.circleMarker(
-              L.latLng(centroid.lng, centroid.lat),
-              circleStyle
-            );
-            circleMarker.zoneData = featureZoneData;
-            feature.zoneData = featureZoneData;
+            continue;
+          }
 
-            // This loop will turn zoneFilterFeatures into an object
-            // where each key corresponds to the filters in the data
-            // and each value is an array of features for that filter.
-            if (featureZoneData.FILTERS) {
-              for (let filterKey in featureZoneData.FILTERS) {
-                // FILTERS value will be "0" if false, "1" if true
-                // so we need to parseInt here to interpret 0 as
-                // falsy. If it's falsy, skip to next filter.
-                if (!parseInt(featureZoneData.FILTERS[filterKey])) {
-                  continue;
-                }
+          //WARNING: center coordinates seem to have lat and lng reversed!
+          var centroid = L.latLngBounds(
+            feature.geometry.coordinates.flat()
+          ).getCenter();
+          //REORDER lat and lng
+          var circleMarker = L.circleMarker(
+            L.latLng(centroid.lng, centroid.lat),
+            circleStyle
+          );
+          circleMarker.zoneData = featureZoneData;
+          feature.zoneData = featureZoneData;
 
-                // If the object does not yet contain a key with the filter
-                // key value, add it to the object.
-                if (!zoneFilterFeatureCollections[filterKey]) {
-                  zoneFilterFeatureCollections[filterKey] = {
-                    type: "FeatureCollection",
-                    features: [feature]
-                  };
-                  continue;
-                }
+          // This loop will turn zoneFilterFeatures into an object
+          // where each key corresponds to the filters in the data
+          // and each value is an array of features for that filter.
+          if (featureZoneData.FILTERS) {
+            for (let filterKey in featureZoneData.FILTERS) {
+              // FILTERS value will be "0" if false, "1" if true
+              // so we need to parseInt here to interpret 0 as
+              // falsy. If it's falsy, skip to next filter.
+              if (!parseInt(featureZoneData.FILTERS[filterKey])) {
+                continue;
+              }
 
-                // If the object already has a property with the name of the
-                // filter key, push to that array.
-                if (zoneFilterFeatureCollections[filterKey]) {
-                  zoneFilterFeatureCollections[filterKey].features.push(
-                    feature
-                  );
-                }
+              // If the object does not yet contain a key with the filter
+              // key value, add it to the object.
+              if (!zoneFilterFeatureCollections[filterKey]) {
+                zoneFilterFeatureCollections[filterKey] = {
+                  type: "FeatureCollection",
+                  features: [feature]
+                };
+                continue;
+              }
+
+              // If the object already has a property with the name of the
+              // filter key, push to that array.
+              if (zoneFilterFeatureCollections[filterKey]) {
+                zoneFilterFeatureCollections[filterKey].features.push(feature);
               }
             }
-
-            circleMarkers.push(circleMarker);
           }
+
+          circleMarkers.push(circleMarker);
         }
-        console.log(zoneFilterFeatureCollections);
 
         for (let collectionKey in zoneFilterFeatureCollections) {
           let layer = L.geoJson(zoneFilterFeatureCollections[collectionKey], {
@@ -932,8 +994,6 @@ var BarChartMap = {
           }
 
           zoneFilterLayers[collectionKey + "_zone"] = layer;
-          // controlLayer.addOverlay(zoneFilterLayers[zoneheaders[i]], zonefilters[zoneheaders[i]])
-          // controlLayer.addOverlay(layer,collectionKey);
         }
 
         circlesLayerGroup = L.layerGroup(circleMarkers);
@@ -951,13 +1011,10 @@ var BarChartMap = {
 
         $.getJSON(dataLocation + COUNTY_FILE, function(countyTiles) {
           "use strict";
-          console.log(COUNTY_FILE + " success");
           //http://leafletjs.com/reference.html#tilelayer
           countyLayer = L.geoJson(countyTiles, {
             //keep only counties that we have data for
             filter: function(feature) {
-              console.log(feature.properties.NAME);
-              console.log(countiesSet.has(feature.properties.NAME));
               return countiesSet.has(feature.properties.NAME);
             },
             updateWhenIdle: true,
@@ -969,7 +1026,6 @@ var BarChartMap = {
           });
 
           var allCountyBounds = countyLayer.getBounds();
-          console.log(allCountyBounds);
           if (!SCENARIO_FOCUS && countyLayer.getBounds().isValid())
             map.fitBounds(allCountyBounds);
           updateBubbleColor();
@@ -992,7 +1048,11 @@ var BarChartMap = {
             controlLayer.addOverlay(countyLayer, "Counties");
             controlLayer.addOverlay(zoneDataLayer, "Zones");
             controlLayer.addOverlay(circlesLayerGroup, "Bubbles");
-            console.log(COUNTY_FILE + " complete");
+
+            if (DEFAULT_MAP_DISPLAY === MAP_DISPLAY_OPTIONS.bubbles) {
+              zoneDataLayer.removeFrom(map);
+              circlesLayerGroup.addTo(map);
+            }
           });
 
         //end geoJson of county layer
@@ -1084,7 +1144,7 @@ var BarChartMap = {
       });
     } //end setColorPalette
     function initializeMuchOfUI() {
-      $("#" + id + "-stacked").click(function() {
+      stackChartsCheckbox.click(function() {
         extNvd3Chart.stacked(this.checked);
         var test = extNvd3Chart.groupSpacing();
         if (this.checked) {
@@ -1107,36 +1167,14 @@ var BarChartMap = {
       function updateMapUI() {
         bubblesShowing = $("#" + id + "-bubbles").is(":checked");
         zonesShowing = $("#" + id + "-zones").is(":checked");
-        console.log("updateBubbles: bubblesShowing=" + bubblesShowing);
-        console.log(
-          '$("#' +
-            id +
-            '-bubble-size").prop("disabled"): ' +
-            $("#" + id + "-bubble-size").prop("disabled")
-        );
-        $("#" + id + "-bubble-color").spectrum(
+        bubbleSizeDropdown.spectrum(
           bubblesShowing ? "enable" : "disable",
           true
         );
-        //$("#mode-share-by-county-bubble-color").spectrum("disable", !bubblesShowing);
-        $("#" + id + "-bubble-size").prop("disabled", !bubblesShowing);
-        console.log(
-          '$("#' +
-            id +
-            '-bubble-size").prop("disabled"): ' +
-            $("#" + id + "-bubble-size").prop("disabled")
-        );
+        bubbleSizeDropdown.prop("disabled", !bubblesShowing);
         if (bubblesShowing) {
           updateBubbleColor();
           updateBubbleSize();
-          //circlesLayerGroup.addTo(map);
-        } else {
-          // circlesLayerGroup.removeFrom(map);
-        }
-        if (zonesShowing) {
-          //  zoneDataLayer.addTo(map);
-        } else {
-          //zoneDataLayer.removeFrom(map);
         }
       }
 
@@ -1147,7 +1185,7 @@ var BarChartMap = {
           .closest("div")
           .hide();
       }
-      $("#" + id + "-bubble-size").change(updateBubbleSize);
+      bubbleSizeDropdown.change(updateBubbleSize);
       $("#" + id + "-legend-type").click(function() {
         extNvd3Chart.legend.vers(this.checked ? "classic" : "furious");
         extNvd3Chart.update();
@@ -1158,6 +1196,7 @@ var BarChartMap = {
         //add delay to redrawMap so css has change to updates
         setTimeout(redrawMap, CSS_UPDATE_PAUSE);
       });
+
       //end on click for ramp/palette
       if ($("#" + id + "-classification").val() == "custom") {
         $("#" + id + "-update-map").css("display", "inline");
@@ -1227,7 +1266,6 @@ var BarChartMap = {
         max: 100,
         values: handlers,
         create: function(event, ui) {
-          console.log("Slider created");
           $("#" + id + "-div .ui-slider-handle:first").html(
             '<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
               handlers[0] +
@@ -1315,16 +1353,12 @@ var BarChartMap = {
         // 			change: function (color) {
         // 				//BUG this gets called when user still clicking in color chooser (despite docs) See
         // 				//https://github.com/bgrins/spectrum/issues/289
-        // 				console.log("bubble-color spectrum change called with color:" + color);
         // 				bubbleColor = color;
         // 				updateBubbleColor();
         // 			},
         hide: function(color) {
           if (color != bubbleColor) {
             bubbleColor = color;
-            console.log(
-              "bubble-color spectrum hide called with color:" + color
-            );
             updateBubbleColor();
           }
         },
@@ -1332,9 +1366,6 @@ var BarChartMap = {
         move: function(color) {
           if (color != bubbleColor) {
             bubbleColor = color;
-            console.log(
-              "bubble-color spectrum move called with color:" + color
-            );
             updateBubbleColor();
           }
         }
@@ -1378,7 +1409,7 @@ var BarChartMap = {
       var mapCenter = map.getCenter();
       var eastBound = map.getBounds().getEast();
       var centerEast = L.latLng(mapCenter.lat, eastBound);
-      var bubbleMultiplier = parseInt($("#" + id + "-bubble-size").val());
+      var bubbleMultiplier = parseInt(bubbleSizeDropdown.val());
       var mapBounds = d3
         .select("#" + id + "-map")
         .node()
@@ -1396,16 +1427,8 @@ var BarChartMap = {
         var zoneData = circleMarker.zoneData;
         var zoneTripData = zoneData[currentTripModeBubble];
         var sqrtRadius = 0;
-        var checkedfilters = $(
-          "#" + id + "-checkboxes input[type=checkbox]:checked"
-        );
-        var cnttrue = 0;
         var isZoneVisible = true;
-        /* checkedfilters.each(function () {
-                 var filtername = this.attributes["colname"];
-                 cnttrue += parseInt(zoneData.FILTERS[filtername.value]);
-                 isZoneVisible = cnttrue > 0;
-             });*/
+
         if (zoneTripData != undefined && isZoneVisible) {
           var quantity = zoneTripData.QUANTITY;
           var sqrtRadius = scaleSqrt(quantity);
@@ -1419,14 +1442,6 @@ var BarChartMap = {
       currentTripModeBubble = $("#" + id + "-current-trip-mode-bubbles").val();
       currentTripModeZone = $("#" + id + "-current-trip-mode-zones").val();
       var startTime = Date.now();
-      console.log(
-        "updateCurrentTripModeOrClassification: #current-trip-mode-zone.val()=" +
-          currentTripModeZone
-      );
-      console.log(
-        "updateCurrentTripModeOrClassification: #current-trip-mode-bubble.val()=" +
-          currentTripModeBubble
-      );
       var serie = new geostats(modeData[currentTripModeZone].serie);
       maxFeature = serie.max();
       //handle the different classifications
@@ -1499,3 +1514,5 @@ var BarChartMap = {
   }
 };
 //end encapsulating IIFE
+
+function generateChartData() {}
