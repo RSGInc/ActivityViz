@@ -20,9 +20,6 @@
     },
     "charlotte": {
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
-    },
-    "covid19": {
-      "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/covid19/"
     }
   }
 }
