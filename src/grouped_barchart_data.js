@@ -27,6 +27,7 @@ var BarChartGrp = {
     var url = dataLocation + scenario;
     //CONFIG VARIABLES
     var numberOfCols;
+    var HIDE_CONTROLS = false;
     var ROTATELABEL = 0;
     var BARSPACING = 0.2;
     var showAsStacked = false;
@@ -130,6 +131,10 @@ var BarChartGrp = {
             }
             if (opt == "BarSpacing") {
               BARSPACING = value;
+            }
+            if (opt == "HideControls") {
+              HIDE_CONTROLS = value;
+              $('.grouped-bar-chart-controls').hide();
             }
           });
         }).complete(function() {

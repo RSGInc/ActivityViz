@@ -1,4 +1,5 @@
 # ActivityViz 
+
 ActivityViz is an interactive travel and activity data visualization tool.  It is built with JavaScript technologies 
 and works with various types of travel and activity data - household travel surveys, trip-based
 model outputs, activity-based model outputs, disaggregate passive data, freight models, on-board surveys, etc.  
@@ -19,7 +20,7 @@ support from [Oregon Metro](https://www.oregonmetro.gov/) and others.
 2. To make contributions, fork the repo, make revisions, and issue a pull request to develop.
 3. Once contributions are acceptable, then we will merge develop to master and then master to gh-pages
 
-# Adding a New Region or New Scenario Data
+## Adding a New Region or New Scenario Data
 
 ActivityViz supports configuration for multiple regions.  To setup ActivityViz in your region:
 
@@ -106,12 +107,14 @@ Each chart type has a different entry for their specific configuration settings.
 
 - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
 - RotateLabels: Number of degrees to rotate the labels on the Y-Axis for the non-vertical chart.  Default is 0 can go from -90 to 90.
-- NumberColsGrouped: Number of grouped bar chart columns that should appear per row 
+- NumberColsGrouped: Number of grouped bar chart columns that should appear per row
 - SwapLegendByDefault: (true/false or "N/A" to hide) flag that swaps the bar and legend by default for all grouped charts
 - ShowAsPercentByDefault: (true/false or "N/A" to hide) flag that shows data as a percentage by default for all grouped charts
 - ShowAsVerticalByDefault: (true/false or "N/A" to hide) flag that shows the bar chart as vertical rather than horizontal by default for all charts
 - StackAllChartsByDefault: (true/false or "N/A" to hide) flag that shows all data as stacked rather than grouped by default for all charts
 - ChartWidthOverride: array of values to allow you to individually set each chart's width
+- HideControls
+  - If truthy, hides the checkboxes above the chart.
 
 #### `3DMap`: 3D Map specific properties
 
@@ -124,7 +127,7 @@ Each chart type has a different entry for their specific configuration settings.
 - CentroidsOff: sets the default value for the centroids checkbox
 - NoValueColor: Name, hex, or RGB value of color to use when a data cell does not have a value.
 
-#### `BarMap`: Barchart that also displays with a map with zones or bubbles 
+#### `BarMap`: Barchart that also displays with a map with zones or bubbles
 
 - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
 - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
