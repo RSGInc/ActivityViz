@@ -8,8 +8,10 @@ var TimeuseChart = {
     var fileName = "TimeUseData.csv";
     var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
     var scenario = abmviz_utilities.GetURLParameter("scenario");
+    var thisTab = $('#' + id + '_id');
     var svgSelector = "#" + id + "-chart svg";
     var svgElement = d3.select(svgSelector);
+    var pageHeader = $("#" + id + "-maingroup");
     var extNvd3Chart;
     var legendBoxWidth = 240;
     var nodeVisuals;
@@ -38,45 +40,32 @@ var TimeuseChart = {
         $.getJSON(dataLocation + "region.json", function(data) {
           var configName = "Default";
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .file;
+            var thisTimeUseChart =
+              data["scenarios"][scenario].visualizations["TimeUse"][indx];
+            if (thisTimeUseChart.file) {
+              fileName = thisTimeUseChart.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .config;
+            if (thisTimeUseChart.config) {
+              configName = thisTimeUseChart.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .datafilecolumns;
+            if (thisTimeUseChart.datafilecolumns) {
+              var datacols = thisTimeUseChart.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
             }
-            if (
-              data["scenarios"][scenario].visualizations["TimeUse"][indx].info
-            ) {
-              var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["TimeUse"][indx]
-                  .info;
+            if (thisTimeUseChart.info) {
+              var infoBox = thisTimeUseChart.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
+            }
+            if (thisTimeUseChart.title) {
+              pageHeader.text(thisTimeUseChart.title);
             }
           }
         }).complete(function() {
@@ -269,6 +258,17 @@ var TimeuseChart = {
             return extNvd3Chart != undefined;
           },
           function() {
+            // Check for all, select first person type if not found.
+            var availablePersonTypes = Object.keys(chartData);
+            var selectedPersonTypeIsInData = availablePersonTypes.includes(
+              personType
+            );
+            if (!selectedPersonTypeIsInData) {
+              // pick the first available person type if
+              // the selected type is not in the data provided.
+              personType = availablePersonTypes[0];
+              drawLegend(availablePersonTypes);
+            }
             var currentPersonTypeData = chartData[personType];
             svgElement.datum(currentPersonTypeData).call(extNvd3Chart);
             //kluge - should not need to call nvd3 update here but occassionally in some window positions
@@ -362,44 +362,34 @@ var TimeuseChart = {
         var totalLegendHeight = personTypes.length * (li.h + li.s);
         var legend = d3
           .select("#" + id + "-legend")
-          .append("svg:svg")
           .attr("width", legendBoxWidth)
-          .attr("height", totalLegendHeight);
-        legendGroups = legend
-          .selectAll("g")
+          .attr("height", totalLegendHeight)
+          .classed("timeuse-legend-items", true);
+
+        var legendItems = legend
+          .selectAll("div.legend-item-container")
           .data(personTypes)
           .enter()
-          .append("svg:g")
-          .attr("transform", function(d, i) {
-            return "translate(0," + i * (li.h + li.s) + ")";
-          });
-        legendRects = legendGroups
-          .append("svg:rect")
-          .attr("rx", li.r)
-          .attr("ry", li.r)
-          .attr("width", legendBoxWidth)
-          .attr("height", li.h)
+          .append("div")
+          .classed("legend-item-container", true)
+          .append("div")
+          .classed("timeuse-legend-item", true)
+          .text(function(d) {
+            return d;
+          })
           .on("mouseover", function(d, i) {
             personType = d;
             clearHighlightPoints();
             updateChart();
             setPersonTypeClass();
           });
-        legendTexts = legendGroups
-          .append("svg:text")
-          .attr("x", legendBoxWidth / 2)
-          .attr("y", li.h / 2)
-          .attr("dy", "0.35em")
-          .attr("text-anchor", "middle")
-          .text(function(d) {
-            return d;
-          });
 
         function setPersonTypeClass() {
-          legendRects.classed("timeuse-current-person-type", function(d) {
+          legendItems.classed("timeuse-current-person-type", function(d) {
             return d === personType;
           });
         }
+
         setPersonTypeClass();
       } //end drawLegend
     } //end createTimeUse
@@ -409,7 +399,12 @@ var TimeuseChart = {
       createTimeUse();
       window.addEventListener(
         "resize",
-        abmviz_utilities.debounce(createTimeUse, 250, true)
+        abmviz_utilities.debounce(function () {
+          if (!thisTab.is(':visible')) {
+            return;
+          }
+          createTimeUse();
+        }, 250, true)
       );
     }
 

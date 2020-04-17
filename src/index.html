@@ -318,6 +318,7 @@
             var chartname = "tu_" + v.name.replace(/\s/g, "");
             $("#timeuse_tab").attr("id", chartname + "_id");
             $("#timeuse").attr("id", chartname + "-div");
+            $(".timeuse-maingroup").attr("id", chartname + "-maingroup");
             $("#timeuse-sidebar").attr("id", chartname + "-sidebar");
             $("#timeuse-text-area").attr("id", chartname + "-text-area");
             $("#timeuse-legend").attr("id", chartname + "-legend");
@@ -884,7 +885,7 @@
       var containerElement = document.createElement(containerTag);
       for (var stringContent of stringContentArray) {
         var listItem = document.createElement(listItemTag);
-        listItem.innerText = stringContent;
+        listItem.innerHTML = stringContent;
         containerElement.appendChild(listItem);
       }
       return containerElement;
