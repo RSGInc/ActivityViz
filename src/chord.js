@@ -646,6 +646,8 @@ var ChordChart = {
         createToolTipTable(chart, chartData.indexOf(chart));
       }
 
+      function getOdSum(chartDataMartix, index) {}
+
       var chordGroups = circle
         .selectAll("#" + chart.chartId + "_circle g.group")
         .data(chord.groups())
@@ -683,17 +685,19 @@ var ChordChart = {
               let eventTarget = d3.event.currentTarget.ownerSVGElement.getAttribute(
                 "chartIdx"
               );
-              let sum = chartData[$(this).attr("chartIdx")].dataMatrix[
-                i
-              ].reduce(function(acc, val) {
-                return acc + val;
-              }, 0);
+              var destinationsArray =
+                chartData[$(this).attr("chartIdx")].dataMatrix[i];
+              var sum = d3.sum(destinationsArray);
               if (sidebyside) {
-                addGroupToolTipTable(
-                  chartData[$(this).attr("chartIdx")],
-                  d,
-                  sum
-                );
+                for (var chartDataObject of chartData) {
+                  var destArrayInOtherChart = chartDataObject.dataMatrix[i];
+                  var sumForOtherTable = d3.sum(destArrayInOtherChart);
+                  addGroupToolTipTable(
+                    chartDataObject,
+                    d,
+                    sumForOtherTable
+                  );
+                }
               }
               if (eventTarget == chartIdx) {
                 return groupTip(
@@ -788,7 +792,7 @@ var ChordChart = {
           return fill(d.source.index);
         })
         .attr("d", d3.svg.chord().radius(innerRadius))
-        .on("mouseover", function(d) {
+        .on("mouseover", function(d, i) {
           var mousePosition = d3.mouse(
             d3.select(chartTooltipSelector)[0][0].parentNode
           );
@@ -816,12 +820,18 @@ var ChordChart = {
 
               let chart = chartData[$(this).attr("chartIdx")];
               if (sidebyside) {
-                addPathToolTipTable(
-                  sourceVal,
-                  targetVal,
-                  chart.dataRdr(d),
-                  chart
-                );
+                // Update tooltip tables for all charts on hover
+                for (var chartDataObject of chartData) {
+                  var chartDataMatrixForOtherChart = chartDataObject.dataMatrix;
+                  var sourceValInOtherChart = chartDataMatrixForOtherChart[d.source.index][d.target.index];
+                  var targetValInOtherChart = chartDataMatrixForOtherChart[d.target.index][d.source.index];
+                  addPathToolTipTable(
+                    sourceValInOtherChart,
+                    targetValInOtherChart,
+                    chart.dataRdr(d),
+                    chartDataObject
+                  );
+                }
               }
               return chordTip(
                 sourceVal,
@@ -897,9 +907,6 @@ var ChordChart = {
           q = d3.format(",.0f");
         let chartId = thisChart.chartId;
         let dataStf = thisChart.dataRdr(d);
-        $("#" + chartId + "_tooltiptable")
-          .css("visibility", "visible")
-          .css("height", "60px");
         $("#" + chartId + "_tooltiptable table tbody").html("");
         $("#" + chartId + "_tooltiptable table tbody").append(
           "<tr>" +
@@ -920,12 +927,9 @@ var ChordChart = {
       }
 
       function addPathToolTipTable(sourceVal, destVal, dataObj, thisChart) {
-        var p = d3.format(".2%"),
-          q = d3.format(",.0f");
+        var formatPercent = d3.format(".2%"),
+          formatFloat = d3.format(",.0f");
         let chartId = thisChart.chartId;
-        $("#" + chartId + "_tooltiptable")
-          .css("visibility", "visible")
-          .css("height", "60px");
         $("#" + chartId + "_tooltiptable table tbody").html("");
         $("#" + chartId + "_tooltiptable table tbody").append(
           "<tr>" +
@@ -936,9 +940,9 @@ var ChordChart = {
             indexByName[dataObj.tname].name +
             "</td>" +
             "<td>" +
-            q(sourceVal) +
+            formatFloat(sourceVal) +
             " (" +
-            p(sourceVal / thisChart.chartTotal) +
+            formatPercent(sourceVal / thisChart.chartTotal) +
             ")" +
             "</td>" +
             "</tr>"
@@ -952,9 +956,9 @@ var ChordChart = {
             indexByName[dataObj.sname].name +
             "</td>" +
             "<td>" +
-            q(destVal) +
+            formatFloat(destVal) +
             " (" +
-            p(destVal / thisChart.chartTotal) +
+            formatPercent(destVal / thisChart.chartTotal) +
             ")" +
             "</td>" +
             "</tr>"
@@ -983,7 +987,9 @@ var ChordChart = {
       function createToolTipTable(chart, chartIdx) {
         if ($("#" + id + "-tooltiptablediv").length == 0) {
           $("#" + id + "-div").append(
-            "<div id='" + id + "-tooltiptablediv'   ></div>"
+            "<div id='" +
+              id +
+              "-tooltiptablediv' class='tooltip-table-container'  ></div>"
           );
         }
 
@@ -994,17 +1000,11 @@ var ChordChart = {
               "_tooltiptable' class='chord-tooltiptablediv' ></div>"
           );
           var mydiv = $("#" + chart.chartId + "_tooltiptable");
-          mydiv.css("width", 98 / numberChordPerRow + "%");
-          mydiv.css("visibility", "hidden");
-          mydiv.css("max-width", "44%");
           $("#" + chart.chartId + "_tooltiptable").append(
             "<table class='table-condensed table-bordered chord-tooltiptable'><thead><tr><th style='width:30%'>ORIGIN</th><th style='width:30%'>DESTINATION</th><th style='width:30%'>DATA</th></tr></thead>" +
               "<tbody></tbody>" +
               "</table>"
           );
-          //.attr("transform", "translate(" + ($('#' + id + '-chart-container').width() / (numberChordPerRow * 2) - 25) + ",14)");
-
-          mydiv.css("display", "inline-block");
 
           if (chartData.length == 2 && chartIdx == 1) {
             $("#" + chart.chartId + "_tooltiptable table").css(
