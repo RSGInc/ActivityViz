@@ -79,22 +79,8 @@ body {
   margin-right: -0.5em;
 }
 
-#sidebarhead img {
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
-  width: 33%;
-  margin-bottom: 25px;
-}
-
-#sidebarimg img {
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 25px;
-  width: 75%;
-}
-
+#sidebarhead img,
+#sidebarimg img,
 #sidebarinforight {
   display: table;
   margin-left: auto;

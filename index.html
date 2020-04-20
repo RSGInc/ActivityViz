@@ -2,14 +2,11 @@
   <head>
     <title>ActivityViz</title>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="" />
+    <link id="favicon" rel="shortcut icon" href="" />
     <link
       rel="stylesheet"
       href="bower_components/bootstrap/dist/css/bootstrap.min.css"
     />
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/d3/d3.min.js"></script>
     <link
       rel="stylesheet"
       href="bower_components/font-awesome/css/all.min.css"
@@ -43,9 +40,7 @@
     </div>
     <div class="footer">
       <div class="footer-container">
-        <span>
-          <i class="far fa-copyright" aria-hidden="true"></i> RSG 
-        </span>
+        <span><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
         <span>
           <a href="https://github.com/rsginc/ActivityViz" target="_blank">
             <i class="fab fa-github-alt" aria-hidden="true"></i> Source Code
@@ -53,115 +48,9 @@
         </span>
       </div>
     </div>
-    <script type="text/javascript">
-      var sideBarStuff = {};
-      $.getJSON("config.json", function(data) {
-        var defaultRegion = "";
-        $.each(data, function(key, val) {
-          var regiontitle = "";
-          if (key == "regions") {
-            $.each(val, function(k, v, i) {
-              $("#scenarios").append('<div id="' + k + "_id" + '"></div>');
-
-              if (defaultRegion == "") {
-                defaultRegion = k;
-              }
-
-              var dataLocation;
-              dataLocation = v.datalocation;
-              localStorage.setItem(k, dataLocation);
-              $.ajax({
-                method: "GET",
-                url: dataLocation + "region.json",
-                dataType: "json",
-                success: function(reg) {
-                  regiontitle = reg.FrontPageTitle;
-                  if (defaultRegion == k) {
-                    var icon = reg.Icon;
-                    var logo = reg.Logo;
-                    var title = reg.Title;
-                    var linkURL = reg.LinkURL;
-                    var navbartitle = reg.NavbarTitle;
-                    $("link[rel*='icon']").attr(
-                      "href",
-                      dataLocation + "img/" + icon + ""
-                    );
-                    $("title").text(title);
-                    $("#title_id").text(navbartitle);
-                    $("#navbarlink").attr("href", linkURL);
-                    $("#logo_id").attr(
-                      "src",
-                      dataLocation + "img/" + logo + ""
-                    );
-                    var sidebarHead = "";
-                    var sidebarImg = "";
-                    var sidebarText = "";
-                    var sideBarID = "";
-                    if ("SideBarTextLeft" in reg) {
-                      $("#sidebarinfoleft p").html(reg.SideBarTextLeft);
-                    }
-                    if ("SideBarTextRight" in reg) {
-                      $("#sidebarinforight P").html(reg.SideBarTextRight);
-                    }
-                    if ("SideBarLogo" in reg && reg.SideBarLogo != "") {
-                      $("#sidebarhead img").attr(
-                        "src",
-                        dataLocation + "img/" + reg.SideBarLogo
-                      );
-                    } else {
-                      $("#sidebarhead img").remove();
-                      $("#sidebarhead").css("min-height", "125px");
-                    }
-                    if ("SideBarImage" in reg && reg.SideBarImage != "") {
-                      $("#sidebarimg  img").attr(
-                        "src",
-                        dataLocation + "img/" + reg.SideBarImage
-                      );
-                    } else {
-                      $("#sidebarimg  img").remove();
-                    }
-                  }
-                  $("#" + k + "_id").append(
-                    "<h4>" +
-                      regiontitle +
-                      "<img style='max-height: 25px;margin-left:2%;'src='" +
-                      dataLocation +
-                      "img/" +
-                      reg.FrontPageGraphic +
-                      "" +
-                      "'/>" +
-                      "</h4>"
-                  );
-
-                  $("#" + k + "_id").append(
-                    "<ul id='" +
-                      k +
-                      "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>"
-                  );
-
-                  $.each(reg.scenarios, function(key, value) {
-                    var label = value.label ? value.label : value.title;
-                    label = label.trim();
-                    if (label[0] === "-") {
-                      label = label.slice(1).trim();
-                    }
-
-                    $("#" + k + "_scenarios").append(
-                      "<li><a class='scenariolink' href='src/index.html?region=" +
-                        k +
-                        "&scenario=" +
-                        key +
-                        "'>" +
-                        label +
-                        "</a></li>"
-                    );
-                  });
-                }
-              });
-            });
-          }
-        });
-      });
-    </script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/d3/d3.min.js"></script>
+    <script src="src/landing-page.js"></script>
   </body>
 </html>
