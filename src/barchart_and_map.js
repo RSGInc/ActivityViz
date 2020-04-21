@@ -5,8 +5,8 @@ var BarChartMap = {
     "use strict";
 
     /**
-     * Hack workaround for a bug where going to a different tab, resizing the 
-     * window, and coming back to this one breaks the Leaflet map until the 
+     * Hack workaround for a bug where going to a different tab, resizing the
+     * window, and coming back to this one breaks the Leaflet map until the
      * window is resized again on this tab. Long-term solution is to introduce
      * a 3rd party client=side routing library and retire the home-grown
      * implementation.
@@ -930,7 +930,7 @@ var BarChartMap = {
 
           //WARNING: center coordinates seem to have lat and lng reversed!
           var centroid = L.latLngBounds(
-            feature.geometry.coordinates.flat()
+            flatByOne(feature.geometry.coordinates)
           ).getCenter();
           //REORDER lat and lng
           var circleMarker = L.circleMarker(
@@ -1515,4 +1515,12 @@ var BarChartMap = {
 };
 //end encapsulating IIFE
 
-function generateChartData() {}
+function flatByOne(array) {
+  var output = [];
+  for (let subArray of array) {
+    for (let element of subArray) {
+      output.push(element);
+    }
+  }
+  return output;
+}
