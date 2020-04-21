@@ -74,7 +74,7 @@ var TimeuseChart = {
           d3.text(url, function(error, data) {
             "use strict";
             var periods = new Set();
-            var requiredOrigPurposesArray = ["HOME", "SCHOOL", "WORK"];
+            var requiredOrigPurposesArray = [];
             var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
             var requiredOrigPurposesFound = new Set();
             var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
