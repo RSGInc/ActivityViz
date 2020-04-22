@@ -442,7 +442,7 @@ function moveMatchingPurposesToFront(
 
   // Reverse the array to move the elements which match a builtInPurpose
   // in order
-  for (var builtInPurpose of builtInPurposes.reverse()) {
+  for (var builtInPurpose of builtInPurposes.slice().reverse()) {
     arrayCopy = findAndMoveToFront(
       arrayCopy,
       getPurposePredicate(builtInPurpose)
