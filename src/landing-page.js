@@ -1,5 +1,5 @@
 $.getJSON("config.json", function(data) {
-  let defaultRegion = '';
+  let defaultRegion = "";
   for (let k in data.regions) {
     let v = data.regions[k];
     $("#scenarios").append('<div id="' + k + "_id" + '"></div>');
@@ -50,6 +50,8 @@ function bindDataToHomepage(dataLocation, reg) {
     $("#sidebarhead").css("min-height", "125px");
   }
   if ("SideBarImage" in reg && reg.SideBarImage != "") {
+    var backgroundRule = getBackgroundRule(reg.SideBarImage);
+    $('.hero-parallax').css('background', backgroundRule);
     $("#sidebarimg  img").attr("src", dataLocation + "img/" + reg.SideBarImage);
   } else {
     $("#sidebarimg  img").remove();
@@ -92,4 +94,8 @@ function createRegionList(regionKey, regionTitle, dataLocation, reg) {
         "</a></li>"
     );
   });
+}
+
+function getBackgroundRule(imageUrl) {
+  return `url("${imageUrl}")`
 }

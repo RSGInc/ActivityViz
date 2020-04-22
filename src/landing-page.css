@@ -5,14 +5,14 @@ body {
 .hero-parallax {
   background-image: linear-gradient(
       rgba(136, 76, 27, 0.5),
-      rgb(246, 140, 52, 0)
+      rgba(246, 140, 52, 0)
     ),
     url("/charles-forerunner-small.jpg");
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100vh;
+  height: 30%;
   margin-bottom: -10px;
   color: #fff;
 }
@@ -61,6 +61,14 @@ body {
 .footer-container a,
 .footer-container a:visited {
   color: #9d9d9d;
+}
+
+#leftbar {
+  margin: 5em;
+}
+
+#sidebar {
+  margin-top: 6em;
 }
 
 /* #leftbar, #sidebar {
