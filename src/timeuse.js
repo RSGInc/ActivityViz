@@ -21,6 +21,7 @@ var TimeuseChart = {
     var chartData;
     var chartStyle = "expand";
     var showChartOnPage = true;
+    var builtInPurposes = ["home", "work", "school", "other"];
 
     function getChartLeftMargin() {
       return chartStyle == "expand" ? 50 : 80;
@@ -271,13 +272,11 @@ var TimeuseChart = {
               drawLegend(availablePersonTypes);
             }
 
-            var currentPersonTypeData = chartData[personType];
 
             // Sort data to move home, work, school, and other to the
             // base of the visualization.
-            var builtInPurposes = ["home", "work", "school", "other"];
-            currentPersonTypeData = moveMatchingPurposesToFront(
-              currentPersonTypeData,
+            var currentPersonTypeData = moveMatchingPurposesToFront(
+              chartData[personType],
               builtInPurposes
             );
 
