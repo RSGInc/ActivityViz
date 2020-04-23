@@ -98,7 +98,7 @@ body {
 
 .landing-page-content {
   font-size: 18px;
-  margin-bottom: 2em;
+  margin: 70px 0;
 }
 
 #navbarlink {
@@ -109,11 +109,8 @@ body {
 
 #sidebarhead img,
 #sidebarimg img {
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
   margin-bottom: 25px;
-  width: 75%;
+  width: 100%;
 }
 
 .sidebarhead__tall {

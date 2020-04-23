@@ -54,8 +54,8 @@ var app = new Vue({
     displayLandingPageContent() {
       return (
         this.defaultRegion &&
-        this.defaultRegion.region &&
-        (this.sideBarImageSrc ||
+        (!this.heroImageLayout ||
+          this.sideBarImageSrc ||
           this.sideBarLogoSrc ||
           this.defaultRegion.region.SideBarTextLeft ||
           this.defaultRegion.region.SideBarTextRight)
