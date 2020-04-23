@@ -1,59 +1,111 @@
 <html>
-  <head>
-    <title>ActivityViz</title>
-    <meta charset="UTF-8" />
-    <link id="favicon" rel="shortcut icon" href="" />
-    <link
-      rel="stylesheet"
-      href="bower_components/bootstrap/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="bower_components/font-awesome/css/all.min.css"
-    />
-    <link rel="stylesheet" href="src/landing-page.css" />
-  </head>
+  <div>
+    <head>
+      <title>ActivityViz</title>
+      <meta charset="UTF-8" />
+      <link rel="shortcut icon" :href="faviconUrl" />
+      <link
+        rel="stylesheet"
+        href="bower_components/bootstrap/dist/css/bootstrap.min.css"
+      />
+      <link
+        rel="stylesheet"
+        href="bower_components/font-awesome/css/all.min.css"
+      />
+      <link rel="stylesheet" href="src/landing-page.css" />
+      <script src="bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script src="bower_components/vue/dist/vue.js"></script>
+    </head>
 
-  <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-header">
-        <a id="navbarlink" class="pull-left">
-          <img id="logo_id" style="max-height:25px;" height="auto" />
-        </a>
-        <a class="navbar-brand" id="title_id" href="#">.</a>
+    <body>
+      <div id="app">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="navbar-header">
+            <a id="navbarlink" class="pull-left" :href="linkURL">
+              <img
+                id="logo_id"
+                :src="logoSrc"
+                style="max-height:25px;"
+                height="auto"
+              />
+            </a>
+            <a
+              v-if="navbarTitle"
+              class="navbar-brand"
+              id="title_id"
+              :href="defaultRegion && defaultRegion.region ? defaultRegion.region.LinkURL : '#'"
+            >
+              {{ navbarTitle }}
+            </a>
+          </div>
+        </nav>
+        <div id="leftbar" class="col-sm-4">
+          <div id="scenarios" v-if="configuration">
+            <div
+              v-for="region in regionsArray"
+              v-if="region"
+              :key="region.regionKey"
+              :id="region.regionKey + '_id'"
+            >
+              <h4>
+                {{ region.FrontPageTitle }}
+                <img
+                  style="max-height: 25px; margin-left: 2%;"
+                  :src="region.datalocation + 'img/' + region.FrontPageGraphic"
+                />
+              </h4>
+              <ul class="scenarios" style="margin-bottom: 25px;">
+                <li
+                  v-for="(scenario, scenarioKey) in region.scenarios"
+                >
+                  <a
+                    :href="scenarioUrl(region.regionKey, scenarioKey)"
+                    class="scenariolink"
+                    >{{ scenarioLabel(scenario) }}</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div id="sidebarinfoleft">
+            <p
+              v-if="defaultRegion && defaultRegion.region"
+              v-html="defaultRegion.region.SideBarTextLeft"
+            ></p>
+          </div>
+        </div>
+        <div id="sidebar" class="col-sm-6">
+          <div
+            id="sidebarhead"
+            :class="[displaySideBarLogo ? '' : 'sidebarhead__tall']"
+          >
+            <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
+          </div>
+          <div id="sidebarimg">
+            <img v-if="sideBarImageSrc" :src="sideBarImageSrc" />
+          </div>
+          <div id="sidebarinforight">
+            <p
+              v-if="defaultRegion && defaultRegion.region"
+              v-html="defaultRegion.region.SideBarTextRight"
+            ></p>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="footer-container">
+            <span
+              ><i class="far fa-copyright" aria-hidden="true"></i> RSG
+            </span>
+            <span>
+              <a href="https://github.com/rsginc/ActivityViz" target="_blank">
+                <i class="fab fa-github-alt" aria-hidden="true"></i> Source Code
+              </a>
+            </span>
+          </div>
+        </div>
       </div>
-    </nav>
-    <div class="hero-parallax">
-      
-    </div>
-    <div id="leftbar" class="col-sm-4">
-      <div id="scenarios"></div>
-      <div id="sidebarinfoleft"><p></p></div>
-    </div>
-    <div id="sidebar" class="col-sm-6">
-      <div id="sidebarhead">
-        <img />
-      </div>
-      <div id="sidebarimg">
-        <img />
-      </div>
-      <div id="sidebarinforight">
-        <p></p>
-      </div>
-    </div>
-    <div class="footer">
-      <div class="footer-container">
-        <span><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
-        <span>
-          <a href="https://github.com/rsginc/ActivityViz" target="_blank">
-            <i class="fab fa-github-alt" aria-hidden="true"></i> Source Code
-          </a>
-        </span>
-      </div>
-    </div>
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/d3/d3.min.js"></script>
-    <script src="src/landing-page.js"></script>
-  </body>
+      <script src="src/landing-page.js"></script>
+    </body>
+  </div>
 </html>

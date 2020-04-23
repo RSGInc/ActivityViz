@@ -96,3 +96,7 @@ body {
   margin-bottom: 25px;
   width: 75%;
 }
+
+.sidebarhead__tall {
+  min-height: 125px;
+}

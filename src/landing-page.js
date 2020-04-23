@@ -1,101 +1,104 @@
-$.getJSON("config.json", function(data) {
-  let defaultRegion = "";
-  for (let k in data.regions) {
-    let v = data.regions[k];
-    $("#scenarios").append('<div id="' + k + "_id" + '"></div>');
-    if (!defaultRegion) {
-      defaultRegion = k;
+var app = new Vue({
+  el: "#app",
+  data: {
+    defaultRegionKey: "",
+    icon: "",
+    logo: "",
+    logoSrc: "",
+    sideBarImageSrc: "",
+    sideBarLogoSrc: "",
+    title: "ActivityViz",
+    linkURL: "",
+    navbarTitle: ".",
+    configuration: null,
+    defaultRegion: null,
+    rawRegionsArray: []
+  },
+  computed: {
+    faviconUrl() {
+      if (!this.defaultRegionReady) {
+        return "";
+      }
+      return this.dataLocation + "img/" + this.icon;
+    },
+    displaySideBarLogo() {
+      return this.defaultRegionReady && this.defaultRegion.region.SideBarLogo;
+    },
+    displaySideBarImg() {
+      return this.defaultRegionReady && this.defaultRegion.region.SideBarImage;
+    },
+    defaultRegionReady() {
+      return this.defaultRegion && this.defaultRegion.region;
+    },
+    regionKeys() {
+      return this.configuration ? Object.keys(this.configuration.regions) : [];
+    },
+    regionsArray() {
+      if (this.regionKeys.length === 0) {
+        return this.rawRegionsArray;
+      }
+      return this.rawRegionsArray.sort((a, b) => {
+        return (
+          this.regionKeys.indexOf(a.regionKey) -
+          this.regionKeys.indexOf(b.regionKey)
+        );
+      });
     }
-    let dataLocation = v.datalocation;
-    localStorage.setItem(k, dataLocation);
-    $.ajax({
-      method: "GET",
-      url: dataLocation + "region.json",
-      dataType: "json",
-      success: function(reg) {
-        let regionTitle = reg.FrontPageTitle;
+  },
+  methods: {
+    scenarioUrl(regionKey, scenarioKey) {
+      return "src/index.html?region=" + regionKey + "&scenario=" + scenarioKey;
+    },
+    scenarioLabel(scenario) {
+      var label = scenario.label ? scenario.label : scenario.title;
+      label = label.trim();
+      if (label[0] === "-") {
+        label = label.slice(1).trim();
+      }
+      return label;
+    }
+  },
+  created() {
+    var vueInstance = this;
+    $.getJSON("config.json", function(data) {
+      vueInstance.configuration = data;
+      for (let k in vueInstance.configuration.regions) {
+        let v = vueInstance.configuration.regions[k];
 
-        if (defaultRegion === k) {
-          // take data from the first region in config.json and bind it to the homepage.
-          bindDataToHomepage(dataLocation, reg);
+        if (!vueInstance.defaultRegionKey) {
+          vueInstance.defaultRegionKey = k;
+          vueInstance.defaultRegion = v;
         }
 
-        createRegionList(k, regionTitle, dataLocation, reg);
+        localStorage.setItem(k, v.datalocation);
+        $.getJSON(v.datalocation + "region.json", function(reg) {
+          v.region = reg;
+          reg.regionKey = k;
+          reg.datalocation = v.datalocation;
+          vueInstance.rawRegionsArray.push(reg);
+
+          if (vueInstance.defaultRegionKey === k) {
+            // take data from the first region in config.json and bind it to the homepage.
+            document.querySelector("title").innerText = reg.Title;
+            vueInstance.navbarTitle = reg.NavbarTitle;
+            vueInstance.logo = reg.Logo;
+            vueInstance.logoSrc = getImageUrl(reg.Logo);
+
+            vueInstance.sideBarImageSrc = reg.SideBarImage
+              ? getImageUrl(reg.SideBarImage)
+              : "";
+            vueInstance.sideBarLogoSrc = reg.SideBarLogo
+              ? getImageUrl(reg.SideBarLogo)
+              : "";
+
+            vueInstance.linkURL = reg.LinkURL;
+          }
+
+          function getImageUrl(path) {
+            return vueInstance.defaultRegion.datalocation + "img/" + path;
+          }
+        });
       }
     });
   }
 });
-
-function bindDataToHomepage(dataLocation, reg) {
-  var icon = reg.Icon;
-  var logo = reg.Logo;
-  var title = reg.Title;
-  var linkURL = reg.LinkURL;
-  var navbarTitle = reg.NavbarTitle;
-  $("#favicon").attr("href", dataLocation + "img/" + icon + "");
-  $("title").text(title);
-  $("#title_id").text(navbarTitle);
-  $("#navbarlink").attr("href", linkURL);
-  $("#logo_id").attr("src", dataLocation + "img/" + logo + "");
-  if ("SideBarTextLeft" in reg) {
-    $("#sidebarinfoleft p").html(reg.SideBarTextLeft);
-  }
-  if ("SideBarTextRight" in reg) {
-    $("#sidebarinforight P").html(reg.SideBarTextRight);
-  }
-  if ("SideBarLogo" in reg && reg.SideBarLogo != "") {
-    $("#sidebarhead img").attr("src", dataLocation + "img/" + reg.SideBarLogo);
-  } else {
-    $("#sidebarhead img").remove();
-    $("#sidebarhead").css("min-height", "125px");
-  }
-  if ("SideBarImage" in reg && reg.SideBarImage != "") {
-    var backgroundRule = getBackgroundRule(reg.SideBarImage);
-    $('.hero-parallax').css('background', backgroundRule);
-    $("#sidebarimg  img").attr("src", dataLocation + "img/" + reg.SideBarImage);
-  } else {
-    $("#sidebarimg  img").remove();
-  }
-}
-
-function createRegionList(regionKey, regionTitle, dataLocation, reg) {
-  $("#" + regionKey + "_id").append(
-    "<h4>" +
-      regionTitle +
-      "<img style='max-height: 25px;margin-left:2%;'src='" +
-      dataLocation +
-      "img/" +
-      reg.FrontPageGraphic +
-      "" +
-      "'/>" +
-      "</h4>"
-  );
-
-  $("#" + regionKey + "_id").append(
-    "<ul id='" +
-      regionKey +
-      "_scenarios' class='scenarios' style='margin-bottom: 25px;'> </ul>"
-  );
-
-  $.each(reg.scenarios, function(key, value) {
-    var label = value.label ? value.label : value.title;
-    label = label.trim();
-    if (label[0] === "-") {
-      label = label.slice(1).trim();
-    }
-
-    $("#" + regionKey + "_scenarios").append(
-      "<li><a class='scenariolink' href='src/index.html?region=" +
-        regionKey +
-        "&scenario=" +
-        key +
-        "'>" +
-        label +
-        "</a></li>"
-    );
-  });
-}
-
-function getBackgroundRule(imageUrl) {
-  return `url("${imageUrl}")`
-}
