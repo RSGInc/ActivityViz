@@ -80,3 +80,8 @@ Presumably this is because it used the same code as the vertical chart
 .ramp-palette {
   grid-area: 2 / 3 / 2 / 5;
 }
+
+.zone-button-toggle {
+  margin-top: 10px;
+  float: right;
+}
