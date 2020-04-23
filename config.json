@@ -1,8 +1,5 @@
 {
   "regions": {
-    "covid19": {
-      "datalocation": "http://localhost:8001/data/covid19/"
-    },
     "rsginc": {
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/rsginc/"
     },
@@ -23,10 +20,6 @@
     },
     "charlotte": {
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
-    },
-
-    "tampa": {
-      "datalocation": "http://localhost:8001/data/tampa/"
     }
   }
 }
