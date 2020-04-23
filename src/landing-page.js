@@ -7,6 +7,7 @@ var app = new Vue({
     logoSrc: "",
     sideBarImageSrc: "",
     sideBarLogoSrc: "",
+    faviconUrl: '',
     title: "ActivityViz",
     linkURL: "",
     navbarTitle: ".",
@@ -15,21 +16,6 @@ var app = new Vue({
     rawRegionsArray: []
   },
   computed: {
-    faviconUrl() {
-      if (!this.defaultRegionReady) {
-        return "";
-      }
-      return this.dataLocation + "img/" + this.icon;
-    },
-    displaySideBarLogo() {
-      return this.defaultRegionReady && this.defaultRegion.region.SideBarLogo;
-    },
-    displaySideBarImg() {
-      return this.defaultRegionReady && this.defaultRegion.region.SideBarImage;
-    },
-    defaultRegionReady() {
-      return this.defaultRegion && this.defaultRegion.region;
-    },
     regionKeys() {
       return this.configuration ? Object.keys(this.configuration.regions) : [];
     },
@@ -82,20 +68,17 @@ var app = new Vue({
             document.querySelector("title").innerText = reg.Title;
             vueInstance.navbarTitle = reg.NavbarTitle;
             vueInstance.logo = reg.Logo;
-            vueInstance.logoSrc = getImageUrl(reg.Logo);
-
-            vueInstance.sideBarImageSrc = reg.SideBarImage
-              ? getImageUrl(reg.SideBarImage)
-              : "";
-            vueInstance.sideBarLogoSrc = reg.SideBarLogo
-              ? getImageUrl(reg.SideBarLogo)
-              : "";
 
             vueInstance.linkURL = reg.LinkURL;
+
+            vueInstance.logoSrc = getImageUrl(reg.Logo);
+            vueInstance.sideBarImageSrc = getImageUrl(reg.SideBarImage);
+            vueInstance.sideBarLogoSrc = getImageUrl(reg.SideBarLogo)
+            vueInstance.icon = getImageUrl(reg.Icon);
           }
 
           function getImageUrl(path) {
-            return vueInstance.defaultRegion.datalocation + "img/" + path;
+            return path ? vueInstance.defaultRegion.datalocation + "img/" + path : '';
           }
         });
       }

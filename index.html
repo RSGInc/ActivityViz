@@ -3,7 +3,7 @@
     <head>
       <title>ActivityViz</title>
       <meta charset="UTF-8" />
-      <link rel="shortcut icon" :href="faviconUrl" />
+      <link rel="shortcut icon" :href="icon" />
       <link
         rel="stylesheet"
         href="bower_components/bootstrap/dist/css/bootstrap.min.css"
@@ -78,7 +78,7 @@
         <div id="sidebar" class="col-sm-6">
           <div
             id="sidebarhead"
-            :class="[displaySideBarLogo ? '' : 'sidebarhead__tall']"
+            :class="[sideBarLogoSrc ? '' : 'sidebarhead__tall']"
           >
             <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
           </div>
