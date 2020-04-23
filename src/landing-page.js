@@ -7,7 +7,11 @@ var app = new Vue({
     logoSrc: "",
     sideBarImageSrc: "",
     sideBarLogoSrc: "",
-    faviconUrl: '',
+    heroImageSrc: "",
+    heroImageLayout: false,
+    homePageTitle: "",
+    homePageSubtitle: "",
+    faviconUrl: "",
     title: "ActivityViz",
     linkURL: "",
     navbarTitle: ".",
@@ -29,6 +33,33 @@ var app = new Vue({
           this.regionKeys.indexOf(b.regionKey)
         );
       });
+    },
+    defaultScenarios() {
+      if (this.regionsArray.length) {
+        return this.regionsArray[0].scenarios;
+      }
+    },
+    heroStyleObject() {
+      var backgroundImage =
+        "linear-gradient(" +
+        "rgba(136, 76, 27, 0.5)," +
+        "rgba(246, 140, 52, 0))," +
+        "url(" +
+        this.heroImageSrc +
+        ")";
+      return {
+        backgroundImage
+      };
+    },
+    displayLandingPageContent() {
+      return (
+        this.defaultRegion &&
+        this.defaultRegion.region &&
+        (this.sideBarImageSrc ||
+          this.sideBarLogoSrc ||
+          this.defaultRegion.region.SideBarTextLeft ||
+          this.defaultRegion.region.SideBarTextRight)
+      );
     }
   },
   methods: {
@@ -70,15 +101,21 @@ var app = new Vue({
             vueInstance.logo = reg.Logo;
 
             vueInstance.linkURL = reg.LinkURL;
+            vueInstance.heroImageLayout = reg.HeroImageLayout;
+            vueInstance.homePageTitle = reg.FrontPageTitle;
+            vueInstance.homePageSubtitle = reg.FrontPageSubtitle;
 
+            vueInstance.icon = getImageUrl(reg.Icon);
             vueInstance.logoSrc = getImageUrl(reg.Logo);
             vueInstance.sideBarImageSrc = getImageUrl(reg.SideBarImage);
-            vueInstance.sideBarLogoSrc = getImageUrl(reg.SideBarLogo)
-            vueInstance.icon = getImageUrl(reg.Icon);
+            vueInstance.sideBarLogoSrc = getImageUrl(reg.SideBarLogo);
+            vueInstance.heroImageSrc = getImageUrl(reg.HeroImage);
           }
 
           function getImageUrl(path) {
-            return path ? vueInstance.defaultRegion.datalocation + "img/" + path : '';
+            return path
+              ? vueInstance.defaultRegion.datalocation + "img/" + path
+              : "";
           }
         });
       }

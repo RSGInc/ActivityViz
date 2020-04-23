@@ -40,58 +40,93 @@
             </a>
           </div>
         </nav>
-        <div id="leftbar" class="col-sm-4">
-          <div id="scenarios" v-if="configuration">
-            <div
-              v-for="region in regionsArray"
-              v-if="region"
-              :key="region.regionKey"
-              :id="region.regionKey + '_id'"
-            >
-              <h4>
-                {{ region.FrontPageTitle }}
-                <img
-                  style="max-height: 25px; margin-left: 2%;"
-                  :src="region.datalocation + 'img/' + region.FrontPageGraphic"
-                />
-              </h4>
-              <ul class="scenarios" style="margin-bottom: 25px;">
-                <li
-                  v-for="(scenario, scenarioKey) in region.scenarios"
+        <div
+          v-if="heroImageLayout"
+          class="hero-parallax jumbotron"
+          :style="heroStyleObject"
+        >
+          <div
+            v-for="region in regionsArray"
+            v-if="region"
+            :key="region.regionKey"
+            :id="region.regionKey + '_id'"
+            class="hero-region-container"
+          >
+            <header class="hero-header">
+              <span>
+                <h1>
+                  {{ region.FrontPageTitle }}
+                  <img
+                    class="hero-region-logo"
+                    :src="region.datalocation + 'img/' + region.FrontPageGraphic"
+                  />
+                </h1>
+                <p class="hero-subheader">{{ region.FrontPageSubtitle }}</p>
+              </span>
+            </header>
+            <ul class="hero-scenarios">
+              <li v-for="(scenario, scenarioKey) in region.scenarios">
+                <a
+                  :href="scenarioUrl(region.regionKey, scenarioKey)"
+                  class="btn btn__rsg-landing-page"
+                  >{{ scenarioLabel(scenario) }}</a
                 >
-                  <a
-                    :href="scenarioUrl(region.regionKey, scenarioKey)"
-                    class="scenariolink"
-                    >{{ scenarioLabel(scenario) }}</a
-                  >
-                </li>
-              </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="displayLandingPageContent" class="container">
+          <div class="row landing-page-content">
+            <div id="leftbar" class="col-sm-6">
+              <div v-if="!heroImageLayout" id="scenarios" v-if="configuration">
+                <div
+                  v-for="region in regionsArray"
+                  v-if="region"
+                  :key="region.regionKey"
+                  :id="region.regionKey + '_id'"
+                >
+                  <h4>
+                    {{ region.FrontPageTitle }}
+                    <img
+                      style="max-height: 25px; margin-left: 2%;"
+                      :src="region.datalocation + 'img/' + region.FrontPageGraphic"
+                    />
+                  </h4>
+                  <ul class="scenarios" style="margin-bottom: 25px;">
+                    <li v-for="(scenario, scenarioKey) in region.scenarios">
+                      <a
+                        :href="scenarioUrl(region.regionKey, scenarioKey)"
+                        class="scenariolink"
+                        >{{ scenarioLabel(scenario) }}</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div id="sidebarinfoleft">
+                <p
+                  v-if="defaultRegion && defaultRegion.region"
+                  v-html="defaultRegion.region.SideBarTextLeft"
+                ></p>
+              </div>
+            </div>
+            <div id="sidebar" class="col-sm-6">
+              <div id="sidebarhead">
+                <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
+              </div>
+              <div id="sidebarimg">
+                <img v-if="sideBarImageSrc" :src="sideBarImageSrc" />
+              </div>
+              <div id="sidebarinforight">
+                <p
+                  v-if="defaultRegion && defaultRegion.region"
+                  v-html="defaultRegion.region.SideBarTextRight"
+                ></p>
+              </div>
             </div>
           </div>
-          <div id="sidebarinfoleft">
-            <p
-              v-if="defaultRegion && defaultRegion.region"
-              v-html="defaultRegion.region.SideBarTextLeft"
-            ></p>
-          </div>
         </div>
-        <div id="sidebar" class="col-sm-6">
-          <div
-            id="sidebarhead"
-            :class="[sideBarLogoSrc ? '' : 'sidebarhead__tall']"
-          >
-            <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
-          </div>
-          <div id="sidebarimg">
-            <img v-if="sideBarImageSrc" :src="sideBarImageSrc" />
-          </div>
-          <div id="sidebarinforight">
-            <p
-              v-if="defaultRegion && defaultRegion.region"
-              v-html="defaultRegion.region.SideBarTextRight"
-            ></p>
-          </div>
-        </div>
+
         <div class="footer">
           <div class="footer-container">
             <span
