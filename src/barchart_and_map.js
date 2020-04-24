@@ -122,6 +122,7 @@ var BarChartMap = {
     var thisTab = $("#" + id + "_id");
     var stackChartsCheckbox = $("#" + id + "-stacked");
     var bubbleSizeDropdown = $("#" + id + "-bubble-size");
+    var pageTitle = $("#page-title");
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
@@ -258,6 +259,9 @@ var BarChartMap = {
             }
             if (thisBarMap.barGroupSortMethod) {
               BAR_GROUP_SORT_METHOD = thisBarMap.barGroupSortMethod;
+            }
+            if (thisBarMap.title) {
+              pageTitle.html(thisBarMap.title);
             }
           }
 
