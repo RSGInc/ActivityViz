@@ -118,11 +118,12 @@ var BarChartMap = {
     var dataLocation = localStorage.getItem(region);
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
+    var barChartTabSelector = '#' + id + '_id';
     var chartSelector = "#" + id + "-chart";
     var thisTab = $("#" + id + "_id");
     var stackChartsCheckbox = $("#" + id + "-stacked");
     var bubbleSizeDropdown = $("#" + id + "-bubble-size");
-    var pageTitle = $("#page-title");
+    var pageTitle = $(barChartTabSelector + " #page-title");
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
