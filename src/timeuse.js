@@ -8,7 +8,7 @@ var TimeuseChart = {
     var fileName = "TimeUseData.csv";
     var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
     var scenario = abmviz_utilities.GetURLParameter("scenario");
-    var thisTab = $('#' + id + '_id');
+    var thisTab = $("#" + id + "_id");
     var svgSelector = "#" + id + "-chart svg";
     var svgElement = d3.select(svgSelector);
     var pageHeader = $("#" + id + "-maingroup");
@@ -21,6 +21,7 @@ var TimeuseChart = {
     var chartData;
     var chartStyle = "expand";
     var showChartOnPage = true;
+    var builtInPurposes = ["home", "work", "school", "other"];
 
     function getChartLeftMargin() {
       return chartStyle == "expand" ? 50 : 80;
@@ -159,6 +160,7 @@ var TimeuseChart = {
                 };
               })
               .map(csv);
+
             csv = null; //allow memory to be GC'ed
             //cannot simply use nest.entries because there may be missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
             //rolledUpData = makeNest.entries(csv);
@@ -269,7 +271,15 @@ var TimeuseChart = {
               personType = availablePersonTypes[0];
               drawLegend(availablePersonTypes);
             }
-            var currentPersonTypeData = chartData[personType];
+
+
+            // Sort data to move home, work, school, and other to the
+            // base of the visualization.
+            var currentPersonTypeData = moveMatchingPurposesToFront(
+              chartData[personType],
+              builtInPurposes
+            );
+
             svgElement.datum(currentPersonTypeData).call(extNvd3Chart);
             //kluge - should not need to call nvd3 update here but occassionally in some window positions
             //the legend lays out differently after the first updateChart
@@ -399,12 +409,16 @@ var TimeuseChart = {
       createTimeUse();
       window.addEventListener(
         "resize",
-        abmviz_utilities.debounce(function () {
-          if (!thisTab.is(':visible')) {
-            return;
-          }
-          createTimeUse();
-        }, 250, true)
+        abmviz_utilities.debounce(
+          function() {
+            if (!thisTab.is(":visible")) {
+              return;
+            }
+            createTimeUse();
+          },
+          250,
+          true
+        )
       );
     }
 
@@ -412,3 +426,53 @@ var TimeuseChart = {
     return {};
   }
 }; //end encapsulating IIFEE
+
+/**
+ * Returns a shallow copy of dataArray with elements whose keys match
+ * the built-in purposes moved to the front of the array, in the order
+ * they appear in the builtInPurposes array.
+ * @param {Array} dataArray 
+ * @param {Array} builtInPurposes 
+ */
+function moveMatchingPurposesToFront(
+  dataArray,
+  builtInPurposes
+) {
+  var arrayCopy = dataArray.slice();
+
+  // Reverse the array to move the elements which match a builtInPurpose
+  // in order
+  for (var builtInPurpose of builtInPurposes.slice().reverse()) {
+    arrayCopy = findAndMoveToFront(
+      arrayCopy,
+      getPurposePredicate(builtInPurpose)
+    );
+  }
+
+  return arrayCopy;
+
+  function getPurposePredicate(comparisonString) {
+    var regex = new RegExp("^" + comparisonString + "$", "i");
+    return function personTypePredicate(arrayElement) {
+      return arrayElement.key.match(regex);
+    };
+  }
+}
+
+/**
+ * Finds first value in an array which satisfies the predicate,
+ * returns an array with that element moved to index 0.
+ */
+function findAndMoveToFront(array, predicate) {
+  var index = array.findIndex(predicate);
+
+  // Return copy of original array if no value satisfies predicate.
+  if (index === -1) {
+    return array;
+  }
+
+  // Move value at index to front, return copied array.
+  return [array[index]]
+    .concat(array.slice(0, index))
+    .concat(array.slice(index + 1));
+}

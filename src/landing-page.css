@@ -1,0 +1,122 @@
+body {
+  font-family: Gotham, Arial;
+}
+
+.hero-parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  margin-top: 10px;
+  color: #fff;
+}
+
+.btn.btn__rsg-landing-page {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: lightgray;
+  font-size: 19px;
+  padding: 0.7em;
+  margin-top: 1em;
+}
+
+.btn.btn__rsg-landing-page:focus,
+.btn.btn__rsg-landing-page:hover {
+  background-color: rgb(0, 0, 0, 1);
+}
+
+
+.hero-header {
+  display: flex;
+}
+
+.hero-header p {
+  margin-left: 0.5em;
+  color: lightgray;
+}
+
+.hero-region-container {
+  padding: 50px;
+  padding-bottom: 0;
+}
+
+.hero-region-logo {
+  height: 1em;
+  margin: 0 0.5em;
+  background-color: white;
+  padding: 0.2em;
+  border-radius: 5px;
+}
+
+.hero-scenarios {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hero-scenarios li {
+  margin: 0px 8px;
+}
+
+.hero-text {
+  padding: 50px;
+  height: 96%;
+}
+
+.hero-text p {
+  color: lightgray;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  background-color: #222222;
+  color: white;
+  width: 100%;
+  z-index: 999999;
+  padding: 5px 0px 5px 0px;
+}
+
+.footer-container {
+  position: relative;
+  padding: 5px 0px 5px 0px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.footer-container,
+.footer-container a,
+.footer-container a:visited {
+  color: #9d9d9d;
+}
+
+#leftbar, #sidebar {
+}
+
+.landing-page-content {
+  font-size: 18px;
+  margin: 70px 0;
+}
+
+#navbarlink {
+  padding-left: 1em;
+  padding-top: 1.1em;
+  margin-right: -0.5em;
+}
+
+#sidebarhead img,
+#sidebarimg img {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.sidebarhead__tall {
+  min-height: 125px;
+}
+
+#scenarios {
+  margin-bottom: 30px;
+}
