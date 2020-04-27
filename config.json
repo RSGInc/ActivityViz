@@ -20,6 +20,9 @@
     },
     "charlotte": {
       "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/charlotte/"
+    },
+    "nashville": {
+      "datalocation": "https://raw.githubusercontent.com/RSGInc/ActivityViz_data/master/data/nashville/"
     }
   }
 }
