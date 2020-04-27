@@ -118,10 +118,12 @@ var BarChartMap = {
     var dataLocation = localStorage.getItem(region);
     var url = dataLocation + scenario; // + "/BarChartAndMapData.csv"
     var fileName = "BarChartAndMapData.csv";
+    var barChartTabSelector = '#' + id + '_id';
     var chartSelector = "#" + id + "-chart";
     var thisTab = $("#" + id + "_id");
     var stackChartsCheckbox = $("#" + id + "-stacked");
     var bubbleSizeDropdown = $("#" + id + "-bubble-size");
+    var pageTitle = $(barChartTabSelector + " #page-title");
     var svgChart;
     var extNvd3Chart;
     var minBarWidth = 1;
@@ -200,6 +202,8 @@ var BarChartMap = {
     var zoneFilterFeatureCollections = {};
     var zoneFilterLayers = {};
 
+    toggleZoneControls(true);
+
     //start off chain of initialization by reading in the data
     function readInDataCallback() {
       createMap(function() {
@@ -256,6 +260,9 @@ var BarChartMap = {
             }
             if (thisBarMap.barGroupSortMethod) {
               BAR_GROUP_SORT_METHOD = thisBarMap.barGroupSortMethod;
+            }
+            if (thisBarMap.title) {
+              pageTitle.html(thisBarMap.title);
             }
           }
 
@@ -930,7 +937,7 @@ var BarChartMap = {
 
           //WARNING: center coordinates seem to have lat and lng reversed!
           var centroid = L.latLngBounds(
-            flatByOne(feature.geometry.coordinates)
+            abmviz_utilities.flatByOne(feature.geometry.coordinates)
           ).getCenter();
           //REORDER lat and lng
           var circleMarker = L.circleMarker(
@@ -1046,15 +1053,39 @@ var BarChartMap = {
           })
           .complete(function() {
             controlLayer.addOverlay(countyLayer, "Counties");
-            controlLayer.addOverlay(zoneDataLayer, "Zones");
-            controlLayer.addOverlay(circlesLayerGroup, "Bubbles");
 
-            if (DEFAULT_MAP_DISPLAY === MAP_DISPLAY_OPTIONS.bubbles) {
+            var mapZoneToggleButton = document.querySelector(
+              "#mapZoneToggleButton"
+            );
+            var mapBubbleToggleButton = document.querySelector(
+              "#mapBubbleToggleButton"
+            );
+
+            mapZoneToggleButton.addEventListener("click", activateZones);
+            mapBubbleToggleButton.addEventListener("click", activateBubbles);
+
+            function activateZones() {
+              zoneDataLayer.addTo(map);
+              circlesLayerGroup.removeFrom(map);
+              mapZoneToggleButton.classList.add("btn-primary");
+              mapBubbleToggleButton.classList.remove("btn-primary");
+              toggleZoneControls(true);
+            }
+
+            function activateBubbles() {
               zoneDataLayer.removeFrom(map);
               circlesLayerGroup.addTo(map);
+              mapBubbleToggleButton.classList.add("btn-primary");
+              mapZoneToggleButton.classList.remove("btn-primary");
+              toggleBubbleControls(true);
+            }
+
+            if (DEFAULT_MAP_DISPLAY === MAP_DISPLAY_OPTIONS.bubbles) {
+              activateBubbles();
+            } else {
+              activateZones();
             }
           });
-
         //end geoJson of county layer
         function onEachCounty(feature, layer) {
           layer.on({
@@ -1515,12 +1546,53 @@ var BarChartMap = {
 };
 //end encapsulating IIFE
 
-function flatByOne(array) {
-  var output = [];
-  for (let subArray of array) {
-    for (let element of subArray) {
-      output.push(element);
-    }
+var zoneControlSelectors = [
+  ".zone-control",
+  ".zone-control-set",
+  ".form-control.zone-control",
+  ".classification-label",
+  ".zone-label",
+  ".ramp-palette"
+];
+
+var bubbleControlSelectors = [
+  ".bubble-control-label",
+  ".bubble-control-set",
+  ".form-control.bubble-control",
+  ".bubble-control",
+  // Need below because color picker replaces DOM element
+  ".bar-chart-map__control-grid .sp-replacer"
+];
+
+var hideZonesStyle = document.createElement("style");
+var hideBubblesStyle = document.createElement("style");
+
+hideZonesStyle.appendChild(document.createTextNode(""))
+hideBubblesStyle.appendChild(document.createTextNode(""))
+
+document.head.appendChild(hideZonesStyle);
+document.head.appendChild(hideBubblesStyle);
+
+setUpStyleSheet(hideZonesStyle.sheet, zoneControlSelectors);
+setUpStyleSheet(hideBubblesStyle.sheet, bubbleControlSelectors);
+
+hideBubblesStyle.disabled = true;
+
+function toggleBubbleControls(boolean) {
+  // it's the same function, just flipped
+  toggleZoneControls(!boolean);
+}
+
+function toggleZoneControls(boolean) {
+  hideZonesStyle.disabled = boolean;
+  hideBubblesStyle.disabled = !boolean;
+}
+
+function setUpStyleSheet(sheet, selectors) {
+  var ruleIndex = 0;
+  for (var selector of selectors) {
+    sheet.insertRule(selector + " { display: none; }", ruleIndex);
+    ruleIndex++;
   }
-  return output;
+
 }

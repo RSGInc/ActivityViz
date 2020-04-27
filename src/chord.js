@@ -134,6 +134,8 @@ var ChordChart = {
     var scenarioPolyFile;
     var fill = d3.scale.category20();
     var chartOnPage = $("#" + id + "_circle").length == 0;
+    var chordTabSelector = "#" + id + "_id";
+    var pageTitle = $(chordTabSelector + ' #page-title')
     var circlesLayerGroup;
     var desireLineLayerGroup;
     var formatPercent = d3.format(".1%");
@@ -148,7 +150,6 @@ var ChordChart = {
     var matrixmap;
     var sidebyside = false;
     var chartData = [];
-    var chordTabSelector = "#" + id + "_id";
     var chartContainerSelector = "#" + id + "-chart-container";
 
     function getConfigSettings(callback) {
@@ -194,6 +195,12 @@ var ChordChart = {
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
+            }
+
+            var chordTitle =
+              data["scenarios"][scenario].visualizations["Chord"][indx].title;
+            if (chordTitle) {
+              pageTitle.html(chordTitle);
             }
           }
           url += "/" + fileName;
@@ -692,11 +699,7 @@ var ChordChart = {
                 for (var chartDataObject of chartData) {
                   var destArrayInOtherChart = chartDataObject.dataMatrix[i];
                   var sumForOtherTable = d3.sum(destArrayInOtherChart);
-                  addGroupToolTipTable(
-                    chartDataObject,
-                    d,
-                    sumForOtherTable
-                  );
+                  addGroupToolTipTable(chartDataObject, d, sumForOtherTable);
                 }
               }
               if (eventTarget == chartIdx) {
@@ -823,8 +826,14 @@ var ChordChart = {
                 // Update tooltip tables for all charts on hover
                 for (var chartDataObject of chartData) {
                   var chartDataMatrixForOtherChart = chartDataObject.dataMatrix;
-                  var sourceValInOtherChart = chartDataMatrixForOtherChart[d.source.index][d.target.index];
-                  var targetValInOtherChart = chartDataMatrixForOtherChart[d.target.index][d.source.index];
+                  var sourceValInOtherChart =
+                    chartDataMatrixForOtherChart[d.source.index][
+                      d.target.index
+                    ];
+                  var targetValInOtherChart =
+                    chartDataMatrixForOtherChart[d.target.index][
+                      d.source.index
+                    ];
                   addPathToolTipTable(
                     sourceValInOtherChart,
                     targetValInOtherChart,
@@ -1297,7 +1306,7 @@ var ChordChart = {
           if (!feature.geometry.coordinates) continue;
 
           var centroid = L.latLngBounds(
-            feature.geometry.coordinates.flat()
+            abmviz_utilities.flatByOne(feature.geometry.coordinates)
           ).getCenter();
 
           var circleMarker = L.circleMarker(

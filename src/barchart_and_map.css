@@ -44,10 +44,17 @@ Presumably this is because it used the same code as the vertical chart
   margin-top: 1em;
 }
 
+.zone-bubble-toggle-container {
+  clear: both;
+  display: flex;
+  align-items: baseline;
+}
+
 .bar-chart-map__control-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-grow: 1;
 }
 
 .bar-chart-map__control-section > * {
@@ -60,9 +67,26 @@ Presumably this is because it used the same code as the vertical chart
 }
 
 .bar-chart-map__control-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto auto;
-  grid-column-gap: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  flex-grow: 1;
+}
+
+.bar-chart-map__control-grid > * {
+  padding: 0 1em;
+  flex: 1 0 auto;
+}
+
+.map-control-set {
+  flex-basis: 12em;
+  min-width: 12em;
+}
+
+.map-control-set > label,
+.zone-control-set > label,
+.bubble-control-set > label {
+  display: block;
 }
 
 .bar-chart-map__control-grid:before {
@@ -75,8 +99,4 @@ Presumably this is because it used the same code as the vertical chart
 
 .bar-chart-map__control-grid > .sp-replacer {
   justify-self: start;
-}
-
-.ramp-palette {
-  grid-area: 2 / 3 / 2 / 5;
 }

@@ -5,8 +5,11 @@
     charttype="barchartmap"
   >
     <p class="text-center" style="font-size:2em">
-      <strong> <span class="mode-share-by-county-trip-mode"></span>,</strong> by
-      <span class="mode-share-by-county-area-type"></span>
+      <span id="page-title">
+        <strong> <span class="mode-share-by-county-trip-mode"></span>,</strong>
+        by
+        <span class="mode-share-by-county-area-type"></span>
+      </span>
       <span
         class="glyphicon glyphicon-info-sign"
         data-toggle="tooltip"
@@ -35,13 +38,6 @@
       </div>
     </div>
     <div class="col-xs-6">
-      <div class="col-xs-12"></div>
-      <div class="col-xs-12">
-        <div class="col-xs-4"></div>
-        <div class="col-xs-4"></div>
-        <div class="col-xs-4"></div>
-      </div>
-
       <div
         class="col-xs-12"
         id="mode-share-by-county-checkboxes"
@@ -53,78 +49,153 @@
         style="width: 100%;height:50%;"
       ></div>
 
-      <div class="container-fluid bar-chart-map__control-grid">
-        <label class="mode-share-by-county-trip-mode-zones zone-label"></label>
-        <label
-          id="mode-share-by-county-classification-label"
-          class="classification-label"
-        >
-          Classification
-        </label>
-        <label class="palette-label">Palette</label>
-        <div></div>
-
-        <select
-          class="form-control"
-          id="mode-share-by-county-current-trip-mode-zones"
-        ></select>
-        <select class="form-control" id="mode-share-by-county-classification">
-          <option value="quartiles" selected="selected">Quartiles</option>
-          <option value="jenks">Natural breaks (Jenks)</option>
-          <option value="even-interval">Even interval</option>
-        </select>
-        <div id="mode-share-by-county-pallette" class="ramp-palette">
-          <svg width="60" height="15" class="ramp bar-chart-map__ramp Blues">
-            <rect fill="rgb(239,243,255)" width="15" height="15" x="0"></rect>
-            <rect fill="rgb(189,215,231)" width="15" height="15" x="15"></rect>
-            <rect fill="rgb(107,174,214)" width="15" height="15" x="30"></rect>
-            <rect fill="rgb(49,130,189)" width="15" height="15" x="45"></rect>
-          </svg>
-          <svg width="60" height="15" class="ramp bar-chart-map__ramp Blues">
-            <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
-            <rect fill="rgb(198,110,9)" width="15" height="15" x="15"></rect>
-            <rect fill="rgb(133,130,23)" width="15" height="15" x="30"></rect>
-            <rect fill="rgb(34,139,34)" width="15" height="15" x="45"></rect>
-          </svg>
+      <div class="zone-bubble-toggle-container">
+        <div class="map-control-set">
+          <label>Display</label>
+          <div class="btn-group zone-button-toggle" role="group">
+            <button
+              id="mapZoneToggleButton"
+              class="btn btn-default btn-primary"
+            >
+              Zones
+            </button>
+            <button id="mapBubbleToggleButton" class="btn btn-default">
+              Bubbles
+            </button>
+          </div>
         </div>
+        <div class="bar-chart-map__control-grid">
+          <div class="zone-control-set">
+            <label
+              class="mode-share-by-county-trip-mode-zones zone-label"
+            ></label>
+            <select
+              class="form-control zone-control"
+              id="mode-share-by-county-current-trip-mode-zones"
+            ></select>
+          </div>
 
-        <div></div>
-        <label
-          class="mode-share-by-county-trip-mode-bubbles"
-          style="font-weight:bold"
-        ></label>
-        <label>Color</label>
-        <label>Size</label>
-        <div></div>
+          <div class="zone-control-set">
+            <label
+              id="mode-share-by-county-classification-label"
+              class="classification-label"
+            >
+              Classification
+            </label>
+            <select
+              class="form-control zone-control"
+              id="mode-share-by-county-classification"
+            >
+              <option value="quartiles" selected="selected">Quartiles</option>
+              <option value="jenks">Natural breaks (Jenks)</option>
+              <option value="even-interval">Even interval</option>
+            </select>
+          </div>
 
-        <select
-          class="form-control"
-          id="mode-share-by-county-current-trip-mode-bubbles"
-        ></select>
-        <input
-          type="text"
-          class="col-xs-8"
-          id="mode-share-by-county-bubble-color"
-        />
-        <select id="mode-share-by-county-bubble-size" class="form-control">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option selected>5</option>
-          <option>6</option>
-          <option>7</option>
-          <option>8</option>
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-          <option>13</option>
-          <option>14</option>
-          <option>15</option>
-        </select>
+          <div class="zone-control-set">
+            <label class="palette-label zone-control">Palette</label>
+            <div id="mode-share-by-county-pallette" class="ramp-palette">
+              <svg
+                width="60"
+                height="15"
+                class="ramp bar-chart-map__ramp Blues"
+              >
+                <rect
+                  fill="rgb(239,243,255)"
+                  width="15"
+                  height="15"
+                  x="0"
+                ></rect>
+                <rect
+                  fill="rgb(189,215,231)"
+                  width="15"
+                  height="15"
+                  x="15"
+                ></rect>
+                <rect
+                  fill="rgb(107,174,214)"
+                  width="15"
+                  height="15"
+                  x="30"
+                ></rect>
+                <rect
+                  fill="rgb(49,130,189)"
+                  width="15"
+                  height="15"
+                  x="45"
+                ></rect>
+              </svg>
+              <svg
+                width="60"
+                height="15"
+                class="ramp bar-chart-map__ramp Blues"
+              >
+                <rect fill="rgb(222,45,38)" width="15" height="15" x="0"></rect>
+                <rect
+                  fill="rgb(198,110,9)"
+                  width="15"
+                  height="15"
+                  x="15"
+                ></rect>
+                <rect
+                  fill="rgb(133,130,23)"
+                  width="15"
+                  height="15"
+                  x="30"
+                ></rect>
+                <rect
+                  fill="rgb(34,139,34)"
+                  width="15"
+                  height="15"
+                  x="45"
+                ></rect>
+              </svg>
+            </div>
+          </div>
+
+          <div class="bubble-control-set">
+            <label
+              class="mode-share-by-county-trip-mode-bubbles bubble-control-label"
+              style="font-weight:bold"
+            ></label>
+            <select
+              class="form-control bubble-control"
+              id="mode-share-by-county-current-trip-mode-bubbles"
+            ></select>
+          </div>
+          <div class="bubble-control-set">
+            <label class="bubble-control-label">Color</label>
+            <input
+              type="text"
+              class="col-xs-8 hidden"
+              id="mode-share-by-county-bubble-color"
+            />
+          </div>
+          <div class="bubble-control-set">
+            <label class="bubble-control-label">Size</label>
+            <select
+              id="mode-share-by-county-bubble-size"
+              class="form-control bubble-control"
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option selected>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+            </select>
+          </div>
+        </div>
       </div>
-
       <div
         id="mode-share-by-county-tools"
         class="bar-chart-map__filter-color-controls"

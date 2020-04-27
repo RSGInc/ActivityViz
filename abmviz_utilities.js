@@ -85,6 +85,16 @@ var abmviz_utilities = (function() {
     };
   }
 
+  function flatByOne(array) {
+    var output = [];
+    for (let subArray of array) {
+      for (let element of subArray) {
+        output.push(element);
+      }
+    }
+    return output;
+  }
+
   //return only the parts that need to be global
   return {
     assert: assert,
@@ -92,6 +102,7 @@ var abmviz_utilities = (function() {
     poll: poll,
     insertArrayAt: insertArrayAt,
     halfHourTimePeriodToTimeString: halfHourTimePeriodToTimeString,
-    debounce: debounce
+    debounce: debounce,
+    flatByOne: flatByOne
   };
 })(); //end encapsulating IIFE

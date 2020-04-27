@@ -40,6 +40,8 @@ var SunburstChart = {
     var colors = {}; //will be filled in to map keys to colors
     // Total size of all segments; we set this later, after loading the data.
     var totalSize;
+    var pageTitle = $(".page-title");
+    var CUSTOM_TITLE = "";
 
     function createSunburst() {
       //read in data and create sunburst when finished
@@ -90,7 +92,10 @@ var SunburstChart = {
               columns: columnsDT
             });
           }
-          d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
+
+          if (!CUSTOM_TITLE) {
+            d3.selectAll(".sunburst-maingroup").html(maingroupColumn);
+          }
 
           try {
             json = buildHierarchy(csv);
@@ -992,6 +997,13 @@ var SunburstChart = {
                 "<p>" + key + ": " + value + "</p>"
               );
             });
+          }
+
+          CUSTOM_TITLE =
+            data["scenarios"][scenario].visualizations["Sunburst"][indx].title;
+
+          if (CUSTOM_TITLE) {
+            pageTitle.html(CUSTOM_TITLE);
           }
 
           var configSettings = data["Sunburst"][configName];

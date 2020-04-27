@@ -118,7 +118,7 @@
           >
             <img id="logo_id" style="height:25px;" width="" height="" src="" />
           </a>
-          <a class="navbar-brand" id="title_id" href="../index.html">ABMVIZ</a>
+          <a class="navbar-brand" id="title_id" href="../index.html">ActivityViz</a>
           <span
             id="scenario-header"
             style="font-size:2em;cursor:default"
@@ -127,7 +127,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right" style="margin-right:1em;">
           <li class="nav-item">
-            <a href="../index.html">Back to scenario selection</a>
+            <a href="../index.html">Home</a>
           </li>
         </ul>
       </nav>
@@ -224,7 +224,7 @@
       label = data.scenarios[scenario].label;
     }
 
-    $("#scenario-header").html("Scenario " + label);
+    $("#scenario-header").html(label);
     $.each(data.colorRamps, function(key, value) {
       if (value == false) $("." + [key]).remove();
     });

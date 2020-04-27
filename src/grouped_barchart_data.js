@@ -21,7 +21,8 @@ var BarChartGrp = {
     var dataLocation = localStorage.getItem(region);
     var chartSelector = "#" + id + "_grouped-barchart";
     var showChartOnPage = $("#" + id + "-container").children().length == 0;
-    var thisTab = $("#" + id + "_id");
+    var tabSelector = "#" + id + "_id";
+    var pageTitle = $(tabSelector + " .page-title");
     var fileName = "BarChartData.csv";
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var url = dataLocation + scenario;
@@ -68,6 +69,9 @@ var BarChartGrp = {
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
+            }
+            if (groupedChartsConfig.title) {
+              pageTitle.html(groupedChartsConfig.title);
             }
           }
 
@@ -134,7 +138,7 @@ var BarChartGrp = {
             }
             if (opt == "HideControls") {
               HIDE_CONTROLS = value;
-              $('.grouped-bar-chart-controls').hide();
+              $(".grouped-bar-chart-controls").hide();
             }
           });
         }).complete(function() {
