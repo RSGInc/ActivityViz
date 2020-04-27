@@ -937,7 +937,7 @@ var BarChartMap = {
 
           //WARNING: center coordinates seem to have lat and lng reversed!
           var centroid = L.latLngBounds(
-            flatByOne(feature.geometry.coordinates)
+            abmviz_utilities.flatByOne(feature.geometry.coordinates)
           ).getCenter();
           //REORDER lat and lng
           var circleMarker = L.circleMarker(
@@ -1545,16 +1545,6 @@ var BarChartMap = {
   }
 };
 //end encapsulating IIFE
-
-function flatByOne(array) {
-  var output = [];
-  for (let subArray of array) {
-    for (let element of subArray) {
-      output.push(element);
-    }
-  }
-  return output;
-}
 
 var zoneControlSelectors = [
   ".zone-control",

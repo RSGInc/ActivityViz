@@ -1306,7 +1306,7 @@ var ChordChart = {
           if (!feature.geometry.coordinates) continue;
 
           var centroid = L.latLngBounds(
-            feature.geometry.coordinates.flat()
+            abmviz_utilities.flatByOne(feature.geometry.coordinates)
           ).getCenter();
 
           var circleMarker = L.circleMarker(
