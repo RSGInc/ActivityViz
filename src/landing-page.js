@@ -2,7 +2,7 @@ var app = new Vue({
   el: "#app",
   data: {
     defaultRegionKey: "",
-    icon: "",
+    iconSrc: "",
     logo: "",
     logoSrc: "",
     sideBarImageSrc: "",
@@ -11,7 +11,6 @@ var app = new Vue({
     heroImageLayout: false,
     homePageTitle: "",
     homePageSubtitle: "",
-    faviconUrl: "",
     title: "ActivityViz",
     linkURL: "",
     navbarTitle: ".",
@@ -105,7 +104,9 @@ var app = new Vue({
             vueInstance.homePageTitle = reg.FrontPageTitle;
             vueInstance.homePageSubtitle = reg.FrontPageSubtitle;
 
-            vueInstance.icon = getImageUrl(reg.Icon);
+            vueInstance.iconSrc = getImageUrl(reg.Icon);
+            
+
             vueInstance.logoSrc = getImageUrl(reg.Logo);
             vueInstance.sideBarImageSrc = getImageUrl(reg.SideBarImage);
             vueInstance.sideBarLogoSrc = getImageUrl(reg.SideBarLogo);

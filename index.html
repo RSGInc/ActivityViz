@@ -1,146 +1,146 @@
 <html>
-  <div>
-    <head>
-      <title>ActivityViz</title>
-      <meta charset="UTF-8" />
-      <link rel="shortcut icon" :href="icon" />
-      <link
-        rel="stylesheet"
-        href="bower_components/bootstrap/dist/css/bootstrap.min.css"
-      />
-      <link
-        rel="stylesheet"
-        href="bower_components/font-awesome/css/all.min.css"
-      />
-      <link rel="stylesheet" href="src/landing-page.css" />
-      <script src="bower_components/jquery/dist/jquery.min.js"></script>
-      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-    </head>
+  <head>
+    <title>ActivityViz</title>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="bower_components/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="bower_components/font-awesome/css/all.min.css"
+    />
+    <link rel="stylesheet" href="src/landing-page.css" />
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Use non-minified Vue for local development only -->
+    <script src="bower_components/vue/dist/vue.js"></script>
+    <!-- Otherwise, use minified Vue from CDN -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
+  </head>
 
-    <body>
-      <div id="app">
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-          <div class="navbar-header">
-            <a id="navbarlink" class="pull-left" :href="linkURL">
-              <img
-                id="logo_id"
-                :src="logoSrc"
-                style="max-height:25px;"
-                height="auto"
-              />
-            </a>
-            <a
-              v-if="navbarTitle"
-              class="navbar-brand"
-              id="title_id"
-              :href="defaultRegion && defaultRegion.region ? defaultRegion.region.LinkURL : '#'"
-            >
-              {{ navbarTitle }}
-            </a>
-          </div>
-        </nav>
-        <div
-          v-if="heroImageLayout"
-          class="hero-parallax jumbotron"
-          :style="heroStyleObject"
-        >
-          <div
-            v-for="region in regionsArray"
-            v-if="region"
-            :key="region.regionKey"
-            :id="region.regionKey + '_id'"
-            class="hero-region-container"
+  <body>
+    <div id="app">
+      <link rel="shortcut icon" :href="iconSrc" />
+
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+          <a id="navbarlink" class="pull-left" :href="linkURL">
+            <img
+              id="logo_id"
+              :src="logoSrc"
+              style="max-height:25px;"
+              height="auto"
+            />
+          </a>
+          <a
+            v-if="navbarTitle"
+            class="navbar-brand"
+            id="title_id"
+            :href="defaultRegion && defaultRegion.region ? defaultRegion.region.LinkURL : '#'"
           >
-            <header class="hero-header">
-              <span>
-                <h1>
+            {{ navbarTitle }}
+          </a>
+        </div>
+      </nav>
+      <div
+        v-if="heroImageLayout"
+        class="hero-parallax jumbotron"
+        :style="heroStyleObject"
+      >
+        <div
+          v-for="region in regionsArray"
+          v-if="region"
+          :key="region.regionKey"
+          :id="region.regionKey + '_id'"
+          class="hero-region-container"
+        >
+          <header class="hero-header">
+            <span>
+              <h1>
+                {{ region.FrontPageTitle }}
+                <img
+                  class="hero-region-logo"
+                  :src="region.datalocation + 'img/' + region.FrontPageGraphic"
+                />
+              </h1>
+              <p class="hero-subheader">{{ region.FrontPageSubtitle }}</p>
+            </span>
+          </header>
+          <ul class="hero-scenarios">
+            <li v-for="(scenario, scenarioKey) in region.scenarios">
+              <a
+                :href="scenarioUrl(region.regionKey, scenarioKey)"
+                class="btn btn__rsg-landing-page"
+                >{{ scenarioLabel(scenario) }}</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="displayLandingPageContent" class="container-fluid">
+        <div class="row landing-page-content">
+          <div id="leftbar" class="col-sm-6">
+            <div v-if="!heroImageLayout" id="scenarios" v-if="configuration">
+              <div
+                v-for="region in regionsArray"
+                v-if="region"
+                :key="region.regionKey"
+                :id="region.regionKey + '_id'"
+              >
+                <h4>
                   {{ region.FrontPageTitle }}
                   <img
-                    class="hero-region-logo"
+                    style="max-height: 25px; margin-left: 2%;"
                     :src="region.datalocation + 'img/' + region.FrontPageGraphic"
                   />
-                </h1>
-                <p class="hero-subheader">{{ region.FrontPageSubtitle }}</p>
-              </span>
-            </header>
-            <ul class="hero-scenarios">
-              <li v-for="(scenario, scenarioKey) in region.scenarios">
-                <a
-                  :href="scenarioUrl(region.regionKey, scenarioKey)"
-                  class="btn btn__rsg-landing-page"
-                  >{{ scenarioLabel(scenario) }}</a
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="displayLandingPageContent" class="container-fluid">
-          <div class="row landing-page-content">
-            <div id="leftbar" class="col-sm-6">
-              <div v-if="!heroImageLayout" id="scenarios" v-if="configuration">
-                <div
-                  v-for="region in regionsArray"
-                  v-if="region"
-                  :key="region.regionKey"
-                  :id="region.regionKey + '_id'"
-                >
-                  <h4>
-                    {{ region.FrontPageTitle }}
-                    <img
-                      style="max-height: 25px; margin-left: 2%;"
-                      :src="region.datalocation + 'img/' + region.FrontPageGraphic"
-                    />
-                  </h4>
-                  <ul class="scenarios" style="margin-bottom: 25px;">
-                    <li v-for="(scenario, scenarioKey) in region.scenarios">
-                      <a
-                        :href="scenarioUrl(region.regionKey, scenarioKey)"
-                        class="scenariolink"
-                        >{{ scenarioLabel(scenario) }}</a
-                      >
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div id="sidebarinfoleft">
-                <p
-                  v-if="defaultRegion && defaultRegion.region"
-                  v-html="defaultRegion.region.SideBarTextLeft"
-                ></p>
+                </h4>
+                <ul class="scenarios" style="margin-bottom: 25px;">
+                  <li v-for="(scenario, scenarioKey) in region.scenarios">
+                    <a
+                      :href="scenarioUrl(region.regionKey, scenarioKey)"
+                      class="scenariolink"
+                      >{{ scenarioLabel(scenario) }}</a
+                    >
+                  </li>
+                </ul>
               </div>
             </div>
-            <div id="sidebar" class="col-sm-6">
-              <div id="sidebarhead">
-                <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
-              </div>
-              <div id="sidebarimg">
-                <img v-if="sideBarImageSrc" :src="sideBarImageSrc" />
-              </div>
-              <div id="sidebarinforight">
-                <p
-                  v-if="defaultRegion && defaultRegion.region"
-                  v-html="defaultRegion.region.SideBarTextRight"
-                ></p>
-              </div>
+            <div id="sidebarinfoleft">
+              <p
+                v-if="defaultRegion && defaultRegion.region"
+                v-html="defaultRegion.region.SideBarTextLeft"
+              ></p>
             </div>
           </div>
-        </div>
-
-        <div class="footer">
-          <div class="footer-container">
-            <span
-              ><i class="far fa-copyright" aria-hidden="true"></i> RSG
-            </span>
-            <span>
-              <a href="https://github.com/rsginc/ActivityViz" target="_blank">
-                <i class="fab fa-github-alt" aria-hidden="true"></i> Source Code
-              </a>
-            </span>
+          <div id="sidebar" class="col-sm-6">
+            <div id="sidebarhead">
+              <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
+            </div>
+            <div id="sidebarimg">
+              <img v-if="sideBarImageSrc" :src="sideBarImageSrc" />
+            </div>
+            <div id="sidebarinforight">
+              <p
+                v-if="defaultRegion && defaultRegion.region"
+                v-html="defaultRegion.region.SideBarTextRight"
+              ></p>
+            </div>
           </div>
         </div>
       </div>
-      <script src="src/landing-page.js"></script>
-    </body>
-  </div>
+
+      <div class="footer">
+        <div class="footer-container">
+          <span><i class="far fa-copyright" aria-hidden="true"></i> RSG </span>
+          <span>
+            <a href="https://github.com/rsginc/ActivityViz" target="_blank">
+              <i class="fab fa-github-alt" aria-hidden="true"></i> Source Code
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <script src="src/landing-page.js"></script>
+  </body>
 </html>
