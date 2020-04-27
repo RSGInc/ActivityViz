@@ -1558,6 +1558,7 @@ function flatByOne(array) {
 
 var zoneControlSelectors = [
   ".zone-control",
+  ".zone-control-set",
   ".form-control.zone-control",
   ".classification-label",
   ".zone-label",
@@ -1566,6 +1567,7 @@ var zoneControlSelectors = [
 
 var bubbleControlSelectors = [
   ".bubble-control-label",
+  ".bubble-control-set",
   ".form-control.bubble-control",
   ".bubble-control",
   // Need below because color picker replaces DOM element
