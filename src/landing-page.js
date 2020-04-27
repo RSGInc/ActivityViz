@@ -104,7 +104,8 @@ var app = new Vue({
             vueInstance.homePageTitle = reg.FrontPageTitle;
             vueInstance.homePageSubtitle = reg.FrontPageSubtitle;
 
-            vueInstance.iconSrc = getImageUrl(reg.Icon);
+            var favicon = document.querySelector('#favicon');
+            favicon.setAttribute('href', getImageUrl(reg.Icon));
             
 
             vueInstance.logoSrc = getImageUrl(reg.Logo);
