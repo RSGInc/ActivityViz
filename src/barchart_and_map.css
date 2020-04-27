@@ -80,6 +80,7 @@ Presumably this is because it used the same code as the vertical chart
 
 .map-control-set {
   flex-basis: 12em;
+  min-width: 12em;
 }
 
 .map-control-set > label,
