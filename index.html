@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>ActivityViz</title>
+    <link rel="shortcut icon" id="favicon" href="" />
     <meta charset="UTF-8" />
     <link
       rel="stylesheet"
@@ -15,13 +16,12 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Use non-minified Vue for local development only -->
     <!-- <script src="bower_components/vue/dist/vue.js"></script> -->
-    <!-- Otherwise, use minified Vue from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <!-- Otherwise, use minified Vue -->
+    <script src="bower_components/vue/dist/vue.min.js"></script>
   </head>
 
   <body>
     <div id="app">
-      <link rel="shortcut icon" :href="iconSrc" />
 
       <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-header">
@@ -80,7 +80,7 @@
       </div>
       <div v-if="displayLandingPageContent" class="container-fluid">
         <div class="row landing-page-content">
-          <div id="leftbar" class="col-sm-6">
+          <div id="leftbar" class="col-sm-6 col-md-4">
             <div v-if="!heroImageLayout" id="scenarios" v-if="configuration">
               <div
                 v-for="region in regionsArray"
@@ -88,13 +88,13 @@
                 :key="region.regionKey"
                 :id="region.regionKey + '_id'"
               >
-                <h4>
+                <h3>
                   {{ region.FrontPageTitle }}
                   <img
                     style="max-height: 25px; margin-left: 2%;"
                     :src="region.datalocation + 'img/' + region.FrontPageGraphic"
                   />
-                </h4>
+                </h3>
                 <ul class="scenarios" style="margin-bottom: 25px;">
                   <li v-for="(scenario, scenarioKey) in region.scenarios">
                     <a
@@ -113,7 +113,7 @@
               ></p>
             </div>
           </div>
-          <div id="sidebar" class="col-sm-6">
+          <div id="sidebar" class="col-sm-6 col-md-4 col-md-offset-2">
             <div id="sidebarhead">
               <img v-if="sideBarLogoSrc" :src="sideBarLogoSrc" />
             </div>
