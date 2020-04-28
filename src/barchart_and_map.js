@@ -1054,29 +1054,29 @@ var BarChartMap = {
           .complete(function() {
             controlLayer.addOverlay(countyLayer, "Counties");
 
-            var mapZoneToggleButton = document.querySelector(
+            var mapZoneToggleButtons = document.querySelectorAll(
               "#mapZoneToggleButton"
             );
-            var mapBubbleToggleButton = document.querySelector(
+            var mapBubbleToggleButtons = document.querySelectorAll(
               "#mapBubbleToggleButton"
             );
 
-            mapZoneToggleButton.addEventListener("click", activateZones);
-            mapBubbleToggleButton.addEventListener("click", activateBubbles);
+            applyToNodeList(mapZoneToggleButtons, button => button.addEventListener('click', activateZones))
+            applyToNodeList(mapBubbleToggleButtons, button => button.addEventListener('click', activateBubbles))
 
             function activateZones() {
               zoneDataLayer.addTo(map);
               circlesLayerGroup.removeFrom(map);
-              mapZoneToggleButton.classList.add("btn-primary");
-              mapBubbleToggleButton.classList.remove("btn-primary");
+              applyToNodeList(mapZoneToggleButtons, button => button.classList.add("btn-primary"))
+              applyToNodeList(mapBubbleToggleButtons, button => button.classList.remove("btn-primary"));
               toggleZoneControls(true);
             }
 
             function activateBubbles() {
               zoneDataLayer.removeFrom(map);
               circlesLayerGroup.addTo(map);
-              mapBubbleToggleButton.classList.add("btn-primary");
-              mapZoneToggleButton.classList.remove("btn-primary");
+              applyToNodeList(mapBubbleToggleButtons, button => button.classList.add("btn-primary"));
+              applyToNodeList(mapZoneToggleButtons, button => button.classList.remove("btn-primary"))
               toggleBubbleControls(true);
             }
 
@@ -1595,4 +1595,11 @@ function setUpStyleSheet(sheet, selectors) {
     ruleIndex++;
   }
 
+}
+
+function applyToNodeList(nodeList, fn) {
+  let i = 0; i < nodeList.length; i++
+  for (let domNode of nodeList) {
+    fn(domNode);
+  }
 }
