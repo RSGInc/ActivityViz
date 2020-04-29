@@ -14,6 +14,7 @@ Presumably this is because it used the smae code as the vertical chart
 
 .grouped-bar-chart__container {
   height: 550px;
+  padding-bottom: 3em;
 }
 
 .barcharttitle {

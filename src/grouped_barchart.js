@@ -12,24 +12,35 @@ function grouped_barchart(id, data, options, divid) {
   var showAsVertical = options.showAsVertical;
   var showAsGrouped = options.showAsGrped;
   var BARSPACING = showAsGrouped ? options.barSpacing : 0.2;
-  var thisTab = $("#" + divid + "_id");
+  var thisTabSelector = "#" + divid + "_id";
+  var thisTab = $(thisTabSelector);
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
 
-  const maxLabelLength = getMaxLength(options.mainGrpSet);
   var chartConfig = getChartConfig(options);
 
   function getChartConfig(options, maxTextWidth) {
+    var yAxisTextElements = document.querySelectorAll(
+      thisTabSelector + " .nv-axis.nv-y text"
+    );
+
+    var xAxisTextElements = document.querySelectorAll(
+      thisTabSelector + " .nv-axis.nv-x .tick text"
+    );
+
+    var maxY = getMaxElementDimensions(yAxisTextElements);
+    var maxX = getMaxElementDimensions(xAxisTextElements);
+
     let marginLeft = 150;
     if (options.showAsVertical) {
-      const marginBottom = Math.max(maxLabelLength * 10 + 10, 120),
+      const marginBottom = maxX.height ? maxX.height + 40 : 130,
         marginRight = 20;
 
       return {
         maxTextWidth,
         barOffset: 0,
         yAxisLabelDistance: 50,
-        xAxisLabelDistance: marginBottom - 60,
+        xAxisLabelDistance: marginBottom - 20,
         innerContainer: {
           selector: ".nvd3.nv-wrap.nv-multiBarWithLegend",
           width: -marginLeft - marginRight,
@@ -45,15 +56,17 @@ function grouped_barchart(id, data, options, divid) {
     }
 
     // If it is not vertical, return horizontal config as default.
-    marginLeft = maxTextWidth
-      ? maxTextWidth * 1.1 + 50
-      : Math.max(maxLabelLength * 12, 120);
+    var maxXWidth = maxX.width ? maxX.width : 50;
+
+    marginLeft = maxXWidth * 1.2 + 60;
+    var xAxisLabelDistance = maxXWidth + 10;
 
     return {
       maxTextWidth,
+      maxXWidth,
       barOffset: -marginLeft,
       yAxisLabelDistance: 0,
-      xAxisLabelDistance: marginLeft - 75,
+      xAxisLabelDistance: xAxisLabelDistance,
       innerContainer: {
         selector: ".nvd3.nv-wrap.nv-multibarHorizontal",
         width: marginLeft,
@@ -72,95 +85,72 @@ function grouped_barchart(id, data, options, divid) {
 
   createEmptyChart();
 
-  function measureTextWidthAndSetConfig() {
-    // find the max width of labels after we draw them on the svg
-    let maxTextWidth = 0;
-    var element = document.getElementById(divid + "_grouped-barchart");
-    var textElements = element.querySelectorAll(".nv-axis text");
-    for (let t of textElements) {
-      maxTextWidth = Math.max(t.getBoundingClientRect().width, maxTextWidth);
-    }
-    if (!maxTextWidth) {
-      return chartConfig;
-    }
-    chartConfig = getChartConfig(options, maxTextWidth);
-    return chartConfig;
-  }
+  function updateChart() {
+    // render twice. once to draw all the elements,
+    // and once after we query the widths or heights
+    // of the labels and resize the chart. This is to
+    // ensure that none of the labels get cut off because
+    // they are too long.
 
-  function rotateYAxisLabel() {
-    if ($("#" + divid + "-toggle-horizontal").prop("checked")) {
-      $("#" + divid + "-div .nv-x .nv-axis text")
-        .not(".nv-axislabel")
-        .css("transform", "rotate(-90deg)")
-        .css("text-anchor", "end")
-        .attr("y", "-7");
-    }
-  }
+    drawChart(data, extNvd3Chart);
+    chartConfig = getChartConfig(options);
+    extNvd3Chart.margin(chartConfig.margins);
+    drawChart(data, extNvd3Chart);
 
-  function updateChart(callback) {
-    if (!chartConfig.maxTextWidth) {
-      chartConfig = measureTextWidthAndSetConfig();
-    }
-    return updateChartNVD3(callback);
-  }
-
-  function updateChartNVD3(callback) {
-    "use strict";
-
-    //poll every 150ms for up to two seconds waiting for chart
-    abmviz_utilities.poll(nvd3ChartExists, drawBarGraph, handlePollError);
-
-    callback();
-
-    function nvd3ChartExists() {
-      return extNvd3Chart != undefined;
-    }
-
-    function drawBarGraph() {
-      svgChart.datum(data).call(extNvd3Chart);
-      //create a rectangle over the chart covering the entire y-axis and to the left of x-axis to include mainGroup labels
-      //first check if
-
-      barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
-      if (barsWrap[0].length == 0) {
-        throw "did not find expected part of chart";
+    // Hack necessary because NVD3 has no idea how to position
+    // axis labels
+    if (!options.showAsVertical) {
+      var xAxisLabels = document.querySelectorAll(
+        thisTabSelector + " .nv-x .nv-axislabel"
+      );
+      for (var labelNode of xAxisLabels) {
+        labelNode.setAttribute("y", -chartConfig.maxXWidth - 20);
       }
-
-      //if first time (enter() selection) create rect
-      //nv-barsWrap nvd3-svg
-      barsWrap
-        .selectAll(barsWrapRectSelector)
-        .data([barsWrapRectId])
-        .enter()
-        .insert("rect", ":first-child")
-        .attr("id", barsWrapRectId)
-        .attr("x", chartConfig.barOffset)
-        .attr("fill-opacity", "0.0")
-        .on("mousemove", function() {
-          if (showAsVertical) {
-            var mouseX = d3.mouse(this)[0];
-            var numMainGroups = mainGroupSet.size;
-            var widthPerGroup = barsWrapRectWidth / numMainGroups;
-            var mainGroupIndex = Math.floor(mouseX / widthPerGroup);
-            var mainGroupObject = data[0].values[mainGroupIndex];
-            var newMainGroup = mainGroupObject.label;
-            changeCurrentMainGroup(newMainGroup);
-          } else {
-            var mouseY = d3.mouse(this)[1];
-            numMainGroups = mainGroupSet.size;
-            var heightPerGroup = barsWrapRectHeight / numMainGroups;
-            mainGroupIndex = Math.floor(mouseY / heightPerGroup);
-            mainGroupObject = data[0].values[mainGroupIndex];
-            newMainGroup = mainGroupObject.label;
-            changeCurrentMainGroup(newMainGroup);
-          }
-        });
-      abmviz_utilities.debounce(updateChartMouseoverRect, 300, true);
     }
 
-    function handlePollError() {
-      throw "something is wrong -- extNvd3Chart still doesn't exist after polling ";
+    barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
+    if (barsWrap[0].length == 0) {
+      throw "did not find expected part of chart";
     }
+
+    barsWrap
+      .selectAll(barsWrapRectSelector)
+      .data([barsWrapRectId])
+      .enter()
+      .insert("rect", ":first-child")
+      .attr("id", barsWrapRectId)
+      .attr("x", chartConfig.barOffset)
+      .attr("fill-opacity", "0.0")
+      .on("mousemove", function() {
+        if (showAsVertical) {
+          var mouseX = d3.mouse(this)[0];
+          var numMainGroups = mainGroupSet.size;
+          var widthPerGroup = barsWrapRectWidth / numMainGroups;
+          var mainGroupIndex = Math.floor(mouseX / widthPerGroup);
+          var mainGroupObject = data[0].values[mainGroupIndex];
+          var newMainGroup = mainGroupObject.label;
+          changeCurrentMainGroup(newMainGroup);
+        } else {
+          var mouseY = d3.mouse(this)[1];
+          numMainGroups = mainGroupSet.size;
+          var heightPerGroup = barsWrapRectHeight / numMainGroups;
+          mainGroupIndex = Math.floor(mouseY / heightPerGroup);
+          mainGroupObject = data[0].values[mainGroupIndex];
+          newMainGroup = mainGroupObject.label;
+          changeCurrentMainGroup(newMainGroup);
+        }
+      });
+
+    abmviz_utilities.debounce(updateChartMouseoverRect, 300, true);
+  }
+
+  function drawChart(chartData, chart) {
+    if (!chartData || !chart) {
+      console.error("Data or Chart is undefined");
+      return;
+    }
+
+    svgChart.datum(data).call(extNvd3Chart);
   }
 
   function updateChartMouseoverRect() {
@@ -182,8 +172,6 @@ function grouped_barchart(id, data, options, divid) {
           .attr("height", barsWrapRectHeight);
         tryAgain = false;
       }
-
-      rotateYAxisLabel();
     }
 
     if (tryAgain) {
@@ -214,11 +202,7 @@ function grouped_barchart(id, data, options, divid) {
       generate: getChartGenerator(chartConfig), //end generate
       callback: function(newGraph) {
         extNvd3Chart = newGraph;
-        extNvd3Chart.dispatch.on("renderEnd", function() {
-          rotateYAxisLabel();
-        });
-
-        updateChart(function() {});
+        updateChart();
       }
     });
   }
@@ -269,42 +253,33 @@ function grouped_barchart(id, data, options, divid) {
         .axisLabel(quantityColumn)
         .axisLabelDistance(chartConfig.yAxisLabelDistance);
 
-      nvd3Chart.xAxis
-        .axisLabel(mainGroupColumn)
-        .axisLabelDistance(chartConfig.xAxisLabelDistance);
+      nvd3Chart.xAxis.axisLabel(mainGroupColumn);
 
       if (showAsVertical) {
         nvd3Chart.reduceXTicks(false);
       } //this is actually for yAxis
 
       nvd3Chart.legend.width(900);
-      nv.utils.windowResize(function() {
-        if (!thisTab.is(":visible")) {
-          return;
-        }
-
-        //reset marginTop in case legend has gotten less tall
-        nvd3Chart.margin({
-          top: chartConfig.margins.top
-        });
-
-        updateChart(function() {
-          console.log("updateChart callback after windowResize");
-        });
-      });
 
       nvd3Chart.multibar.dispatch.on("elementMouseover", function(d) {
         var mainGroupUnderMouse = d.value;
         changeCurrentMainGroup(mainGroupUnderMouse);
       });
 
-      nvd3Chart.legend.margin({ top: 10, right: 0, left: -75, bottom: 20 });
-
+      nvd3Chart.legend.margin({ top: 10, right: 0, left: -10, bottom: 20 });
       nvd3Chart.xAxis.rotateLabels(-90);
-
       return nvd3Chart;
     };
   }
+
+  nv.utils.windowResize(function() {
+    if (!thisTab.is(":visible")) {
+      return;
+    }
+
+    updateChart();
+  });
+
   //WARNING -- this canbe called more than once because of PIVOT reload kluge
   //end initializeMuchOfUI
   //return only the parts that need to be global
@@ -312,13 +287,20 @@ function grouped_barchart(id, data, options, divid) {
 }
 
 /**
- * For an iterable of strings, get the length of the longest string
- * @param {Set} set set of strings
+ * Takes a list of DOM nodes and returns an object with
+ * the maximum height and maximum width of any node in that
+ * list. Height and Width needn't be from the same node.
+ * @param {NodeList} nodeList
  */
-function getMaxLength(set) {
-  let maxLength = 0;
-  for (let setElement of set.values()) {
-    maxLength = Math.max(maxLength, setElement.length);
+function getMaxElementDimensions(nodeList) {
+  var maxElementDimensions = { height: 0, width: 0 };
+  for (var node of nodeList) {
+    var nodeHeight = node.getBoundingClientRect().height;
+    var nodeWidth = node.getBoundingClientRect().width;
+    maxElementDimensions = {
+      height: Math.max(maxElementDimensions.height, nodeHeight),
+      width: Math.max(maxElementDimensions.width, nodeWidth)
+    };
   }
-  return maxLength;
+  return maxElementDimensions;
 }
