@@ -25,7 +25,7 @@ path.chord {
 }
 
 [selector$="chordcircle"].hover path.faded {
-  opacity: 0.35;
+  opacity: 0.10;
 }
 
 [charttype$="chordchart"] {
