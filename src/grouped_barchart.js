@@ -97,13 +97,15 @@ function grouped_barchart(id, data, options, divid) {
     extNvd3Chart.margin(chartConfig.margins);
     drawChart(data, extNvd3Chart);
 
-    // Filthy hack necessary because NVD3 has no idea how to position
+    // Hack necessary because NVD3 has no idea how to position
     // axis labels
     if (!options.showAsVertical) {
-      var xAxisLabel = document.querySelector(
-        thisTabSelector + " .nv-axislabel"
+      var xAxisLabels = document.querySelectorAll(
+        thisTabSelector + " .nv-x .nv-axislabel"
       );
-      xAxisLabel.setAttribute("y", -chartConfig.maxXWidth - 20);
+      for (var labelNode of xAxisLabels) {
+        labelNode.setAttribute("y", -chartConfig.maxXWidth - 20);
+      }
     }
 
     barsWrap = svgChart.select(".nv-barsWrap.nvd3-svg");
