@@ -27,7 +27,7 @@ var BarChartGrp = {
     var scenario = abmviz_utilities.GetURLParameter("scenario");
     var url = dataLocation + scenario;
     //CONFIG VARIABLES
-    var numberOfCols;
+    var numberOfCols = 1;
     var HIDE_CONTROLS = false;
     var ROTATELABEL = 0;
     var BARSPACING = 0.2;
