@@ -38,6 +38,7 @@ function grouped_barchart(id, data, options, divid) {
 
       return {
         maxTextWidth,
+        maxXHeight: maxX.height,
         barOffset: 0,
         yAxisLabelDistance: 50,
         xAxisLabelDistance: marginBottom - 20,
@@ -64,6 +65,7 @@ function grouped_barchart(id, data, options, divid) {
     return {
       maxTextWidth,
       maxXWidth,
+      maxXHeight: maxX.height,
       barOffset: -marginLeft,
       yAxisLabelDistance: 0,
       xAxisLabelDistance: xAxisLabelDistance,
@@ -99,12 +101,27 @@ function grouped_barchart(id, data, options, divid) {
 
     // Hack necessary because NVD3 has no idea how to position
     // axis labels
+    var xAxisLabels;
     if (!options.showAsVertical) {
-      var xAxisLabels = document.querySelectorAll(
+      // if showAsVertical is false, the X Axis will be the vertical axis, so
+      // the label will need to be moved to the left, which will be negative y,
+      // since being rotated 90 degrees, its top is facing to the left.
+      xAxisLabels = document.querySelectorAll(
         thisTabSelector + " .nv-x .nv-axislabel"
       );
-      for (var labelNode of xAxisLabels) {
+      for (let labelNode of xAxisLabels) {
         labelNode.setAttribute("y", -chartConfig.maxXWidth - 20);
+      }
+    } else {
+      /**
+       * Otherwise, it will be below the horizontal axis, where it will need a positive
+       * value in order to move down on the page.
+       */
+      xAxisLabels = document.querySelectorAll(
+        thisTabSelector + " .nv-x .nv-axislabel"
+      );
+      for (let labelNode of xAxisLabels) {
+        labelNode.setAttribute("y", chartConfig.maxXHeight + 30);
       }
     }
 
