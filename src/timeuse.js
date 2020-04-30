@@ -87,7 +87,10 @@ var TimeuseChart = {
           pageHeader.text(thisTimeUseChart.title);
         }
 
-        var chartConfiguration = data[TIME_USE_CONFIG_KEY][configName];
+        var chartConfiguration = data[TIME_USE_CONFIG_KEY] ?
+          data[TIME_USE_CONFIG_KEY][configName] :
+          {};
+
         applyConfigValues(chartConfiguration, CHART_TYPE_CONFIG);
 
         if (CHART_TYPE_CONFIG.DisplayCountsByDefault) {
