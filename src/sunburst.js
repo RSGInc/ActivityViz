@@ -483,8 +483,9 @@ var SunburstChart = {
             .transition()
             .duration(100)
             .style("opacity", 0.2);
+
           d3.select("#" + id + "-chart")
-            .selectAll("rect[rectgrp=" + combineData[d.groupIndex].name + "]")
+            .selectAll("rect[rectgrp='" + combineData[d.groupIndex].name + "']")
             .transition()
             .duration(100)
             .style("opacity", 1);
