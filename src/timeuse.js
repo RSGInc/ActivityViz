@@ -14,14 +14,26 @@ var TimeuseChart = {
     var pageHeader = $("#" + id + "-maingroup");
     var extNvd3Chart;
     var legendBoxWidth = 240;
-    var nodeVisuals;
-    var legendRects;
-    var legendTexts;
-    var legendGroups;
     var chartData;
     var chartStyle = "expand";
     var showChartOnPage = true;
     var builtInPurposes = ["home", "work", "school", "other"];
+
+    /**
+     * Determines the key to use to look up the chart configuration in the
+     * region.json file, as well as the default configuration values.
+     */
+    var TIME_USE_CONFIG_KEY = "TimeUse";
+    var CHART_TYPE_CONFIG = {
+      DisplayPercentagesByDefault: true,
+      DisplayCountsByDefault: false,
+      HideCountsPercentagesToggle: false
+    };
+
+    var controlLabelReplacements = {
+      stacked: "Counts",
+      expanded: "Percentages"
+    };
 
     function getChartLeftMargin() {
       return chartStyle == "expand" ? 50 : 80;
@@ -37,204 +49,208 @@ var TimeuseChart = {
 
     function createTimeUse() {
       //read in data and create timeuse when finished
-      if (chartData === undefined) {
-        $.getJSON(dataLocation + "region.json", function(data) {
-          var configName = "Default";
-          if (data["scenarios"][scenario].visualizations != undefined) {
-            var thisTimeUseChart =
-              data["scenarios"][scenario].visualizations["TimeUse"][indx];
-            if (thisTimeUseChart.file) {
-              fileName = thisTimeUseChart.file;
-            }
-            if (thisTimeUseChart.config) {
-              configName = thisTimeUseChart.config;
-            }
-            if (thisTimeUseChart.datafilecolumns) {
-              var datacols = thisTimeUseChart.datafilecolumns;
-              $.each(datacols, function(key, value) {
-                $("#" + id + "-datatable-columns").append(
-                  "<p>" + key + ": " + value + "</p>"
-                );
-              });
-            }
-            if (thisTimeUseChart.info) {
-              var infoBox = thisTimeUseChart.info;
-              $("#" + id + "-div span.glyphicon-info-sign").attr(
-                "title",
-                infoBox
-              );
-              $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
-            }
-            if (thisTimeUseChart.title) {
-              pageHeader.text(thisTimeUseChart.title);
-            }
-          }
-        }).complete(function() {
-          url += "/" + fileName;
-
-          d3.text(url, function(error, data) {
-            "use strict";
-            var periods = new Set();
-            var requiredOrigPurposesArray = [];
-            var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
-            var requiredOrigPurposesFound = new Set();
-            var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
-            if (error) {
-              $("#" + id + "-div").html("");
-              //$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
-              throw error;
-            }
-            var headers = d3.csv.parseRows(data)[0];
-            var csv = d3.csv.parseRows(data).slice(1);
-            if (!$.fn.DataTable.isDataTable("#" + id + "-datatable-table")) {
-              var columnsDT = [];
-              $.each(headers, function(d, i) {
-                columnsDT.push({ title: i });
-                $("#" + id + "-datatable-div table thead tr").append(
-                  "<th>" + i + "</th>"
-                );
-              });
-              if (csv[0] == "") {
-                //we have no data
-                $("#" + id + "_id")
-                  .parent("li")
-                  .attr("disabled", "disabled");
-                $("#" + id + "-div").html("");
-
-                //$('#timeuse').html("<div class='container'><h3><span class='alert alert-danger'>Error: An error occurred while loading the sunburst data.</span></h3></div>");
-                return;
-              }
-              $("#" + id + "-datatable-table").DataTable({
-                dom: "Bfrtip",
-                buttons: {
-                  dom: {
-                    button: {
-                      tag: "button",
-                      className: ""
-                    }
-                  },
-
-                  buttons: [
-                    {
-                      extend: "csv",
-                      className: "btn",
-                      text: '<span class="glyphicon glyphicon-save"></span>',
-                      titleAttr: "Download CSV"
-                    }
-                  ]
-                },
-                data: csv,
-                columns: columnsDT
-              });
-            }
-            data = null; //allow memory to be GC'ed
-
-            var rolledUpMap = d3
-              .nest()
-              .key(function(d) {
-                return d[0]; //group by PERSON_TYPE
-              })
-              .key(function(d) {
-                return d[2]; //secondary group by ORIG_PURPOSE
-              })
-              .key(function(d) {
-                return d[1];
-              })
-              .rollup(function(d) {
-                var timePeriod = +d[0][1];
-                periods.add(timePeriod);
-                var origPurpose = d[0][2];
-                if (!nonRequiredOrigPurposesSet.has(origPurpose)) {
-                  if (requiredOrigPurposesSet.has(origPurpose)) {
-                    if (!requiredOrigPurposesFound.has(origPurpose)) {
-                      requiredOrigPurposesFound.add(origPurpose);
-                    }
-                  } else {
-                    //else not a required item
-                    nonRequiredOrigPurposesSet.add(origPurpose);
-                  }
-                } //else already in nonRequiredSet
-                return {
-                  timePeriod: timePeriod,
-                  quantity: +d[0][3]
-                };
-              })
-              .map(csv);
-
-            csv = null; //allow memory to be GC'ed
-            //cannot simply use nest.entries because there may be missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
-            //rolledUpData = makeNest.entries(csv);
-            //var reorderedArray = [];
-            //re-order so the starts with WORK, SCHOOL and ends with HOME
-            abmviz_utilities.assert(
-              requiredOrigPurposesSet.size == requiredOrigPurposesFound.size,
-              "ORIG_PURPOSE must contain WORK, SCHOOL, and HOME but only found these ones: " +
-                Array.from(requiredOrigPurposesFound)
-            );
-            var origPurposesArray = Array.from(requiredOrigPurposesArray);
-            //insert non-reqired items between SCHOOL and HOME
-            abmviz_utilities.insertArrayAt(
-              origPurposesArray,
-              1,
-              Array.from(nonRequiredOrigPurposesSet)
-            );
-            var personTypes = Object.keys(rolledUpMap);
-            //convert data to format nvd3 expects it
-            //populate drop down of all person -types
-            drawLegend(personTypes);
-            chartData = {};
-            personTypes.forEach(function(personType) {
-              chartData[personType] = getPersonTypeChartData(personType);
-            });
-
-            function getPersonTypeChartData(personType) {
-              var rolledUpPersonTypeMap = rolledUpMap[personType];
-              abmviz_utilities.assert(
-                rolledUpPersonTypeMap != null,
-                "rolledUpMap[personType] not found for personType: " +
-                  personType
-              );
-              var personTypeChartData = [];
-              origPurposesArray.forEach(function(origPurpose) {
-                var personTypesOrigPurposeArray =
-                  rolledUpPersonTypeMap[origPurpose];
-                if (personTypesOrigPurposeArray == undefined) {
-                  //missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
-                  //make an empty item to use to fill in personTypes that are missing data
-                  personTypesOrigPurposeArray = {};
-                  //console.log('Person type "' + personType + '" missing data for purpose: ' + origPurpose);
-                }
-                var periodDataArray = [];
-                //must make sure data has all periods since nvd3 picky
-                periods.forEach(function(period) {
-                  var periodDataObject = personTypesOrigPurposeArray[period];
-                  //if period missing from data, create it
-                  if (periodDataObject == undefined) {
-                    periodDataObject = {
-                      timePeriod: period,
-                      quantity: 0
-                    };
-                    /* 								if (personTypeOrigPurposeExists) */
-                    //console.log('Person type "' + personType + '" "' + origPurpose + '" missing data for period: ' + period);
-                  }
-                  periodDataArray.push(periodDataObject);
-                }); //end loop over periods
-                personTypeChartData.push({
-                  key: origPurpose,
-                  values: periodDataArray
-                });
-              }); //end loop over origPurposes
-              return personTypeChartData;
-            } //end getPersonTypeChartData
-            console.log("timeuse finished reading data");
-            createEmptyChart(updateChart);
-          }); //end d3.text
-        });
-      } //end if chartData === undefined
-      else {
+      if (chartData !== undefined) {
         //if just a window resize, don't re-read data
         createEmptyChart(updateChart);
+        return;
       }
+
+      $.getJSON(dataLocation + "region.json", function(data) {
+        var configName = "Default";
+        if (!data["scenarios"][scenario].visualizations) {
+          console.error(
+            "visualizations array not found. please check region.json"
+          );
+          return;
+        }
+
+        var thisTimeUseChart =
+          data["scenarios"][scenario].visualizations["TimeUse"][indx];
+
+        fileName = thisTimeUseChart.file || fileName;
+        configName = thisTimeUseChart.config || configName;
+
+        if (thisTimeUseChart.datafilecolumns) {
+          var datacols = thisTimeUseChart.datafilecolumns;
+          $.each(datacols, function(key, value) {
+            $("#" + id + "-datatable-columns").append(
+              "<p>" + key + ": " + value + "</p>"
+            );
+          });
+        }
+        if (thisTimeUseChart.info) {
+          var infoBox = thisTimeUseChart.info;
+          $("#" + id + "-div span.glyphicon-info-sign").attr("title", infoBox);
+          $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
+        }
+        if (thisTimeUseChart.title) {
+          pageHeader.text(thisTimeUseChart.title);
+        }
+
+        var chartConfiguration = data[TIME_USE_CONFIG_KEY] ?
+          data[TIME_USE_CONFIG_KEY][configName] :
+          {};
+
+        applyConfigValues(chartConfiguration, CHART_TYPE_CONFIG);
+
+        if (CHART_TYPE_CONFIG.DisplayCountsByDefault) {
+          chartStyle = "stack";
+        }
+      }).complete(function() {
+        url += "/" + fileName;
+
+        d3.text(url, function(error, data) {
+          "use strict";
+          var periods = new Set();
+          var requiredOrigPurposesArray = [];
+          var requiredOrigPurposesSet = new Set(requiredOrigPurposesArray);
+          var requiredOrigPurposesFound = new Set();
+          var nonRequiredOrigPurposesSet = new Set(); //js sets maintain insertion order https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+          if (error) {
+            $("#" + id + "-div").html("");
+            throw error;
+          }
+          var headers = d3.csv.parseRows(data)[0];
+          var csv = d3.csv.parseRows(data).slice(1);
+          if (!$.fn.DataTable.isDataTable("#" + id + "-datatable-table")) {
+            var columnsDT = [];
+            $.each(headers, function(d, i) {
+              columnsDT.push({ title: i });
+              $("#" + id + "-datatable-div table thead tr").append(
+                "<th>" + i + "</th>"
+              );
+            });
+            if (csv[0] == "") {
+              //we have no data
+              $("#" + id + "_id")
+                .parent("li")
+                .attr("disabled", "disabled");
+              $("#" + id + "-div").html("");
+
+              return;
+            }
+            $("#" + id + "-datatable-table").DataTable({
+              dom: "Bfrtip",
+              buttons: {
+                dom: {
+                  button: {
+                    tag: "button",
+                    className: ""
+                  }
+                },
+
+                buttons: [
+                  {
+                    extend: "csv",
+                    className: "btn",
+                    text: '<span class="glyphicon glyphicon-save"></span>',
+                    titleAttr: "Download CSV"
+                  }
+                ]
+              },
+              data: csv,
+              columns: columnsDT
+            });
+          }
+          data = null; //allow memory to be GC'ed
+
+          var rolledUpMap = d3
+            .nest()
+            .key(function(d) {
+              return d[0]; //group by PERSON_TYPE
+            })
+            .key(function(d) {
+              return d[2]; //secondary group by ORIG_PURPOSE
+            })
+            .key(function(d) {
+              return d[1];
+            })
+            .rollup(function(d) {
+              var timePeriod = +d[0][1];
+              periods.add(timePeriod);
+              var origPurpose = d[0][2];
+              if (!nonRequiredOrigPurposesSet.has(origPurpose)) {
+                if (requiredOrigPurposesSet.has(origPurpose)) {
+                  if (!requiredOrigPurposesFound.has(origPurpose)) {
+                    requiredOrigPurposesFound.add(origPurpose);
+                  }
+                } else {
+                  //else not a required item
+                  nonRequiredOrigPurposesSet.add(origPurpose);
+                }
+              } //else already in nonRequiredSet
+              return {
+                timePeriod: timePeriod,
+                quantity: +d[0][3]
+              };
+            })
+            .map(csv);
+
+          csv = null; //allow memory to be GC'ed
+          //cannot simply use nest.entries because there may be missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
+          //rolledUpData = makeNest.entries(csv);
+          //var reorderedArray = [];
+          //re-order so the starts with WORK, SCHOOL and ends with HOME
+          abmviz_utilities.assert(
+            requiredOrigPurposesSet.size == requiredOrigPurposesFound.size,
+            "ORIG_PURPOSE must contain WORK, SCHOOL, and HOME but only found these ones: " +
+              Array.from(requiredOrigPurposesFound)
+          );
+          var origPurposesArray = Array.from(requiredOrigPurposesArray);
+          //insert non-reqired items between SCHOOL and HOME
+          abmviz_utilities.insertArrayAt(
+            origPurposesArray,
+            1,
+            Array.from(nonRequiredOrigPurposesSet)
+          );
+          var personTypes = Object.keys(rolledUpMap);
+          //convert data to format nvd3 expects it
+          //populate drop down of all person -types
+          drawLegend(personTypes);
+          chartData = {};
+          personTypes.forEach(function(personType) {
+            chartData[personType] = getPersonTypeChartData(personType);
+          });
+
+          function getPersonTypeChartData(personType) {
+            var rolledUpPersonTypeMap = rolledUpMap[personType];
+            abmviz_utilities.assert(
+              rolledUpPersonTypeMap != null,
+              "rolledUpMap[personType] not found for personType: " + personType
+            );
+            var personTypeChartData = [];
+            origPurposesArray.forEach(function(origPurpose) {
+              var personTypesOrigPurposeArray =
+                rolledUpPersonTypeMap[origPurpose];
+              if (personTypesOrigPurposeArray == undefined) {
+                //missing data (for example: CHILD_TOO_YOUNG_FOR_SCHOOL does not have a WORK ORIG_PURPOSE)
+                //make an empty item to use to fill in personTypes that are missing data
+                personTypesOrigPurposeArray = {};
+              }
+              var periodDataArray = [];
+              //must make sure data has all periods since nvd3 picky
+              periods.forEach(function(period) {
+                var periodDataObject = personTypesOrigPurposeArray[period];
+                //if period missing from data, create it
+                if (periodDataObject == undefined) {
+                  periodDataObject = {
+                    timePeriod: period,
+                    quantity: 0
+                  };
+                }
+                periodDataArray.push(periodDataObject);
+              }); //end loop over periods
+              personTypeChartData.push({
+                key: origPurpose,
+                values: periodDataArray
+              });
+            }); //end loop over origPurposes
+            return personTypeChartData;
+          } //end getPersonTypeChartData
+
+          createEmptyChart(updateChart);
+        }); //end d3.text
+      });
 
       function turnOffAreaClick() {
         //nvd3 allows a single series to be shown but not helpful. Need to disable both double click in legend and click in area
@@ -271,7 +287,6 @@ var TimeuseChart = {
               personType = availablePersonTypes[0];
               drawLegend(availablePersonTypes);
             }
-
 
             // Sort data to move home, work, school, and other to the
             // base of the visualization.
@@ -342,7 +357,8 @@ var TimeuseChart = {
               .clipEdge(true)
               .id(id + "-stackedAreaChart")
               .useInteractiveGuideline(true) //Tooltips which show all data points. Very nice!
-              .showControls(true)
+              .showControls(!CHART_TYPE_CONFIG.HideCountsPercentagesToggle)
+              .controlLabels(controlLabelReplacements)
               .style(chartStyle); //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
 
             //How to Remove control options from NVD3.js Stacked Area Chart
@@ -352,12 +368,13 @@ var TimeuseChart = {
             chart.xAxis.tickFormat(function(d) {
               return abmviz_utilities.halfHourTimePeriodToTimeString(d);
             });
+
             chart.yAxis.tickFormat(d3.format("0,000"));
+            chart.yAxis.showMaxMin(false);
             chart.legend.vers("classic");
             return chart;
           },
           callback: function(newGraph) {
-            console.log("timeuse nv.addGraph callback called");
             extNvd3Chart = newGraph;
             if (myCallback) {
               myCallback();
@@ -403,6 +420,7 @@ var TimeuseChart = {
         setPersonTypeClass();
       } //end drawLegend
     } //end createTimeUse
+
     if (showChartOnPage) {
       $("#" + id + "-div").show();
       console.log($("#" + id + "-div").is(":visible"));
@@ -431,13 +449,10 @@ var TimeuseChart = {
  * Returns a shallow copy of dataArray with elements whose keys match
  * the built-in purposes moved to the front of the array, in the order
  * they appear in the builtInPurposes array.
- * @param {Array} dataArray 
- * @param {Array} builtInPurposes 
+ * @param {Array} dataArray
+ * @param {Array} builtInPurposes
  */
-function moveMatchingPurposesToFront(
-  dataArray,
-  builtInPurposes
-) {
+function moveMatchingPurposesToFront(dataArray, builtInPurposes) {
   var arrayCopy = dataArray.slice();
 
   // Reverse the array to move the elements which match a builtInPurpose
@@ -475,4 +490,17 @@ function findAndMoveToFront(array, predicate) {
   return [array[index]]
     .concat(array.slice(0, index))
     .concat(array.slice(index + 1));
+}
+
+/**
+ * MUTATOR
+ * If a property exists on both the source and target objects, set the value of
+ * property on the target object to the value on the source object
+ * @param {Object} source
+ * @param {Object} target
+ */
+function applyConfigValues(source, target) {
+  for (var key in source) {
+    target[key] = source[key];
+  }
 }

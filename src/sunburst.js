@@ -88,7 +88,7 @@ var SunburstChart = {
                   }
                 ]
               },
-              data: csv,
+              data: csv.slice(1),
               columns: columnsDT
             });
           }
