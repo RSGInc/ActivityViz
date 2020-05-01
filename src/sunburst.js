@@ -500,7 +500,7 @@ var SunburstChart = {
             .duration(100)
             .style("opacity", 0.2);
           d3.select("#" + id + "-chart")
-            .selectAll("rect[rectgrp=" + d.name + "]")
+            .selectAll("rect[rectgrp='" + d.name + "']")
             .transition()
             .duration(100)
             .style("opacity", 1);
