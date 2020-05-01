@@ -46,6 +46,7 @@ var TimeuseChart = {
       r: 3
     };
     var personType = "ALL";
+    var lastPersonTypeClicked = "ALL";
 
     function createTimeUse() {
       //read in data and create timeuse when finished
@@ -87,9 +88,9 @@ var TimeuseChart = {
           pageHeader.text(thisTimeUseChart.title);
         }
 
-        var chartConfiguration = data[TIME_USE_CONFIG_KEY] ?
-          data[TIME_USE_CONFIG_KEY][configName] :
-          {};
+        var chartConfiguration = data[TIME_USE_CONFIG_KEY]
+          ? data[TIME_USE_CONFIG_KEY][configName]
+          : {};
 
         applyConfigValues(chartConfiguration, CHART_TYPE_CONFIG);
 
@@ -404,16 +405,33 @@ var TimeuseChart = {
           .text(function(d) {
             return d;
           })
+          .on("click", function(d, i) {
+            lastPersonTypeClicked = d;
+            respondToPersonTypeChange();
+          })
           .on("mouseover", function(d, i) {
+            if (d !== lastPersonTypeClicked) {
+              this.classList.add("timeuse-legend-item-hover");
+            }
             personType = d;
+            respondToPersonTypeChange();
+          })
+          .on("mouseout", function() {
+            this.classList.remove("timeuse-legend-item-hover");
+            personType = lastPersonTypeClicked;
+            respondToPersonTypeChange();
+          });
+
+        function respondToPersonTypeChange() {
             clearHighlightPoints();
             updateChart();
             setPersonTypeClass();
-          });
+
+        }
 
         function setPersonTypeClass() {
           legendItems.classed("timeuse-current-person-type", function(d) {
-            return d === personType;
+            return d === lastPersonTypeClicked;
           });
         }
 

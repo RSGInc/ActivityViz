@@ -32,6 +32,11 @@
   border-radius: 10px;
   padding: 0 0.5em;
   margin: 0.2em;
+  cursor: pointer;
+}
+
+.timeuse-legend-item-hover {
+  background-color: #e09d15ba;
 }
 
 .timeuse-current-person-type {
