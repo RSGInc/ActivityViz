@@ -284,7 +284,11 @@ function grouped_barchart(id, data, options, divid) {
       });
 
       nvd3Chart.legend.margin({ top: 10, right: 0, left: -10, bottom: 20 });
-      nvd3Chart.xAxis.rotateLabels(-90);
+
+      if (options.rotateXLabels) {
+        nvd3Chart.xAxis.rotateLabels(options.rotateXLabels);
+      }
+
       return nvd3Chart;
     };
   }

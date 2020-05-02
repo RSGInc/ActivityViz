@@ -131,6 +131,7 @@ Each chart type has a different entry for their specific configuration settings.
 
 - BarSpacing: The space between the bars on the chart, default is 0.2, range is between 0.1 and 1.0.
 - RotateLabels: Number of degrees to rotate the labels on the Y-Axis.  Default is 0 can go from -90 to 90.
+- RotateXLabels: Number of degrees to rotate tick labels on the X Axis. Default is -90.
 - ZoneFilterFile: takes a csv file with the first column named ID for zone ID that contains show/hide filters for each zone to be displayed
 - ZoneFilters: a list of zones and the display name for them that will be used, zone ids must match zone filter file columns
 - ZoneFilterLabel: a label to be shown above the list of zone filters
