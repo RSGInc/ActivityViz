@@ -31,6 +31,7 @@ var BarChartGrp = {
     var HIDE_CONTROLS = false;
     var ROTATELABEL = 0;
     var BARSPACING = 0.2;
+    var ROTATE_X_LABELS = -90;
     var showAsStacked = false;
     var independentScale;
 
@@ -132,6 +133,9 @@ var BarChartGrp = {
               if (value.length > 0) ChartWidthOverride = value;
             if (opt == "RotateLabels") {
               ROTATELABEL = value;
+            }
+            if (opt == "RotateXLabels") {
+              ROTATE_X_LABELS = value;
             }
             if (opt == "BarSpacing") {
               BARSPACING = value;
@@ -388,6 +392,7 @@ var BarChartGrp = {
             subGrpCol: subGroupColumn,
             showAsGrped: showAsStacked,
             rotateLabel: ROTATELABEL,
+            rotateXLabels: ROTATE_X_LABELS,
             barSpacing: BARSPACING,
             chartWidth: widthOfEachCol //,
             //maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,

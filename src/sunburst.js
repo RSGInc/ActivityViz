@@ -88,7 +88,7 @@ var SunburstChart = {
                   }
                 ]
               },
-              data: csv,
+              data: csv.slice(1),
               columns: columnsDT
             });
           }
@@ -483,8 +483,9 @@ var SunburstChart = {
             .transition()
             .duration(100)
             .style("opacity", 0.2);
+
           d3.select("#" + id + "-chart")
-            .selectAll("rect[rectgrp=" + combineData[d.groupIndex].name + "]")
+            .selectAll("rect[rectgrp='" + combineData[d.groupIndex].name + "']")
             .transition()
             .duration(100)
             .style("opacity", 1);
@@ -499,7 +500,7 @@ var SunburstChart = {
             .duration(100)
             .style("opacity", 0.2);
           d3.select("#" + id + "-chart")
-            .selectAll("rect[rectgrp=" + d.name + "]")
+            .selectAll("rect[rectgrp='" + d.name + "']")
             .transition()
             .duration(100)
             .style("opacity", 1);
