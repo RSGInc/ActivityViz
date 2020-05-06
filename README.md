@@ -1,4 +1,4 @@
-# ActivityViz 
+# ActivityViz
 
 ActivityViz is an interactive travel and activity data visualization tool.  It is built with JavaScript technologies 
 and works with various types of travel and activity data - household travel surveys, trip-based
@@ -48,6 +48,10 @@ Each region supports data for multiple scenarios.  Do the following to add scena
   - Scatter.csv: LABEL, XAXIS, YAXIS, SIZE (YAXIS/XAXIS)
   - PointofInterest.csv: POINTS OF INTEREST, FILTER, LAT, LNG, GROUPING, <QUANTY_1_LABEL>, <QUANTY_2_LABEL>, ...
   - TimeUseData.csv: GROUP, TIME PERIOD, PURPOSE, QUANTITY
+  - HeroImageLayout
+    - If truthy, display landing page with a hero image instead of with the default "list of links" layout.
+  - HeroImage
+    - If HeroImageLayout is true, this value is the `src` of the background hero image.
 
 Notes:   
   - All data tables are not required and each data table is used to populate a specific visual.  Take 
@@ -149,6 +153,29 @@ Each chart type has a different entry for their specific configuration settings.
   - Boolean: defaults to true.
   - Determines whether bars in the bar chart should be stacked. If values is false, they appear side-by-side.
 
+Additional configuration option on the scenario object itself, not the configuration object:
+
+- `aggregationMethod`
+  - For the bar chart, refers to the method of aggregating the values to bars based on the county column.
+  - May be either `"sum"` or `"average"`. Defaults to `"sum"`.
+- `barGroupSortMethod`
+  - Sets the method of sorting the groups in the grouped bar chart.
+  - `"alphabetical"` sorts alphabetically by group name - in most cases, the name of the county.
+  - `"firstBar"` sorts groups by the magnitude of the first bar in the group, from highest to lowest.
+
+Example:
+
+```json
+{
+  "name": "Devices at Home by County",
+  "file": "map.csv",
+  "config": "Default",
+  "aggregationMethod": "average",
+  "barGroupSortMethod": "firstBar",
+  "info": "Devices detected at home by county and time of day"
+}
+```
+
 #### `Chord`: Chord chart that also displays with a map
 
 - DesireLinesOn: Flag that will turn the desire lines layer on the map by default, this will turn off the zone layer as well
@@ -181,6 +208,9 @@ Each chart type has a different entry for their specific configuration settings.
 #### `TimeUse`
 
 Custom configuration is not available for the chart type level for time use charts, but each `chart` object under the `visualizations` array can be given a `title` property to replace the words "TIME USE" in the page header.
+
+- `HideCountsPercentagesToggle`: If this is true, then the toggle between "Counts" and "Percentages" will be hidden.
+- `DisplayCountsByDefault`: If this is true, the default TimeUse chart display will show the counts, not the percentages.
 
 ### Data Folder
 

@@ -25,7 +25,6 @@ var TimeuseChart = {
      */
     var TIME_USE_CONFIG_KEY = "TimeUse";
     var CHART_TYPE_CONFIG = {
-      DisplayPercentagesByDefault: true,
       DisplayCountsByDefault: false,
       HideCountsPercentagesToggle: false
     };

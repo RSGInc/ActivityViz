@@ -13,6 +13,18 @@ var POIMap = {
     var region = abmviz_utilities.GetURLParameter("region");
     var dataLocation = localStorage.getItem(region);
     var url = dataLocation + abmviz_utilities.GetURLParameter("scenario");
+
+    /**
+     * TODO
+     * In the commit where I add this comment I realized that "scenario" is being
+     * set globally, since it was undefined in this file but the tab still
+     * worked. In the future, this global should be removed, but that would mean
+     * going through the whole site and finding every place it is used, which is
+     * out of scope for this change. The least I can do here is make its definition
+     * explicit in this file.
+     */
+    var scenario = abmviz_utilities.GetURLParameter("scenario");
+
     var fileName = "PointofInterest.csv";
     var chartSelector = "#" + id + "-chart";
     var svgChart;
@@ -26,6 +38,8 @@ var POIMap = {
     var highlightLayer;
     var highlightBoxes;
     var showChartOnPage = $("#" + id + "-chart").children().length == 0;
+    var tabSelector = "#" + id + "_id";
+    var pageTitle = $(tabSelector + " .page-title");
     var pointNameCol;
     var maxFeature;
     var circleMarkers;
@@ -169,43 +183,38 @@ var POIMap = {
           var configName = "Default";
 
           if (data["scenarios"][scenario].visualizations != undefined) {
-            if (
-              data["scenarios"][scenario].visualizations["POIMap"][indx].file
-            ) {
-              fileName =
-                data["scenarios"][scenario].visualizations["POIMap"][indx].file;
+            var thisPOIMap =
+              data["scenarios"][scenario].visualizations["POIMap"][indx];
+
+            if (thisPOIMap.file) {
+              fileName = thisPOIMap.file;
             }
-            if (
-              data["scenarios"][scenario].visualizations["POIMap"][indx].config
-            ) {
-              configName =
-                data["scenarios"][scenario].visualizations["POIMap"][indx]
-                  .config;
+
+            if (thisPOIMap.config) {
+              configName = thisPOIMap.config;
             }
-            if (
-              data["scenarios"][scenario].visualizations["POIMap"][indx].info
-            ) {
+
+            if (thisPOIMap.info) {
               var infoBox;
-              infoBox =
-                data["scenarios"][scenario].visualizations["POIMap"][indx].info;
+              infoBox = thisPOIMap.info;
               $("#" + id + "-div span.glyphicon-info-sign").attr(
                 "title",
                 infoBox
               );
               $("#" + id + '-div [data-toggle="tooltip"]').tooltip();
             }
-            if (
-              data["scenarios"][scenario].visualizations["POIMap"][indx]
-                .datafilecolumns
-            ) {
-              var datacols =
-                data["scenarios"][scenario].visualizations["POIMap"][indx]
-                  .datafilecolumns;
+
+            if (thisPOIMap.datafilecolumns) {
+              var datacols = thisPOIMap.datafilecolumns;
               $.each(datacols, function(key, value) {
                 $("#" + id + "-datatable-columns").append(
                   "<p>" + key + ": " + value + "</p>"
                 );
               });
+            }
+
+            if (thisPOIMap.title) {
+              pageTitle.html(thisPOIMap.title);
             }
           }
 
