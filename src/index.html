@@ -252,6 +252,10 @@
 
       for (let k in value) {
         const v = value[k];
+        // hide Title VI grouped charts until the tab is no longer needed
+        if (key === "GroupedCharts" && /Title\s*VI/i.test(v.name)) {
+          continue;
+        }
         // Execute the function and store the promise in the array
         tabAddPromises.push(tabAddFunctions[key](k, v));
       }
